@@ -20,6 +20,8 @@ from __future__ import annotations
 
 import logging
 import re
+import time
+from concurrent.futures import ThreadPoolExecutor
 import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta, timezone
 from typing import Callable, Iterator
@@ -89,6 +91,8 @@ def ashby(emp: dict, cutoff: datetime) -> Iterator[Job]:
 def smartrecruiters(emp: dict, cutoff: datetime) -> Iterator[Job]:
     base = f"https://api.smartrecruiters.com/v1/companies/{emp['id']}/postings"
     for offset in range(0, 1000, 100):
+        if _out_of_time(emp):
+            break
         page = http.get_json(base, params={"limit": 100, "offset": offset})
         content = page.get("content", [])
         for j in content:
@@ -98,6 +102,8 @@ def smartrecruiters(emp: dict, cutoff: datetime) -> Iterator[Job]:
             loc = j.get("location") or {}
             if loc.get("country") and loc["country"].upper() not in EUROPE_AND_UK:
                 continue
+            if _out_of_time(emp):
+                break
             # The list omits the advert text; one extra call per recent UK/Europe posting fetches it.
             try:
                 detail = http.get_json(f"{base}/{j['id']}")
@@ -174,6 +180,8 @@ def workday(emp: dict, cutoff: datetime) -> Iterator[Job]:
     api = f"https://{host}/wday/cxs/{tenant}/{site}"
     now = datetime.now(timezone.utc)
     for offset in range(0, emp.get("max_jobs", 1000), 20):
+        if _out_of_time(emp):
+            break
         page = http.post_json(f"{api}/jobs", {"appliedFacets": {}, "limit": 20, "offset": offset,
                                               "searchText": emp.get("search", "")})
         postings = page.get("jobPostings", [])
@@ -185,6 +193,8 @@ def workday(emp: dict, cutoff: datetime) -> Iterator[Job]:
             listed = _guess_country(j.get("locationsText", ""), default="")
             if listed and listed not in EUROPE_AND_UK:
                 continue
+            if _out_of_time(emp):
+                break
             path = j.get("externalPath", "")
             try:
                 info = http.get_json(f"{api}{path}").get("jobPostingInfo", {})
@@ -206,23 +216,50 @@ ATS: dict[str, EmployerFeed] = {
 }
 
 
-def career_sites(days: int, employers: list[dict], report: dict) -> Iterator[Job]:
-    """Yield jobs from every configured employer; one broken board never stops the others."""
+def career_sites(days: int, employers: list[dict], report: dict, workers: int = 8,
+                 budget_s: float = 360) -> Iterator[Job]:
+    """Yield jobs from every configured employer; one broken board never stops the others.
+
+    Employers are fetched in parallel. Each gets `budget_s` seconds: large Workday or
+    SmartRecruiters boards stop paging when it runs out and keep what they have.
+    """
     cutoff = datetime.now(timezone.utc) - timedelta(days=days)
-    report.update(ok=0, failed=[])
+    report.update(ok=0, failed=[], slow=[])
+    active = []
     for emp in employers:
         if emp.get("enabled", True) is False:
             continue
-        feed = ATS.get(emp.get("ats", "").lower())
-        if not feed:
+        if emp.get("ats", "").lower() not in ATS:
             report["failed"].append(f"{emp.get('name')}: unknown ATS '{emp.get('ats')}'")
             continue
+        active.append(emp)
+
+    def collect(emp: dict) -> tuple[dict, list[Job], Exception | None, float]:
+        start = time.monotonic()
+        emp = {**emp, "_deadline": start + budget_s}
+        jobs: list[Job] = []
         try:
-            yield from feed(emp, cutoff)
-            report["ok"] += 1
+            for job in ATS[emp["ats"].lower()](emp, cutoff):
+                jobs.append(job)
+            return emp, jobs, None, time.monotonic() - start
         except Exception as err:  # noqa: BLE001
-            log.warning("career site %s (%s) failed: %s", emp.get("name"), emp.get("ats"), err)
-            report["failed"].append(f"{emp.get('name')}: {str(err)[:120]}")
+            return emp, jobs, err, time.monotonic() - start
+
+    with ThreadPoolExecutor(max_workers=max(1, workers)) as pool:
+        for emp, jobs, err, took in pool.map(collect, active):
+            log.info("career site %-28s %-15s %4d jobs in %5.1fs%s", emp["name"], emp["ats"], len(jobs), took,
+                     f"  ERROR {err}" if err else "")
+            yield from jobs
+            if err:
+                report["failed"].append(f"{emp.get('name')}: {str(err)[:120]}")
+            else:
+                report["ok"] += 1
+            if took >= budget_s:
+                report["slow"].append(emp["name"])
+
+
+def _out_of_time(emp: dict) -> bool:
+    return time.monotonic() > emp.get("_deadline", float("inf"))
 
 
 _COUNTRY_NAMES = {

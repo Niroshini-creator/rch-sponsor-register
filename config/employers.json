@@ -13,7 +13,7 @@
   "employers": [
     { "name": "Monzo", "ats": "greenhouse", "id": "monzo", "country": "GB", "register_name": "Monzo Bank Limited" },
     { "name": "GoCardless", "ats": "greenhouse", "id": "gocardless", "country": "GB" },
-    { "name": "Google DeepMind", "ats": "greenhouse", "id": "deepmind", "country": "GB", "register_name": "DeepMind Technologies Limited" },
+    { "name": "Google DeepMind", "ats": "greenhouse", "id": "deepmind", "enabled": false, "_note": "board id returned 404 on 2026-09-30; find the correct id on their careers page", "country": "GB", "register_name": "DeepMind Technologies Limited" },
     { "name": "Anthropic", "ats": "greenhouse", "id": "anthropic", "country": "GB" },
     { "name": "Cloudflare", "ats": "greenhouse", "id": "cloudflare", "country": "GB" },
     { "name": "Datadog", "ats": "greenhouse", "id": "datadog", "country": "GB" },
@@ -25,7 +25,7 @@
     { "name": "N26", "ats": "greenhouse", "id": "n26", "country": "DE" },
     { "name": "GetYourGuide", "ats": "greenhouse", "id": "getyourguide", "country": "DE" },
     { "name": "Contentful", "ats": "greenhouse", "id": "contentful", "country": "DE" },
-    { "name": "Thought Machine", "ats": "greenhouse", "id": "thoughtmachine", "country": "GB" },
+    { "name": "Thought Machine", "ats": "greenhouse", "id": "thoughtmachine", "enabled": false, "_note": "board id returned 404 on 2026-09-30; find the correct id on their careers page", "country": "GB" },
     { "name": "Isomorphic Labs", "ats": "greenhouse", "id": "isomorphiclabs", "country": "GB" },
 
     { "name": "Palantir Technologies", "ats": "lever", "id": "palantir", "country": "GB" },

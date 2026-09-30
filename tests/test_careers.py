@@ -111,11 +111,29 @@ class CareerSiteParserTests(unittest.TestCase):
                      {"name": "Typo", "ats": "taleo", "id": "t"},
                      {"name": "Paused", "ats": "greenhouse", "id": "p", "enabled": False},
                      {"name": "Works", "ats": "greenhouse", "id": "ok"}]
-        with mock.patch.object(careers.http, "get_json", side_effect=[OSError("404"), ok]):
+        def fake_get_json(url, **kw):
+            if "/boards/nope/" in url:
+                raise OSError("404")
+            return ok
+        with mock.patch.object(careers.http, "get_json", side_effect=fake_get_json):
             jobs = list(careers.career_sites(7, employers, report))
         self.assertEqual([j.company for j in jobs], ["Works"])
         self.assertEqual(report["ok"], 1)
         self.assertEqual(len(report["failed"]), 2)
+
+
+    def test_time_budget_stops_paging_and_keeps_results(self):
+        report = {}
+        page = {"jobPostings": [{"title": f"Role {i}", "externalPath": f"/job/{i}", "locationsText": "London, UK",
+                                 "postedOn": "Posted Today"} for i in range(20)]}
+        detail = {"jobPostingInfo": {"jobReqId": "R", "location": "London, UK"}}
+        emp = {"name": "Big Co", "ats": "workday", "host": "big.wd3.myworkdayjobs.com", "site": "Careers"}
+        with mock.patch.object(careers.http, "post_json", return_value=page) as post, \
+             mock.patch.object(careers.http, "get_json", return_value=detail):
+            jobs = list(careers.career_sites(7, [emp], report, budget_s=0))
+        self.assertEqual(jobs, [])
+        self.assertEqual(post.call_count, 0)
+        self.assertEqual((report["ok"], report["slow"]), (1, ["Big Co"]))
 
 
 class AgencyFilterTests(unittest.TestCase):

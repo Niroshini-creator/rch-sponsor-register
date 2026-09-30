@@ -42,9 +42,10 @@ def load_sponsor_index(status: dict) -> sponsors.SponsorIndex:
 def fetch_all(days: int, source_cfg: dict, status: dict, employers: list[dict] | None = None) -> list[Job]:
     jobs: list[Job] = []
     career_report: dict = {}
+    rss_report: dict = {}
     feeds = {
         **sources.SOURCES,
-        "rss": lambda d: sources.rss_feeds(d, source_cfg.get("rss", {}).get("feeds", [])),
+        "rss": lambda d: sources.rss_feeds(d, source_cfg.get("rss", {}).get("feeds", []), rss_report),
         "career_sites": lambda d: careers.career_sites(d, employers or [], career_report),
     }
     for name, fn in feeds.items():
@@ -56,12 +57,15 @@ def fetch_all(days: int, source_cfg: dict, status: dict, employers: list[dict] |
             for job in fn(days):
                 jobs.append(job)
             status[name] = {"status": "ok", "count": len(jobs) - before}
-            if name == "career_sites":
-                failed = career_report.get("failed", [])
-                status[name].update(employers_ok=career_report.get("ok", 0), employers_failed=failed)
+            report = {"career_sites": career_report, "rss": rss_report}.get(name)
+            if report is not None:
+                failed = report.get("failed", [])
+                status[name].update(ok=report.get("ok", 0), failed=failed)
                 if failed:
-                    status[name]["status"] = "partial" if career_report.get("ok") else "error"
-                    status[name]["error"] = f"{len(failed)} career site(s) failed: " + "; ".join(failed)[:600]
+                    status[name]["status"] = "partial" if report.get("ok") else "error"
+                    status[name]["error"] = f"{len(failed)} failed: " + "; ".join(failed)[:600]
+                if report.get("slow"):
+                    status[name]["slow"] = report["slow"]
         except sources.SkipSource as why:
             status[name] = {"status": "skipped", "reason": str(why)}
         except Exception as err:  # noqa: BLE001 - keep partial results from other sources

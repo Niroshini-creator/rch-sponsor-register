@@ -197,14 +197,22 @@ class SourceParserTests(unittest.TestCase):
         self.assertEqual(jobs[0].company, "Barts Health NHS Trust")
         self.assertEqual(jobs[0].location, "London")
 
+    def test_nhs_unexpected_response_is_reported(self):
+        html = b"<html><body><p>Search moved</p></body></html>"
+        with mock.patch.object(sources.http, "get", return_value=html):
+            with self.assertRaisesRegex(RuntimeError, "no <vacancy> elements.*root <html>"):
+                list(sources.nhs_jobs(7))
+
     def test_rss_failure_is_isolated(self):
         rss = f"""<rss><channel><item><title>Lecturer in Physics - University of Bath</title>
             <link>https://j/1</link><pubDate>{NOW.strftime('%a, %d %b %Y %H:%M:%S GMT')}</pubDate>
             <description>Visa sponsorship available</description></item></channel></rss>""".encode()
         feeds = [{"name": "broken", "url": "https://bad"}, {"name": "jobs.ac.uk", "url": "https://ok"}]
+        report = {}
         with mock.patch.object(sources.http, "get", side_effect=[OSError("down"), rss]):
-            jobs = list(sources.rss_feeds(7, feeds))
+            jobs = list(sources.rss_feeds(7, feeds, report))
         self.assertEqual((jobs[0].title, jobs[0].company), ("Lecturer in Physics", "University of Bath"))
+        self.assertEqual((report["ok"], report["failed"]), (1, ["broken: down"]))
 
     def test_keyed_sources_skip_without_keys(self):
         with mock.patch.dict("os.environ", {}, clear=True):

@@ -121,6 +121,11 @@ def nhs_jobs(days: int) -> Iterator[Job]:
                            params={"keyword": keyword, "page": page, "sort": "publicationDateDesc"})
             root = ET.fromstring(raw)
             vacancies = [el for el in root.iter() if _local(el.tag) == "vacancy"]
+            if page == 1 and not vacancies:
+                # Surface the real response shape on the board instead of a silent 0.
+                tags = sorted({_local(el.tag) for el in root.iter()})[:15]
+                raise RuntimeError(f"no <vacancy> elements for '{keyword}'; root <{_local(root.tag)}>, "
+                                   f"tags {tags}, starts {raw[:160]!r}")
             for v in vacancies:
                 f = {_local(c.tag): (c.text or "").strip() for c in v}
                 posted = parse_date(f.get("postDate") or f.get("postdate"))
@@ -200,7 +205,7 @@ def arbeitnow(days: int) -> Iterator[Job]:
 
 
 # --------------------------------------------------------------------------- Generic RSS
-def rss_feeds(days: int, feeds: list[dict]) -> Iterator[Job]:
+def rss_feeds(days: int, feeds: list[dict], report: dict | None = None) -> Iterator[Job]:
     """Any RSS/Atom feed listed in config/sources.json (e.g. jobs.ac.uk, council job boards)."""
     if not feeds:
         raise SkipSource("no RSS feeds configured")
@@ -210,7 +215,11 @@ def rss_feeds(days: int, feeds: list[dict]) -> Iterator[Job]:
             root = ET.fromstring(http.get(feed["url"]))
         except Exception as err:  # noqa: BLE001 - one broken feed must not hide the others
             log.warning("RSS feed %s failed: %s", feed.get("name", feed["url"]), err)
+            if report is not None:
+                report.setdefault("failed", []).append(f"{feed.get('name', feed['url'])}: {str(err)[:120]}")
             continue
+        if report is not None:
+            report["ok"] = report.get("ok", 0) + 1
         for item in (el for el in root.iter() if _local(el.tag) in ("item", "entry")):
             f = {}
             for c in item:
