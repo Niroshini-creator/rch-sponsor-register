@@ -1,0 +1,42 @@
+{
+  "_comment": "Employer tiering. Names are matched after normalisation (case, punctuation and suffixes like Ltd/PLC/GmbH ignored). Exact names win over patterns; the first matching pattern wins. Size bands follow the UK Companies Act: small < 50 staff, medium 50-249, large 250+. Anything unmatched is Tier 3 with size inferred from the advert text, else 'unknown'. Extend freely.",
+
+  "tier_definitions": {
+    "1": "Market leaders and major institutions: FTSE 100 / Fortune Global 500, big tech, Big 4 and Magic Circle firms, global banks, NHS trusts and health boards, Russell Group and top European universities, central government and EU institutions.",
+    "2": "Established mid-to-large organisations: FTSE 250 and well-known scale-ups, other universities and research institutes, local councils, police and fire services, large housing associations and charities, multi-academy trusts.",
+    "3": "SMEs, start-ups, independent schools and academies, small charities, GP practices, care providers and all other licensed sponsors."
+  },
+
+  "default_size": { "tier1": "large", "tier2": "large", "tier3": "unknown" },
+
+  "patterns": [
+    { "regex": "\\bnhs\\b.*\\b(trust|board)\\b|foundation trust|\\bhealth board\\b|\\bnhs (england|scotland|wales|blood|professionals|business services)", "tier": 1, "size": "large" },
+    { "regex": "university of (oxford|cambridge|edinburgh|glasgow|manchester|bristol|birmingham|leeds|liverpool|sheffield|nottingham|southampton|warwick|york|exeter)|imperial college|university college london|\\bucl\\b|king's college london|london school of economics|queen mary university|durham university|newcastle university|cardiff university|queen's university belfast", "tier": 1, "size": "large" },
+    { "regex": "\\b(tu|lmu|eth|epfl|ku) (delft|münchen|munich|zürich|zurich|leuven)\\b|sorbonne|karolinska|max planck|fraunhofer|\\bcern\\b|\\bembl\\b", "tier": 1, "size": "large" },
+    { "regex": "\\b(hm revenue|hm treasury|home office|ministry of|department for|cabinet office|foreign, commonwealth|civil service|met office|ukhsa|european (commission|parliament|central bank|investment bank|medicines agency))", "tier": 1, "size": "large" },
+    { "regex": "\\buniversit|\\binstitute\\b|research (council|centre|institute)|\\bhochschule\\b", "tier": 2, "size": "large" },
+    { "regex": "\\b(city|county|borough|district|metropolitan|district) council\\b|\\bcouncil\\b|\\bpolice\\b|fire (and|&) rescue|combined authority|\\bgemeente\\b", "tier": 2, "size": "large" },
+    { "regex": "multi.academy trust|academies trust|education trust|learning trust", "tier": 2, "size": "large" },
+    { "regex": "housing (association|group)|\\bnational trust\\b|cancer research uk|british heart foundation|\\boxfam\\b|save the children|british red cross", "tier": 2, "size": "large" },
+    { "regex": "\\bschool\\b|\\bacademy\\b|\\bcollege\\b|\\bnursery\\b", "tier": 3, "size": "medium" },
+    { "regex": "\\b(gp|medical) (surgery|practice|centre)\\b|\\bcare (home|services|ltd)\\b|\\bhomecare\\b|\\bdomiciliary\\b", "tier": 3, "size": "small" }
+  ],
+
+  "tier1": [
+    "Google", "Alphabet", "Microsoft", "Amazon", "Amazon Web Services", "Apple", "Meta", "Netflix", "Nvidia", "IBM", "Oracle", "Salesforce", "SAP", "Siemens", "ASML", "Philips", "Spotify", "Booking.com", "Adyen",
+    "Deloitte", "PwC", "PricewaterhouseCoopers", "EY", "Ernst & Young", "KPMG", "Accenture", "McKinsey & Company", "Boston Consulting Group", "Bain & Company", "Capgemini",
+    "HSBC", "Barclays", "Lloyds Banking Group", "NatWest Group", "Standard Chartered", "JPMorgan Chase", "J.P. Morgan", "Goldman Sachs", "Morgan Stanley", "Citi", "Citigroup", "Deutsche Bank", "BNP Paribas", "ING", "UBS", "Santander", "Bank of England", "London Stock Exchange Group",
+    "AstraZeneca", "GSK", "GlaxoSmithKline", "Pfizer", "Novartis", "Roche", "Novo Nordisk", "Sanofi", "Bayer", "Merck",
+    "Shell", "BP", "Unilever", "Rolls-Royce", "BAE Systems", "Airbus", "Arm", "Vodafone", "BT", "BT Group", "Tesco", "Sainsbury's", "Diageo", "Rio Tinto", "Reckitt", "Nestle", "Nestlé", "Volkswagen", "BMW", "Mercedes-Benz", "Bosch",
+    "Allen & Overy", "A&O Shearman", "Clifford Chance", "Freshfields Bruckhaus Deringer", "Linklaters", "Slaughter and May",
+    "BBC", "Network Rail", "Transport for London", "UK Research and Innovation", "UKRI", "Francis Crick Institute", "Wellcome Sanger Institute", "Alan Turing Institute"
+  ],
+
+  "tier2": [
+    "Revolut", "Monzo", "Starling Bank", "Wise", "Deliveroo", "Ocado", "Darktrace", "Sage", "Rightmove", "Auto Trader", "Farfetch", "Checkout.com", "GoCardless", "Skyscanner", "Zalando", "Delivery Hero", "N26", "Bolt", "Klarna", "Mollie", "Picnic", "Celonis", "Personio", "Trade Republic",
+    "Thoughtworks", "Kainos", "Softcat", "Computacenter", "Atkins", "AtkinsRealis", "Arup", "Jacobs", "WSP", "Mott MacDonald", "Balfour Beatty", "Laing O'Rourke", "Babcock", "Leonardo", "Thales", "QinetiQ", "Serco", "Capita",
+    "Grant Thornton", "BDO", "RSM", "Mazars", "Forvis Mazars"
+  ],
+
+  "tier3": []
+}

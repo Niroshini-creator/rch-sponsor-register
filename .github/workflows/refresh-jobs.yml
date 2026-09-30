@@ -1,0 +1,57 @@
+name: Refresh sponsored jobs
+
+on:
+  schedule:
+    - cron: "17 5 * * *"   # daily, 05:17 UTC
+    - cron: "17 13 * * *"  # and 13:17 UTC so the feed stays fresh through the day
+  workflow_dispatch:
+    inputs:
+      days:
+        description: "Maximum job age in days"
+        default: "7"
+  push:
+    branches: [main]
+    paths: ["jobfeed/**", "config/**", ".github/workflows/refresh-jobs.yml"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-jobs
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m unittest discover -s tests -v
+
+  refresh:
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build feed
+        env:
+          ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
+          ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
+          REED_API_KEY: ${{ secrets.REED_API_KEY }}
+        run: python -m jobfeed --days "${{ github.event.inputs.days || '7' }}"
+      - name: Commit updated feed
+        run: |
+          if git diff --quiet -- data/jobs.json; then
+            echo "No changes"; exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/jobs.json
+          git commit -m "Refresh sponsored jobs feed"
+          git push

@@ -1,0 +1,283 @@
+"""Job source connectors.
+
+Each connector yields `Job` objects posted within the requested window. Connectors
+that need API keys are skipped (not failed) when the key is missing, so the
+pipeline always produces output from whatever sources are available.
+"""
+
+from __future__ import annotations
+
+import logging
+import os
+import re
+import xml.etree.ElementTree as ET
+from datetime import datetime, timedelta, timezone
+from typing import Callable, Iterator
+
+from . import http
+from .models import Job
+from .text import parse_date, strip_html
+
+log = logging.getLogger("jobfeed")
+
+# Adzuna country codes covered, mapped to ISO 3166 codes.
+ADZUNA_COUNTRIES = {
+    "gb": "GB", "ie": "IE", "de": "DE", "nl": "NL", "fr": "FR", "be": "BE",
+    "at": "AT", "ch": "CH", "es": "ES", "it": "IT", "pl": "PL",
+}
+
+# Extra keyword searches so the feed covers every domain, not only tech.
+DOMAIN_QUERIES = [
+    "visa sponsorship",
+    "skilled worker visa",
+    "sponsorship available engineer",
+    "sponsorship available manager",
+    "sponsorship available scientist",
+    "sponsorship available nurse",
+    "sponsorship available teacher",
+    "sponsorship available lecturer",
+    "sponsorship available analyst",
+]
+
+
+class SkipSource(Exception):
+    """Raised when a source is not configured (e.g. missing API key)."""
+
+
+def _cutoff(days: int) -> datetime:
+    return datetime.now(timezone.utc) - timedelta(days=days)
+
+
+# --------------------------------------------------------------------------- Adzuna
+def adzuna(days: int) -> Iterator[Job]:
+    app_id, app_key = os.environ.get("ADZUNA_APP_ID"), os.environ.get("ADZUNA_APP_KEY")
+    if not (app_id and app_key):
+        raise SkipSource("ADZUNA_APP_ID / ADZUNA_APP_KEY not set")
+    cutoff = _cutoff(days)
+    for code, iso in ADZUNA_COUNTRIES.items():
+        queries = DOMAIN_QUERIES if code == "gb" else DOMAIN_QUERIES[:1]
+        for query in queries:
+            for page in range(1, 6):
+                data = http.get_json(
+                    f"https://api.adzuna.com/v1/api/jobs/{code}/search/{page}",
+                    params={"app_id": app_id, "app_key": app_key, "results_per_page": 50,
+                            "what_phrase": query, "max_days_old": days, "sort_by": "date"},
+                )
+                results = data.get("results", [])
+                for r in results:
+                    posted = parse_date(r.get("created"))
+                    if not posted or posted < cutoff:
+                        continue
+                    lo, hi = r.get("salary_min"), r.get("salary_max")
+                    yield Job(
+                        source="Adzuna", source_id=str(r.get("id")),
+                        title=strip_html(r.get("title")),
+                        company=(r.get("company") or {}).get("display_name", ""),
+                        location=(r.get("location") or {}).get("display_name", ""),
+                        country=iso, url=r.get("redirect_url", ""), posted_at=posted,
+                        description=strip_html(r.get("description")),
+                        salary=_salary(lo, hi), contract=r.get("contract_time") or "",
+                    )
+                if len(results) < 50:
+                    break
+
+
+# --------------------------------------------------------------------------- Reed (UK)
+def reed(days: int) -> Iterator[Job]:
+    key = os.environ.get("REED_API_KEY")
+    if not key:
+        raise SkipSource("REED_API_KEY not set")
+    cutoff = _cutoff(days)
+    for query in DOMAIN_QUERIES:
+        for skip in range(0, 500, 100):
+            data = http.get_json("https://www.reed.co.uk/api/1.0/search",
+                                 params={"keywords": query, "resultsToTake": 100, "resultsToSkip": skip},
+                                 basic_auth=(key, ""))
+            results = data.get("results", [])
+            for r in results:
+                posted = parse_date(r.get("date"))
+                if not posted or posted < cutoff:
+                    continue
+                yield Job(
+                    source="Reed", source_id=str(r.get("jobId")),
+                    title=r.get("jobTitle", ""), company=r.get("employerName", ""),
+                    location=r.get("locationName", ""), country="GB",
+                    url=r.get("jobUrl", ""), posted_at=posted,
+                    description=strip_html(r.get("jobDescription")),
+                    salary=_salary(r.get("minimumSalary"), r.get("maximumSalary")),
+                )
+            if len(results) < 100:
+                break
+
+
+# --------------------------------------------------------------------------- NHS Jobs
+def nhs_jobs(days: int) -> Iterator[Job]:
+    """NHS Jobs public XML search (England & Wales NHS employers)."""
+    cutoff = _cutoff(days)
+    for keyword in ("sponsorship", "skilled worker", "visa"):
+        for page in range(1, 11):
+            raw = http.get("https://www.jobs.nhs.uk/api/v1/search_xml",
+                           params={"keyword": keyword, "page": page, "sort": "publicationDateDesc"})
+            root = ET.fromstring(raw)
+            vacancies = [el for el in root.iter() if _local(el.tag) == "vacancy"]
+            for v in vacancies:
+                f = {_local(c.tag): (c.text or "").strip() for c in v}
+                posted = parse_date(f.get("postDate") or f.get("postdate"))
+                if not posted or posted < cutoff:
+                    continue
+                locations = [(el.text or "").strip() for el in v.iter() if _local(el.tag) == "location"]
+                yield Job(
+                    source="NHS Jobs", source_id=f.get("id") or f.get("reference", ""),
+                    title=f.get("title", ""), company=f.get("employer", ""),
+                    location=", ".join(filter(None, locations)) or f.get("location", ""),
+                    country="GB", url=f.get("url", ""), posted_at=posted,
+                    description=strip_html(f.get("description")), salary=f.get("salary", ""),
+                    contract=f.get("type", ""),
+                )
+            if not vacancies:
+                break
+
+
+# --------------------------------------------------------------------------- Teaching Vacancies (DfE)
+def teaching_vacancies(days: int) -> Iterator[Job]:
+    """DfE Teaching Vacancies open API (schools in England). Returns schema.org JobPostings."""
+    cutoff = _cutoff(days)
+    url = "https://teaching-vacancies.service.gov.uk/api/v1/jobs.json"
+    for _ in range(50):
+        data = http.get_json(url)
+        postings = data.get("data", data if isinstance(data, list) else [])
+        for p in postings:
+            posted = parse_date(p.get("datePosted"))
+            if not posted or posted < cutoff:
+                continue
+            org = p.get("hiringOrganization") or {}
+            loc = p.get("jobLocation") or {}
+            if isinstance(loc, list):
+                loc = loc[0] if loc else {}
+            addr = (loc.get("address") or {}) if isinstance(loc, dict) else {}
+            flagged = any("visa" in k.lower() and v is True for k, v in p.items())
+            yield Job(
+                source="Teaching Vacancies", source_id=str(p.get("identifier") or p.get("url")),
+                title=p.get("title", ""), company=org.get("name", ""),
+                location=", ".join(filter(None, [addr.get("addressLocality"), addr.get("addressRegion")])),
+                country="GB", url=p.get("url", ""), posted_at=posted,
+                description=strip_html(p.get("description")),
+                salary=str(p.get("baseSalary", {}).get("value", "")) if isinstance(p.get("baseSalary"), dict) else "",
+                contract=str(p.get("employmentType", "")),
+                source_says_sponsorship=flagged,
+            )
+        next_url = (data.get("links") or {}).get("next") if isinstance(data, dict) else None
+        if not next_url or not postings:
+            break
+        url = next_url
+
+
+# --------------------------------------------------------------------------- Arbeitnow (Europe)
+def arbeitnow(days: int) -> Iterator[Job]:
+    """Arbeitnow job board API (mostly Germany/EU); supports a visa sponsorship filter."""
+    cutoff = _cutoff(days)
+    for page in range(1, 11):
+        data = http.get_json("https://www.arbeitnow.com/api/job-board-api",
+                             params={"page": page, "visa_sponsorship": "true"})
+        results = data.get("data", [])
+        for r in results:
+            posted = parse_date(r.get("created_at"))
+            if not posted or posted < cutoff:
+                continue
+            location = r.get("location", "")
+            yield Job(
+                source="Arbeitnow", source_id=r.get("slug", ""),
+                title=r.get("title", ""), company=r.get("company_name", ""),
+                location=location, country=_guess_country(location, default="DE"),
+                url=r.get("url", ""), posted_at=posted,
+                description=strip_html(r.get("description")),
+                contract=", ".join(r.get("job_types") or []),
+                source_says_sponsorship=bool(r.get("visa_sponsorship", True)),
+            )
+        if not results or not (data.get("links") or {}).get("next"):
+            break
+
+
+# --------------------------------------------------------------------------- Generic RSS
+def rss_feeds(days: int, feeds: list[dict]) -> Iterator[Job]:
+    """Any RSS/Atom feed listed in config/sources.json (e.g. jobs.ac.uk, council job boards)."""
+    if not feeds:
+        raise SkipSource("no RSS feeds configured")
+    cutoff = _cutoff(days)
+    for feed in feeds:
+        try:
+            root = ET.fromstring(http.get(feed["url"]))
+        except Exception as err:  # noqa: BLE001 - one broken feed must not hide the others
+            log.warning("RSS feed %s failed: %s", feed.get("name", feed["url"]), err)
+            continue
+        for item in (el for el in root.iter() if _local(el.tag) in ("item", "entry")):
+            f = {}
+            for c in item:
+                tag = _local(c.tag)
+                f.setdefault(tag, (c.text or "").strip() or c.attrib.get("href", ""))
+            posted = parse_date(f.get("pubDate") or f.get("published") or f.get("updated") or f.get("date"))
+            if not posted or posted < cutoff:
+                continue
+            title = f.get("title", "")
+            company = f.get("author") or f.get("creator") or feed.get("employer", "")
+            # jobs.ac.uk style titles: "Role - Employer"
+            if not company and " - " in title:
+                title, company = title.rsplit(" - ", 1)
+            description = strip_html(f.get("description") or f.get("summary") or f.get("content"))
+            yield Job(
+                source=feed.get("name", "RSS"), source_id=f.get("guid") or f.get("id") or f.get("link", ""),
+                title=title, company=company, location=feed.get("location", ""),
+                country=_guess_country(f"{title} {description[:300]}", default=feed.get("country", "GB")),
+                url=f.get("link", ""), posted_at=posted, description=description,
+            )
+
+
+# --------------------------------------------------------------------------- helpers
+def _local(tag: str) -> str:
+    return tag.rsplit("}", 1)[-1]
+
+
+def _salary(lo, hi) -> str:
+    def fmt(v):
+        return f"{int(float(v)):,}"
+    try:
+        if lo and hi and float(lo) != float(hi):
+            return f"{fmt(lo)} – {fmt(hi)}"
+        if lo or hi:
+            return fmt(lo or hi)
+    except (TypeError, ValueError):
+        pass
+    return ""
+
+
+_COUNTRY_WORDS = {
+    "germany": "DE", "deutschland": "DE", "berlin": "DE", "munich": "DE", "münchen": "DE",
+    "hamburg": "DE", "frankfurt": "DE", "cologne": "DE", "köln": "DE", "stuttgart": "DE",
+    "netherlands": "NL", "amsterdam": "NL", "rotterdam": "NL", "utrecht": "NL", "eindhoven": "NL",
+    "france": "FR", "paris": "FR", "lyon": "FR", "spain": "ES", "madrid": "ES", "barcelona": "ES",
+    "ireland": "IE", "dublin": "IE", "austria": "AT", "vienna": "AT", "wien": "AT",
+    "switzerland": "CH", "zurich": "CH", "zürich": "CH", "geneva": "CH", "belgium": "BE",
+    "brussels": "BE", "italy": "IT", "milan": "IT", "rome": "IT", "poland": "PL", "warsaw": "PL",
+    "sweden": "SE", "stockholm": "SE", "denmark": "DK", "copenhagen": "DK", "portugal": "PT",
+    "lisbon": "PT", "finland": "FI", "helsinki": "FI", "norway": "NO", "oslo": "NO",
+    "luxembourg": "LU", "czech": "CZ", "prague": "CZ", "estonia": "EE", "tallinn": "EE",
+    "united kingdom": "GB", "london": "GB", "uk": "GB",
+}
+
+
+_COUNTRY_RE = re.compile(r"\b(" + "|".join(map(re.escape, _COUNTRY_WORDS)) + r")\b", re.I)
+
+
+def _guess_country(text: str, default: str) -> str:
+    match = _COUNTRY_RE.search(text)
+    return _COUNTRY_WORDS[match.group(1).lower()] if match else default
+
+
+SOURCES: dict[str, Callable[..., Iterator[Job]]] = {
+    "adzuna": adzuna,
+    "reed": reed,
+    "nhs_jobs": nhs_jobs,
+    "teaching_vacancies": teaching_vacancies,
+    "arbeitnow": arbeitnow,
+    "rss": rss_feeds,
+}
