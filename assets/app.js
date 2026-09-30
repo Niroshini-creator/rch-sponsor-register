@@ -264,6 +264,13 @@ function restoreUrl() {
   }
 }
 
+// Feeds written before jobs carried a channel: infer it from the source name.
+const OFFICIAL_SOURCES = new Set(["NHS Jobs", "Teaching Vacancies", "jobs.ac.uk", "EURAXESS"]);
+function legacyChannel(source = "") {
+  if (source.endsWith(" careers")) return "career_site";
+  return OFFICIAL_SOURCES.has(source) ? "official" : "aggregator";
+}
+
 // ------------------------------------------------------------------ boot
 async function main() {
   let data;
@@ -279,6 +286,9 @@ async function main() {
   state.data = data;
   state.jobs = data.jobs.map((j) => ({
     ...j,
+    channel: j.channel || legacyChannel(j.source),
+    contacts: j.contacts || [],
+    sponsor_routes: j.sponsor_routes || [],
     _posted: new Date(j.posted_at),
     _haystack: [j.title, j.company, j.location, j.sector, j.domain, countryName(j.country), j.description]
       .join(" ").toLowerCase(),
