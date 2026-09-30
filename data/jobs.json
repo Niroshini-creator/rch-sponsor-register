@@ -1,0 +1,27 @@
+{
+ "generated_at": "2026-09-30T00:00:00+00:00",
+ "window_days": 7,
+ "sectors": [
+  "NHS & Healthcare",
+  "University & Research Institute",
+  "School & College",
+  "Public Sector & Government",
+  "Private Sector",
+  "Charity & Non-profit"
+ ],
+ "domains": [
+  "Technical & Engineering",
+  "Management & Business",
+  "Science & Research",
+  "Healthcare & Clinical",
+  "Teaching & Academic",
+  "Finance & Legal",
+  "Other"
+ ],
+ "sources": {},
+ "counts": {
+  "fetched": 0,
+  "published": 0
+ },
+ "jobs": []
+}

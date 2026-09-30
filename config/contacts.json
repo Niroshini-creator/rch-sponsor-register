@@ -1,0 +1,12 @@
+{
+  "_comment": "Manually verified hiring contacts, shown on every job from that employer with a 'verified' badge. Only add addresses the employer has published for recruitment enquiries (careers page, job advert, official LinkedIn post) and record where you saw it. Do not add guessed or scraped personal addresses.",
+  "_example": {
+    "company": "Example Hospital NHS Foundation Trust",
+    "email": "recruitment@example-trust.nhs.uk",
+    "name": "",
+    "role": "Medical Staffing Team",
+    "source_url": "https://www.example-trust.nhs.uk/careers",
+    "verified_on": "2026-09-30"
+  },
+  "contacts": []
+}

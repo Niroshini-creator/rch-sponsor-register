@@ -1,1 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sponsored Jobs Board</title>
+  <meta name="description" content="Actively hiring visa-sponsoring employers and vacancies across the UK and Europe, posted in the last 7 days.">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <div>
+        <h1>Sponsored Jobs Board</h1>
+        <p class="tagline">Visa-sponsoring employers actively hiring in the UK &amp; Europe — tech, management, science, NHS, universities, schools and the public sector.</p>
+      </div>
+      <p class="updated" id="updated">Loading…</p>
+    </div>
+  </header>
 
+  <main class="wrap layout">
+    <aside class="filters" aria-label="Filters">
+      <details id="filter-panel" open>
+      <summary class="btn ghost">Filters</summary>
+      <form id="filters">
+        <label class="field">
+          <span>Search</span>
+          <input type="search" name="q" placeholder="Role, employer, city…" autocomplete="off">
+        </label>
+
+        <label class="field">
+          <span>Region / country</span>
+          <select name="country">
+            <option value="">UK &amp; Europe</option>
+            <option value="GB">United Kingdom</option>
+            <option value="EU">Europe (excl. UK)</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Posted within</span>
+          <select name="days">
+            <option value="7">7 days</option>
+            <option value="3">3 days</option>
+            <option value="1">24 hours</option>
+          </select>
+        </label>
+
+        <fieldset>
+          <legend>Sponsorship evidence</legend>
+          <label><input type="checkbox" name="sponsorship" value="confirmed" checked> Advert offers sponsorship</label>
+          <label><input type="checkbox" name="sponsorship" value="licensed_sponsor" checked> Licensed sponsor (advert silent)</label>
+        </fieldset>
+
+        <fieldset>
+          <legend>Hiring contact</legend>
+          <label><input type="checkbox" name="hasContact" value="1"> Only jobs with a contact email</label>
+        </fieldset>
+
+        <fieldset id="f-tier">
+          <legend>Employer tier <button type="button" class="info" data-dialog="tier-help" aria-label="What do tiers mean?">?</button></legend>
+        </fieldset>
+        <fieldset id="f-size"><legend>Employer size</legend></fieldset>
+        <fieldset id="f-sector"><legend>Sector</legend></fieldset>
+        <fieldset id="f-domain"><legend>Role domain</legend></fieldset>
+
+        <div class="actions">
+          <button type="reset" class="btn ghost">Reset</button>
+          <button type="button" class="btn" id="export">Export CSV</button>
+        </div>
+      </form>
+      </details>
+    </aside>
+
+    <section class="results" aria-live="polite">
+      <div class="stats" id="stats"></div>
+      <div class="toolbar">
+        <p id="summary"></p>
+        <label>Sort
+          <select id="sort">
+            <option value="newest">Newest first</option>
+            <option value="tier">Tier, then newest</option>
+            <option value="contact">With contacts first</option>
+          </select>
+        </label>
+      </div>
+      <div id="notice" class="notice" hidden></div>
+      <ol id="jobs" class="jobs"></ol>
+      <button id="more" class="btn ghost more" hidden>Show more</button>
+
+      <details class="sources">
+        <summary>Data sources &amp; last run status</summary>
+        <table id="sources"></table>
+        <p class="fineprint">Contact emails are only shown when the employer published them in the advert, or when they were added by hand to <code>config/contacts.json</code> with a source link. Addresses are never guessed. Always verify sponsorship with the employer before applying.</p>
+      </details>
+    </section>
+  </main>
+
+  <dialog id="tier-help">
+    <h2>Employer tiers</h2>
+    <dl id="tier-defs"></dl>
+    <p class="fineprint">Size bands (UK Companies Act): small &lt; 50 staff, medium 50–249, large 250+.</p>
+    <form method="dialog"><button class="btn">Close</button></form>
+  </dialog>
+
+  <script src="assets/app.js" type="module"></script>
+</body>
+</html>
