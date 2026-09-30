@@ -244,7 +244,9 @@ function syncUrl() {
     }
   }
   if ($("#sort").value !== "newest") params.set("sort", $("#sort").value);
-  history.replaceState(null, "", params.toString() ? `?${params}` : location.pathname);
+  try {
+    history.replaceState(null, "", params.toString() ? `?${params}` : location.pathname);
+  } catch { /* embedded or sandboxed viewers may block URL updates; filters still work */ }
 }
 
 function restoreUrl() {

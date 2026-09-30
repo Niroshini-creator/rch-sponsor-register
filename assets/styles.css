@@ -14,14 +14,22 @@
   --radius: 10px;
   color-scheme: light;
 }
+/* Dark palette: follows the OS unless a page explicitly sets data-theme. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --bg: #111418; --surface: #1a1e24; --text: #e7eaee; --muted: #9aa4b1; --border: #2d333b;
     --accent: #6ea3f5; --accent-text: #0c1320;
     --ok-bg: #173522; --ok-text: #8fdca6; --warn-bg: #3a2a0f; --warn-text: #f3c77a;
     --tag-bg: #252b33; --direct-bg: #1b2a44; --direct-text: #9cc0ff; --t1: #b69cff; --t2: #6fcadb; --t3: #a3abb6;
     color-scheme: dark;
   }
+}
+:root[data-theme="dark"] {
+    --bg: #111418; --surface: #1a1e24; --text: #e7eaee; --muted: #9aa4b1; --border: #2d333b;
+    --accent: #6ea3f5; --accent-text: #0c1320;
+    --ok-bg: #173522; --ok-text: #8fdca6; --warn-bg: #3a2a0f; --warn-text: #f3c77a;
+    --tag-bg: #252b33; --direct-bg: #1b2a44; --direct-text: #9cc0ff; --t1: #b69cff; --t2: #6fcadb; --t3: #a3abb6;
+    color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
