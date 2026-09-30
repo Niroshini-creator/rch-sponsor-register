@@ -23,7 +23,8 @@ def main(argv: list[str] | None = None) -> int:
     for name, st in payload["sources"].items():
         detail = st.get("count", st.get("reason") or st.get("error") or "")
         print(f"  {name:<24} {st['status']:<9} {detail}")
-    print(f"fetched {payload['counts']['fetched']} → published {payload['counts']['published']} jobs → {args.out}")
+    c = payload["counts"]
+    print(f"fetched {c['fetched']} → removed {c['agency_removed']} agency adverts → published {c['published']} jobs → {args.out}")
     return 0
 
 

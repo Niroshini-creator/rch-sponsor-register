@@ -13,7 +13,7 @@
     <div class="wrap">
       <div>
         <h1>Sponsored Jobs Board</h1>
-        <p class="tagline">Visa-sponsoring employers actively hiring in the UK &amp; Europe — tech, management, science, NHS, universities, schools and the public sector.</p>
+        <p class="tagline">Apply direct to visa-sponsoring employers in the UK &amp; Europe: employer careers sites, NHS, universities, schools and the public sector. No agencies.</p>
       </div>
       <p class="updated" id="updated">Loading…</p>
     </div>
@@ -46,6 +46,10 @@
             <option value="1">24 hours</option>
           </select>
         </label>
+
+        <fieldset id="f-channel">
+          <legend>Apply via</legend>
+        </fieldset>
 
         <fieldset>
           <legend>Sponsorship evidence</legend>
@@ -92,7 +96,7 @@
       <details class="sources">
         <summary>Data sources &amp; last run status</summary>
         <table id="sources"></table>
-        <p class="fineprint">Contact emails are only shown when the employer published them in the advert, or when they were added by hand to <code>config/contacts.json</code> with a source link. Addresses are never guessed. Always verify sponsorship with the employer before applying.</p>
+        <p class="fineprint">Adverts from recruitment agencies and consultancies are removed. Jobs come from employers' own careers sites, official boards (NHS Jobs, Teaching Vacancies, jobs.ac.uk, EURAXESS) and, when switched on under Apply via, general job boards. Contact emails are only shown when the employer published them in the advert, or when they were added by hand to <code>config/contacts.json</code> with a source link. Addresses are never guessed. Always verify sponsorship with the employer before applying.</p>
       </details>
     </section>
   </main>

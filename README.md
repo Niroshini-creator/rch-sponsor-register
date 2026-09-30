@@ -4,6 +4,10 @@ A self-updating board of employers that **actively hire with visa sponsorship** 
 It shows only vacancies posted in the **last 7 days** and covers every domain: technical, management,
 science and research, NHS and healthcare, universities, schools and the public sector.
 
+Every job links to the **employer's own application**: its careers site, or the official public-sector
+board it recruits through (NHS Jobs, Teaching Vacancies, jobs.ac.uk, EURAXESS). **Recruitment agencies and
+consultancies are removed.**
+
 * **Static site** (`index.html`): works on GitHub Pages with no server. Filter by country, age, sponsorship
   evidence, employer tier (1/2/3), employer size (large/medium/small), sector and role domain. Export to CSV.
 * **Data pipeline** (`jobfeed/`): Python 3.10+, standard library only. It fetches vacancies,
@@ -14,7 +18,12 @@ science and research, NHS and healthcare, universities, schools and the public s
 
 1. **Collected** from the sources below, keeping only jobs posted within `--days` (default 7). The browser
    applies the same limit again, so a stale feed never shows old jobs.
-2. **Sponsorship check.** A job is kept only if one of these is true:
+2. **Agencies removed.** Adverts from recruitment agencies and consultancies are dropped. They are recognised by
+   name (list in [`config/agencies.json`](config/agencies.json), plus words like "Recruitment", "Staffing",
+   "Resourcing") or by standard agency wording in the advert ("our client is…", "acting as an employment
+   agency"). Reed is queried for direct-employer adverts only. If a real employer is caught by mistake, add it
+   to `never_agency`.
+3. **Sponsorship check.** A job is kept only if one of these is true:
    * **Sponsorship offered**: the advert says so ("visa sponsorship available", "Skilled Worker
      sponsorship will be considered", "EU Blue Card", NHS Jobs' standard sponsorship wording), or the source
      flags it.
@@ -23,13 +32,22 @@ science and research, NHS and healthcare, universities, schools and the public s
      or the [Dutch IND register of recognised sponsors](https://ind.nl/en/public-register-recognised-sponsors/public-register-regular-labour-and-highly-skilled-migrants).
 
    Any advert that rules sponsorship out ("unable to sponsor", "right to work without sponsorship") is dropped.
-3. **Classified**:
+4. **Classified**:
    * **Sector** (employer type): NHS & Healthcare, University & Research Institute, School & College,
      Public Sector & Government, Charity & Non-profit, Private Sector.
    * **Role domain**: Technical & Engineering, Management & Business, Science & Research,
      Healthcare & Clinical, Teaching & Academic, Finance & Legal.
    * **Tier and size**: see below.
-4. **Hiring contacts** attached (see below), duplicates across sources merged, and the result written to `data/jobs.json`.
+5. **Hiring contacts** attached (see below), and duplicates merged. When the same job appears on the employer's
+   careers site and on a job board, the careers-site copy is kept. The result is written to `data/jobs.json`.
+
+Each job is labelled with how you apply:
+
+| Apply via | Meaning | Shown by default |
+|---|---|---|
+| **Employer careers site** | Read straight from the employer's own careers portal | yes |
+| **Official board** | NHS Jobs, Teaching Vacancies (DfE), jobs.ac.uk, EURAXESS: where NHS trusts, schools, universities and research bodies post their own vacancies | yes |
+| **Job board** | Adzuna, Reed, Arbeitnow reposts (agency adverts already removed) | no, tick it under *Apply via* |
 
 ## Employer tiers and size
 
@@ -60,18 +78,54 @@ address is published, the card links to the advert and to a LinkedIn people sear
 
 ## Data sources
 
+### Employer career sites (`config/employers.json`)
+
+Most employers run their careers page on an applicant tracking system that publishes a public job feed.
+The board reads that feed directly, so the job and its Apply button are the employer's own. Supported:
+**Greenhouse, Lever, Ashby, SmartRecruiters, Workable, Recruitee, Personio, Workday**.
+
+To add an employer, open its careers page, look at the address of a job link, and add one line:
+
+```json
+{ "name": "Monzo", "ats": "greenhouse", "id": "monzo", "country": "GB", "register_name": "Monzo Bank Limited" }
+{ "name": "GSK", "ats": "workday", "host": "gsk.wd5.myworkdayjobs.com", "site": "GSKCareers", "country": "GB" }
+```
+
+| Careers page address looks like | ats | id |
+|---|---|---|
+| `boards.greenhouse.io/monzo` | greenhouse | monzo |
+| `jobs.lever.co/spotify` (`jobs.eu.lever.co` → add `"region": "eu"`) | lever | spotify |
+| `jobs.ashbyhq.com/synthesia` | ashby | synthesia |
+| `jobs.smartrecruiters.com/BoschGroup` | smartrecruiters | BoschGroup |
+| `apply.workable.com/acme` | workable | acme |
+| `acme.recruitee.com` | recruitee | acme |
+| `acme.jobs.personio.de` | personio | acme |
+| `gsk.wd5.myworkdayjobs.com/GSKCareers` | workday | `host` + `site` |
+
+* `register_name` is the employer's legal name on the UK sponsor register, when it differs from the brand
+  name. It lets the licence check match.
+* `"local": true` marks an employer whose jobs are all in its home country (e.g. an NHS trust or a university
+  on Workday). Otherwise, jobs in unrecognised locations are left out rather than assumed to be in the UK.
+* The starter list is ~30 employers. Their board ids were entered from knowledge, not tested from here, so
+  check the **Data sources** table on the board after the first run: failing employers are named there.
+
+### Public-sector, NHS and university boards, and job boards
+
 | Source | Coverage | Key needed |
 |---|---|---|
-| [Adzuna API](https://developer.adzuna.com/) | UK, IE, DE, NL, FR, BE, AT, CH, ES, IT, PL; all sectors | `ADZUNA_APP_ID`, `ADZUNA_APP_KEY` (free) |
-| [Reed API](https://www.reed.co.uk/developers/jobseeker) | UK, all sectors | `REED_API_KEY` (free) |
-| NHS Jobs (public XML search) | NHS England & Wales | none |
-| [Teaching Vacancies API](https://teaching-vacancies.service.gov.uk/) (DfE) | Schools in England | none |
-| [Arbeitnow API](https://www.arbeitnow.com/api) | Germany / EU, visa-sponsorship filter | none |
-| RSS feeds in `config/sources.json` | e.g. jobs.ac.uk (universities), EURAXESS (EU research) | none |
+| NHS Jobs (public XML search) | NHS England & Wales trusts (official) | none |
+| [Teaching Vacancies API](https://teaching-vacancies.service.gov.uk/) (DfE) | State schools in England (official) | none |
+| RSS feeds in `config/sources.json` | jobs.ac.uk (UK universities), EURAXESS (EU research) (official) | none |
+| [Adzuna API](https://developer.adzuna.com/) | UK + 10 EU countries (job board) | `ADZUNA_APP_ID`, `ADZUNA_APP_KEY` (free) |
+| [Reed API](https://www.reed.co.uk/developers/jobseeker) | UK, direct employers only (job board) | `REED_API_KEY` (free) |
+| [Arbeitnow API](https://www.arbeitnow.com/api) | Germany / EU, visa-sponsorship filter (job board) | none |
 
 Sources without keys are skipped rather than failing. Each run's per-source status is shown under
 *Data sources & last run status* on the page. The RSS feed URLs are examples, so check them for your
-search and add any others you want (council job boards, Civil Service Jobs alerts, university career pages, etc.).
+search and add any others you want: council job boards, NHS Scotland / HSC NI boards, university vacancy
+feeds. Give each one `"channel": "official"`. Civil Service Jobs and most councils have no public feed; where
+a public body's careers site runs on one of the supported ATS platforms (often Workday), add it to
+`config/employers.json` instead.
 
 ## Setup
 
@@ -90,17 +144,20 @@ python -m http.server 8000            # open http://localhost:8000
 ```
 
 `UK_SPONSOR_REGISTER_CSV=/path/to/register.csv` uses a downloaded copy of the register instead of fetching it.
+`JOBFEED_RETRIES=1` stops retrying unreachable sites (useful when testing offline).
 
 ## Project layout
 
 ```
 index.html, assets/          static front end
-jobfeed/sources.py           one connector per job source
+jobfeed/careers.py           employer career sites (Greenhouse, Lever, Ashby, SmartRecruiters, Workable, Recruitee, Personio, Workday)
+jobfeed/agencies.py          recruitment agency / consultancy detection
+jobfeed/sources.py           NHS Jobs, Teaching Vacancies, RSS and job-board connectors
 jobfeed/sponsors.py          UK Home Office + NL IND sponsor registers
 jobfeed/classify.py          sponsorship wording, sector, domain, tier and size rules
 jobfeed/contacts.py          advert email extraction + verified contact book
 jobfeed/pipeline.py          fetch → verify → classify → dedupe → data/jobs.json
-config/                      sources, tiers, verified contacts
+config/                      sources, employer career sites, agencies, tiers, verified contacts
 tests/                       offline unit tests (no network needed)
 ```
 
