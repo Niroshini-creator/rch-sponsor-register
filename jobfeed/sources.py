@@ -91,7 +91,8 @@ def reed(days: int) -> Iterator[Job]:
     for query in DOMAIN_QUERIES:
         for skip in range(0, 500, 100):
             data = http.get_json("https://www.reed.co.uk/api/1.0/search",
-                                 params={"keywords": query, "resultsToTake": 100, "resultsToSkip": skip},
+                                 params={"keywords": query, "resultsToTake": 100, "resultsToSkip": skip,
+                                         "postedByDirectEmployer": "true"},
                                  basic_auth=(key, ""))
             results = data.get("results", [])
             for r in results:
@@ -127,7 +128,7 @@ def nhs_jobs(days: int) -> Iterator[Job]:
                     continue
                 locations = [(el.text or "").strip() for el in v.iter() if _local(el.tag) == "location"]
                 yield Job(
-                    source="NHS Jobs", source_id=f.get("id") or f.get("reference", ""),
+                    source="NHS Jobs", channel="official", source_id=f.get("id") or f.get("reference", ""),
                     title=f.get("title", ""), company=f.get("employer", ""),
                     location=", ".join(filter(None, locations)) or f.get("location", ""),
                     country="GB", url=f.get("url", ""), posted_at=posted,
@@ -157,7 +158,7 @@ def teaching_vacancies(days: int) -> Iterator[Job]:
             addr = (loc.get("address") or {}) if isinstance(loc, dict) else {}
             flagged = any("visa" in k.lower() and v is True for k, v in p.items())
             yield Job(
-                source="Teaching Vacancies", source_id=str(p.get("identifier") or p.get("url")),
+                source="Teaching Vacancies", channel="official", source_id=str(p.get("identifier") or p.get("url")),
                 title=p.get("title", ""), company=org.get("name", ""),
                 location=", ".join(filter(None, [addr.get("addressLocality"), addr.get("addressRegion")])),
                 country="GB", url=p.get("url", ""), posted_at=posted,
@@ -225,7 +226,7 @@ def rss_feeds(days: int, feeds: list[dict]) -> Iterator[Job]:
                 title, company = title.rsplit(" - ", 1)
             description = strip_html(f.get("description") or f.get("summary") or f.get("content"))
             yield Job(
-                source=feed.get("name", "RSS"), source_id=f.get("guid") or f.get("id") or f.get("link", ""),
+                source=feed.get("name", "RSS"), channel=feed.get("channel", "official"), source_id=f.get("guid") or f.get("id") or f.get("link", ""),
                 title=title, company=company, location=feed.get("location", ""),
                 country=_guess_country(f"{title} {description[:300]}", default=feed.get("country", "GB")),
                 url=f.get("link", ""), posted_at=posted, description=description,
@@ -261,11 +262,30 @@ _COUNTRY_WORDS = {
     "sweden": "SE", "stockholm": "SE", "denmark": "DK", "copenhagen": "DK", "portugal": "PT",
     "lisbon": "PT", "finland": "FI", "helsinki": "FI", "norway": "NO", "oslo": "NO",
     "luxembourg": "LU", "czech": "CZ", "prague": "CZ", "estonia": "EE", "tallinn": "EE",
-    "united kingdom": "GB", "london": "GB", "uk": "GB",
+    "united kingdom": "GB", "uk": "GB", "great britain": "GB", "england": "GB", "scotland": "GB",
+    "wales": "GB", "northern ireland": "GB", "london": "GB", "manchester": "GB", "birmingham": "GB",
+    "leeds": "GB", "glasgow": "GB", "edinburgh": "GB", "bristol": "GB", "cambridge": "GB", "oxford": "GB",
+    "liverpool": "GB", "sheffield": "GB", "newcastle": "GB", "nottingham": "GB", "cardiff": "GB",
+    "belfast": "GB", "leicester": "GB", "southampton": "GB", "reading": "GB", "brighton": "GB",
+    "york": "GB", "coventry": "GB", "milton keynes": "GB", "aberdeen": "GB", "dundee": "GB",
+    "exeter": "GB", "bath": "GB", "norwich": "GB", "plymouth": "GB", "swansea": "GB", "hull": "GB",
+    "düsseldorf": "DE", "dusseldorf": "DE", "leipzig": "DE", "dresden": "DE", "hannover": "DE",
+    "nuremberg": "DE", "nürnberg": "DE", "heidelberg": "DE", "karlsruhe": "DE", "bonn": "DE",
+    "the hague": "NL", "den haag": "NL", "delft": "NL", "leiden": "NL", "groningen": "NL",
+    "antwerp": "BE", "ghent": "BE", "leuven": "BE", "toulouse": "FR", "marseille": "FR", "grenoble": "FR",
+    "valencia": "ES", "seville": "ES", "malaga": "ES", "turin": "IT", "bologna": "IT", "florence": "IT",
+    "krakow": "PL", "kraków": "PL", "wroclaw": "PL", "wrocław": "PL", "gdansk": "PL", "porto": "PT",
+    "gothenburg": "SE", "malmö": "SE", "malmo": "SE", "aarhus": "DK", "bucharest": "RO", "budapest": "HU",
+    "athens": "GR", "vilnius": "LT", "riga": "LV", "cork": "IE", "galway": "IE", "limerick": "IE",
+    "basel": "CH", "lausanne": "CH", "bern": "CH", "graz": "AT", "salzburg": "AT",
+    # Same-named places outside Europe; longer names are tried first, so these win.
+    "new york": "US", "cambridge, ma": "US", "cambridge, massachusetts": "US", "birmingham, al": "US",
+    "london, on": "CA", "london, ontario": "CA", "new england": "US", "united states": "US", "usa": "US",
 }
 
 
-_COUNTRY_RE = re.compile(r"\b(" + "|".join(map(re.escape, _COUNTRY_WORDS)) + r")\b", re.I)
+_COUNTRY_RE = re.compile(
+    r"\b(" + "|".join(map(re.escape, sorted(_COUNTRY_WORDS, key=len, reverse=True))) + r")\b", re.I)
 
 
 def _guess_country(text: str, default: str) -> str:
@@ -279,5 +299,4 @@ SOURCES: dict[str, Callable[..., Iterator[Job]]] = {
     "nhs_jobs": nhs_jobs,
     "teaching_vacancies": teaching_vacancies,
     "arbeitnow": arbeitnow,
-    "rss": rss_feeds,
 }

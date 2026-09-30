@@ -1,0 +1,49 @@
+{
+  "_comment": "Employer career sites read directly (no agencies). Each entry: name (as it should appear), ats, id (board name from the careers URL), country (home country, ISO-2), optional register_name (legal name on the UK sponsor register if different, so the licence check matches). Workday also needs host + site from https://<host>/<site>. Set \"local\": true when every vacancy is in the home country (e.g. an NHS trust or university), \"enabled\": false to pause one. Board ids below are a starter set and should be checked after the first run: any that fail are listed on the board under Data sources. Find an employer's id by opening its careers page and looking at the job links.",
+  "_how_to_find": {
+    "greenhouse": "boards.greenhouse.io/<id> or job-boards.greenhouse.io/<id>",
+    "lever": "jobs.lever.co/<id>  (jobs.eu.lever.co/<id> -> add \"region\": \"eu\")",
+    "ashby": "jobs.ashbyhq.com/<id>",
+    "smartrecruiters": "jobs.smartrecruiters.com/<id>",
+    "workable": "apply.workable.com/<id>",
+    "recruitee": "<id>.recruitee.com",
+    "personio": "<id>.jobs.personio.de  (or .com -> add \"tld\": \"com\")",
+    "workday": "<host>/<site>, e.g. gsk.wd5.myworkdayjobs.com/GSKCareers -> host gsk.wd5.myworkdayjobs.com, site GSKCareers"
+  },
+  "employers": [
+    { "name": "Monzo", "ats": "greenhouse", "id": "monzo", "country": "GB", "register_name": "Monzo Bank Limited" },
+    { "name": "GoCardless", "ats": "greenhouse", "id": "gocardless", "country": "GB" },
+    { "name": "Google DeepMind", "ats": "greenhouse", "id": "deepmind", "country": "GB", "register_name": "DeepMind Technologies Limited" },
+    { "name": "Anthropic", "ats": "greenhouse", "id": "anthropic", "country": "GB" },
+    { "name": "Cloudflare", "ats": "greenhouse", "id": "cloudflare", "country": "GB" },
+    { "name": "Datadog", "ats": "greenhouse", "id": "datadog", "country": "GB" },
+    { "name": "Elastic", "ats": "greenhouse", "id": "elastic", "country": "NL" },
+    { "name": "MongoDB", "ats": "greenhouse", "id": "mongodb", "country": "IE" },
+    { "name": "GitLab", "ats": "greenhouse", "id": "gitlab", "country": "GB" },
+    { "name": "Stripe", "ats": "greenhouse", "id": "stripe", "country": "IE" },
+    { "name": "Databricks", "ats": "greenhouse", "id": "databricks", "country": "NL" },
+    { "name": "N26", "ats": "greenhouse", "id": "n26", "country": "DE" },
+    { "name": "GetYourGuide", "ats": "greenhouse", "id": "getyourguide", "country": "DE" },
+    { "name": "Contentful", "ats": "greenhouse", "id": "contentful", "country": "DE" },
+    { "name": "Thought Machine", "ats": "greenhouse", "id": "thoughtmachine", "country": "GB" },
+    { "name": "Isomorphic Labs", "ats": "greenhouse", "id": "isomorphiclabs", "country": "GB" },
+
+    { "name": "Palantir Technologies", "ats": "lever", "id": "palantir", "country": "GB" },
+    { "name": "Spotify", "ats": "lever", "id": "spotify", "country": "SE" },
+    { "name": "Mistral AI", "ats": "lever", "id": "mistral", "country": "FR" },
+
+    { "name": "OpenAI", "ats": "ashby", "id": "openai", "country": "GB" },
+    { "name": "Synthesia", "ats": "ashby", "id": "synthesia", "country": "GB" },
+    { "name": "ElevenLabs", "ats": "ashby", "id": "elevenlabs", "country": "GB" },
+
+    { "name": "Bosch", "ats": "smartrecruiters", "id": "BoschGroup", "country": "DE" },
+    { "name": "Visa", "ats": "smartrecruiters", "id": "Visa", "country": "GB" },
+
+    { "name": "AstraZeneca", "ats": "workday", "host": "astrazeneca.wd3.myworkdayjobs.com", "site": "Careers", "country": "GB" },
+    { "name": "GSK", "ats": "workday", "host": "gsk.wd5.myworkdayjobs.com", "site": "GSKCareers", "country": "GB" },
+    { "name": "Shell", "ats": "workday", "host": "shell.wd3.myworkdayjobs.com", "site": "ShellCareers", "country": "GB" },
+    { "name": "Philips", "ats": "workday", "host": "philips.wd3.myworkdayjobs.com", "site": "jobs-and-careers", "country": "NL" },
+    { "name": "Novartis", "ats": "workday", "host": "novartis.wd3.myworkdayjobs.com", "site": "Novartis_Careers", "country": "CH" },
+    { "name": "Deutsche Bank", "ats": "workday", "host": "db.wd3.myworkdayjobs.com", "site": "DBWebsite", "country": "DE" }
+  ]
+}

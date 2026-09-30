@@ -38,6 +38,7 @@ class SponsorEntry:
 class SponsorIndex:
     def __init__(self) -> None:
         self._by_name: dict[str, SponsorEntry] = {}
+        self._prefix_cache: dict[str, SponsorEntry | None] = {}
         self.counts: dict[str, int] = {}
 
     def add(self, entry: SponsorEntry) -> None:
@@ -55,6 +56,20 @@ class SponsorIndex:
 
     def lookup(self, company: str) -> SponsorEntry | None:
         return self._by_name.get(normalise_company(company))
+
+    def lookup_prefix(self, company: str) -> SponsorEntry | None:
+        """Match "Monzo" to "Monzo Bank Ltd": only when exactly one register name starts with it.
+
+        Used for employer career sites, where the company name comes from our own config
+        and is therefore reliable, but may be a shorter trading name.
+        """
+        key = normalise_company(company)
+        if not key:
+            return None
+        if key not in self._prefix_cache:
+            hits = {id(e): e for name, e in self._by_name.items() if name.startswith(key + " ")}
+            self._prefix_cache[key] = next(iter(hits.values())) if len(hits) == 1 else None
+        return self._prefix_cache[key]
 
     def __len__(self) -> int:
         return len(self._by_name)

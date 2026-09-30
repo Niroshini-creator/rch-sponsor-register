@@ -20,8 +20,14 @@ class Job:
     description: str = ""
     salary: str = ""
     contract: str = ""
+    # How the candidate applies: "career_site" (employer's own careers portal),
+    # "official" (NHS Jobs, Teaching Vacancies, jobs.ac.uk, government boards) or
+    # "aggregator" (job boards that repost adverts).
+    channel: str = "aggregator"
     # Set by the source when the feed itself flags sponsorship (e.g. a filter or field).
     source_says_sponsorship: bool = False
+    # Legal name on the sponsor register when it differs from the trading name (career sites).
+    register_name: str = ""
 
     # Filled in by the enrichment pipeline.
     sponsorship: str = ""       # "confirmed" | "licensed_sponsor"
@@ -48,5 +54,5 @@ class Job:
         data["posted_at"] = self.posted_at.isoformat()
         desc = self.description
         data["description"] = desc if len(desc) <= description_chars else desc[:description_chars].rsplit(" ", 1)[0] + "…"
-        del data["source_says_sponsorship"]
+        del data["source_says_sponsorship"], data["register_name"]
         return data

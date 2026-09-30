@@ -4,6 +4,13 @@ const PAGE_SIZE = 40;
 const DAY_MS = 86_400_000;
 
 const SIZES = ["large", "medium", "small", "unknown"];
+const CHANNELS = {
+  career_site: "Employer's own careers site",
+  official: "NHS, university, school & government boards",
+  aggregator: "Job boards (reposted adverts)",
+};
+// Direct applications are shown by default; reposted job-board adverts are opt-in.
+const DEFAULT_CHANNELS = new Set(["career_site", "official"]);
 const COUNTRY_NAMES = new Intl.DisplayNames(["en"], { type: "region" });
 const $ = (sel) => document.querySelector(sel);
 
@@ -36,11 +43,12 @@ const flag = (code) => code && code.length === 2
   ? String.fromCodePoint(...[...code.toUpperCase()].map((c) => 0x1f1a5 + c.charCodeAt(0)))
   : "";
 
-function checkboxes(container, name, values, labelFn = (v) => v) {
+function checkboxes(container, name, values, labelFn = (v) => v, defaults = null) {
   const el = $(container);
   for (const v of values) {
     const label = document.createElement("label");
-    label.innerHTML = `<input type="checkbox" name="${name}" value="${esc(v)}" checked> ${esc(labelFn(v))} <span class="count" data-count="${name}:${esc(v)}"></span>`;
+    const on = !defaults || defaults.has(v) ? "checked" : "";
+    label.innerHTML = `<input type="checkbox" name="${name}" value="${esc(v)}" ${on}> ${esc(labelFn(v))} <span class="count" data-count="${name}:${esc(v)}"></span>`;
     el.append(label);
   }
 }
@@ -54,6 +62,7 @@ function readFilters() {
     days: Number(form.get("days") || 7),
     sponsorship: new Set(form.getAll("sponsorship")),
     hasContact: form.get("hasContact") === "1",
+    channel: new Set(form.getAll("channel")),
     tier: new Set(form.getAll("tier")),
     size: new Set(form.getAll("size")),
     sector: new Set(form.getAll("sector")),
@@ -67,6 +76,7 @@ function matches(job, f) {
   if (f.country === "EU" && job.country === "GB") return false;
   if (f.country.length === 2 && f.country !== "GB" && job.country !== f.country) return false;
   if (!f.sponsorship.has(job.sponsorship)) return false;
+  if (!f.channel.has(job.channel)) return false;
   if (f.hasContact && !job.contacts.length) return false;
   if (!f.tier.has(String(job.tier))) return false;
   if (!f.size.has(job.size)) return false;
@@ -97,6 +107,7 @@ function renderStats() {
   const tiles = [
     ["Open roles", jobs.length],
     ["Hiring employers", employers],
+    ["Apply direct to employer", jobs.filter((j) => j.channel !== "aggregator").length],
     ["Sponsorship stated", jobs.filter((j) => j.sponsorship === "confirmed").length],
     ["With contact email", jobs.filter((j) => j.contacts.length).length],
     ["UK / Europe", `${jobs.filter((j) => j.country === "GB").length} / ${jobs.filter((j) => j.country !== "GB").length}`],
@@ -126,6 +137,13 @@ function jobHtml(j) {
   const sponsorTag = j.sponsorship === "confirmed"
     ? `<span class="tag ok" title="The advert states visa sponsorship is available">Sponsorship offered</span>`
     : `<span class="tag warn" title="Employer is on the official sponsor register but the advert does not mention sponsorship — ask before applying">Licensed sponsor</span>`;
+  const channelTag = {
+    career_site: `<span class="tag direct" title="Advert taken from the employer's own careers site">Employer careers site</span>`,
+    official: `<span class="tag direct" title="Official public-sector / academic job board">${esc(j.source)}</span>`,
+    aggregator: `<span class="tag" title="Reposted by a job board; the employer's own advert may differ">via ${esc(j.source)}</span>`,
+  }[j.channel] || "";
+  const applyLabel = j.channel === "career_site" ? "Apply on employer site"
+    : j.channel === "official" ? `Apply on ${j.source}` : "View advert";
   const register = j.sponsor_register
     ? `<span class="tag" title="${esc(j.sponsor_routes.join(", "))}">${esc(j.sponsor_register)} register</span>` : "";
   const linkedin = `https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent(`${j.company} talent acquisition OR recruiter OR hiring manager`)}`;
@@ -143,13 +161,12 @@ function jobHtml(j) {
       <span class="muted">${esc(j.size === "unknown" ? "size unknown" : j.size)}</span></p>
     <p class="meta">${flag(j.country)} ${esc(j.location || countryName(j.country))}
       ${j.salary ? ` · ${esc(j.salary)}` : ""}${j.contract ? ` · ${esc(j.contract)}` : ""}</p>
-    <p class="tags">${sponsorTag}${register}<span class="tag">${esc(j.sector)}</span><span class="tag">${esc(j.domain)}</span></p>
+    <p class="tags">${channelTag}${sponsorTag}${register}<span class="tag">${esc(j.sector)}</span><span class="tag">${esc(j.domain)}</span></p>
     ${j.description ? `<p class="desc">${esc(j.description)}</p>` : ""}
     <div class="job-foot">
       <div class="contact-block"><h3>Hiring contact</h3>${contacts}</div>
-      <a class="btn" href="${esc(safeUrl(j.url))}" target="_blank" rel="noopener">View &amp; apply</a>
+      <a class="btn" href="${esc(safeUrl(j.url))}" target="_blank" rel="noopener">${esc(applyLabel)}</a>
     </div>
-    <p class="source muted small">via ${esc(j.source)}</p>
   </li>`;
 }
 
@@ -183,14 +200,19 @@ function renderMeta(data) {
 
   const rows = Object.entries(data.sources || {}).map(([name, s]) =>
     `<tr><td>${esc(name)}</td><td><span class="dot ${esc(s.status)}"></span>${esc(s.status)}</td>
-     <td>${esc(s.count ?? s.reason ?? s.error ?? "")}</td></tr>`);
+     <td>${esc([s.count, s.reason, s.error].filter((v) => v !== undefined && v !== "").join(" · "))}</td></tr>`);
   $("#sources").innerHTML = `<tr><th>Source</th><th>Status</th><th>Records / detail</th></tr>${rows.join("")}`;
+  const removed = data.counts?.agency_removed;
+  if (removed) {
+    $("#sources").insertAdjacentHTML("afterend",
+      `<p class="fineprint">${esc(removed)} ${removed === 1 ? "advert" : "adverts"} from recruitment agencies removed in the last run.</p>`);
+  }
 }
 
 // ------------------------------------------------------------------ CSV
 function exportCsv() {
   const cols = ["posted_at", "title", "company", "tier", "size", "sector", "domain", "country", "location",
-    "salary", "sponsorship", "sponsor_register", "contact_emails", "url", "source"];
+    "salary", "sponsorship", "sponsor_register", "channel", "contact_emails", "url", "source"];
   const cell = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
   const lines = [cols.join(",")];
   for (const j of state.filtered) {
@@ -215,14 +237,16 @@ function syncUrl() {
     if (el?.type !== "checkbox" && v && !isDefault) params.append(k, v);
   }
   // Only record checkbox groups that differ from the default.
-  for (const name of ["sponsorship", "tier", "size", "sector", "domain", "hasContact"]) {
+  for (const name of ["sponsorship", "channel", "tier", "size", "sector", "domain", "hasContact"]) {
     const boxes = [...document.querySelectorAll(`#filters input[name="${name}"]`)];
     if (boxes.some((b) => b.checked !== b.defaultChecked)) {
       params.set(name, boxes.filter((b) => b.checked).map((b) => b.value).join("|") || "-");
     }
   }
   if ($("#sort").value !== "newest") params.set("sort", $("#sort").value);
-  history.replaceState(null, "", params.toString() ? `?${params}` : location.pathname);
+  try {
+    history.replaceState(null, "", params.toString() ? `?${params}` : location.pathname);
+  } catch { /* embedded or sandboxed viewers may block URL updates; filters still work */ }
 }
 
 function restoreUrl() {
@@ -264,6 +288,7 @@ async function main() {
   $("select[name=country]").insertAdjacentHTML("beforeend",
     countries.map((c) => `<option value="${esc(c)}">${flag(c)} ${esc(countryName(c))}</option>`).join(""));
 
+  checkboxes("#f-channel", "channel", Object.keys(CHANNELS), (c) => CHANNELS[c], DEFAULT_CHANNELS);
   checkboxes("#f-tier", "tier", ["1", "2", "3"], (t) => `Tier ${t}`);
   checkboxes("#f-size", "size", SIZES, (s) => s[0].toUpperCase() + s.slice(1));
   checkboxes("#f-sector", "sector", data.sectors || []);

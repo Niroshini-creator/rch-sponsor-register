@@ -1,5 +1,7 @@
 {
-  "_comment": "Enable/disable sources. Keyed sources read credentials from environment variables (GitHub Actions secrets). RSS feeds: add any RSS/Atom job feed; 'country' is ISO 3166 alpha-2.",
+  "_comment": "Enable/disable sources. exclude_agencies removes adverts from recruitment agencies (list in config/agencies.json); career_sites reads employers' own careers pages (config/employers.json); channel says how candidates apply: career_site, official (NHS/universities/schools/government boards) or aggregator. Keyed sources read credentials from environment variables (GitHub Actions secrets). RSS feeds: add any RSS/Atom job feed; 'country' is ISO 3166 alpha-2.",
+  "exclude_agencies": true,
+  "career_sites": { "enabled": true, "_note": "employers are listed in config/employers.json" },
   "adzuna": { "enabled": true, "env": ["ADZUNA_APP_ID", "ADZUNA_APP_KEY"], "signup": "https://developer.adzuna.com/" },
   "reed": { "enabled": true, "env": ["REED_API_KEY"], "signup": "https://www.reed.co.uk/developers/jobseeker" },
   "nhs_jobs": { "enabled": true },
@@ -8,8 +10,8 @@
   "rss": {
     "enabled": true,
     "feeds": [
-      { "name": "jobs.ac.uk", "url": "https://www.jobs.ac.uk/jobs/?format=rss&keywords=sponsorship", "country": "GB", "location": "United Kingdom" },
-      { "name": "EURAXESS", "url": "https://euraxess.ec.europa.eu/jobs/feed?keywords=visa", "country": "BE", "location": "Europe" }
+      { "name": "jobs.ac.uk", "url": "https://www.jobs.ac.uk/jobs/?format=rss&keywords=sponsorship", "country": "GB", "location": "United Kingdom", "channel": "official" },
+      { "name": "EURAXESS", "url": "https://euraxess.ec.europa.eu/jobs/feed?keywords=visa", "country": "BE", "location": "Europe", "channel": "official" }
     ]
   }
 }
