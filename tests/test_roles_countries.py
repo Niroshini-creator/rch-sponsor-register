@@ -92,6 +92,9 @@ class EarlyCareerTests(unittest.TestCase):
             make_job(country="US", description="You may opt out of the pension scheme.")), "")
         self.assertEqual(classify.classify_early_career(
             make_job(country="US", description="We do not accept OPT candidates.")), "")
+        capital_one = ("At this time, Capital One will not sponsor a new applicant for employment authorization, or offer "
+                       "any immigration related support for this position (i e H1B, F-1 OPT, F-1 STEM OPT, F-1 CPT, J-1).")
+        self.assertEqual(classify.classify_early_career(make_job(country="US", description=capital_one)), "")
 
     def test_likely_needs_sponsor_and_entry_level(self):
         job = make_job(title="Graduate Software Engineer")
@@ -169,6 +172,9 @@ class EnrichNewCountriesTests(unittest.TestCase):
         self.assertEqual((rows["Acme", "GB"]["on_register"], rows["Acme", "GB"]["early_career_roles"]), (True, 1))
         self.assertEqual((rows["Acme", "US"]["register"], rows["Acme", "US"]["route"]), ("US H-1B", "OPT"))
         self.assertFalse(rows["Missing Co", "US"]["on_register"])
+        self.assertTrue(rows["Missing Co", "US"]["register_checked"])
+        empty = pipeline.build_directory([], sponsors.SponsorIndex(), self.tiers, CONFIG / "early_career_employers.json")
+        self.assertFalse(any(r["register_checked"] for r in empty))
         self.assertEqual((rows["Small Co", "GB"]["curated"], rows["Small Co", "GB"]["size"]), (False, "small"))
 
 

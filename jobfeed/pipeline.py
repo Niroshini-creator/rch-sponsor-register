@@ -193,6 +193,8 @@ def build_directory(jobs: list[Job], index: sponsors.SponsorIndex, tiers: TierRu
         entry = next((e for n in names for e in (index.lookup(n, country), index.lookup_prefix(n, country))
                       if e and sponsors.REGISTER_COUNTRY.get(e.register) == country), None)
         on_register = bool(entry and sponsors.REGISTER_COUNTRY.get(entry.register) == country)
+        # Whether the country's register loaded this run: "not on it" and "couldn't check" differ.
+        checked = any(index.counts.get(r) for r, c in sponsors.REGISTER_COUNTRY.items() if c == country)
         probe = Job(source="", source_id="", title="", company=emp["name"], location="", country=country, url="",
                     posted_at=datetime.now(timezone.utc))
         tier, size = tiers.classify(probe)
@@ -203,7 +205,7 @@ def build_directory(jobs: list[Job], index: sponsors.SponsorIndex, tiers: TierRu
             "size": emp.get("size") or size, "tier": tier, "sector": emp.get("sector", "Private Sector"),
             "programme": emp.get("programme", ""), "careers_url": emp.get("careers_url", ""),
             "on_register": on_register, "register": entry.register if on_register else "",
-            "open_roles": len(live), "early_career_roles": sum(bool(j.early_career) for j in live),
+            "register_checked": checked, "open_roles": len(live), "early_career_roles": sum(bool(j.early_career) for j in live),
             "curated": True,
         }
     for key, live in open_roles.items():
@@ -215,7 +217,7 @@ def build_directory(jobs: list[Job], index: sponsors.SponsorIndex, tiers: TierRu
             "name": first.company, "country": first.country, "route": "PSW" if first.country == "GB" else "OPT",
             "size": first.size, "tier": first.tier, "sector": first.sector, "programme": "",
             "careers_url": first.url if first.channel == "career_site" else "",
-            "on_register": bool(first.sponsor_register), "register": first.sponsor_register,
+            "on_register": bool(first.sponsor_register), "register": first.sponsor_register, "register_checked": True,
             "open_roles": len(live), "early_career_roles": len(early), "curated": False,
         }
     return sorted(rows.values(), key=lambda r: (-r["early_career_roles"], r["tier"], r["name"].lower()))
