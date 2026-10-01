@@ -80,9 +80,11 @@ def footer(channel: str, c: Contact, sender: dict, basis: str) -> str:
     else:
         why = "you asked us to keep you updated about job opportunities"
     unsub = sender.get("unsubscribe_email") or sender["email"]
-    return (f"--\n{sender['name']}, {sender['company']}, {sender['address']}\n"
+    identity = ", ".join(x for x in (sender["name"], sender["company"], sender.get("registration"), sender["address"]) if x)
+    privacy = f"\nHow we use your details: {sender['privacy_url']}" if sender.get("privacy_url") else ""
+    return (f"--\n{identity}\n"
             f"You received this because {why}. Not interested? Reply \"unsubscribe\" or email {unsub} "
-            "and we will not contact you again.")
+            f"and we will not contact you again.{privacy}")
 
 
 def lint(t: Template, audience: str, channel: str) -> list[str]:

@@ -33,6 +33,28 @@ def _state():
     return d, load_contacts(d / "contacts"), Ledger(d / "ledger.jsonl"), Suppression(d / "suppression.csv")
 
 
+_EU = {"IE", "NL", "DE", "FR", "BE", "LU", "SE", "FI", "DK", "ES", "PT", "PL", "IT", "AT", "CZ", "GR", "RO", "HU",
+       "SK", "SI", "HR", "BG", "LT", "LV", "EE", "CY", "MT"}
+
+
+def _setup_warnings(cfg) -> list[str]:
+    """Things the law expects of a sender, most of all one established outside the UK / EU (docs/OUTREACH.md)."""
+    sender = cfg["sender"]
+    countries = {c for camp in cfg.get("campaigns", {}).values() for c in (camp.get("filter") or {}).get("country", [])}
+    out = []
+    if not sender.get("privacy_url"):
+        out.append("sender.privacy_url: publish a privacy notice (UK GDPR / GDPR art. 13-14) and link it")
+    if not sender.get("registration"):
+        out.append("sender.registration: say where the company is registered, e.g. 'Registered in India, CIN …'")
+    if "GB" in countries and not sender.get("uk_representative"):
+        out.append("sender.uk_representative: a company outside the UK targeting UK residents needs a UK "
+                   "representative (UK GDPR art. 27)")
+    if countries & _EU and not sender.get("eu_representative"):
+        out.append("sender.eu_representative: a company outside the EU targeting EU residents needs an EU "
+                   "representative (GDPR art. 27)")
+    return out
+
+
 def cmd_check(cfg, args) -> int:
     d, contacts, ledger, suppression = _state()
     problems = []
@@ -62,6 +84,11 @@ def cmd_check(cfg, args) -> int:
         print(f"\n{name} ({camp['audience']}, starts with {first}): {len(members)} match, {ok} reachable")
         for reason, n in reasons.most_common():
             print(f"    {n:>4}  blocked: {reason}")
+    warnings = _setup_warnings(cfg)
+    if warnings:
+        print("\nBefore going live:")
+        for w in warnings:
+            print(f"  - {w}")
     if problems:
         print("\nProblems:")
         for p in problems:

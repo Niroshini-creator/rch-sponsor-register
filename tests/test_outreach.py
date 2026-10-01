@@ -171,6 +171,16 @@ def _cfg(steps, audience="candidate", **campaign):
     return cfg
 
 
+class FooterTests(unittest.TestCase):
+    def test_footer_shows_registration_and_privacy_notice(self):
+        sender = {"name": "Asha", "company": "Acme Pvt Ltd", "registration": "Registered in India, CIN U1",
+                  "address": "Pune, India", "email": "hi@acme.com", "privacy_url": "https://acme.com/privacy"}
+        text = templates.footer("email", employer(), sender, "legitimate interest")
+        self.assertIn("Acme Pvt Ltd, Registered in India, CIN U1, Pune, India", text)
+        self.assertIn("https://acme.com/privacy", text)
+        self.assertIn("contacted us", templates.footer("email", candidate(), sender, "soft opt-in (enquired)"))
+
+
 class EngineTests(Workspace):
     STEPS = [{"day": 0, "channel": "email", "template": "candidate_uk_intro"},
              {"day": 3, "channel": "email", "template": "candidate_followup"}]

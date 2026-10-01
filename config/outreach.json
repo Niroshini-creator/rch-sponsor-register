@@ -2,13 +2,17 @@
   "_comment": "Outreach settings. Fill in sender with your real details before sending: PECR requires your identity and a postal or email contact address in every marketing message. Credentials go in environment variables, never here. See docs/OUTREACH.md.",
   "sender": {
     "name": "Your Name",
-    "company": "Your Company Ltd",
-    "address": "Registered address, City, Postcode",
-    "email": "hello@yourcompany.co.uk",
-    "unsubscribe_email": "unsubscribe@yourcompany.co.uk",
+    "company": "Your Company Private Limited",
+    "registration": "Registered in India, CIN U00000XX0000PTC000000",
+    "address": "Registered office address, City, State, PIN, India",
+    "email": "hello@yourcompany.com",
+    "unsubscribe_email": "unsubscribe@yourcompany.com",
     "phone": "+44 20 0000 0000",
-    "website": "https://yourcompany.co.uk",
-    "booking_link": "https://yourcompany.co.uk/book"
+    "website": "https://yourcompany.com",
+    "booking_link": "https://yourcompany.com/book",
+    "privacy_url": "",
+    "uk_representative": "",
+    "eu_representative": ""
   },
   "limits": {
     "email_per_day": 60,

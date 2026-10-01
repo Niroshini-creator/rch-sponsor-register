@@ -52,7 +52,8 @@ Run it on a machine or a **private** server you control, not in this public repo
 the contact list and ledger are personal data.
 
 ```cron
-# Tue–Thu 09:05 UK time: record replies/opt-outs, then send what's due and write today's call sheet
+CRON_TZ=Europe/London
+# Tue–Thu 09:05 UK time (13:35 / 14:35 IST): record replies/opt-outs, then send what's due and write today's call sheet
 5 9 * * 2-4  cd /srv/rch-sponsor-register && . ./.env && python -m outreach run --live >> outreach_data/run.log 2>&1
 ```
 
@@ -153,10 +154,30 @@ business hours (employers Tue–Thu, candidates Mon–Sat), and a failed send is
   exceptions, e.g. some entertainment/modelling roles). In Ireland, employment agencies need a licence under the
   Employment Agency Act 1971 and may not charge job seekers fees. Optional paid services (CV writing, training) must
   never be a condition of being put forward for jobs. Charge employers instead.
-* Register with the **ICO** (UK data protection fee) and, for Ireland, be ready for the **DPC**; publish a privacy
-  notice and link it from your sign-up forms.
+* Publish a privacy notice and link it from your sign-up forms and emails (`sender.privacy_url`). A UK-based
+  business also pays the ICO data protection fee; for a company based abroad see *Operating from India*.
 * Don't advise on immigration: in the UK that is regulated by the IAA (formerly OISC). Point candidates to GOV.UK /
   irishimmigration.ie or a regulated adviser.
+
+## Operating from India (company registered outside the UK / EU)
+
+Where your company is registered does **not** change which rules apply: UK and Irish law follows the *recipient*.
+PECR and S.I. 336/2011 cover every marketing email, text and call received in the UK / Ireland, and UK GDPR / EU
+GDPR apply to a company anywhere that offers services to people there (art. 3(2)). Everything in *The rules the gate
+enforces* stays the same. What changes:
+
+| Topic | What to do |
+|---|---|
+| **Identity in messages** | Use the Indian registered name and address in `sender` and set `sender.registration` (e.g. "Registered in India, CIN …"). The footer shows it. Being upfront also helps trust: UK and Irish job seekers are often warned about overseas recruitment scams. |
+| **Art. 27 representatives** | A controller outside the UK that regularly targets UK residents must appoint a **UK representative**; one outside the EU targeting EU residents (Ireland included) an **EU representative** in a member state where those people are (Ireland is the natural choice). Firms offer this as a service for a yearly fee. Name them in your privacy notice (`uk_representative`, `eu_representative`). `check` warns until they are set. |
+| **Privacy notice** | Publish one (who you are, the Indian entity, representatives, what you collect, why, how long, people's rights, how to complain to the ICO / DPC, transfer to India) and set `sender.privacy_url`; the email footer links it. B2B cold emails need it under art. 14. |
+| **India's DPDP Act 2023** | Personal data you process in India also falls under the Digital Personal Data Protection Act and its 2025 Rules: consent notices, security safeguards, breach reporting and erasure on request. The consent records this tool keeps help here as well. |
+| **Data transfers** | Collecting data directly from candidates is not a "transfer", but a UK/EU supplier (CRM, form tool, a UK partner) sending you data in India needs the UK IDTA / EU Standard Contractual Clauses: India has no adequacy decision. |
+| **Placement / agency rules** | The UK ban on charging work-seekers fees and Ireland's employment agency licensing apply to agency work for jobs *in* those countries, so take advice before trading as an agency from abroad. If you also recruit people *from India* for jobs overseas, that needs a Recruiting Agent registration under India's Emigration Act 1983 (eMigrate). |
+| **Calling from India** | UK networks block international calls that show a UK mobile number as caller ID, and Ofcom requires a valid, diallable caller ID that you are allowed to use. Rent UK and Irish numbers from a VoIP provider (Twilio, Aircall, RingCentral…) and call through it. Test that calls connect and that call-backs reach you. |
+| **TPS / CTPS** | Overseas callers have to screen too. Buy screening from a TPS-licensed data provider, or use your dialler's built-in TPS check, then fill `tps_status` / `tps_checked_on`. |
+| **Time zones** | The UK is 4½–5½ hours behind India (Ireland the same). Calling 09:30–17:00 UK time means about 14:00–22:30 IST. Schedule runs in UK time with `CRON_TZ=Europe/London` (see below). Sending hours are already checked in each contact's local time. |
+| **Email domain** | A `.com` (or `.co.uk` / `.ie` if you register one) domain with SPF, DKIM and DMARC. Avoid free webmail and avoid sending from Indian ISP mail servers: use Google Workspace, Microsoft 365, Zoho or a sending service. |
 
 ## Getting candidate consent (the lawful way to reach PSW, dependant and Stamp 1G holders)
 
