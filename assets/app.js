@@ -30,6 +30,8 @@ const VIEWS = {
   directory: { label: "PSW & OPT employers", test: () => true },
 };
 const ENGLISH_COUNTRIES = new Set(["GB", "IE", "US", "MT"]);
+// Feeds written before jobs carried a region: recognise the main Scottish places.
+const SCOTLAND_RE = /\b(scotland|scottish|glasgow|edinburgh|aberdeen|dundee|inverness|stirling|st andrews|paisley|fife|lothian|lanarkshire|ayrshire|perth|nhs (lothian|grampian|tayside|highland))\b/i;
 const $ = (sel) => document.querySelector(sel);
 
 const state = { data: null, jobs: [], filtered: [], shown: PAGE_SIZE, view: "all" };
@@ -284,10 +286,57 @@ function render() {
     showNotice(`No jobs in the feed yet. Run the <strong>Refresh sponsored jobs</strong> workflow in the repository's
       Actions tab (and add the optional API keys described in the README) to populate it.`);
   } else if (!filtered.length) {
-    showNotice("No roles match these filters. Try widening them or pressing Reset.");
+    const hidden = hiddenBy();
+    if (hidden.length) {
+      const total = Math.max(...hidden.map((h) => h.count));
+      showNotice(`${total} ${total === 1 ? "job is" : "jobs are"} hidden by your filters: ${hidden.map((h) =>
+        `<strong>${esc(h.label)}</strong> (${h.count})`).join(", ")}.
+        <button type="button" class="btn ghost small-btn" id="show-hidden">Show them</button>`);
+      $("#show-hidden").addEventListener("click", () => {
+        if (hidden.some((h) => h.name === "view")) state.view = "all";
+        for (const h of hidden) document.querySelectorAll(`#filters input[name="${h.name}"]`).forEach((b) => {
+          b.checked = h.name in NEGATIVE_FILTERS ? false : true;
+        });
+        apply();
+      });
+    } else {
+      const where = readFilters().country;
+      showNotice(where
+        ? "No jobs in this location in the current feed yet. The feed refreshes twice a day; try another country or a longer time window."
+        : "No roles match these filters. Try widening them or pressing Reset.");
+    }
   } else {
     $("#notice").hidden = true;
   }
+}
+
+// Checkbox groups that can hide jobs, and how to describe them when they do.
+const GROUP_LABELS = { channel: "Apply via", sponsorship: "Sponsorship evidence", role: "Job role", tier: "Employer tier",
+  size: "Employer size", sector: "Sector", domain: "Role domain" };
+// Single "only …" checkboxes: ticking them narrows the list.
+const NEGATIVE_FILTERS = { english: "English-speaking only", early: "PSW / OPT friendly only", hasContact: "With hiring contact only" };
+
+// Which single filter, if relaxed, would bring back jobs that match everything else.
+function hiddenBy() {
+  const f = readFilters();
+  const out = [];
+  const all = (name) => new Set([...document.querySelectorAll(`#filters input[name="${name}"]`)].map((b) => b.value));
+  for (const [name, label] of Object.entries(GROUP_LABELS)) {
+    const relaxed = { ...f, [name]: all(name) };
+    if (relaxed[name].size === f[name].size) continue;
+    const count = state.jobs.filter((j) => matches(j, relaxed)).length;
+    if (count) out.push({ name, label: name === "channel" ? "Job boards are switched off under Apply via" : `${label} options unticked`, count });
+  }
+  for (const [name, label] of Object.entries(NEGATIVE_FILTERS)) {
+    if (!f[name]) continue;
+    const count = state.jobs.filter((j) => matches(j, { ...f, [name]: false })).length;
+    if (count) out.push({ name, label, count });
+  }
+  if (state.view !== "all") {
+    const count = state.jobs.filter((j) => matches(j, f, "all")).length;
+    if (count) out.push({ name: "view", label: `the "${VIEWS[state.view].label}" tab`, count });
+  }
+  return out;
 }
 
 function showNotice(html) {
@@ -397,7 +446,7 @@ async function main() {
     contacts: j.contacts || [],
     sponsor_routes: j.sponsor_routes || [],
     role: j.role || "Other",
-    region: j.region || "",
+    region: j.region || (j.country === "GB" && SCOTLAND_RE.test(`${j.location} ${j.company}`) ? "Scotland" : ""),
     // Feeds from before the language check: only native-English countries can be assumed.
     english: j.english ?? ENGLISH_COUNTRIES.has(j.country),
     early_career: j.early_career || "",
@@ -409,7 +458,9 @@ async function main() {
   // Country filter: the board's featured countries and regions first, then any other country with jobs.
   const featured = data.featured_countries || DEFAULT_FEATURED;
   const optionLabel = (c) => REGION_OPTIONS[c] ? REGION_OPTIONS[c].label : countryName(c);
-  const option = (c) => `<option value="${esc(c)}">${flag(REGION_OPTIONS[c]?.flag || c)} ${esc(optionLabel(c))}</option>`;
+  const inWindow = state.jobs.filter((j) => Date.now() - j._posted <= 7 * DAY_MS);
+  const option = (c) => `<option value="${esc(c)}">${flag(REGION_OPTIONS[c]?.flag || c)} ${esc(optionLabel(c))} (${
+    inWindow.filter((j) => matchesCountry(j, c)).length})</option>`;
   const others = [...new Set(state.jobs.map((j) => j.country))].filter((c) => !featured.includes(c))
     .sort((a, b) => countryName(a).localeCompare(countryName(b)));
   $("select[name=country]").insertAdjacentHTML("beforeend",
