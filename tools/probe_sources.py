@@ -1,4 +1,4 @@
-"""Print what candidate job sources return: robots.txt rules and the page structure around listings.
+"""Print what candidate job sources return: feed items, paging behaviour and listing structure.
 
 Run from GitHub Actions (Probe job sources) when a source returns nothing, to see the real response.
 """
@@ -14,7 +14,7 @@ def get(url: str) -> tuple[str, str]:
     req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "*/*"})
     try:
         with urllib.request.urlopen(req, timeout=30) as r:
-            return f"{r.status} {r.headers.get('Content-Type', '')}", r.read(600_000).decode("utf-8", "replace")
+            return f"{r.status}", r.read(800_000).decode("utf-8", "replace")
     except urllib.error.HTTPError as e:
         return f"HTTP {e.code}", ""
     except Exception as e:  # noqa: BLE001
@@ -22,74 +22,39 @@ def get(url: str) -> tuple[str, str]:
 
 
 def show(title: str, text: str, n: int = 1500) -> None:
-    print(f"--- {title}\n{re.sub(r'[ \t]+', ' ', text[:n])}\n", flush=True)
+    print(f"--- {title}\n{re.sub(r'\s+', ' ', text[:n])}\n", flush=True)
 
 
-for host in ("www.jobs.nhs.uk", "beta.jobs.nhs.uk", "www.jobs.ac.uk", "euraxess.ec.europa.eu",
-             "www.timeshighereducation.com", "www.academictransfer.com", "apply.jobs.scot.nhs.uk", "www.higheredjobs.com"):
-    status, body = get(f"https://{host}/robots.txt")
-    show(f"robots {host} [{status}]", body, 1200)
+# Times Higher Education RSS: item format and country filters
+for q in ("keywords=visa", "keywords=visa+sponsorship&countrycode=US", "keywords=visa&countrycode=AE",
+          "keywords=sponsorship&countrycode=NL", "keywords=visa&countrycode=ALL", "keywords=sponsorship"):
+    status, body = get(f"https://www.timeshighereducation.com/unijobs/jobsrss/?{q}")
+    total = re.search(r"totalResults>(\d+)", body)
+    i = body.find("<item")
+    show(f"THE {q} [{status}] items={body.count('<item')} total={total and total.group(1)}", body[i:i + 1800] if i >= 0 else body, 1800)
 
-# NHS Jobs: one advert page, to find the full text and the contact block.
-status, xml = get("https://www.jobs.nhs.uk/api/v1/search_xml?keyword=sponsorship&page=1&sort=publicationDateDesc")
-show(f"nhs xml [{status}] vacancies={xml.count('<vacancyDetails>')}", xml, 900)
-m = re.search(r"<url>([^<]+)</url>", xml)
+# jobs.ac.uk: paging and sorting parameters
+base = "https://www.jobs.ac.uk/search/?keywords=visa+sponsorship"
+for extra in ("", "&pageSize=100", "&startIndex=26", "&sortOrder=1", "&sortOrder=0", "&activeFacet=sortOrder&sortOrder=1"):
+    status, page = get(base + extra)
+    links = re.findall(r'href="(/job/[^"]+)"', page)
+    dates = re.findall(r"Date Placed: </strong>([^<]+)<", page)
+    total = re.search(r"([\d,]+)\s+(?:jobs|results) found", page)
+    print(f"--- jobs.ac.uk{extra} [{status}] links={len(links)} first={links[:2]} dates={[d.strip() for d in dates[:6]]} total={total and total.group(1)}")
+status, adv = get("https://www.jobs.ac.uk" + links[0]) if links else ("", "")
+m = re.search(r'ld\+json">(\{.*?\})</script>', adv, re.S)
 if m:
-    for url in (m.group(1), m.group(1).replace("beta.jobs.nhs.uk", "www.jobs.nhs.uk")):
-        status, page = get(url)
-        text = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", re.sub(r"(?s)<(script|style)[^>]*>.*?</\1>", " ", page)))
-        print(f"--- nhs advert {url} [{status}] {len(page)}B")
-        for word in ("sponsor", "Skilled worker", "Contact details", "Job title", "Email address", "Telephone"):
-            i = text.find(word)
-            print(f"   [{word}] {text[max(0, i - 200):i + 400] if i >= 0 else '-'}")
-        i = page.find("Email address")
-        show("nhs advert html near Email address", page[max(0, i - 1500):i + 800] if i >= 0 else "", 2300)
+    js = m.group(1)
+    for key in ("datePosted", "hiringOrganization", "jobLocation", "baseSalary", "employmentType", "validThrough"):
+        i = js.find(f'"{key}"')
+        print(f"   [{key}] {js[i:i + 300] if i >= 0 else '-'}")
+for word in ("enquiries", "contact", "@"):
+    i = adv.find(word)
+    print(f"   advert [{word}] {re.sub(r'<[^>]+>|\s+', ' ', adv[max(0, i - 200):i + 300]) if i >= 0 else '-'}")
 
-# jobs.ac.uk search results
-status, page = get("https://www.jobs.ac.uk/search/?keywords=visa+sponsorship")
-links = re.findall(r'href="(/job/[^"]+)"', page)
-print(f"--- jobs.ac.uk search [{status}] job links={len(links)} {links[:3]}")
-i = page.find(links[0]) if links else -1
-show("jobs.ac.uk html around first result", page[max(0, i - 1200):i + 1800] if i >= 0 else "", 3000)
-if links:
-    status, adv = get("https://www.jobs.ac.uk" + links[0])
-    i = adv.find("ld+json")
-    show(f"jobs.ac.uk advert [{status}] ld+json", adv[i:i + 2500] if i >= 0 else adv[:800], 2500)
-
-# EURAXESS search results
+# EURAXESS: the job result blocks
 status, page = get("https://euraxess.ec.europa.eu/jobs/search?keywords=visa")
-i = page.find("<article")
-show(f"euraxess search [{status}] articles={page.count('<article')}", page[i:i + 3500] if i >= 0 else "", 3500)
-
-# Times Higher Education unijobs
-status, page = get("https://www.timeshighereducation.com/unijobs/listings/?keywords=visa+sponsorship")
-links = re.findall(r'href="(/unijobs/listing/[^"]+)"', page)
-print(f"--- THE [{status}] links={len(links)} {links[:3]}")
+links = re.findall(r'href="(/jobs/\d+)"', page)
+print(f"--- euraxess [{status}] job links={len(links)} {links[:3]}")
 i = page.find(links[0]) if links else -1
-show("THE html around first result", page[max(0, i - 1500):i + 1500] if i >= 0 else "", 3000)
-for feed in ("https://www.timeshighereducation.com/unijobs/listings/rss/?keywords=visa",
-             "https://www.timeshighereducation.com/unijobs/jobsrss/?keywords=visa"):
-    status, body = get(feed)
-    show(f"THE feed {feed} [{status}] items={body.count('<item')}", body, 600)
-
-# AcademicTransfer (Dutch universities)
-status, page = get("https://www.academictransfer.com/en/jobs/?q=english")
-i = page.find("<article")
-show(f"academictransfer [{status}]", page[i:i + 2500] if i >= 0 else "", 2500)
-for api in ("https://api.academictransfer.com/vacancies/?q=english", "https://www.academictransfer.com/api/vacancies/?q=english"):
-    status, body = get(api)
-    show(f"academictransfer api {api} [{status}]", body, 600)
-
-# NHS Scotland (Jobtrain)
-status, page = get("https://apply.jobs.scot.nhs.uk/Home/Job")
-links = re.findall(r'href="([^"]*(?:JobDetail|Job/[^"]*Detail|jobId)[^"]*)"', page)
-print(f"--- nhs scotland [{status}] detail links={len(links)} {links[:3]}")
-for kw in ("rss", "api/", "JobSearch", "Vacancy"):
-    i = page.find(kw)
-    print(f"   [{kw}] {re.sub(r'\s+', ' ', page[max(0, i - 200):i + 300]) if i >= 0 else '-'}")
-
-# HigherEdJobs job feeds
-for feed in ("https://www.higheredjobs.com/rss/categoryFeed.cfm?catID=68",
-             "https://www.higheredjobs.com/rss/categoryFeed.cfm?catID=10"):
-    status, body = get(feed)
-    show(f"higheredjobs {feed} [{status}] items={body.count('<item')}", body[body.find('<item'):] if '<item' in body else body, 900)
+show("euraxess around first job", page[max(0, i - 1500):i + 2500] if i >= 0 else "", 4000)
