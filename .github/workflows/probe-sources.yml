@@ -2,6 +2,9 @@ name: Probe job sources
 
 on:
   workflow_dispatch:
+  push:
+    branches-ignore: [main]
+    paths: ["tools/probe_sources.py", ".github/workflows/probe-sources.yml"]
 
 jobs:
   probe:
