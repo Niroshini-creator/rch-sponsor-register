@@ -36,7 +36,7 @@ class CareerSiteParserTests(unittest.TestCase):
 
     def test_unrecognised_location_not_assumed_local(self):
         payload = {"jobs": [{"id": 1, "title": "Engineer", "first_published": ISO_NOW,
-                             "location": {"name": "Bengaluru"}, "absolute_url": "u", "content": ""}]}
+                             "location": {"name": "Ulaanbaatar"}, "absolute_url": "u", "content": ""}]}
         emp = {"name": "Acme", "id": "acme", "country": "GB"}
         self.assertEqual(run_feed(careers.greenhouse, emp, [payload])[0].country, "")
         self.assertEqual(run_feed(careers.greenhouse, {**emp, "local": True}, [payload])[0].country, "GB")
@@ -91,7 +91,7 @@ class CareerSiteParserTests(unittest.TestCase):
         listing = {"jobPostings": [
             {"title": "Scientist", "externalPath": "/job/Cambridge/Scientist_R1", "locationsText": "Cambridge, UK", "postedOn": "Posted 2 Days Ago"},
             {"title": "Old", "externalPath": "/job/x", "locationsText": "London", "postedOn": "Posted 30+ Days Ago"},
-            {"title": "US", "externalPath": "/job/y", "locationsText": "Boston, United States", "postedOn": "Posted Today"},
+            {"title": "Canada", "externalPath": "/job/y", "locationsText": "Toronto, Canada", "postedOn": "Posted Today"},
         ]}
         detail = {"jobPostingInfo": {"jobReqId": "R1", "jobDescription": "<p>Hi</p>", "location": "Cambridge, UK",
                                      "externalUrl": "https://acme.wd3.myworkdayjobs.com/Careers/job/R1",
@@ -101,7 +101,7 @@ class CareerSiteParserTests(unittest.TestCase):
              mock.patch.object(careers.http, "get_json", return_value=detail) as get:
             jobs = list(careers.workday(emp, CUTOFF))
         self.assertEqual([(j.source_id, j.country) for j in jobs], [("R1", "GB")])
-        self.assertEqual(get.call_count, 1)  # no detail call for the old or US roles
+        self.assertEqual(get.call_count, 1)  # no detail call for the old or Canadian roles
 
     def test_one_broken_board_does_not_stop_others(self):
         report = {}

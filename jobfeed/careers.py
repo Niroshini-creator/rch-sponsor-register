@@ -33,6 +33,8 @@ log = logging.getLogger("jobfeed")
 
 EUROPE_AND_UK = {"GB", "IE", "DE", "NL", "FR", "BE", "AT", "CH", "ES", "IT", "PL", "PT", "SE", "DK", "FI", "NO",
                  "CZ", "LU", "EE", "GR", "RO", "HU", "LT", "LV", "SK", "SI", "HR", "BG", "CY", "MT", "IS"}
+# Countries the board covers: the UK and Europe, plus the United States and the United Arab Emirates.
+TARGET_COUNTRIES = EUROPE_AND_UK | {"US", "AE"}
 
 EmployerFeed = Callable[[dict, datetime], Iterator[Job]]
 
@@ -96,9 +98,9 @@ def smartrecruiters(emp: dict, cutoff: datetime) -> Iterator[Job]:
             if not posted or posted < cutoff:
                 continue
             loc = j.get("location") or {}
-            if loc.get("country") and loc["country"].upper() not in EUROPE_AND_UK:
+            if loc.get("country") and loc["country"].upper() not in TARGET_COUNTRIES:
                 continue
-            # The list omits the advert text; one extra call per recent UK/Europe posting fetches it.
+            # The list omits the advert text; one extra call per recent posting in a covered country fetches it.
             try:
                 detail = http.get_json(f"{base}/{j['id']}")
                 sections = (detail.get("jobAd") or {}).get("sections") or {}
@@ -181,9 +183,9 @@ def workday(emp: dict, cutoff: datetime) -> Iterator[Job]:
             posted = _workday_posted(j.get("postedOn", ""), now)
             if not posted or posted < cutoff:
                 continue
-            # Skip the detail call for roles clearly outside the UK/Europe ("3 Locations" is checked).
+            # Skip the detail call for roles clearly outside the covered countries ("3 Locations" is checked).
             listed = _guess_country(j.get("locationsText", ""), default="")
-            if listed and listed not in EUROPE_AND_UK:
+            if listed and listed not in TARGET_COUNTRIES:
                 continue
             path = j.get("externalPath", "")
             try:
@@ -232,7 +234,8 @@ _COUNTRY_NAMES = {
     "portugal": "PT", "sweden": "SE", "denmark": "DK", "finland": "FI", "norway": "NO", "czechia": "CZ",
     "czech republic": "CZ", "luxembourg": "LU", "estonia": "EE", "greece": "GR", "romania": "RO",
     "hungary": "HU", "lithuania": "LT", "latvia": "LV", "united states": "US", "usa": "US", "canada": "CA",
-    "india": "IN", "singapore": "SG", "australia": "AU",
+    "india": "IN", "singapore": "SG", "australia": "AU", "united arab emirates": "AE", "uae": "AE",
+    "united states of america": "US", "the netherlands": "NL", "holland": "NL",
 }
 
 

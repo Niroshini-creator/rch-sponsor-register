@@ -14,7 +14,9 @@
     { "regex": "university of (oxford|cambridge|edinburgh|glasgow|manchester|bristol|birmingham|leeds|liverpool|sheffield|nottingham|southampton|warwick|york|exeter)|imperial college|university college london|\\bucl\\b|king's college london|london school of economics|queen mary university|durham university|newcastle university|cardiff university|queen's university belfast", "tier": 1, "size": "large" },
     { "regex": "\\b(tu|lmu|eth|epfl|ku) (delft|münchen|munich|zürich|zurich|leuven)\\b|sorbonne|karolinska|max planck|fraunhofer|\\bcern\\b|\\bembl\\b", "tier": 1, "size": "large" },
     { "regex": "\\b(hm revenue|hm treasury|home office|ministry of|department for|cabinet office|foreign, commonwealth|civil service|met office|ukhsa|european (commission|parliament|central bank|investment bank|medicines agency))", "tier": 1, "size": "large" },
-    { "regex": "\\buniversit|\\binstitute\\b|research (council|centre|institute)|\\bhochschule\\b", "tier": 2, "size": "large" },
+    { "regex": "harvard|stanford|massachusetts institute of technology|\\bmit\\b|princeton|\\byale\\b|columbia university|university of california|caltech|johns hopkins|carnegie mellon|university of (michigan|chicago|pennsylvania|washington|texas at austin)|cornell|new york university|uppsala universitet|uppsala university|\\bkth\\b|karolinska|lund university|lunds universitet|university of helsinki|aalto|university of luxembourg|universit(y|eit) (of|van) amsterdam|leiden|utrecht|eindhoven university|\\btu/e\\b|wageningen|jagiellonian|university of warsaw|universidad complutense|universitat de barcelona|universitat pompeu fabra|khalifa university|nyu abu dhabi|university of edinburgh|university of glasgow|university of st andrews|university of aberdeen", "tier": 1, "size": "large" },
+    { "regex": "\\bdubai (health|electricity|municipality|police|airports|holding|world trade)|\\bemirates\\b|\\betihad\\b|\\badnoc\\b|\\bmubadala\\b|\\betisalat\\b|\\bdp world\\b|\\bemaar\\b|\\bmajid al futtaim\\b|\\bnhs (scotland|education for scotland|lothian|greater glasgow|grampian|tayside|highland|fife|lanarkshire|ayrshire)", "tier": 1, "size": "large" },
+    { "regex": "\\buniversit|\\binstitute\\b|research (council|centre|institute)|\\bhochschule\\b|\\bhögskola|\\byliopisto\\b|\\buniwersytet\\b|\\buniversidad\\b|\\buniversiteit\\b", "tier": 2, "size": "large" },
     { "regex": "\\b(city|county|borough|district|metropolitan|district) council\\b|\\bcouncil\\b|\\bpolice\\b|fire (and|&) rescue|combined authority|\\bgemeente\\b", "tier": 2, "size": "large" },
     { "regex": "multi.academy trust|academies trust|education trust|learning trust", "tier": 2, "size": "large" },
     { "regex": "housing (association|group)|\\bnational trust\\b|cancer research uk|british heart foundation|\\boxfam\\b|save the children|british red cross", "tier": 2, "size": "large" },
@@ -29,13 +31,15 @@
     "AstraZeneca", "GSK", "GlaxoSmithKline", "Pfizer", "Novartis", "Roche", "Novo Nordisk", "Sanofi", "Bayer", "Merck",
     "Shell", "BP", "Unilever", "Rolls-Royce", "BAE Systems", "Airbus", "Arm", "Vodafone", "BT", "BT Group", "Tesco", "Sainsbury's", "Diageo", "Rio Tinto", "Reckitt", "Nestle", "Nestlé", "Volkswagen", "BMW", "Mercedes-Benz", "Bosch",
     "Allen & Overy", "A&O Shearman", "Clifford Chance", "Freshfields Bruckhaus Deringer", "Linklaters", "Slaughter and May",
-    "BBC", "Network Rail", "Transport for London", "UK Research and Innovation", "UKRI", "Francis Crick Institute", "Wellcome Sanger Institute", "Alan Turing Institute"
+    "BBC", "Network Rail", "Transport for London", "UK Research and Innovation", "UKRI", "Francis Crick Institute", "Wellcome Sanger Institute", "Alan Turing Institute",
+    "Adobe", "Intel", "Qualcomm", "Cisco", "Walmart", "Capital One", "Mastercard", "Visa", "Tesla", "Uber", "Airbnb", "Cognizant", "Infosys", "Tata Consultancy Services", "Stripe", "Databricks", "Snowflake", "Datadog", "MongoDB", "ServiceNow", "Ericsson", "Nokia", "Volvo", "IKEA", "Inditex", "Telefonica", "ArcelorMittal", "Orange", "Emirates", "Etihad Airways", "Meta Platforms", "Google DeepMind", "OpenAI", "Anthropic", "Infosys Limited"
   ],
 
   "tier2": [
     "Revolut", "Monzo", "Starling Bank", "Wise", "Deliveroo", "Ocado", "Darktrace", "Sage", "Rightmove", "Auto Trader", "Farfetch", "Checkout.com", "GoCardless", "Skyscanner", "Zalando", "Delivery Hero", "N26", "Bolt", "Klarna", "Mollie", "Picnic", "Celonis", "Personio", "Trade Republic",
     "Thoughtworks", "Kainos", "Softcat", "Computacenter", "Atkins", "AtkinsRealis", "Arup", "Jacobs", "WSP", "Mott MacDonald", "Balfour Beatty", "Laing O'Rourke", "Babcock", "Leonardo", "Thales", "QinetiQ", "Serco", "Capita",
-    "Grant Thornton", "BDO", "RSM", "Mazars", "Forvis Mazars"
+    "Grant Thornton", "BDO", "RSM", "Mazars", "Forvis Mazars",
+    "Figma", "Notion", "Ramp", "Plaid", "Brex", "Gusto", "Duolingo", "Robinhood", "Affirm", "Toast", "Coinbase", "Dropbox", "Discord", "Reddit", "Pinterest", "Lyft", "Instacart", "Twilio", "Squarespace", "Samsara", "Asana", "Airtable", "Scale AI", "Linear", "Perplexity", "Supabase", "Cohere", "Catawiki", "bunq", "Miro", "Intercom", "SumUp", "FanDuel", "Multiverse", "Wayve", "Cleo", "Remote", "Deel", "Wolt", "Aiven", "Supercell", "RELEX Solutions", "Smartly", "Einride", "Voi Technology", "Kry", "Docplanner", "Brainly", "TravelPerk", "Typeform", "Glovo", "Factorial", "Pipedrive", "Veriff", "Careem", "Kitopi", "Tabby", "HelloFresh", "Softwire", "Scott Logic", "Made Tech", "BJSS", "Baillie Gifford", "Ocado Technology", "GitLab", "Elastic", "Cloudflare", "Synthesia", "ElevenLabs", "Mistral AI", "Palantir Technologies", "Isomorphic Labs", "Contentful", "GetYourGuide", "Thought Machine"
   ],
 
   "tier3": []

@@ -28,6 +28,8 @@ class Job:
     source_says_sponsorship: bool = False
     # Legal name on the sponsor register when it differs from the trading name (career sites).
     register_name: str = ""
+    # Hiring contacts the source publishes alongside the advert (e.g. Platsbanken's contact list).
+    advert_contacts: list[dict] = field(default_factory=list)
 
     # Filled in by the enrichment pipeline.
     sponsorship: str = ""       # "confirmed" | "licensed_sponsor"
@@ -35,6 +37,10 @@ class Job:
     sponsor_routes: list[str] = field(default_factory=list)
     sector: str = ""            # employer type, see classify.SECTORS
     domain: str = ""            # role function, see classify.DOMAINS
+    role: str = ""              # job family, see classify.ROLES
+    region: str = ""            # sub-national region shown as its own filter, e.g. "Scotland", "Dubai"
+    english: bool = False       # advert is in English and asks for no other language
+    early_career: str = ""      # "stated" | "likely": open to UK Graduate visa (PSW) / US OPT holders
     tier: int = 3
     size: str = "unknown"      # "large" | "medium" | "small" | "unknown"
     contacts: list[dict] = field(default_factory=list)
@@ -54,5 +60,5 @@ class Job:
         data["posted_at"] = self.posted_at.isoformat()
         desc = self.description
         data["description"] = desc if len(desc) <= description_chars else desc[:description_chars].rsplit(" ", 1)[0] + "…"
-        del data["source_says_sponsorship"], data["register_name"]
+        del data["source_says_sponsorship"], data["register_name"], data["advert_contacts"]
         return data
