@@ -7,11 +7,15 @@
   "nhs_jobs": { "enabled": true },
   "teaching_vacancies": { "enabled": true },
   "arbeitnow": { "enabled": true },
+  "jobtech_sweden": { "enabled": true, "_note": "Platsbanken (Swedish Public Employment Service) open API: no key needed. Adverts include the employer's named contacts." },
   "rss": {
     "enabled": true,
     "feeds": [
       { "name": "jobs.ac.uk", "url": "https://www.jobs.ac.uk/jobs/?format=rss&keywords=sponsorship", "country": "GB", "location": "United Kingdom", "channel": "official" },
-      { "name": "EURAXESS", "url": "https://euraxess.ec.europa.eu/jobs/feed?keywords=visa", "country": "BE", "location": "Europe", "channel": "official" }
+      { "name": "EURAXESS", "url": "https://euraxess.ec.europa.eu/jobs/feed?keywords=visa", "country": "BE", "location": "Europe", "channel": "official" },
+      { "name": "jobs.ac.uk", "url": "https://www.jobs.ac.uk/jobs/?format=rss&keywords=visa", "country": "GB", "location": "United Kingdom", "channel": "official" },
+      { "name": "jobs.ac.uk", "url": "https://www.jobs.ac.uk/jobs/scotland/?format=rss&keywords=sponsorship", "country": "GB", "location": "Scotland", "channel": "official" },
+      { "name": "EURAXESS", "url": "https://euraxess.ec.europa.eu/jobs/feed?keywords=relocation", "country": "BE", "location": "Europe", "channel": "official" }
     ]
   }
 }

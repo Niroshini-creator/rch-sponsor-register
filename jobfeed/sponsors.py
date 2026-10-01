@@ -2,9 +2,12 @@
 
 * UK  — Home Office "Register of licensed sponsors: workers" (CSV, updated daily).
 * NL  — IND public register of recognised sponsors (regular labour & highly skilled migrants).
+* US  — USCIS H-1B Employer Data Hub: employers with approved H-1B petitions (not a licence,
+        but the official record of who sponsors).
 
-Other EU countries have no public sponsor register; for those, jobs are only kept
-when the advert (or the source) explicitly offers visa sponsorship.
+Other countries have no public sponsor register; for those, jobs are only kept
+when the advert (or the source) explicitly offers visa sponsorship. In the UAE every
+employer sponsors its foreign staff's residence visa, so the pipeline treats that as given.
 """
 
 from __future__ import annotations
@@ -14,6 +17,7 @@ import io
 import os
 import re
 from dataclasses import dataclass, field
+from datetime import date
 from html.parser import HTMLParser
 
 from . import http
@@ -23,7 +27,10 @@ UK_REGISTER_PAGE = "https://www.gov.uk/government/publications/register-of-licen
 NL_REGISTER_PAGE = ("https://ind.nl/en/public-register-recognised-sponsors/"
                     "public-register-regular-labour-and-highly-skilled-migrants")
 
-REGISTER_COUNTRY = {"UK Home Office": "GB", "NL IND": "NL"}
+US_H1B_HUB_PAGE = "https://www.uscis.gov/tools/reports-and-studies/h-1b-employer-data-hub"
+US_H1B_CSV_PATTERN = "https://www.uscis.gov/sites/default/files/document/data/h1b_datahubexport-{year}.csv"
+
+REGISTER_COUNTRY = {"UK Home Office": "GB", "NL IND": "NL", "US H-1B": "US"}
 
 
 @dataclass
@@ -37,8 +44,9 @@ class SponsorEntry:
 
 class SponsorIndex:
     def __init__(self) -> None:
-        self._by_name: dict[str, SponsorEntry] = {}
-        self._prefix_cache: dict[str, SponsorEntry | None] = {}
+        # normalised name -> register -> entry: the same name can be on several countries' registers.
+        self._by_name: dict[str, dict[str, SponsorEntry]] = {}
+        self._prefix_cache: dict[tuple[str, str], SponsorEntry | None] = {}
         self.counts: dict[str, int] = {}
 
     def add(self, entry: SponsorEntry) -> None:
@@ -48,16 +56,24 @@ class SponsorIndex:
             key = normalise_company(part)
             if not key:
                 continue
-            existing = self._by_name.get(key)
-            if existing and existing.register == entry.register:
+            existing = self._by_name.setdefault(key, {}).get(entry.register)
+            if existing:
                 existing.routes |= entry.routes
             else:
-                self._by_name.setdefault(key, entry)
+                self._by_name[key][entry.register] = entry
 
-    def lookup(self, company: str) -> SponsorEntry | None:
-        return self._by_name.get(normalise_company(company))
+    @staticmethod
+    def _pick(entries: dict[str, SponsorEntry], country: str) -> SponsorEntry | None:
+        if country:
+            return next((e for r, e in entries.items() if REGISTER_COUNTRY.get(r) == country), None) \
+                or next(iter(entries.values()), None)
+        return next(iter(entries.values()), None)
 
-    def lookup_prefix(self, company: str) -> SponsorEntry | None:
+    def lookup(self, company: str, country: str = "") -> SponsorEntry | None:
+        """The employer's entry, preferring the register of `country` when it is on several."""
+        return self._pick(self._by_name.get(normalise_company(company), {}), country)
+
+    def lookup_prefix(self, company: str, country: str = "") -> SponsorEntry | None:
         """Match "Monzo" to "Monzo Bank Ltd": only when exactly one register name starts with it.
 
         Used for employer career sites, where the company name comes from our own config
@@ -66,10 +82,11 @@ class SponsorIndex:
         key = normalise_company(company)
         if not key:
             return None
-        if key not in self._prefix_cache:
-            hits = {id(e): e for name, e in self._by_name.items() if name.startswith(key + " ")}
-            self._prefix_cache[key] = next(iter(hits.values())) if len(hits) == 1 else None
-        return self._prefix_cache[key]
+        if (key, country) not in self._prefix_cache:
+            hits = {id(e): e for name, regs in self._by_name.items() if name.startswith(key + " ")
+                    for r, e in regs.items() if not country or REGISTER_COUNTRY.get(r) == country}
+            self._prefix_cache[(key, country)] = next(iter(hits.values())) if len(hits) == 1 else None
+        return self._prefix_cache[(key, country)]
 
     def __len__(self) -> int:
         return len(self._by_name)
@@ -139,3 +156,64 @@ def load_nl_register(index: SponsorIndex) -> None:
         raise RuntimeError("IND register page contained no sponsor rows")
     for name in parser.names:
         index.add(SponsorEntry(name=name, register="NL IND", routes={"Highly skilled migrant"}))
+
+
+def load_us_h1b(index: SponsorIndex) -> None:
+    """Employers with at least one approved H-1B petition in the latest USCIS Employer Data Hub export."""
+    text = _us_h1b_text()
+    first = text.split("\n", 1)[0]
+    reader = csv.DictReader(io.StringIO(text), delimiter="\t" if first.count("\t") > first.count(",") else ",")
+    fields = [f.strip() for f in (reader.fieldnames or [])]
+    reader.fieldnames = fields
+    name_col = next((f for f in fields if "employer" in f.lower() or "petitioner name" in f.lower()), None)
+    if not name_col:
+        raise RuntimeError(f"no employer column in H-1B data ({fields[:6]})")
+    approval_cols = [f for f in fields if "approval" in f.lower()]
+    seen: set[str] = set()
+    for row in reader:
+        name = (row.get(name_col) or "").strip()
+        if not name or name.upper() in seen:
+            continue
+        if approval_cols and not any(_number(row.get(c)) > 0 for c in approval_cols):
+            continue
+        seen.add(name.upper())
+        index.add(SponsorEntry(name=name, register="US H-1B",
+                               town=(row.get("Petitioner City") or row.get("City") or "").title(), routes={"H-1B"}))
+    if not seen:
+        raise RuntimeError("H-1B data contained no employers")
+
+
+def _number(value) -> float:
+    try:
+        return float(str(value).replace(",", "").strip() or 0)
+    except ValueError:
+        return 0.0
+
+
+def _decode(raw: bytes) -> str:
+    # The hub exports UTF-16 tab-separated files under a .csv name; newer ones are UTF-8 commas.
+    if raw[:2] in (b"\xff\xfe", b"\xfe\xff"):
+        return raw.decode("utf-16")
+    return raw.decode("utf-8-sig", errors="replace")
+
+
+def _us_h1b_text() -> str:
+    local = os.environ.get("US_H1B_EMPLOYERS_CSV")
+    if local:
+        with open(local, "rb") as fh:
+            return _decode(fh.read())
+    candidates: list[str] = []
+    try:
+        page = http.get_text(US_H1B_HUB_PAGE)
+        candidates += [u if u.startswith("http") else f"https://www.uscis.gov{u}"
+                       for u in re.findall(r'href="([^"]+\.csv)"', page)]
+    except Exception:  # noqa: BLE001 - fall back to the known file names below
+        pass
+    candidates += [US_H1B_CSV_PATTERN.format(year=y) for y in range(date.today().year, date.today().year - 4, -1)]
+    last_err: Exception | None = None
+    for url in dict.fromkeys(candidates):
+        try:
+            return _decode(http.get(url, retries=1))
+        except Exception as err:  # noqa: BLE001
+            last_err = err
+    raise RuntimeError(f"H-1B employer data unavailable: {last_err}")

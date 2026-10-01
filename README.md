@@ -1,15 +1,19 @@
 # rch-sponsor-register — Sponsored Jobs Board
 
-A self-updating board of employers that **actively hire with visa sponsorship** in the **UK and Europe**.
+A self-updating board of employers that **actively hire with visa sponsorship** in the **UK (including Scotland),
+Europe (Netherlands, Luxembourg, Sweden, Finland, Poland, Spain and the rest of the EU), the USA and the UAE (Dubai)**.
 It shows only vacancies posted in the **last 7 days** and covers every domain: technical, management,
-science and research, NHS and healthcare, universities, schools and the public sector.
+science and research, NHS and healthcare, universities, schools and the public sector. It also lists employers that
+take **UK Graduate visa (PSW)** and **US OPT / STEM OPT** holders.
 
 Every job links to the **employer's own application**: its careers site, or the official public-sector
 board it recruits through (NHS Jobs, Teaching Vacancies, jobs.ac.uk, EURAXESS). **Recruitment agencies and
 consultancies are removed.**
 
-* **Static site** (`index.html`): works on GitHub Pages with no server. Filter by country, age, sponsorship
-  evidence, employer tier (1/2/3), employer size (large/medium/small), sector and role domain. Export to CSV.
+* **Static site** (`index.html`): works on GitHub Pages with no server. Filter by country or region (Scotland, Dubai),
+  age, job role, sponsorship evidence, English-speaking roles, PSW / OPT friendly roles, employer tier (1/2/3), employer
+  size (large/medium/small), sector and role domain. Quick views for universities, schools, public sector & NHS, and a
+  PSW & OPT employer directory. Export to CSV.
 * **Data pipeline** (`jobfeed/`): Python 3.10+, standard library only. It fetches vacancies,
   checks employers against the official sponsor registers, classifies each job and writes `data/jobs.json`.
 * **GitHub Actions** (`.github/workflows/refresh-jobs.yml`): runs the tests and rebuilds the feed twice a day.
@@ -29,14 +33,30 @@ consultancies are removed.**
      flags it.
    * **Licensed sponsor**: the advert doesn't mention sponsorship, but the employer is on the official
      register for that country: the [UK Home Office register of licensed sponsors](https://www.gov.uk/government/publications/register-of-licensed-sponsors-workers)
-     or the [Dutch IND register of recognised sponsors](https://ind.nl/en/public-register-recognised-sponsors/public-register-regular-labour-and-highly-skilled-migrants).
+     or the [Dutch IND register of recognised sponsors](https://ind.nl/en/public-register-recognised-sponsors/public-register-regular-labour-and-highly-skilled-migrants),
+     or, for US jobs, the [USCIS H-1B Employer Data Hub](https://www.uscis.gov/tools/reports-and-studies/h-1b-employer-data-hub)
+     (employers with approved H-1B petitions).
+   * **Employer visa (UAE)**: UAE employers sponsor the residence and work visa of every foreign hire, so every job in
+     the UAE is kept.
+   * **Graduate visa / OPT accepted**: the advert rules sponsorship out but says it welcomes Graduate visa (PSW) or
+     OPT holders, who need no sponsorship.
 
-   Any advert that rules sponsorship out ("unable to sponsor", "right to work without sponsorship") is dropped.
+   Any other advert that rules sponsorship out ("unable to sponsor", "right to work without sponsorship",
+   "must be a US citizen") is dropped.
 4. **Classified**:
    * **Sector** (employer type): NHS & Healthcare, University & Research Institute, School & College,
      Public Sector & Government, Charity & Non-profit, Private Sector.
    * **Role domain**: Technical & Engineering, Management & Business, Science & Research,
      Healthcare & Clinical, Teaching & Academic, Finance & Legal.
+   * **Job role** (from the title): Software Developer, DevOps & Cloud, Data Science & AI, Data Analyst,
+     Business Analyst, IT Support, Application Support, Engineering, Project Manager, Finance & Accounting,
+     HR & Recruitment, Digital Marketing, Logistics & Supply Chain, Medical Laboratory, Aviation, Other.
+   * **Region**: Scotland (UK jobs in Scottish places or employers such as NHS Lothian), Dubai and Abu Dhabi.
+   * **English-speaking**: the advert is written in English and asks for no other language ("Dutch is a plus" is
+     fine; "fluent German required" is not). Jobs in the UK, Ireland and the US always count.
+   * **PSW / OPT friendly** (UK and US only): *stated* when the advert names the Graduate visa / PSW, OPT / STEM OPT /
+     CPT or cap-exempt H-1B; *likely* when an entry-level title (graduate, junior, intern, new grad…) is at an
+     employer that sponsors (UK) or files H-1Bs or uses E-Verify, which STEM OPT requires (US).
    * **Tier and size**: see below.
 5. **Hiring contacts** attached (see below), and duplicates merged. When the same job appears on the employer's
    careers site and on a job board, the careers-site copy is kept. The result is written to `data/jobs.json`.
@@ -63,18 +83,32 @@ Size follows the UK Companies Act bands: **small** (< 50 staff), **medium** (50�
 from the config, otherwise from headcount mentioned in the advert, otherwise it is shown as *unknown*.
 Add employers to `tier1`/`tier2` (optionally with `"size"`) or add regex `patterns` to improve coverage.
 
-## Hiring manager emails
+## PSW & OPT employer directory
 
-The board shows an email only if its origin is known:
+The *PSW & OPT employers* tab lists employers for UK Graduate visa and US OPT holders:
+
+* **Curated** graduate and new-grad employers in [`config/early_career_employers.json`](config/early_career_employers.json)
+  (large employers with graduate schemes, mid-size tech consultancies, universities). Each run re-checks them against
+  the UK sponsor register or the US H-1B data and shows *Licensed sponsor* / *Files H-1Bs*, or *Not matched* when the
+  name was not found (add the legal name as `register_name`).
+* **Found in feed**: any employer, of any size, with an entry-level role that is PSW / OPT friendly this week. This
+  is where most small and mid-size employers come from.
+
+## Hiring manager details
+
+The board shows a contact only if its origin is known:
 
 * **from advert**: an address printed in the job advert (e.g. "informal enquiries to …"), labelled either
-  *named contact* or *recruitment inbox*.
+  *named contact* or *recruitment inbox*. When the advert names the person next to it ("contact Dr Jane Smith,
+  Head of Biochemistry, on 01234 567890 or jane.smith@…"), the name, job title and phone number are shown too.
+  Platsbanken (Sweden) adverts carry the employer's own contact list, which is shown the same way.
 * **verified**: an address you added to [`config/contacts.json`](config/contacts.json) together with the public
   page you saw it on. It appears on every job from that employer.
 
 Addresses are **never guessed** (e.g. `firstname.lastname@company`) or scraped from personal profiles. Guessed
 addresses are often wrong, and emailing people via inferred personal data can breach UK GDPR / PECR. When no
-address is published, the card links to the advert and to a LinkedIn people search for that employer's recruiters.
+address is published, the card links to the advert and to LinkedIn people searches for that employer's hiring manager
+(by job role) and recruiters.
 
 ## Data sources
 
@@ -106,7 +140,7 @@ To add an employer, open its careers page, look at the address of a job link, an
   name. It lets the licence check match.
 * `"local": true` marks an employer whose jobs are all in its home country (e.g. an NHS trust or a university
   on Workday). Otherwise, jobs in unrecognised locations are left out rather than assumed to be in the UK.
-* The starter list is ~30 employers. Their board ids were entered from knowledge, not tested from here, so
+* The starter list is ~100 employers across the UK, Europe, the US and the UAE. Their board ids were entered from knowledge, not tested from here, so
   check the **Data sources** table on the board after the first run: failing employers are named there.
 
 ### Public-sector, NHS and university boards, and job boards
@@ -114,11 +148,15 @@ To add an employer, open its careers page, look at the address of a job link, an
 | Source | Coverage | Key needed |
 |---|---|---|
 | NHS Jobs (public XML search) | NHS England & Wales trusts (official) | none |
+| [Platsbanken JobSearch API](https://jobsearch.api.jobtechdev.se/) (Arbetsförmedlingen) | Every advert in Sweden incl. universities, regions, municipalities (official) | none |
 | [Teaching Vacancies API](https://teaching-vacancies.service.gov.uk/) (DfE) | State schools in England (official) | none |
 | RSS feeds in `config/sources.json` | jobs.ac.uk (UK universities), EURAXESS (EU research) (official) | none |
-| [Adzuna API](https://developer.adzuna.com/) | UK + 10 EU countries (job board) | `ADZUNA_APP_ID`, `ADZUNA_APP_KEY` (free) |
-| [Reed API](https://www.reed.co.uk/developers/jobseeker) | UK, direct employers only (job board) | `REED_API_KEY` (free) |
+| [Adzuna API](https://developer.adzuna.com/) | UK (incl. a Scotland search), US, NL, PL, ES + 7 more EU countries; one search per job role for the UK and US (job board) | `ADZUNA_APP_ID`, `ADZUNA_APP_KEY` (free) |
+| [Reed API](https://www.reed.co.uk/developers/jobseeker) | UK, direct employers only; one search per job role (job board) | `REED_API_KEY` (free) |
 | [Arbeitnow API](https://www.arbeitnow.com/api) | Germany / EU, visa-sponsorship filter (job board) | none |
+
+Adzuna's free tier allows about 25 calls a minute, so the connector pauses between calls (`ADZUNA_PAUSE`, default 2.5 s)
+and stops at `ADZUNA_MAX_CALLS` (default 200), running the most important searches first.
 
 Sources without keys are skipped rather than failing. Each run's per-source status is shown under
 *Data sources & last run status* on the page. The RSS feed URLs are examples, so check them for your
@@ -143,7 +181,8 @@ python -m unittest discover -s tests  # run the tests
 python -m http.server 8000            # open http://localhost:8000
 ```
 
-`UK_SPONSOR_REGISTER_CSV=/path/to/register.csv` uses a downloaded copy of the register instead of fetching it.
+`UK_SPONSOR_REGISTER_CSV=/path/to/register.csv` uses a downloaded copy of the register instead of fetching it, and
+`US_H1B_EMPLOYERS_CSV=/path/to/h1b.csv` a downloaded export of the USCIS H-1B Employer Data Hub.
 `JOBFEED_RETRIES=1` stops retrying unreachable sites (useful when testing offline).
 
 ## Project layout
@@ -152,9 +191,9 @@ python -m http.server 8000            # open http://localhost:8000
 index.html, assets/          static front end
 jobfeed/careers.py           employer career sites (Greenhouse, Lever, Ashby, SmartRecruiters, Workable, Recruitee, Personio, Workday)
 jobfeed/agencies.py          recruitment agency / consultancy detection
-jobfeed/sources.py           NHS Jobs, Teaching Vacancies, RSS and job-board connectors
-jobfeed/sponsors.py          UK Home Office + NL IND sponsor registers
-jobfeed/classify.py          sponsorship wording, sector, domain, tier and size rules
+jobfeed/sources.py           NHS Jobs, Teaching Vacancies, Platsbanken, RSS and job-board connectors
+jobfeed/sponsors.py          UK Home Office + NL IND sponsor registers, USCIS H-1B employer data
+jobfeed/classify.py          sponsorship wording, sector, domain, job role, region, language, PSW/OPT, tier and size rules
 jobfeed/contacts.py          advert email extraction + verified contact book
 jobfeed/pipeline.py          fetch → verify → classify → dedupe → data/jobs.json
 config/                      sources, employer career sites, agencies, tiers, verified contacts
@@ -165,7 +204,15 @@ tests/                       offline unit tests (no network needed)
 
 * Being on a sponsor register means an employer *can* sponsor, not that it will for every role. Jobs marked
   **Licensed sponsor** need confirming with the employer.
-* Only the UK and the Netherlands publish sponsor registers. For other European countries, jobs appear only
-  when the advert itself offers sponsorship.
+* Only the UK and the Netherlands publish sponsor registers, and the US publishes H-1B petition data. For other
+  countries (Luxembourg, Sweden, Finland, Poland, Spain…), jobs appear only when the advert itself offers sponsorship
+  or work-permit support.
+* The USCIS site sometimes blocks automated downloads. If the *US H-1B register* row on the board shows an error,
+  US jobs still appear when the advert offers sponsorship; download the export by hand and set `US_H1B_EMPLOYERS_CSV`
+  to use it.
+* Graduate visa (PSW) holders can work for any UK employer, and OPT holders for any US employer in their field;
+  *PSW / OPT friendly* highlights the roles where that is most realistic, not the only ones open to you.
+* The employer career sites added for the US, Nordics, Poland, Spain and the UAE were entered from knowledge;
+  any that fail are named under *Data sources* on the board.
 * Classification uses keyword rules, so some jobs will be mislabelled. Correct them by editing the rules in
   `jobfeed/classify.py` and `config/company_tiers.json`.

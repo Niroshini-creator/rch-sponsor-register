@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Sponsored Jobs Board</title>
-  <meta name="description" content="Actively hiring visa-sponsoring employers and vacancies across the UK and Europe, posted in the last 7 days.">
+  <meta name="description" content="Actively hiring visa-sponsoring employers and vacancies across the UK, Europe, the USA and the UAE, posted in the last 7 days.">
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="assets/styles.css">
 </head>
@@ -13,7 +13,7 @@
     <div class="wrap">
       <div>
         <h1>Sponsored Jobs Board</h1>
-        <p class="tagline">Apply direct to visa-sponsoring employers in the UK &amp; Europe: employer careers sites, NHS, universities, schools and the public sector. No agencies.</p>
+        <p class="tagline">Apply direct to visa-sponsoring employers in the UK, Scotland, Europe, the USA and Dubai: employer careers sites, NHS, universities, schools and the public sector, plus employers that take UK Graduate visa (PSW) and US OPT holders. No agencies.</p>
       </div>
       <p class="updated" id="updated">Loading…</p>
     </div>
@@ -32,9 +32,7 @@
         <label class="field">
           <span>Region / country</span>
           <select name="country">
-            <option value="">UK &amp; Europe</option>
-            <option value="GB">United Kingdom</option>
-            <option value="EU">Europe (excl. UK)</option>
+            <option value="">All countries</option>
           </select>
         </label>
 
@@ -51,15 +49,25 @@
           <legend>Apply via</legend>
         </fieldset>
 
+        <fieldset id="f-role"><legend>Job role</legend></fieldset>
+
         <fieldset>
           <legend>Sponsorship evidence</legend>
-          <label><input type="checkbox" name="sponsorship" value="confirmed" checked> Advert offers sponsorship</label>
-          <label><input type="checkbox" name="sponsorship" value="licensed_sponsor" checked> Licensed sponsor (advert silent)</label>
+          <label><input type="checkbox" name="sponsorship" value="confirmed" checked> Advert offers sponsorship <span class="count" data-count="sponsorship:confirmed"></span></label>
+          <label><input type="checkbox" name="sponsorship" value="licensed_sponsor" checked> Licensed / H-1B sponsor (advert silent) <span class="count" data-count="sponsorship:licensed_sponsor"></span></label>
+          <label><input type="checkbox" name="sponsorship" value="employer_visa" checked> Employer visa (UAE) <span class="count" data-count="sponsorship:employer_visa"></span></label>
+          <label><input type="checkbox" name="sponsorship" value="graduate_route" checked> No sponsorship, Graduate visa / OPT accepted <span class="count" data-count="sponsorship:graduate_route"></span></label>
+        </fieldset>
+
+        <fieldset>
+          <legend>Language &amp; visa route <button type="button" class="info" data-dialog="route-help" aria-label="What are PSW and OPT?">?</button></legend>
+          <label><input type="checkbox" name="english" value="1"> English-speaking roles only</label>
+          <label><input type="checkbox" name="early" value="1"> PSW (UK Graduate visa) / US OPT friendly</label>
         </fieldset>
 
         <fieldset>
           <legend>Hiring contact</legend>
-          <label><input type="checkbox" name="hasContact" value="1"> Only jobs with a contact email</label>
+          <label><input type="checkbox" name="hasContact" value="1"> Only jobs with a hiring contact</label>
         </fieldset>
 
         <fieldset id="f-tier">
@@ -78,6 +86,7 @@
     </aside>
 
     <section class="results" aria-live="polite">
+      <nav class="views" id="views" aria-label="Views"></nav>
       <div class="stats" id="stats"></div>
       <div class="toolbar">
         <p id="summary"></p>
@@ -93,10 +102,18 @@
       <ol id="jobs" class="jobs"></ol>
       <button id="more" class="btn ghost more" hidden>Show more</button>
 
+      <div id="directory" class="directory" hidden>
+        <p class="fineprint">Employers that take <strong>UK Graduate visa (PSW)</strong> or <strong>US OPT / STEM OPT</strong> holders.
+          Curated graduate and new-grad employers are re-checked against the official register on every run; the rest were
+          found in this week's feed with entry-level roles at a sponsoring employer, which is where most small and mid-size
+          employers come from. Use the filters on the left (search, country, tier, size) to narrow the list.</p>
+        <div class="table-scroll"><table id="employers"></table></div>
+      </div>
+
       <details class="sources">
         <summary>Data sources &amp; last run status</summary>
         <table id="sources"></table>
-        <p class="fineprint">Adverts from recruitment agencies and consultancies are removed. Jobs come from employers' own careers sites, official boards (NHS Jobs, Teaching Vacancies, jobs.ac.uk, EURAXESS) and, when switched on under Apply via, general job boards. Contact emails are only shown when the employer published them in the advert, or when they were added by hand to <code>config/contacts.json</code> with a source link. Addresses are never guessed. Always verify sponsorship with the employer before applying.</p>
+        <p class="fineprint">Adverts from recruitment agencies and consultancies are removed. Jobs come from employers' own careers sites, official boards (NHS Jobs, Teaching Vacancies, jobs.ac.uk, EURAXESS, Platsbanken) and, when switched on under Apply via, general job boards. Hiring contacts (name, job title, email, phone) are only shown when the employer published them with the advert, or when they were added by hand to <code>config/contacts.json</code> with a source link. Addresses are never guessed. Always verify sponsorship with the employer before applying.</p>
       </details>
     </section>
   </main>
@@ -105,6 +122,25 @@
     <h2>Employer tiers</h2>
     <dl id="tier-defs"></dl>
     <p class="fineprint">Size bands (UK Companies Act): small &lt; 50 staff, medium 50–249, large 250+.</p>
+    <form method="dialog"><button class="btn">Close</button></form>
+  </dialog>
+
+  <dialog id="route-help">
+    <h2>Visa routes</h2>
+    <dl>
+      <dt>PSW: UK Graduate visa</dt>
+      <dd>After a UK degree you can work for any employer for 2 years (3 after a PhD) without sponsorship. Jobs marked
+        <em>PSW friendly</em> either say they accept the Graduate visa, or are entry-level roles at a licensed sponsor,
+        so you can switch to a Skilled Worker visa later.</dd>
+      <dt>OPT: US Optional Practical Training</dt>
+      <dd>F-1 graduates can work for 12 months (36 with the STEM extension, which needs an E-Verify employer). Jobs marked
+        <em>OPT friendly</em> either mention OPT / STEM OPT / cap-exempt H-1B, or are entry-level roles at an employer on the
+        USCIS H-1B data or that uses E-Verify.</dd>
+      <dt>English-speaking</dt>
+      <dd>The advert is written in English and does not ask for another language (a language "is a plus" is fine).</dd>
+      <dt>UAE (Dubai)</dt>
+      <dd>UAE employers sponsor the residence and work visa of every foreign hire, so every UAE job is listed.</dd>
+    </dl>
     <form method="dialog"><button class="btn">Close</button></form>
   </dialog>
 
