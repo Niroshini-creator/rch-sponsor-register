@@ -149,15 +149,47 @@ business hours (employers Tue–Thu, candidates Mon–Sat), and a failed send is
 
 ### Running a placement business
 
-* **No fees from candidates for finding them work.** In the UK, the Employment Agencies Act 1973 s.6 and the
-  Conduct of Employment Agencies Regulations 2003 forbid charging work-seekers for work-finding services (narrow
-  exceptions, e.g. some entertainment/modelling roles). In Ireland, employment agencies need a licence under the
-  Employment Agency Act 1971 and may not charge job seekers fees. Optional paid services (CV writing, training) must
-  never be a condition of being put forward for jobs. Charge employers instead.
+* **No fees from candidates for finding them work**, and paid extras must stay optional: see
+  *Charging candidates for services* below.
 * Publish a privacy notice and link it from your sign-up forms and emails (`sender.privacy_url`). A UK-based
   business also pays the ICO data protection fee; for a company based abroad see *Operating from India*.
 * Don't advise on immigration: in the UK that is regulated by the IAA (formerly OISC). Point candidates to GOV.UK /
   irishimmigration.ie or a regulated adviser.
+
+## Charging candidates for services
+
+Selling CV writing, LinkedIn optimisation and interview coaching to job seekers is lawful. Charging them for
+**finding work** is not, if you act as an employment agency for jobs in the UK (Employment Agencies Act 1973
+s.6) or Ireland (Employment Agency Act 1971; agencies there also need a licence). Your four services, as we read
+the rules:
+
+| Service | Can you charge the candidate? |
+|---|---|
+| Resume / CV building | **Yes**, as an optional, separately priced service |
+| LinkedIn profile optimisation | **Yes**, same |
+| Interview preparation (questions, mock interviews, feedback) | **Yes**, same |
+| Applying to jobs on the candidate's behalf | **High risk.** Searching for and applying to vacancies for someone is a service "for the purpose of finding persons employment", which is exactly what the fee ban covers. Offer it free (funded by employer fees), or let the candidate do the applying with your coaching. Get legal advice before charging for it. |
+
+Rules that apply even to the allowed services (UK Conduct of Employment Agencies Regulations 2003 reg. 5, plus
+consumer law):
+
+* **Never a condition.** You may not make sharing jobs, shortlisting or introducing someone to an employer depend
+  on buying a service. If you place candidates with employers, paying and non-paying candidates must be treated
+  the same. `check` rejects candidate templates that link the two ("buy the package to be shortlisted"), and every
+  candidate email ends with `candidate_services.notice` in `config/outreach.json` saying so.
+* **No outcome promises.** Don't guarantee interviews, offers, visas or sponsorship, or quote placement rates you
+  can't evidence (UK DMCC Act 2024 / CPUTR, where the CMA can now fine directly; Irish Consumer Protection Act
+  2007). The lint blocks the common phrasings.
+* **Distance-selling rights.** Online sales to consumers come with a **14-day cancellation right** (UK Consumer
+  Contracts Regulations 2013; Irish Consumer Rights Act 2022). Give the full price, what's included and your
+  refund policy before payment, and get the customer's express request to start within the 14 days.
+* **Applications must be the candidate's own.** If you help with applications, the candidate approves every
+  application and its content. Never log into a candidate's LinkedIn or job-board accounts: sharing logins
+  breaks LinkedIn's User Agreement and most job boards' terms, and holding people's passwords is a security
+  liability. Never alter visa, qualification or employment details.
+* **Marketing these services** to candidates follows the same consent rules as everything else. Soft opt-in covers
+  people who bought or asked about a similar service from you. The `candidate_services_offer` campaign (off by
+  default; template `candidate_services`) is for exactly them.
 
 ## Operating from India (company registered outside the UK / EU)
 

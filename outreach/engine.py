@@ -108,7 +108,8 @@ def plan(contacts: list[Contact], cfg: dict, ledger: Ledger, suppression: Suppre
                 continue
             tpl = templates.load(step["template"])
             subject, body = templates.render(tpl, c, cfg["sender"])
-            tail = templates.footer(channel, c, cfg["sender"], decision.basis)
+            tail = templates.footer(channel, c, cfg["sender"], decision.basis,
+                                    cfg.get("candidate_services", {}).get("notice", ""))
             actions.append(Action(c, name, idx, step, subject, f"{body}\n\n{tail}".strip(), decision))
             used[channel] += 1
             touched.add(c.id)

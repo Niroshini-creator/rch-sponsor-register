@@ -157,6 +157,16 @@ class TemplateTests(unittest.TestCase):
                 c = employer() if camp["audience"] == "employer" else candidate()
                 templates.render(tpl, c, cfg["sender"])
 
+    def test_lint_allows_optional_paid_services_but_not_conditions_or_paid_applications(self):
+        ok = templates.Template("t", "CV help", "Optional CV review for £49. We introduce you to employers either way.")
+        self.assertEqual(templates.lint(ok, "candidate", "email"), [])
+        conditional = templates.Template("t", "x", "Buy our Gold package to be shortlisted for top roles.")
+        self.assertIn("must not depend", templates.lint(conditional, "candidate", "email")[0])
+        conditional2 = templates.Template("t", "x", "We will put you forward once you pay for the CV package.")
+        self.assertTrue(templates.lint(conditional2, "candidate", "email"))
+        on_behalf = templates.Template("t", "x", "We apply to jobs on your behalf: £99 a month.")
+        self.assertIn("on a candidate's behalf", templates.lint(on_behalf, "candidate", "email")[0])
+
     def test_lint_catches_guarantees_and_candidate_fees(self):
         tpl = templates.Template("t", "Guaranteed job offer", "We guarantee you a job. Registration fee £99. ${foo}")
         problems = templates.lint(tpl, "candidate", "email")
@@ -179,6 +189,9 @@ class FooterTests(unittest.TestCase):
         self.assertIn("Acme Pvt Ltd, Registered in India, CIN U1, Pune, India", text)
         self.assertIn("https://acme.com/privacy", text)
         self.assertIn("contacted us", templates.footer("email", candidate(), sender, "soft opt-in (enquired)"))
+        notice = "Paid services are optional."
+        self.assertIn(notice, templates.footer("email", candidate(), sender, "consent", notice))
+        self.assertNotIn(notice, templates.footer("email", employer(), sender, "li", notice))
 
 
 class EngineTests(Workspace):

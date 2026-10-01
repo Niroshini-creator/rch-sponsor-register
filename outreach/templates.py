@@ -23,6 +23,13 @@ _BANNED = [
     (r"\b(?:visa|sponsorship)\s+(?:is\s+)?assured", "do not promise sponsorship"),
 ]
 _CANDIDATE_FEES = re.compile(r"(?:registration|placement|joining|upfront|finder'?s?)\s+fee|pay\s+(?:us\s+)?to\s+(?:get|find)", re.I)
+# Paid CV / LinkedIn / interview services are fine for candidates, but never as the price of being put forward
+# (Conduct of Employment Agencies Regulations 2003 reg. 5), and applying for jobs for someone is work-finding.
+_CONDITIONAL = re.compile(r"(?:shortlist\w*|put (?:you )?forward|refer(?:red)?|consider\w*|submit\w* your (?:cv|profile))"
+                          r"[^.]{0,60}\b(?:buy|purchas\w*|pay\w*|package|plan)\b|\b(?:buy|purchas\w*|pay\w*|package)\b[^.]{0,60}"
+                          r"(?:to be|before we|so we can|and we will) (?:shortlist|put|refer|consider|submit|introduce)", re.I)
+_ON_BEHALF = re.compile(r"appl\w*\s+(?:to|for)?\s*(?:jobs?|roles?|vacanc\w*)?\s*(?:for you|on your behalf)", re.I)
+_PRICE = re.compile(r"[£€₹]\s*\d|\b(?:fee|price|cost|package|paid)\b", re.I)
 
 VISA_LABELS = {"psw": "Graduate visa (PSW)", "dependant": "Dependant visa", "stamp1g": "Stamp 1G",
                "stamp4": "Stamp 4", "skilled_worker": "Skilled Worker visa", "other": "your current visa", "": "your visa"}
@@ -67,7 +74,7 @@ def render(t: Template, c: Contact, sender: dict) -> tuple[str, str]:
     return subject, body
 
 
-def footer(channel: str, c: Contact, sender: dict, basis: str) -> str:
+def footer(channel: str, c: Contact, sender: dict, basis: str, candidate_notice: str = "") -> str:
     """Identity + opt-out on every message (PECR reg. 23, S.I. 336/2011 reg. 13(12))."""
     if channel in ("sms", "whatsapp"):
         return f"{sender['company']}. Reply STOP to opt out."
@@ -82,7 +89,8 @@ def footer(channel: str, c: Contact, sender: dict, basis: str) -> str:
     unsub = sender.get("unsubscribe_email") or sender["email"]
     identity = ", ".join(x for x in (sender["name"], sender["company"], sender.get("registration"), sender["address"]) if x)
     privacy = f"\nHow we use your details: {sender['privacy_url']}" if sender.get("privacy_url") else ""
-    return (f"--\n{identity}\n"
+    notice = f"{candidate_notice}\n" if candidate_notice and c.audience == "candidate" else ""
+    return (f"--\n{notice}{identity}\n"
             f"You received this because {why}. Not interested? Reply \"unsubscribe\" or email {unsub} "
             f"and we will not contact you again.{privacy}")
 
@@ -96,6 +104,12 @@ def lint(t: Template, audience: str, channel: str) -> list[str]:
     if audience == "candidate" and _CANDIDATE_FEES.search(text):
         problems.append(f"{t.name}: do not ask candidates for a fee to find them work "
                         "(Employment Agencies Act 1973 s.6 / Employment Agency Act 1971)")
+    if audience == "candidate" and _CONDITIONAL.search(text):
+        problems.append(f"{t.name}: being put forward for jobs must not depend on buying a service "
+                        "(Conduct of Employment Agencies Regulations 2003 reg. 5)")
+    if audience == "candidate" and _ON_BEHALF.search(text) and _PRICE.search(text):
+        problems.append(f"{t.name}: charging to apply for jobs on a candidate's behalf is likely a fee for finding "
+                        "work; offer it free or drop it (docs/OUTREACH.md, Charging candidates)")
     if channel == "email" and not t.subject:
         problems.append(f"{t.name}: email templates need a 'Subject:' first line")
     if channel in ("sms", "whatsapp") and len(t.body) > 450:

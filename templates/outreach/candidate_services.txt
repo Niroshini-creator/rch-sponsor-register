@@ -1,0 +1,18 @@
+Subject: ${first_name}, get your CV and LinkedIn ready for UK and Irish employers
+
+Hi ${first_name},
+
+Many ${visa} holders tell us their applications go unanswered because their CV is written for a different
+market. If that sounds familiar, these optional services can help:
+
+- CV rewrite for UK / Irish employers
+- LinkedIn profile optimisation so recruiters find you for ${target_role} roles
+- Interview preparation: likely questions for your role, a mock interview and written feedback
+
+Prices and what's included: ${sender_website}
+
+None of this is required to work with us. We share suitable openings and introduce you to employers either way.
+
+Best wishes,
+${sender_name}
+${sender_company}

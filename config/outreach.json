@@ -14,6 +14,10 @@
     "uk_representative": "",
     "eu_representative": ""
   },
+  "candidate_services": {
+    "_comment": "Shown at the end of every candidate email. Paid services must be optional and never a condition of hearing about or being put forward for jobs. See docs/OUTREACH.md, Charging candidates.",
+    "notice": "Our CV, LinkedIn and interview coaching services are optional and paid. You never need to buy anything to hear about jobs from us or to be put forward to employers. Paid services come with a 14-day cancellation right."
+  },
   "limits": {
     "email_per_day": 60,
     "sms_per_day": 40,
@@ -60,6 +64,15 @@
         {"day": 0, "channel": "email", "template": "candidate_ie_intro"},
         {"day": 3, "channel": "sms", "template": "candidate_sms"},
         {"day": 10, "channel": "email", "template": "candidate_followup"}
+      ]
+    },
+    "candidate_services_offer": {
+      "_comment": "Offer of paid services to people who enquired or are clients (soft opt-in) or opted in to email. Off by default: review the copy and prices first.",
+      "active": false,
+      "audience": "candidate",
+      "filter": {"country": ["GB", "IE"]},
+      "steps": [
+        {"day": 0, "channel": "email", "template": "candidate_services"}
       ]
     },
     "candidate_europe": {
