@@ -147,16 +147,22 @@ To add an employer, open its careers page, look at the address of a job link, an
 
 | Source | Coverage | Key needed |
 |---|---|---|
-| NHS Jobs (public XML search) | NHS England & Wales trusts (official) | none |
+| NHS Jobs (public XML search + each advert page for the full text and contact) | NHS England & Wales trusts (official) | none |
+| [jobs.ac.uk](https://www.jobs.ac.uk/) search, newest first (each advert's schema.org JobPosting) | UK and overseas universities and research institutes (official) | none |
+| [Times Higher Education unijobs](https://www.timeshighereducation.com/unijobs/) RSS + listing pages | Universities in the UK, US, Europe and the Gulf (official) | none |
+| [EURAXESS](https://euraxess.ec.europa.eu/jobs/search) search + job pages | European research jobs (official) | none |
 | [Platsbanken JobSearch API](https://jobsearch.api.jobtechdev.se/) (Arbetsförmedlingen) | Every advert in Sweden incl. universities, regions, municipalities (official) | none |
 | [Teaching Vacancies API](https://teaching-vacancies.service.gov.uk/) (DfE) | State schools in England (official) | none |
-| RSS feeds in `config/sources.json` | jobs.ac.uk (UK universities), EURAXESS (EU research) (official) | none |
+| RSS feeds in `config/sources.json` | any extra feed you add, e.g. a council's vacancies (official) | none |
 | [Adzuna API](https://developer.adzuna.com/) | UK (incl. a Scotland search), US, NL, PL, ES + 7 more EU countries; one search per job role for the UK and US (job board) | `ADZUNA_APP_ID`, `ADZUNA_APP_KEY` (free) |
 | [Reed API](https://www.reed.co.uk/developers/jobseeker) | UK, direct employers only; one search per job role (job board) | `REED_API_KEY` (free) |
 | [Arbeitnow API](https://www.arbeitnow.com/api) | Germany / EU, visa-sponsorship filter (job board) | none |
 
 Adzuna's free tier allows about 25 calls a minute, so the connector pauses between calls (`ADZUNA_PAUSE`, default 2.5 s)
 and stops at `ADZUNA_MAX_CALLS` (default 200), running the most important searches first.
+
+University boards and NHS Jobs read up to `ACADEMIC_MAX_ADVERTS` (default 150 per board) and `NHS_MAX_ADVERTS` (default 300)
+advert pages per run, pausing `ACADEMIC_PAUSE` seconds (default 0.3) between them.
 
 Sources without keys are skipped rather than failing. Each run's per-source status is shown under
 *Data sources & last run status* on the page. The RSS feed URLs are examples, so check them for your

@@ -150,32 +150,56 @@ def reed(days: int) -> Iterator[Job]:
 
 
 # --------------------------------------------------------------------------- NHS Jobs
+NHS_MAX_ADVERTS = int(os.environ.get("NHS_MAX_ADVERTS", "300"))
+_SCRIPT_RE = re.compile(r"(?is)<(script|style|noscript)[^>]*>.*?</\1>")
+
+
 def nhs_jobs(days: int) -> Iterator[Job]:
-    """NHS Jobs public XML search (England & Wales NHS employers)."""
+    """NHS Jobs public XML search (England & Wales NHS employers).
+
+    The search feed only carries a 150-character snippet, so each recent advert's page is read for
+    the full text: the sponsorship statement and the hiring contact live there.
+    """
     cutoff = _cutoff(days)
+    found: dict[str, tuple[dict, list[str], datetime]] = {}
     for keyword in ("sponsorship", "skilled worker", "visa"):
-        for page in range(1, 11):
+        for page in range(1, 41):
             raw = http.get("https://www.jobs.nhs.uk/api/v1/search_xml",
                            params={"keyword": keyword, "page": page, "sort": "publicationDateDesc"})
             root = ET.fromstring(raw)
             # The feed calls each job <vacancyDetails> (older versions: <vacancy>).
             vacancies = [el for el in root.iter() if _local(el.tag) in ("vacancyDetails", "vacancy")]
+            recent = 0
             for v in vacancies:
                 f = {_local(c.tag): (c.text or "").strip() for c in v}
                 posted = parse_date(f.get("postDate") or f.get("postdate"))
                 if not posted or posted < cutoff:
                     continue
+                recent += 1
+                key = f.get("id") or f.get("reference", "")
                 locations = [(el.text or "").strip() for el in v.iter() if _local(el.tag) == "location"]
-                yield Job(
-                    source="NHS Jobs", channel="official", source_id=f.get("id") or f.get("reference", ""),
-                    title=f.get("title", ""), company=f.get("employer", ""),
-                    location=", ".join(filter(None, locations)) or f.get("location", ""),
-                    country="GB", url=f.get("url", ""), posted_at=posted,
-                    description=strip_html(f.get("description")), salary=f.get("salary", ""),
-                    contract=f.get("type", ""),
-                )
-            if not vacancies:
+                found.setdefault(key, (f, locations, posted))
+            # Results are newest first: a page with nothing recent means the rest are older.
+            if not vacancies or not recent:
                 break
+    for i, (key, (f, locations, posted)) in enumerate(found.items()):
+        # Advert pages live on www.jobs.nhs.uk; the feed links to its beta host.
+        url = f.get("url", "").replace("://beta.jobs.nhs.uk/", "://www.jobs.nhs.uk/")
+        description = strip_html(f.get("description"))
+        if url and i < NHS_MAX_ADVERTS:
+            try:
+                page_html = http.get_text(url, retries=1)
+                main = re.search(r"(?is)<main\b.*?</main>", page_html)
+                description = strip_html(_SCRIPT_RE.sub(" ", main.group(0) if main else page_html)) or description
+            except Exception as err:  # noqa: BLE001 - keep the snippet if the advert page fails
+                log.debug("NHS advert %s unavailable: %s", url, err)
+        yield Job(
+            source="NHS Jobs", channel="official", source_id=key,
+            title=f.get("title", ""), company=f.get("employer", ""),
+            location=", ".join(filter(None, locations)) or f.get("location", ""),
+            country="GB", url=url, posted_at=posted, description=description,
+            salary=f.get("salary", ""), contract=f.get("type", ""),
+        )
 
 
 # --------------------------------------------------------------------------- Teaching Vacancies (DfE)
@@ -277,6 +301,198 @@ def jobtech_sweden(days: int) -> Iterator[Job]:
                 )
             if len(hits) < 100:
                 break
+
+
+# --------------------------------------------------------------------------- University & research boards
+ACADEMIC_MAX_ADVERTS = int(os.environ.get("ACADEMIC_MAX_ADVERTS", "150"))
+ACADEMIC_PAUSE = float(os.environ.get("ACADEMIC_PAUSE", "0.3"))
+_LD_JSON_RE = re.compile(r'(?is)<script[^>]+application/ld\+json[^>]*>(.*?)</script>')
+
+
+def _page_text(url: str) -> str:
+    """Readable text of an advert page: the <main> element when there is one, without scripts."""
+    page = http.get_text(url, retries=1)
+    main = re.search(r"(?is)<main\b.*?</main>", page)
+    return strip_html(_SCRIPT_RE.sub(" ", main.group(0) if main else page))
+
+
+def _job_posting(page: str) -> dict:
+    """The schema.org JobPosting embedded in an advert page, or {}."""
+    import json
+    for block in _LD_JSON_RE.findall(page):
+        try:
+            data = json.loads(block)
+        except ValueError:
+            continue
+        for item in data if isinstance(data, list) else data.get("@graph", [data]):
+            if isinstance(item, dict) and item.get("@type") == "JobPosting":
+                return item
+    return {}
+
+
+def _day_month(text: str, now: datetime) -> datetime | None:
+    """"18 Sep" (no year): this year, or last year when that would be in the future."""
+    try:
+        d = datetime.strptime(f"{text.strip()} {now.year}", "%d %b %Y").replace(tzinfo=timezone.utc)
+    except ValueError:
+        return None
+    return d.replace(year=now.year - 1) if d > now + timedelta(days=1) else d
+
+
+def jobs_ac_uk(days: int) -> Iterator[Job]:
+    """jobs.ac.uk, where UK (and many overseas) universities and research institutes advertise.
+
+    The search is read newest first; each advert's schema.org JobPosting gives the full text,
+    employer, location and salary, and usually the named contact for enquiries.
+    """
+    cutoff, now = _cutoff(days), datetime.now(timezone.utc)
+    links: dict[str, datetime] = {}
+    for query in ("visa sponsorship", "skilled worker", "certificate of sponsorship", "sponsorship", "visa"):
+        for start in range(1, 401, 25):
+            page = http.get_text("https://www.jobs.ac.uk/search/",
+                                 params={"keywords": query, "sortOrder": 1, "startIndex": start})
+            blocks = page.split('class="j-search-result__result')[1:]
+            old = 0
+            for block in blocks:
+                link = re.search(r'href="(/job/[^"]+)"', block)
+                placed = re.search(r"Date Placed:\s*</strong>\s*([^<]+?)\s*<", block)
+                posted = _day_month(placed.group(1), now) if placed else None
+                if not link or not posted:
+                    continue
+                if posted < cutoff:
+                    old += 1
+                    continue
+                links.setdefault(link.group(1), posted)
+            if not blocks or old == len(blocks):  # newest first: the rest are older
+                break
+    for i, (path, listed) in enumerate(links.items()):
+        if i >= ACADEMIC_MAX_ADVERTS:
+            break
+        if i:
+            time.sleep(ACADEMIC_PAUSE)
+        url = f"https://www.jobs.ac.uk{path}"
+        try:
+            posting = _job_posting(http.get_text(url, retries=1))
+        except Exception as err:  # noqa: BLE001
+            log.debug("jobs.ac.uk advert %s unavailable: %s", url, err)
+            continue
+        if not posting:
+            continue
+        places = posting.get("jobLocation") or []
+        addr = ((places[0] if isinstance(places, list) and places else places) or {}).get("address") or {}
+        where = ", ".join(filter(None, [addr.get("addressLocality"), addr.get("addressRegion")]))
+        org = posting.get("hiringOrganization") or {}
+        yield Job(
+            source="jobs.ac.uk", channel="official", source_id=path.split("/")[2] if path.count("/") >= 2 else path,
+            title=strip_html(posting.get("title")), company=org.get("name", "") if isinstance(org, dict) else str(org),
+            location=where or addr.get("addressCountry", ""),
+            country=_guess_country(f"{addr.get('addressCountry', '')} {where}", default="GB"),
+            url=url, posted_at=parse_date(posting.get("datePosted")) or listed,
+            description=strip_html(posting.get("description")), salary=_schema_salary(posting.get("baseSalary")),
+            contract=", ".join(_as_list(posting.get("employmentType"))),
+        )
+
+
+def the_unijobs(days: int) -> Iterator[Job]:
+    """Times Higher Education unijobs: universities worldwide (UK, US, Europe, the Gulf).
+
+    Its RSS search carries a snippet; each listing page is read for the full advert. Listings
+    outside the board's countries are skipped before that extra request.
+    """
+    from .careers import TARGET_COUNTRIES
+    cutoff = _cutoff(days)
+    items: dict[str, tuple[dict, str, datetime]] = {}
+    for query in ("visa sponsorship", "visa", "sponsorship", "skilled worker"):
+        for page in range(1, 6):
+            root = ET.fromstring(http.get("https://www.timeshighereducation.com/unijobs/jobsrss/",
+                                          params={"keywords": query, "page": page}))
+            new = 0
+            for item in (el for el in root.iter() if _local(el.tag) == "item"):
+                f = {_local(c.tag): (c.text or "").strip() for c in item}
+                link = f.get("link", "").split("?")[0]
+                posted = parse_date(f.get("pubDate"))
+                if not link or link in items or not posted:
+                    continue
+                new += 1
+                if posted < cutoff:
+                    continue
+                # "...summary ... Birmingham, United Kingdom": the location follows the last ellipsis.
+                tail = re.split(r"\.\.\.|…", strip_html(f.get("description")))[-1].strip()
+                country = _guess_country(tail, default="")
+                if country in TARGET_COUNTRIES:
+                    items[link] = (f, tail, posted)
+            if not new:  # the feed repeats its last page once the results run out
+                break
+    for i, (link, (f, where, posted)) in enumerate(items.items()):
+        if i >= ACADEMIC_MAX_ADVERTS:
+            break
+        if i:
+            time.sleep(ACADEMIC_PAUSE)
+        employer, _, title = f.get("title", "").partition(": ")
+        if not title:
+            employer, title = "", employer
+        description = strip_html(f.get("description"))
+        try:
+            description = _page_text(link) or description
+        except Exception as err:  # noqa: BLE001 - keep the snippet
+            log.debug("THE listing %s unavailable: %s", link, err)
+        yield Job(
+            source="Times Higher Education", channel="official", source_id=link.rstrip("/").split("/")[-2],
+            title=title.strip(), company=employer.strip().title(), location=where,
+            country=_guess_country(where, default=""), url=link, posted_at=posted, description=description,
+            salary=_the_salary(strip_html(f.get("description"))),
+        )
+
+
+def _the_salary(snippet: str) -> str:
+    """THE snippets start "£31,236 – £34,610 per annum: EMPLOYER: ..." when a salary is given."""
+    head = snippet.split(":", 1)[0] if ":" in snippet else ""
+    return head.strip() if re.search(r"[£$€]\s?\d|\d[\d,.]*\s?(?:AED|SEK|EUR|USD|GBP)", head) else ""
+
+
+def euraxess(days: int) -> Iterator[Job]:
+    """EURAXESS (European Commission): research jobs at European universities and institutes."""
+    cutoff = _cutoff(days)
+    found: dict[str, dict] = {}
+    for query in ("visa", "visa sponsorship", "relocation", "work permit"):
+        for page in range(0, 4):
+            html = http.get_text("https://euraxess.ec.europa.eu/jobs/search",
+                                 params={"keywords": query, "page": page})
+            blocks = html.split('<article class="ecl-content-item"')[1:]
+            for block in blocks:
+                link = re.search(r'href="(/jobs/\d+)"', block)
+                posted = re.search(r"Posted on:\s*([0-9]{1,2} [A-Za-z]+ [0-9]{4})", block)
+                if not link or not posted or link.group(1) in found:
+                    continue
+                when = parse_date(posted.group(1))
+                if not when or when < cutoff:
+                    continue
+                title = re.search(r"<h3[^>]*>.*?<span>(.*?)</span>", block, re.S)
+                org = re.search(r'primary-meta-item">\s*<a[^>]*>(.*?)</a>', block, re.S)
+                where = re.search(r"Work Locations:.*?ecl-text-standard[^>]*>(.*?)</div>", block, re.S)
+                where_text = re.sub(r"^Number of offers:\s*\d+,\s*", "", strip_html(where.group(1)) if where else "")
+                found[link.group(1)] = {"title": strip_html(title.group(1)) if title else "",
+                                        "company": strip_html(org.group(1)) if org else "",
+                                        "where": where_text, "posted": when}
+            if not blocks:
+                break
+    for i, (path, j) in enumerate(found.items()):
+        if i >= ACADEMIC_MAX_ADVERTS:
+            break
+        if i:
+            time.sleep(ACADEMIC_PAUSE)
+        url = f"https://euraxess.ec.europa.eu{path}"
+        try:
+            description = _page_text(url)
+        except Exception as err:  # noqa: BLE001
+            log.debug("EURAXESS job %s unavailable: %s", url, err)
+            description = ""
+        parts = [p.strip() for p in j["where"].split(",") if p.strip()]
+        yield Job(
+            source="EURAXESS", channel="official", source_id=path.rsplit("/", 1)[-1], title=j["title"],
+            company=j["company"], location=", ".join(parts[2:4] or parts[:2]),
+            country=_guess_country(j["where"], default=""), url=url, posted_at=j["posted"], description=description,
+        )
 
 
 # --------------------------------------------------------------------------- Generic RSS
@@ -433,4 +649,7 @@ SOURCES: dict[str, Callable[..., Iterator[Job]]] = {
     "teaching_vacancies": teaching_vacancies,
     "arbeitnow": arbeitnow,
     "jobtech_sweden": jobtech_sweden,
+    "jobs_ac_uk": jobs_ac_uk,
+    "the_unijobs": the_unijobs,
+    "euraxess": euraxess,
 }

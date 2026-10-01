@@ -423,7 +423,7 @@ function restoreUrl() {
 }
 
 // Feeds written before jobs carried a channel: infer it from the source name.
-const OFFICIAL_SOURCES = new Set(["NHS Jobs", "Teaching Vacancies", "jobs.ac.uk", "EURAXESS", "Platsbanken"]);
+const OFFICIAL_SOURCES = new Set(["NHS Jobs", "Teaching Vacancies", "jobs.ac.uk", "EURAXESS", "Platsbanken", "Times Higher Education"]);
 function legacyChannel(source = "") {
   if (source.endsWith(" careers")) return "career_site";
   return OFFICIAL_SOURCES.has(source) ? "official" : "aggregator";

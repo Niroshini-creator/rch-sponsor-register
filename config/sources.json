@@ -8,14 +8,12 @@
   "teaching_vacancies": { "enabled": true },
   "arbeitnow": { "enabled": true },
   "jobtech_sweden": { "enabled": true, "_note": "Platsbanken (Swedish Public Employment Service) open API: no key needed. Adverts include the employer's named contacts." },
+  "jobs_ac_uk": { "enabled": true, "_note": "jobs.ac.uk search (UK and overseas universities). Its RSS feeds were withdrawn; adverts are read from their schema.org JobPosting data." },
+  "the_unijobs": { "enabled": true, "_note": "Times Higher Education unijobs RSS (universities worldwide); each listing page is read for the full advert." },
+  "euraxess": { "enabled": true, "_note": "EURAXESS (European Commission) research job search." },
   "rss": {
     "enabled": true,
-    "feeds": [
-      { "name": "jobs.ac.uk", "url": "https://www.jobs.ac.uk/jobs/?format=rss&keywords=sponsorship", "country": "GB", "location": "United Kingdom", "channel": "official" },
-      { "name": "EURAXESS", "url": "https://euraxess.ec.europa.eu/jobs/feed?keywords=visa", "country": "BE", "location": "Europe", "channel": "official" },
-      { "name": "jobs.ac.uk", "url": "https://www.jobs.ac.uk/jobs/?format=rss&keywords=visa", "country": "GB", "location": "United Kingdom", "channel": "official" },
-      { "name": "jobs.ac.uk", "url": "https://www.jobs.ac.uk/jobs/scotland/?format=rss&keywords=sponsorship", "country": "GB", "location": "Scotland", "channel": "official" },
-      { "name": "EURAXESS", "url": "https://euraxess.ec.europa.eu/jobs/feed?keywords=relocation", "country": "BE", "location": "Europe", "channel": "official" }
-    ]
+    "_note": "Add any RSS/Atom job feed here, e.g. a council or university vacancy feed. The jobs.ac.uk and EURAXESS RSS addresses used before were withdrawn (404) and are now read by their own connectors.",
+    "feeds": []
   }
 }
