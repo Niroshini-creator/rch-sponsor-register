@@ -1,0 +1,5 @@
+id,audience,name,company,role,email,phone,country,city,visa,visa_expiry,target_role,source,consent_channels,consent_date,consent_source,relationship,relationship_date,tps_status,tps_checked_on,notes
+cand-001,candidate,Priya Example,,,priya@example.net,07700 900123,GB,Manchester,psw,2027-08-31,Data Analyst,website sign-up,email;whatsapp,2026-09-20,website registration form,,,,,
+cand-002,candidate,Chidi Example,,,chidi@example.net,07700 900456,GB,Leicester,dependant,2028-01-15,Healthcare Assistant,webinar,,,,enquired,2026-09-01,,,
+cand-003,candidate,Arjun Example,,,arjun@example.net,083 555 0199,IE,Dublin,stamp1g,2027-05-30,Software Developer,LinkedIn lead form,email;sms,2026-09-25,LinkedIn lead form 'Dublin jobs',,,,,
+cand-004,candidate,No Consent Example,,,someone@example.net,,GB,London,psw,,,scraped list,,,,,,,,blocked: no consent

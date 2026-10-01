@@ -1,0 +1,4 @@
+id,audience,name,company,role,email,phone,country,city,visa,visa_expiry,target_role,source,consent_channels,consent_date,consent_source,relationship,relationship_date,tps_status,tps_checked_on,notes
+emp-001,employer,Jane Example,Example Analytics Ltd,Talent Acquisition Lead,jane@example-analytics.co.uk,020 7946 0000,GB,London,,,,https://example-analytics.co.uk/careers,,,,,,clear,2026-09-28,hiring data analysts
+emp-002,employer,,Example Health Ireland,Recruitment Team,careers@example-health.ie,01 555 0100,IE,Dublin,,,,https://example-health.ie/jobs,,,,,,clear,2026-09-28,
+emp-003,employer,Max Muster,Beispiel GmbH,HR,max@beispiel.de,,DE,Berlin,,,,https://beispiel.de/karriere,,,,,,,,blocked: DE needs consent for B2B email

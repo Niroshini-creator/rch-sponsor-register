@@ -1,0 +1,70 @@
+{
+  "_comment": "Outreach settings. Fill in sender with your real details before sending: PECR requires your identity and a postal or email contact address in every marketing message. Credentials go in environment variables, never here. See docs/OUTREACH.md.",
+  "sender": {
+    "name": "Your Name",
+    "company": "Your Company Ltd",
+    "address": "Registered address, City, Postcode",
+    "email": "hello@yourcompany.co.uk",
+    "unsubscribe_email": "unsubscribe@yourcompany.co.uk",
+    "phone": "+44 20 0000 0000",
+    "website": "https://yourcompany.co.uk",
+    "booking_link": "https://yourcompany.co.uk/book"
+  },
+  "limits": {
+    "email_per_day": 60,
+    "sms_per_day": 40,
+    "whatsapp_per_day": 40,
+    "call_per_day": 30,
+    "seconds_between_messages": 45,
+    "min_hours_between_touches": 48
+  },
+  "sending_hours": {
+    "_comment": "Local time of the contact. days: 0 = Monday … 6 = Sunday.",
+    "employer": {"days": [1, 2, 3], "start": "08:30", "end": "16:30"},
+    "candidate": {"days": [0, 1, 2, 3, 4, 5], "start": "09:30", "end": "19:30"}
+  },
+  "compliance": {
+    "_comment": "b2b_cold_email_countries: where emailing a business address without prior consent is lawful. GB and IE allow it with an opt-out. Do not add DE, AT, DK, IT or others without checking local law: many require consent even for B2B.",
+    "b2b_cold_email_countries": ["GB", "IE"],
+    "screen_max_age_days": 28,
+    "soft_opt_in_months": {"GB": 24, "IE": 12, "default": 12}
+  },
+  "campaigns": {
+    "employer_intro": {
+      "audience": "employer",
+      "filter": {"country": ["GB", "IE"]},
+      "steps": [
+        {"day": 0, "channel": "email", "template": "employer_intro"},
+        {"day": 4, "channel": "email", "template": "employer_followup"},
+        {"day": 8, "channel": "call", "template": "call_employer"},
+        {"day": 14, "channel": "email", "template": "employer_last"}
+      ]
+    },
+    "candidate_uk_psw_dependant": {
+      "audience": "candidate",
+      "filter": {"country": ["GB"], "visa": ["psw", "dependant"]},
+      "steps": [
+        {"day": 0, "channel": "email", "template": "candidate_uk_intro"},
+        {"day": 3, "channel": "whatsapp", "template": "candidate_whatsapp", "content_sid": "", "content_variables": ["first_name", "visa"]},
+        {"day": 10, "channel": "email", "template": "candidate_followup"}
+      ]
+    },
+    "candidate_ie_stamp1g": {
+      "audience": "candidate",
+      "filter": {"country": ["IE"], "visa": ["stamp1g", "stamp4", "dependant"]},
+      "steps": [
+        {"day": 0, "channel": "email", "template": "candidate_ie_intro"},
+        {"day": 3, "channel": "sms", "template": "candidate_sms"},
+        {"day": 10, "channel": "email", "template": "candidate_followup"}
+      ]
+    },
+    "candidate_europe": {
+      "audience": "candidate",
+      "filter": {"country": ["NL", "DE", "FR", "BE", "LU", "SE", "FI", "DK", "ES", "PT", "PL", "IT", "AT"]},
+      "steps": [
+        {"day": 0, "channel": "email", "template": "candidate_europe_intro"},
+        {"day": 10, "channel": "email", "template": "candidate_followup"}
+      ]
+    }
+  }
+}

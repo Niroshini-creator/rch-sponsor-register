@@ -1,0 +1,1 @@
+Hi ${first_name}, ${sender_name} from ${sender_company} here. You registered for job updates: new roles for ${visa} holders in Ireland this week. Book a free call: ${sender_booking_link}

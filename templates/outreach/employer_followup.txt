@@ -1,0 +1,11 @@
+Subject: Re: Pre-screened candidates with the right to work for ${company}
+
+Hi ${first_name},
+
+Just following up on my note last week. If you have roles open in data, IT support, finance, healthcare
+or engineering, I can share a short list of candidates who already have the right to work in the UK or Ireland.
+
+If a 10-minute call is easier, you can pick a time here: ${sender_booking_link}
+
+Thanks,
+${sender_name}

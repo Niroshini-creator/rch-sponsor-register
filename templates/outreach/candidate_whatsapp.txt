@@ -1,0 +1,1 @@
+Hi ${first_name}, it's ${sender_name} from ${sender_company}. You registered for job updates: we have new roles for ${visa} holders this week. Want me to send the ones that match your CV? Book a call: ${sender_booking_link}

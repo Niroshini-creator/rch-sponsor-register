@@ -1,0 +1,11 @@
+Subject: Should I close your file?
+
+Hi ${first_name},
+
+I haven't heard back, so I'll assume now isn't the right time and won't follow up again.
+
+If your hiring plans change, just reply to this email and I'll send over profiles the same day.
+
+All the best,
+${sender_name}
+${sender_company}

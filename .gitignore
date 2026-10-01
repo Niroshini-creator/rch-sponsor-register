@@ -1,3 +1,5 @@
 __pycache__/
 *.pyc
 .venv/
+# outreach: contacts, ledger and suppression list hold personal data – never commit
+outreach_data/

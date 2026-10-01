@@ -1,0 +1,16 @@
+Subject: Pre-screened candidates with the right to work for ${company}
+
+Hi ${first_name},
+
+I run placement support at ${sender_company}. We work with graduates and professionals in ${city} who already
+hold the right to work, including UK Graduate visa (PSW) and Dependant visa holders and Irish Stamp 1G holders,
+so many of them can start without you needing to sponsor.
+
+Every candidate we put forward is screened for skills, references and visa type and expiry before you see a CV.
+There is no cost to look at profiles.
+
+Would it be useful if I sent over two or three anonymised profiles for the roles you are hiring for at the moment?
+
+Best regards,
+${sender_name}
+${sender_company} | ${sender_phone} | ${sender_website}

@@ -1,0 +1,12 @@
+CALL SCRIPT – employer (aim: book a 10-minute follow-up or get permission to send profiles)
+
+1. "Hi, is that ${first_name}? It's ${sender_name} from ${sender_company}. I emailed you last week about candidates
+   with the right to work. Have I caught you at a bad time?"
+   (If bad time: ask when to call back and log outcome 'callback'.)
+2. "We place graduates and professionals who already hold UK Graduate visa, Dependant visa or Irish Stamp 1G,
+   so in many cases there's no sponsorship needed. Which roles are you finding hardest to fill right now?"
+3. Listen. Offer: "Can I send you two or three anonymised profiles for that?" → log 'interested'.
+4. If they say no: thank them and ask "Would you like me to take you off our list?" If yes → log 'do_not_call'.
+
+Must say on every call: your name, ${sender_company}, and if asked, our address: ${sender_address}.
+Never press if they ask not to be called again. Note: ${notes}

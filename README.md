@@ -185,6 +185,13 @@ python -m http.server 8000            # open http://localhost:8000
 `US_H1B_EMPLOYERS_CSV=/path/to/h1b.csv` a downloaded export of the USCIS H-1B Employer Data Hub.
 `JOBFEED_RETRIES=1` stops retrying unreachable sites (useful when testing offline).
 
+## Outreach automation
+
+`python -m outreach` runs cold email and cold-call campaigns to employers and opted-in email / SMS / WhatsApp
+sequences to candidates (UK Graduate visa / PSW, dependants, Irish Stamp 1G) in the UK, Ireland and Europe, with a
+built-in PECR / GDPR / TPS compliance gate, suppression list, reply detection and call sheets. It can import the
+recruitment inboxes found in `data/jobs.json` as employer prospects. See [docs/OUTREACH.md](docs/OUTREACH.md).
+
 ## Project layout
 
 ```
@@ -197,6 +204,7 @@ jobfeed/classify.py          sponsorship wording, sector, domain, job role, regi
 jobfeed/contacts.py          advert email extraction + verified contact book
 jobfeed/pipeline.py          fetch → verify → classify → dedupe → data/jobs.json
 config/                      sources, employer career sites, agencies, tiers, verified contacts
+outreach/                    outreach automation (see docs/OUTREACH.md); templates/outreach/, config/outreach.json
 tests/                       offline unit tests (no network needed)
 ```
 

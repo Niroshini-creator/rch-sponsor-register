@@ -1,0 +1,9 @@
+Subject: New ${target_role} openings this week
+
+Hi ${first_name},
+
+A quick update: we are seeing new ${target_role} openings with employers who hire ${visa} holders.
+Reply with your latest CV and we'll tell you which ones fit, or book a call: ${sender_booking_link}
+
+Best wishes,
+${sender_name}

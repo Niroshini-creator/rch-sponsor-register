@@ -1,0 +1,17 @@
+Subject: ${first_name}, job search support for ${visa} holders
+
+Hi ${first_name},
+
+Thanks for your interest in ${sender_company}. Here is how we can help
+with your search for ${target_role} roles in the UK:
+
+- CV and LinkedIn review tailored to UK employers
+- Matching you with employers who hire ${visa} holders and, where you need it later, sponsor Skilled Worker visas
+- Interview preparation and feedback
+- Introductions to hiring managers we work with directly
+
+Book a free 15-minute call to talk through your plan: ${sender_booking_link}
+
+Best wishes,
+${sender_name}
+${sender_company} | ${sender_phone}
