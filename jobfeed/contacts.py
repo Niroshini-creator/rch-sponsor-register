@@ -46,8 +46,30 @@ _NOT_NAME = {"the", "our", "human", "resources", "recruitment", "team", "hr", "d
 _PHONE_RE = re.compile(r"(?:tel(?:ephone)?|phone|call|on|mobile|ring)\.?:?\s*(\+?\(?\d[\d\s().-]{8,17}\d)", re.I)
 
 
+# Contact blocks laid out as fields: "Name: Katie Muscat  Job title: HR Partner  Email Address: …"
+_FIELD_NAME_RE = re.compile(
+    rf"(?i:\bname)\s*:\s*(?P<title>{_TITLE})?(?P<name>{_NAME_WORD}(?:\s+{_NAME_WORD}){{1,3}})")
+_FIELD_ROLE_RE = re.compile(r"(?i:\b(?:job title|position|role))\s*:\s*(?P<role>[^:\n]{3,70}?)\s*(?=(?i:e-?mail|tel|phone|$))")
+
+
+_FIELD_LABELS = {"email", "e-mail", "job", "title", "tel", "telephone", "phone", "position", "role", "address",
+                 "contact", "mobile", "department"}
+
+
 def _named_contact(window: str) -> dict:
-    """The last "contact <Name>, <Role>" before an address, when the advert names the person."""
+    """The person an advert names next to an address: "contact <Name>, <Role>" or a "Name: …" field."""
+    fields = list(_FIELD_NAME_RE.finditer(window))
+    if fields:
+        m = fields[-1]
+        words = []
+        for w in m.group("name").split():  # "Katie Muscat Email Address:" -> "Katie Muscat"
+            if w.lower() in _FIELD_LABELS:
+                break
+            words.append(w)
+        if len(words) >= 2 and not any(w.lower().strip("'’") in _NOT_NAME for w in words):
+            role = _FIELD_ROLE_RE.search(window, m.start("name"))
+            return {"name": f"{(m.group('title') or '').strip()} {' '.join(words)}".strip(),
+                    "role": role.group("role").strip(" .,-–") if role else ""}
     found: dict = {}
     for m in _CONTACT_RE.finditer(window):
         words = m.group("name").split()

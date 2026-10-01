@@ -247,7 +247,9 @@ function renderDirectory() {
     const route = e.route === "OPT" ? "US OPT / STEM OPT" : "UK Graduate visa (PSW)";
     const record = e.on_register
       ? `<span class="tag ok">${esc(e.register === "US H-1B" ? "Files H-1Bs" : "Licensed sponsor")}</span>`
-      : `<span class="tag warn" title="Not matched by name on the register: check the employer's legal name">Not matched</span>`;
+      : e.register_checked === false
+        ? `<span class="tag" title="The official register could not be downloaded on this run">Not checked</span>`
+        : `<span class="tag warn" title="Not matched by name on the register: check the employer's legal name">Not matched</span>`;
     const q = encodeURIComponent(`${e.name} ${e.route === "OPT" ? "new grad" : "graduate scheme"}`);
     const links = [
       e.careers_url ? `<a href="${esc(safeUrl(e.careers_url))}" target="_blank" rel="noopener">Careers</a>` : "",
@@ -421,7 +423,7 @@ function restoreUrl() {
 }
 
 // Feeds written before jobs carried a channel: infer it from the source name.
-const OFFICIAL_SOURCES = new Set(["NHS Jobs", "Teaching Vacancies", "jobs.ac.uk", "EURAXESS", "Platsbanken"]);
+const OFFICIAL_SOURCES = new Set(["NHS Jobs", "Teaching Vacancies", "jobs.ac.uk", "EURAXESS", "Platsbanken", "Times Higher Education"]);
 function legacyChannel(source = "") {
   if (source.endsWith(" careers")) return "career_site";
   return OFFICIAL_SOURCES.has(source) ? "official" : "aggregator";

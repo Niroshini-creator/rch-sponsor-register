@@ -92,6 +92,9 @@ class EarlyCareerTests(unittest.TestCase):
             make_job(country="US", description="You may opt out of the pension scheme.")), "")
         self.assertEqual(classify.classify_early_career(
             make_job(country="US", description="We do not accept OPT candidates.")), "")
+        capital_one = ("At this time, Capital One will not sponsor a new applicant for employment authorization, or offer "
+                       "any immigration related support for this position (i e H1B, F-1 OPT, F-1 STEM OPT, F-1 CPT, J-1).")
+        self.assertEqual(classify.classify_early_career(make_job(country="US", description=capital_one)), "")
 
     def test_likely_needs_sponsor_and_entry_level(self):
         job = make_job(title="Graduate Software Engineer")
@@ -169,6 +172,9 @@ class EnrichNewCountriesTests(unittest.TestCase):
         self.assertEqual((rows["Acme", "GB"]["on_register"], rows["Acme", "GB"]["early_career_roles"]), (True, 1))
         self.assertEqual((rows["Acme", "US"]["register"], rows["Acme", "US"]["route"]), ("US H-1B", "OPT"))
         self.assertFalse(rows["Missing Co", "US"]["on_register"])
+        self.assertTrue(rows["Missing Co", "US"]["register_checked"])
+        empty = pipeline.build_directory([], sponsors.SponsorIndex(), self.tiers, CONFIG / "early_career_employers.json")
+        self.assertFalse(any(r["register_checked"] for r in empty))
         self.assertEqual((rows["Small Co", "GB"]["curated"], rows["Small Co", "GB"]["size"]), (False, "small"))
 
 
@@ -236,3 +242,73 @@ class NewSourceTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class AcademicSourceTests(unittest.TestCase):
+    """Fixtures shaped like the live pages, captured from the source probe on 2026-10-01."""
+
+    def test_jobs_ac_uk(self):
+        day = NOW.strftime("%d %b")
+        search = f"""<div id="job-listings"><div class="j-search-result__result ie-border-left" data-advert-id="1">
+            <a href="/job/DTC595/research-fellow">Research Fellow</a>
+            <div><strong>Date Placed: </strong>{day}
+            </div></div><div class="j-search-result__result ie-border-left" data-advert-id="2">
+            <a href="/job/OLD1/old">Old</a><div><strong>Date Placed: </strong>01 Jan
+            </div></div></div>"""
+        advert = json.dumps({"@context": "https://schema.org", "@type": "JobPosting", "title": "Research Fellow",
+                             "description": "<p>Visa sponsorship available. Enquiries: Name: Katie Muscat "
+                                            "Email Address: katie.muscat@manchester.ac.uk</p>",
+                             "datePosted": NOW.isoformat(),
+                             "hiringOrganization": {"@type": "Organization", "name": "The University of Manchester"},
+                             "jobLocation": [{"@type": "Place", "address": {"addressLocality": "Manchester",
+                                                                            "addressCountry": "United Kingdom"}}],
+                             "baseSalary": {"currency": "GBP", "value": {"minValue": "37694", "maxValue": "46049",
+                                                                         "unitText": "YEAR"}}})
+        page = f'<html><script type="application/ld+json">{advert}</script></html>'
+        empty = '<div id="job-listings"></div>'
+        with mock.patch.object(sources.http, "get_text", side_effect=[search] + [empty] * 5 + [page]), \
+             mock.patch.object(sources, "ACADEMIC_PAUSE", 0):
+            jobs = list(sources.jobs_ac_uk(7))
+        self.assertEqual(len(jobs), 1)
+        job = jobs[0]
+        self.assertEqual((job.company, job.country, job.channel, job.salary),
+                         ("The University of Manchester", "GB", "official", "£37,694 – 46,049 a year"))
+        got = contacts.ContactBook({}).contacts_for(job)
+        self.assertEqual((got[0]["name"], got[0]["email"]), ("Katie Muscat", "katie.muscat@manchester.ac.uk"))
+
+    def test_the_unijobs(self):
+        stamp = NOW.strftime("%a, %d %b %Y %H:%M:%S +0000")
+        rss = f"""<rss><channel>
+            <item><title>UNIVERSITY COLLEGE BIRMINGHAM: Academic Skills Tutor</title>
+            <description>£31,236 – £34,610 per annum: UNIVERSITY COLLEGE BIRMINGHAM: We seek a tutor ... Birmingham, United Kingdom</description>
+            <link>https://www.timeshighereducation.com/unijobs/listing/415823/academic-skills-tutor/?TrackID=8</link>
+            <pubDate>{stamp}</pubDate></item>
+            <item><title>UNIVERSITY OF SYDNEY: Research Fellow</title>
+            <description>UNIVERSITY OF SYDNEY: Research... Camperdown, Australia</description>
+            <link>https://www.timeshighereducation.com/unijobs/listing/416122/research-fellow/?TrackID=8</link>
+            <pubDate>{stamp}</pubDate></item></channel></rss>""".encode()
+        with mock.patch.object(sources.http, "get", return_value=rss), \
+             mock.patch.object(sources.http, "get_text", return_value="<main>Visa sponsorship available.</main>") as page, \
+             mock.patch.object(sources, "ACADEMIC_PAUSE", 0):
+            jobs = list(sources.the_unijobs(7))
+        self.assertEqual(len(jobs), 1)  # Australia is outside the board's countries: no advert request
+        self.assertEqual((jobs[0].company, jobs[0].title, jobs[0].country, jobs[0].salary),
+                         ("University College Birmingham", "Academic Skills Tutor", "GB", "£31,236 – £34,610 per annum"))
+        self.assertEqual(jobs[0].description, "Visa sponsorship available.")
+        page.assert_called_once()
+
+    def test_euraxess(self):
+        posted = NOW.strftime("%-d %B %Y")
+        search = f"""<ul><li><article class="ecl-content-item"><ul><li class="ecl-content-block__primary-meta-item">
+            <a href="/partnering/organisations/profile/x" hreflang="en">Iquadrat Informatica SL</a></li>
+            <li class="ecl-content-block__primary-meta-item">Posted on: {posted}</li></ul>
+            <h3 class="ecl-content-block__title"><a href="/jobs/469745"><span>Postdoc Research Engineer</span></a></h3>
+            <span> Work Locations: </span></div><div class="ecl-text-standard ecl-u-d-flex"> Number of offers: 1, Spain,
+            IQUADRAT INFORMATICA, Barcelona, 08006 </div></article></li></ul>"""
+        with mock.patch.object(sources.http, "get_text",
+                               side_effect=[search, "", search, "", search, "", search, "", "<main>Visa support.</main>"]), \
+             mock.patch.object(sources, "ACADEMIC_PAUSE", 0):
+            jobs = list(sources.euraxess(7))
+        self.assertEqual(len(jobs), 1)
+        self.assertEqual((jobs[0].title, jobs[0].company, jobs[0].country, jobs[0].location),
+                         ("Postdoc Research Engineer", "Iquadrat Informatica SL", "ES", "Barcelona, 08006"))

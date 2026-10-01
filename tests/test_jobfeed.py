@@ -192,15 +192,22 @@ class SourceParserTests(unittest.TestCase):
                          ("DE", True, "Hi"))
 
     def test_nhs_xml(self):
-        xml = f"""<vacancies><vacancy><id>C9-1</id><title>Staff Nurse</title>
+        xml = f"""<nhsJobs><vacancyDetails><id>C9-1</id><title>Staff Nurse</title>
             <description>Sponsorship available</description><employer>Barts Health NHS Trust</employer>
             <salary>£30,000</salary><postDate>{NOW.date().isoformat()}</postDate>
             <url>https://www.jobs.nhs.uk/candidate/jobadvert/C9-1</url>
-            <locations><location>London</location></locations></vacancy></vacancies>""".encode()
-        with mock.patch.object(sources.http, "get", side_effect=[xml, b"<vacancies/>"] * 3):
+            <locations><location>London</location></locations></vacancyDetails></nhsJobs>""".encode()
+        advert = ("<html><nav>menu</nav><main><h1>Staff Nurse</h1><p>Applications from job seekers who require "
+                  "current Skilled worker sponsorship to work in the UK are welcome.</p></main></html>")
+        with mock.patch.object(sources.http, "get", side_effect=[xml, b"<nhsJobs/>"] * 3), \
+             mock.patch.object(sources.http, "get_text", return_value=advert) as page:
             jobs = list(sources.nhs_jobs(7))
+        self.assertEqual(len(jobs), 1)  # the same vacancy from three keyword searches is kept once
         self.assertEqual(jobs[0].company, "Barts Health NHS Trust")
         self.assertEqual(jobs[0].location, "London")
+        self.assertIn("Skilled worker sponsorship", jobs[0].description)
+        self.assertNotIn("menu", jobs[0].description)
+        page.assert_called_once_with("https://www.jobs.nhs.uk/candidate/jobadvert/C9-1", retries=1)
 
     def test_rss_failure_is_isolated(self):
         rss = f"""<rss><channel><item><title>Lecturer in Physics - University of Bath</title>

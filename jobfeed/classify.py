@@ -331,6 +331,19 @@ _OPT_NEGATIVE_RE = re.compile(
     r"(not|cannot|can't|unable to|do not|don't|won't) (\w+ ){0,3}(accept|consider|support|hire|sponsor)\w* (\w+ ){0,3}"
     r"(opt|cpt|f-?1|graduate visa|psw)\b", re.I)
 _E_VERIFY_RE = re.compile(r"\be-?verify\b", re.I)
+# A route named in a negative sentence ("will not sponsor ... (i.e. H1B, F-1 OPT, CPT ...)") is not an invitation.
+_NEGATION_RE = re.compile(r"\b(not|no|unable|cannot|can't|won't|neither|nor|ineligible)\b", re.I)
+
+
+_CONTRAST_RE = re.compile(r"\b(but|however|although|though)\b", re.I)
+
+
+def _sentence(text: str, pos: int) -> str:
+    start = max(text.rfind(c, 0, pos) for c in ".;!?\n") + 1
+    ends = [i for i in (text.find(c, pos) for c in ".;!?\n") if i != -1]
+    # "We cannot sponsor, but Graduate visa holders are welcome": only the clause after "but" counts.
+    turn = list(_CONTRAST_RE.finditer(text, start, pos))
+    return text[turn[-1].end() if turn else start:min(ends) if ends else len(text)]
 
 
 def classify_early_career(job: Job) -> str:
@@ -347,7 +360,7 @@ def classify_early_career(job: Job) -> str:
     if _OPT_NEGATIVE_RE.search(text):
         return ""
     route_re = _PSW_RE if job.country == "GB" else _OPT_RE
-    if route_re.search(text):
+    if any(not _NEGATION_RE.search(_sentence(text, m.start())) for m in route_re.finditer(text)):
         return "stated"
     if not _EARLY_TITLE_RE.search(job.title):
         return ""
