@@ -158,7 +158,8 @@ def nhs_jobs(days: int) -> Iterator[Job]:
             raw = http.get("https://www.jobs.nhs.uk/api/v1/search_xml",
                            params={"keyword": keyword, "page": page, "sort": "publicationDateDesc"})
             root = ET.fromstring(raw)
-            vacancies = [el for el in root.iter() if _local(el.tag) == "vacancy"]
+            # The feed calls each job <vacancyDetails> (older versions: <vacancy>).
+            vacancies = [el for el in root.iter() if _local(el.tag) in ("vacancyDetails", "vacancy")]
             for v in vacancies:
                 f = {_local(c.tag): (c.text or "").strip() for c in v}
                 posted = parse_date(f.get("postDate") or f.get("postdate"))
