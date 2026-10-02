@@ -335,6 +335,7 @@ _E_VERIFY_RE = re.compile(r"\be-?verify\b", re.I)
 _NEGATION_RE = re.compile(r"\b(not|no|unable|cannot|can't|won't|neither|nor|ineligible)\b", re.I)
 
 
+_ABBREV_RE = re.compile(r"\b(?:i\.e|e\.g|etc|u\.s(?:\.a)?|vs|incl|approx|no)\.", re.I)
 _CONTRAST_RE = re.compile(r"\b(but|however|although|though)\b", re.I)
 
 
@@ -360,6 +361,8 @@ def classify_early_career(job: Job) -> str:
     if _OPT_NEGATIVE_RE.search(text):
         return ""
     route_re = _PSW_RE if job.country == "GB" else _OPT_RE
+    # "(i.e. H1B, F-1 OPT ...)": abbreviation dots must not end the sentence. Same length, so positions hold.
+    text = _ABBREV_RE.sub(lambda m: m.group(0).replace(".", " "), text)
     if any(not _NEGATION_RE.search(_sentence(text, m.start())) for m in route_re.finditer(text)):
         return "stated"
     if not _EARLY_TITLE_RE.search(job.title):
