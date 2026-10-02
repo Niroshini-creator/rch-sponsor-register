@@ -95,6 +95,14 @@ class EarlyCareerTests(unittest.TestCase):
         capital_one = ("At this time, Capital One will not sponsor a new applicant for employment authorization, or offer "
                        "any immigration related support for this position (i e H1B, F-1 OPT, F-1 STEM OPT, F-1 CPT, J-1).")
         self.assertEqual(classify.classify_early_career(make_job(country="US", description=capital_one)), "")
+        # The live advert's wording, with the dots in "i.e." that used to end the sentence early.
+        live = ("At this time, Capital One will not sponsor a new applicant for employment authorization, or offer any "
+                "immigration related support for this position (i.e. H1B, F-1 OPT, F-1 STEM OPT, F-1 CPT, J-1, TN, E-2, "
+                "E-3, L-1 and O-1, or any EADs or other forms of work authorization that require immigration support "
+                "from an employer).")
+        self.assertEqual(classify.classify_early_career(make_job(country="US", description=live)), "")
+        self.assertEqual(classify.classify_early_career(make_job(
+            country="US", description="New grads on STEM OPT (e.g. CS majors) are welcome to apply.")), "stated")
 
     def test_likely_needs_sponsor_and_entry_level(self):
         job = make_job(title="Graduate Software Engineer")
@@ -306,9 +314,22 @@ class AcademicSourceTests(unittest.TestCase):
             <span> Work Locations: </span></div><div class="ecl-text-standard ecl-u-d-flex"> Number of offers: 1, Spain,
             IQUADRAT INFORMATICA, Barcelona, 08006 </div></article></li></ul>"""
         with mock.patch.object(sources.http, "get_text",
-                               side_effect=[search, "", search, "", search, "", search, "", "<main>Visa support.</main>"]), \
-             mock.patch.object(sources, "ACADEMIC_PAUSE", 0):
+                               side_effect=[search, "", search, "", "<main>Visa support.</main>"]), \
+             mock.patch.object(sources, "EURAXESS_PAUSE", 0):
             jobs = list(sources.euraxess(7))
         self.assertEqual(len(jobs), 1)
+        self.assertEqual(jobs[0].description, "Visa support.")
         self.assertEqual((jobs[0].title, jobs[0].company, jobs[0].country, jobs[0].location),
                          ("Postdoc Research Engineer", "Iquadrat Informatica SL", "ES", "Barcelona, 08006"))
+
+
+class SourceResilienceTests(unittest.TestCase):
+    def test_euraxess_keeps_results_when_rate_limited(self):
+        posted = NOW.strftime("%-d %B %Y")
+        search = (f'<article class="ecl-content-item"><li class="ecl-content-block__primary-meta-item">Posted on: '
+                  f'{posted}</li><h3><a href="/jobs/1"><span>Postdoc</span></a></h3></article>')
+        with mock.patch.object(sources.http, "get_text",
+                               side_effect=[search, OSError("HTTP Error 429"), OSError("HTTP Error 429"), "<main>x</main>"]), \
+             mock.patch.object(sources, "EURAXESS_PAUSE", 0):
+            jobs = list(sources.euraxess(7))
+        self.assertEqual([j.title for j in jobs], ["Postdoc"])

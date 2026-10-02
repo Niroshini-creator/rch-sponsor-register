@@ -12,6 +12,7 @@ import os
 import re
 import time
 import xml.etree.ElementTree as ET
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 from typing import Callable, Iterator
 
@@ -151,7 +152,19 @@ def reed(days: int) -> Iterator[Job]:
 
 # --------------------------------------------------------------------------- NHS Jobs
 NHS_MAX_ADVERTS = int(os.environ.get("NHS_MAX_ADVERTS", "300"))
+NHS_WORKERS = int(os.environ.get("NHS_WORKERS", "4"))
 _SCRIPT_RE = re.compile(r"(?is)<(script|style|noscript)[^>]*>.*?</\1>")
+
+
+def _advert_text(url: str) -> str:
+    """Readable text of an advert page (its <main> element), or "" when the page can't be read."""
+    try:
+        page = http.get_text(url, retries=1)
+    except Exception as err:  # noqa: BLE001 - the caller falls back to the feed's snippet
+        log.debug("advert %s unavailable: %s", url, err)
+        return ""
+    main = re.search(r"(?is)<main\b.*?</main>", page)
+    return strip_html(_SCRIPT_RE.sub(" ", main.group(0) if main else page))
 
 
 def nhs_jobs(days: int) -> Iterator[Job]:
@@ -182,17 +195,15 @@ def nhs_jobs(days: int) -> Iterator[Job]:
             # Results are newest first: a page with nothing recent means the rest are older.
             if not vacancies or not recent:
                 break
-    for i, (key, (f, locations, posted)) in enumerate(found.items()):
-        # Advert pages live on www.jobs.nhs.uk; the feed links to its beta host.
-        url = f.get("url", "").replace("://beta.jobs.nhs.uk/", "://www.jobs.nhs.uk/")
-        description = strip_html(f.get("description"))
-        if url and i < NHS_MAX_ADVERTS:
-            try:
-                page_html = http.get_text(url, retries=1)
-                main = re.search(r"(?is)<main\b.*?</main>", page_html)
-                description = strip_html(_SCRIPT_RE.sub(" ", main.group(0) if main else page_html)) or description
-            except Exception as err:  # noqa: BLE001 - keep the snippet if the advert page fails
-                log.debug("NHS advert %s unavailable: %s", url, err)
+    # Advert pages live on www.jobs.nhs.uk; the feed links to its beta host.
+    urls = {key: f.get("url", "").replace("://beta.jobs.nhs.uk/", "://www.jobs.nhs.uk/")
+            for key, (f, _, _) in found.items()}
+    wanted = [u for u in urls.values() if u][:NHS_MAX_ADVERTS]
+    with ThreadPoolExecutor(max_workers=NHS_WORKERS) as pool:
+        pages = dict(zip(wanted, pool.map(_advert_text, wanted)))
+    for key, (f, locations, posted) in found.items():
+        url = urls[key]
+        description = pages.get(url) or strip_html(f.get("description"))  # the snippet if the page failed
         yield Job(
             source="NHS Jobs", channel="official", source_id=key,
             title=f.get("title", ""), company=f.get("employer", ""),
@@ -314,6 +325,9 @@ def _page_text(url: str) -> str:
     page = http.get_text(url, retries=1)
     main = re.search(r"(?is)<main\b.*?</main>", page)
     return strip_html(_SCRIPT_RE.sub(" ", main.group(0) if main else page))
+
+
+EURAXESS_PAUSE = float(os.environ.get("EURAXESS_PAUSE", "3"))
 
 
 def _job_posting(page: str) -> dict:
@@ -454,10 +468,19 @@ def euraxess(days: int) -> Iterator[Job]:
     """EURAXESS (European Commission): research jobs at European universities and institutes."""
     cutoff = _cutoff(days)
     found: dict[str, dict] = {}
-    for query in ("visa", "visa sponsorship", "relocation", "work permit"):
-        for page in range(0, 4):
-            html = http.get_text("https://euraxess.ec.europa.eu/jobs/search",
-                                 params={"keywords": query, "page": page})
+    calls = 0
+    for query in ("visa", "work permit"):
+        for page in range(0, 3):
+            # EURAXESS rate-limits (HTTP 429) quick successive searches: space them out.
+            if calls:
+                time.sleep(EURAXESS_PAUSE)
+            calls += 1
+            try:
+                html = http.get_text("https://euraxess.ec.europa.eu/jobs/search",
+                                     params={"keywords": query, "page": page}, retries=1)
+            except Exception as err:  # noqa: BLE001 - keep what earlier pages found
+                log.warning("EURAXESS search stopped: %s", err)
+                break
             blocks = html.split('<article class="ecl-content-item"')[1:]
             for block in blocks:
                 link = re.search(r'href="(/jobs/\d+)"', block)
@@ -480,7 +503,7 @@ def euraxess(days: int) -> Iterator[Job]:
         if i >= ACADEMIC_MAX_ADVERTS:
             break
         if i:
-            time.sleep(ACADEMIC_PAUSE)
+            time.sleep(EURAXESS_PAUSE)
         url = f"https://euraxess.ec.europa.eu{path}"
         try:
             description = _page_text(url)
