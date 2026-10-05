@@ -87,6 +87,45 @@ class PipelineTests(unittest.TestCase):
         out, _ = self.build([job(country="US"), job(source="Adzuna", source_id="9"), job()])
         self.assertEqual(len(out), 1)
 
+    def test_near_misses_are_collected_but_not_published(self):
+        mid = job(source_id="30", title="Solution Architect", description="Retail platform", salary="70,000")
+        stats = {"clearance_removed": 0, "no_sponsorship_removed": 0, "below_threshold": 0}
+        near: dict = {}
+        out = pipeline.build([mid, job(source_id="31", title="Site Manager", description="bricks")],
+                             PROFILE, 7, None, None, stats, near)
+        self.assertEqual(out, [])
+        self.assertEqual([r["source_id"] for r in near.values()], ["30"])   # the irrelevant one is not listed
+
+    def test_deepen_reads_full_advert_and_rescues_buried_keywords(self):
+        snippet = job(source_id="77", title="Solution Architect", description="Exciting architect role at a telco.", salary="70,000")
+        boring = job(source_id="78", title="Site Manager", description="bricks")
+        calls = []
+        full = ("Solution architecture for OSS BSS: NetCracker network inventory, order management, "
+                "service fulfilment, GPON, DOCSIS, GCP, TM Forum. Visa sponsorship available.")
+        stats = {"clearance_removed": 0, "no_sponsorship_removed": 0, "below_threshold": 0}
+
+        def fake(job_id):
+            calls.append(job_id)
+            return full
+
+        before, _ = self.build([snippet])
+        pipeline.deepen([snippet, boring], PROFILE, stats, fetch_full=fake)
+        after, _ = self.build([snippet])
+        self.assertEqual(calls, ["77"])               # the irrelevant advert is never fetched
+        self.assertEqual(stats["full_advert_fetched"], 1)
+        self.assertEqual(before, [])                  # snippet alone was below threshold
+        self.assertEqual(len(after), 1)
+        self.assertGreater(after[0]["match"], 70)
+
+    def test_deepen_survives_a_failed_fetch(self):
+        j = job(title="OSS Architect", description="short")
+        stats = {}
+        def boom(_):
+            raise OSError("down")
+        pipeline.deepen([j], PROFILE, stats, fetch_full=boom)
+        self.assertEqual(j.description, "short")
+        self.assertEqual(stats["full_advert_fetched"], 0)
+
     def test_merge_keeps_recent_previous_and_drops_expired(self):
         with tempfile.TemporaryDirectory() as d:
             path = Path(d) / "jobs.json"

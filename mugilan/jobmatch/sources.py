@@ -82,3 +82,12 @@ def adzuna(days: int, searches: list[str]) -> Iterator[Job]:
 
 def career_feeds(days: int, employers: list[dict], report: dict) -> Iterator[Job]:
     yield from careers.career_sites(days, employers, report)
+
+
+def reed_full_text(job_id: str) -> str:
+    """Full advert text from Reed's job-details endpoint (the search endpoint only returns a short snippet)."""
+    key = os.environ.get("REED_API_KEY")
+    if not key:
+        raise SkipSource("REED_API_KEY not set")
+    data = http.get_json(f"https://www.reed.co.uk/api/1.0/jobs/{job_id}", basic_auth=(key, ""))
+    return strip_html(data.get("jobDescription"))

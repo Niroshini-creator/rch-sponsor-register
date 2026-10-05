@@ -31,7 +31,9 @@ rescores and merges with the previous feed, so finds stay until they are 7 days 
 Needs the same optional secrets as the main board: `REED_API_KEY`, `ADZUNA_APP_ID`, `ADZUNA_APP_KEY` (free).
 
 ## Sources, honestly
-* **Reed** and **Adzuna** (official APIs; Adzuna re-lists many Indeed and agency adverts).
+* **Reed** and **Adzuna** (official APIs; Adzuna re-lists many Indeed and agency adverts). Reed's search returns only a short snippet,
+  so for Reed adverts that already look promising (snippet score 20+, best first, up to `MUGILAN_DEEP_MAX`=80 per run) the full
+  advert is fetched from Reed's job-details API before scoring and the clearance / sponsorship checks.
 * **Employer career sites** (`config/employers.json`, empty until you add employers; Workday, Greenhouse, Lever and more).
 * **LinkedIn, Indeed and Glassdoor** have no public search API and forbid scraping, so they are not read directly.
   **NHS Jobs** is not included: it has almost no telecom OSS/BSS roles.
