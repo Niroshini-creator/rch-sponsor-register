@@ -1,4 +1,32 @@
 {
-  "_comment": "Optional telecom employers whose own careers feed is read directly (same format and ATS support as the main board's config/employers.json: greenhouse, lever, ashby, smartrecruiters, workable, recruitee, personio, workday). Board ids are NOT guessed here. Add a line after checking the employer's careers page, e.g. { \"name\": \"Acme Telecom\", \"ats\": \"workday\", \"host\": \"acme.wd3.myworkdayjobs.com\", \"site\": \"Careers\", \"country\": \"GB\", \"local\": true }. Failing employers are listed on the page under Source status.",
-  "employers": []
+  "_comment": "Optional telecom employers whose own careers feed is read directly (same format and ATS support as the main board's config/employers.json: greenhouse, lever, ashby, smartrecruiters, workable, recruitee, personio, workday). Board ids are NOT guessed here. Add a line after checking the employer's careers page, e.g. { \"name\": \"Acme Telecom\", \"ats\": \"workday\", \"host\": \"acme.wd3.myworkdayjobs.com\", \"site\": \"Careers\", \"country\": \"GB\", \"local\": true }. Failing employers are listed on the page under Source status. Entries with \"enabled\": false are recorded but not read: BT, Vodafone and Virgin Media O2 use career-site platforms the shared connectors do not support yet.",
+  "employers": [
+    {
+      "name": "BT Group",
+      "ats": "successfactors",
+      "careers_url": "https://jobs.bt.com/BTGroup/",
+      "country": "GB",
+      "register_name": "BT Group PLC",
+      "enabled": false,
+      "note": "Career site runs on SAP SuccessFactors (jobs.bt.com/BTGroup/job/...). No connector yet; many BT OSS roles are in India, so filter to UK."
+    },
+    {
+      "name": "Vodafone",
+      "ats": "successfactors",
+      "careers_url": "https://opportunities.vodafone.com/",
+      "country": "GB",
+      "register_name": "Vodafone Limited",
+      "enabled": false,
+      "note": "opportunities.vodafone.com (SuccessFactors-style URLs) and vodafone.eightfold.ai. No connector yet; OSS/BSS roles found so far were in Pune."
+    },
+    {
+      "name": "Virgin Media O2",
+      "ats": "oracle-careersmarketplace",
+      "careers_url": "https://jobs.virginmediao2.co.uk/",
+      "country": "GB",
+      "register_name": "Virgin Media Limited",
+      "enabled": false,
+      "note": "jobs.virginmediao2.co.uk/en_US/careersmarketplace/JobDetail/... No connector yet."
+    }
+  ]
 }
