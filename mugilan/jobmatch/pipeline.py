@@ -24,6 +24,8 @@ log = logging.getLogger("mugilan")
 HERE = Path(__file__).resolve().parent.parent          # mugilan/
 MAIN_CONFIG = HERE.parent / "config"                   # read-only: the main board's agency list
 DEFAULT_OUT = HERE / "data" / "jobs.json"
+NEAR_MISS_MIN = 20                                     # lowest score shown under "closest matches"
+NEAR_MISS_MAX = 25
 DEEP_MIN_SCORE = 20                                    # snippet score that makes an advert worth reading in full
 DEEP_MAX = int(os.environ.get("MUGILAN_DEEP_MAX", "80"))
 DEEP_PAUSE = float(os.environ.get("MUGILAN_DEEP_PAUSE", "0.2"))
@@ -88,7 +90,7 @@ def deepen(jobs: list[Job], profile: dict, stats: dict, fetch_full=sources.reed_
 
 
 def build(jobs: list[Job], profile: dict, days: int, index: sponsors.SponsorIndex | None,
-          agencies: AgencyFilter | None, stats: dict) -> list[dict]:
+          agencies: AgencyFilter | None, stats: dict, near: dict | None = None) -> list[dict]:
     cutoff = datetime.now(timezone.utc) - timedelta(days=days)
     min_salary, min_match = profile["min_salary"], profile["min_match"]
     best: dict[tuple, dict] = {}
@@ -115,15 +117,21 @@ def build(jobs: list[Job], profile: dict, days: int, index: sponsors.SponsorInde
             sponsorship = "unverified"
 
         res = score_job(job.title, job.description, job.salary, min_salary, sponsorship)
-        if res.score < min_match:
+        below = res.score < min_match
+        if below:
             stats["below_threshold"] += 1
-            continue
+            if near is None or res.score < NEAR_MISS_MIN:
+                continue
         record = job.to_dict(description_chars=600)
         record.update(match=res.score, reasons=res.reasons, flags=res.flags + (["Recruitment agency advert"] if is_agency else []),
                       matched_keywords=res.matched, sponsorship=sponsorship, agency=is_agency)
         record.pop("advert_contacts", None)
         title, company, city = job.dedupe_key()
         key = (title, normalise_company(job.company), city)
+        if below:
+            if key not in near or record["match"] > near[key]["match"]:
+                near[key] = record
+            continue
         if key not in best or record["match"] > best[key]["match"]:
             best[key] = record
     return list(best.values())
@@ -164,7 +172,8 @@ def run(days: int, out_path: Path = DEFAULT_OUT) -> dict:
     deepen(raw, profile, stats)
     agency_path = MAIN_CONFIG / "agencies.json"
     agencies = AgencyFilter.load(agency_path) if agency_path.exists() else None
-    fresh = build(raw, profile, days, index, agencies, stats)
+    near: dict = {}
+    fresh = build(raw, profile, days, index, agencies, stats, near)
     jobs = merge_previous(fresh, out_path, days, now)
     payload = {
         "generated_at": now.isoformat(timespec="seconds"),
@@ -174,6 +183,7 @@ def run(days: int, out_path: Path = DEFAULT_OUT) -> dict:
         "sources": status,
         "counts": {"fetched": len(raw), **stats, "published": len(jobs)},
         "jobs": jobs,
+        "near_misses": sorted(near.values(), key=lambda r: (r["match"], r["posted_at"]), reverse=True)[:NEAR_MISS_MAX],
     }
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(payload, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")

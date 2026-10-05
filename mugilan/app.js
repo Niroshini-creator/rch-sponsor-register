@@ -82,10 +82,17 @@
       el("p", { className: "meta", textContent: `Fetched ${c.fetched ?? 0} · removed ${c.clearance_removed ?? 0} needing clearance, ${c.no_sponsorship_removed ?? 0} refusing sponsorship, ${c.below_threshold ?? 0} below threshold · published ${c.published ?? 0}` }));
   }
 
+  function renderNear() {
+    const rows = (data.near_misses || []).filter((j) => ageDays(j.posted_at) <= 7);
+    $("#near-wrap").hidden = !rows.length;
+    $("#near-sum").textContent = `Closest matches below the threshold (${rows.length})`;
+    $("#near").replaceChildren(...rows.map(card));
+  }
+
   form.addEventListener("input", render);
   form.addEventListener("submit", (e) => e.preventDefault());
   $("#csv").addEventListener("click", csv);
   fetch(`data/jobs.json?_=${Date.now()}`).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
-    .then((d) => { data = d; showStatic(); render(); })
+    .then((d) => { data = d; showStatic(); render(); renderNear(); })
     .catch(() => { $("#updated").textContent = "Feed not available yet"; render(); });
 })();

@@ -87,6 +87,15 @@ class PipelineTests(unittest.TestCase):
         out, _ = self.build([job(country="US"), job(source="Adzuna", source_id="9"), job()])
         self.assertEqual(len(out), 1)
 
+    def test_near_misses_are_collected_but_not_published(self):
+        mid = job(source_id="30", title="Solution Architect", description="Retail platform", salary="70,000")
+        stats = {"clearance_removed": 0, "no_sponsorship_removed": 0, "below_threshold": 0}
+        near: dict = {}
+        out = pipeline.build([mid, job(source_id="31", title="Site Manager", description="bricks")],
+                             PROFILE, 7, None, None, stats, near)
+        self.assertEqual(out, [])
+        self.assertEqual([r["source_id"] for r in near.values()], ["30"])   # the irrelevant one is not listed
+
     def test_deepen_reads_full_advert_and_rescues_buried_keywords(self):
         snippet = job(source_id="77", title="Solution Architect", description="Exciting architect role at a telco.", salary="70,000")
         boring = job(source_id="78", title="Site Manager", description="bricks")
