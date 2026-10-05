@@ -1,7 +1,8 @@
 # Mugilan matched-roles board
 
-A separate, self-contained board for one candidate (OSS/BSS Solution Architect, see `config/profile.json`).
-It shows UK roles **posted in the last 7 days**, each with a **match %** against the CV, and **rebuilds itself every day**.
+A separate, self-contained board for one candidate (OSS/BSS Solution Architect, see `config/profile.json`), built in the same
+style as the main sponsored-jobs board (sidebar filters, quick views, stat tiles, cards, CSV export, source status).
+It shows **UK and France** roles **posted in the last 7 days**, each with a **match %** against the CV, and **rebuilds itself every day**.
 
 It does **not** change the main sponsored-jobs board: its own folder (`mugilan/`), its own workflow
 (`.github/workflows/refresh-mugilan-jobs.yml`), its own output (`mugilan/data/jobs.json`) and its own concurrency group.
@@ -18,6 +19,7 @@ Once on `main`, GitHub Pages serves it at `/mugilan/` beside the main board.
 | Network capacity planning strength | "Network capacity / planning" titles and keywords score |
 | 90-day notice | Adverts asking for an immediate start are flagged |
 | UK driving licence | Shown in the profile; no filtering needed |
+| France (added) | Adzuna's French site, English-language adverts only (French-only adverts are removed). Pay threshold €70,000 (about £60k), set per country in `profile.json`. France has no public sponsor register, so these are tagged *work permit via employer* (Talent Passport / EU Blue Card) and lose 5 points like unverified UK roles |
 | Posted within 7 days | Applied in the feed and again in the browser |
 
 ## Match score (0-100)
@@ -31,7 +33,7 @@ rescores and merges with the previous feed, so finds stay until they are 7 days 
 Needs the same optional secrets as the main board: `REED_API_KEY`, `ADZUNA_APP_ID`, `ADZUNA_APP_KEY` (free).
 
 ## Sources, honestly
-* **Reed** and **Adzuna** (official APIs; Adzuna re-lists many Indeed and agency adverts). Reed's search returns only a short snippet,
+* **Reed** (UK) and **Adzuna** (UK and France) (official APIs; Adzuna re-lists many Indeed and agency adverts). Reed's search returns only a short snippet,
   so for Reed adverts that already look promising (snippet score 20+, best first, up to `MUGILAN_DEEP_MAX`=80 per run) the full
   advert is fetched from Reed's job-details API before scoring and the clearance / sponsorship checks.
 * **Employer career sites** (`config/employers.json`, empty until you add employers; Workday, Greenhouse, Lever and more).

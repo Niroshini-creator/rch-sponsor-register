@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Mugilan · Matched Roles</title>
-  <meta name="description" content="UK OSS/BSS and telecom architect roles posted in the last 7 days, scored against the candidate's CV. Refreshed daily.">
+  <title>Matched Roles Board</title>
+  <meta name="description" content="UK and France OSS/BSS and telecom architect roles posted in the last 7 days, scored against the candidate's CV. Refreshed daily.">
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -12,46 +12,98 @@
   <header class="site-header">
     <div class="wrap">
       <div>
-        <h1>Matched roles for <span id="who">the candidate</span></h1>
-        <p class="tagline" id="headline"></p>
+        <h1>Matched Roles Board</h1>
+        <p class="tagline" id="tagline">UK and France roles posted in the last 7 days, scored against the CV.</p>
+        <div class="profile-chips" id="chips"></div>
       </div>
       <p class="updated" id="updated">Loading…</p>
     </div>
   </header>
 
-  <main class="wrap">
-    <section class="profile" id="profile" aria-label="Candidate profile"></section>
+  <main class="wrap layout">
+    <aside class="filters" aria-label="Filters">
+      <details id="filter-panel" open>
+      <summary class="btn ghost">Filters</summary>
+      <form id="filters" autocomplete="off">
+        <label class="field"><span>Search</span>
+          <input type="search" name="q" placeholder="Role, employer, city, keyword…"></label>
 
-    <form id="filters" class="bar" autocomplete="off">
-      <label>Search <input type="search" name="q" placeholder="Title, employer, keyword…"></label>
-      <label>Min match <input type="range" name="min" min="0" max="100" step="5" value="45"> <output id="min-out">45%</output></label>
-      <label>Posted within
-        <select name="days"><option value="7">7 days</option><option value="3">3 days</option><option value="1">24 hours</option></select>
-      </label>
-      <label>Sponsorship
-        <select name="spons">
-          <option value="">Any</option>
-          <option value="confirmed">Advert offers sponsorship</option>
-          <option value="licensed_sponsor">Licensed sponsor</option>
-          <option value="unverified">Not verified</option>
-          <option value="agency">Agency advert</option>
-        </select>
-      </label>
-      <label>Source <select name="source"><option value="">All</option></select></label>
-      <label class="chk"><input type="checkbox" name="paid"> Salary £60k+ stated</label>
-      <button type="button" id="csv" class="btn">Export CSV</button>
-    </form>
+        <label class="field"><span>Country</span>
+          <select name="country"><option value="">UK and France</option></select></label>
 
-    <p id="count" class="count" role="status"></p>
-    <div id="results"></div>
+        <label class="field"><span>Posted within</span>
+          <select name="days"><option value="7">7 days</option><option value="3">3 days</option><option value="1">24 hours</option></select></label>
 
-    <details class="status" id="near-wrap" hidden><summary id="near-sum">Closest matches below the threshold</summary>
-      <p class="meta">Scored under the minimum match, so probably not a fit. Shown so you can see what was considered.</p><div id="near"></div></details>
-    <details class="status"><summary>Data sources &amp; last run</summary><div id="sources"></div></details>
-    <p class="note">Match % is a transparent keyword score against the CV (title 40, OSS/BSS domain 35, network tech 10, architecture/GCP 5,
-      seniority 5, salary 5; penalties for junior roles, low pay, unverified sponsorship). Adverts needing SC/DV clearance or refusing
-      sponsorship are removed. Always confirm sponsorship and salary with the employer.</p>
+        <label class="field"><span>Minimum match</span>
+          <span class="range-row"><input type="range" name="min" min="0" max="100" step="5" value="45"><output id="min-out">45%</output></span></label>
+
+        <fieldset id="f-channel"><legend>Apply via</legend>
+          <label><input type="checkbox" name="channel" value="career_site" checked> Employer careers site <span class="count" data-count="channel:career_site"></span></label>
+          <label><input type="checkbox" name="channel" value="aggregator" checked> Job board (Reed, Adzuna) <span class="count" data-count="channel:aggregator"></span></label>
+        </fieldset>
+
+        <fieldset><legend>Visa / work permit <button type="button" class="info" data-dialog="visa-help" aria-label="What do these mean?">?</button></legend>
+          <label><input type="checkbox" name="spons" value="confirmed" checked> Advert offers sponsorship <span class="count" data-count="sponsorship:confirmed"></span></label>
+          <label><input type="checkbox" name="spons" value="licensed_sponsor" checked> Licensed UK sponsor <span class="count" data-count="sponsorship:licensed_sponsor"></span></label>
+          <label><input type="checkbox" name="spons" value="permit_check" checked> France: employer work permit <span class="count" data-count="sponsorship:permit_check"></span></label>
+          <label><input type="checkbox" name="spons" value="unverified" checked> UK: not verified <span class="count" data-count="sponsorship:unverified"></span></label>
+          <label><input type="checkbox" name="spons" value="agency" checked> Agency advert <span class="count" data-count="sponsorship:agency"></span></label>
+        </fieldset>
+
+        <fieldset><legend>More</legend>
+          <label><input type="checkbox" name="direct" value="1"> Direct employers only (no agencies)</label>
+          <label><input type="checkbox" name="english" value="1"> English-speaking roles only</label>
+          <label><input type="checkbox" name="paid" value="1"> Pay meets expectation (stated)</label>
+        </fieldset>
+
+        <label class="field"><span>Source</span><select name="source"><option value="">All sources</option></select></label>
+
+        <div class="actions">
+          <button type="reset" class="btn ghost">Reset</button>
+          <button type="button" class="btn" id="export">Export CSV</button>
+        </div>
+      </form>
+      </details>
+    </aside>
+
+    <section class="results" aria-live="polite">
+      <nav class="views" id="views" aria-label="Views"></nav>
+      <div class="stats" id="stats"></div>
+      <div class="toolbar">
+        <p id="summary"></p>
+        <label>Sort
+          <select id="sort">
+            <option value="match">Best match first</option>
+            <option value="newest">Newest first</option>
+          </select>
+        </label>
+      </div>
+      <div id="notice" class="notice" hidden></div>
+      <ol id="jobs" class="jobs"></ol>
+      <button id="more" class="btn ghost more" hidden>Show more</button>
+
+      <details class="sources">
+        <summary>Data sources &amp; last run status</summary>
+        <table id="sources"></table>
+        <p class="fineprint">Match % is a transparent keyword score against the CV: title 40, OSS/BSS and telecom keywords 35, network technology 10,
+          architecture / GCP 5, seniority 5, pay 5, minus points for junior roles, pay below expectation and unverified sponsorship or work permit.
+          Adverts needing SC / DV clearance or refusing sponsorship are removed, and so are French-language adverts. Reed and Adzuna are
+          job boards, so agency adverts are kept but labelled; career-site roles are the employer's own. LinkedIn, Indeed and Glassdoor offer no
+          public search API and forbid scraping, so they are not read directly. Always confirm sponsorship, work permit and pay with the employer.</p>
+      </details>
+    </section>
   </main>
+
+  <dialog id="visa-help">
+    <h2>Visa and work permit labels</h2>
+    <dl>
+      <dt>Advert offers sponsorship</dt><dd>The advert says visa sponsorship is available.</dd>
+      <dt>Licensed UK sponsor</dt><dd>The advert is silent, but the employer is on the UK Home Office register of licensed sponsors.</dd>
+      <dt>France: employer work permit</dt><dd>France has no public sponsor register. A French employer applies for the permit (for example Talent Passport for a qualified employee, or an EU Blue Card), which depends on salary and role. Confirm with the employer.</dd>
+      <dt>Not verified / Agency</dt><dd>The employer is not on the register or the advert is from an agency, so sponsorship is unknown. These lose 5 points.</dd>
+    </dl>
+    <form method="dialog"><button class="btn">Close</button></form>
+  </dialog>
   <script src="app.js"></script>
 </body>
 </html>
