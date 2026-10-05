@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-05T05:41:45+00:00",
+ "generated_at": "2026-10-05T15:15:59+00:00",
  "window_days": 7,
  "profile": {
   "name": "Mugilan Ramalingam",
@@ -25,11 +25,11 @@
  "sources": {
   "UK sponsor register": {
    "status": "ok",
-   "count": 132591
+   "count": 132609
   },
   "Reed": {
    "status": "ok",
-   "count": 353
+   "count": 412
   },
   "Adzuna": {
    "status": "skipped",
@@ -41,60 +41,16 @@
   }
  },
  "counts": {
-  "fetched": 353,
-  "clearance_removed": 79,
-  "no_sponsorship_removed": 0,
+  "fetched": 412,
+  "clearance_removed": 88,
+  "no_sponsorship_removed": 4,
   "language_removed": 0,
-  "below_threshold": 274,
+  "below_threshold": 320,
   "full_advert_fetched": 80,
   "published": 0
  },
  "jobs": [],
  "near_misses": [
-  {
-   "source": "Reed",
-   "source_id": "57418649",
-   "title": "AI Solutions Architect - SMBC",
-   "company": "eFinancialCareers",
-   "location": "London",
-   "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/ai-solutions-architect-smbc/57418649",
-   "posted_at": "2026-10-02T00:00:00+00:00",
-   "description": "SMBC: A trusted partner for the long term Here at SMBC Group, we want to help you find the next step in your career so read on to discover if this opportunity is the one for you. We like to recognise potential in our people, so we welcome your application even when your experience doesn't perfectly align with the job description. Whilst we'll always strive to be better, we're proud of our inclusive culture, and encourage our applicants and colleagues to be their authentic, unique selves. Who we are United by a sense of purpose towards our customers - to be a trusted partner for the long-term…",
-   "salary": "",
-   "contract": "",
-   "channel": "aggregator",
-   "sponsorship": "licensed_sponsor",
-   "sponsor_register": "",
-   "sponsor_routes": [],
-   "sector": "",
-   "domain": "",
-   "role": "",
-   "region": "",
-   "english": true,
-   "early_career": "",
-   "tier": 3,
-   "size": "unknown",
-   "contacts": [],
-   "id": "012ae39cd26a",
-   "match": 33,
-   "reasons": [
-    "+20 Solution / technical architect title",
-    "+3 telecom OSS/BSS keywords",
-    "+5 architecture practice / GCP",
-    "+5 senior / architect level"
-   ],
-   "flags": [
-    "Salary not stated"
-   ],
-   "matched_keywords": [
-    "design authority",
-    "gcp",
-    "solution architecture"
-   ],
-   "agency": false,
-   "currency": "£"
-  },
   {
    "source": "Reed",
    "source_id": "57406264",
@@ -117,6 +73,8 @@
    "region": "",
    "english": true,
    "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
    "tier": 3,
    "size": "unknown",
    "contacts": [],
@@ -159,6 +117,8 @@
    "region": "",
    "english": true,
    "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
    "tier": 3,
    "size": "unknown",
    "contacts": [],
@@ -178,18 +138,18 @@
   },
   {
    "source": "Reed",
-   "source_id": "57420817",
-   "title": "Lead Solution Architect",
-   "company": "Appcast Enterprise",
+   "source_id": "57421965",
+   "title": "Salesforce Technical Architect",
+   "company": "Proactive Appointments",
    "location": "London",
    "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/lead-solution-architect/57420817",
+   "url": "https://www.reed.co.uk/jobs/salesforce-technical-architect/57421965",
    "posted_at": "2026-10-05T00:00:00+00:00",
-   "description": "Entity: Technology Job Family Group: IT&S Group Job Description: We’re looking for a Lead Architect to shape the technology behind our Gas & Power Trading International (GPTI) business. This role sits across the full trading landscape — from front-office systems to back-office processing, data platforms, integrations and infrastructure. You’ll take ownership of the technology roadmap across the trading technology estate, ensuring core platforms, modern digital services, integrations and data capabilities work together effectively while progressively reducing reliance on specialist knowledge…",
-   "salary": "",
+   "description": "Salesforce Technical Architect As Salesforce Technical Architect, you will provide technical leadership across the Salesforce ecosystem, reviewing and enhancing the current architecture while ensuring the platform remains stable, scalable, maintainable, and fit for future growth. You will evaluate existing custom Apex code, Lightning Components, Flows, integrations, and platform configurations to identify architectural weaknesses, technical debt, and opportunities for optimisation. Working closely with development and business teams, you will determine what should be retained, standardised,…",
+   "salary": "500 – 550",
    "contract": "",
    "channel": "aggregator",
-   "sponsorship": "unverified",
+   "sponsorship": "agency",
    "sponsor_register": "",
    "sponsor_routes": [],
    "sector": "",
@@ -198,28 +158,26 @@
    "region": "",
    "english": true,
    "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
    "tier": 3,
    "size": "unknown",
    "contacts": [],
-   "id": "ed9fa4dd6099",
-   "match": 28,
+   "id": "2e9081e605f9",
+   "match": 27,
    "reasons": [
     "+20 Solution / technical architect title",
-    "+3 telecom OSS/BSS keywords",
-    "+3 network technology (GPON/DOCSIS/MPLS/SDH/DWDM…)",
     "+2 architecture practice / GCP",
-    "+5 senior / architect level",
-    "-5 sponsorship / work permit not confirmed"
+    "+5 senior / architect level"
    ],
    "flags": [
-    "Salary not stated"
+    "Salary not stated",
+    "Recruitment agency advert"
    ],
    "matched_keywords": [
-    "design authority",
-    "enterprise architecture",
-    "transmission"
+    "enterprise architecture"
    ],
-   "agency": false,
+   "agency": true,
    "currency": "£"
   },
   {
@@ -244,6 +202,8 @@
    "region": "",
    "english": true,
    "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
    "tier": 3,
    "size": "unknown",
    "contacts": [],
@@ -283,6 +243,8 @@
    "region": "",
    "english": true,
    "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
    "tier": 3,
    "size": "unknown",
    "contacts": [],
@@ -302,6 +264,46 @@
     "enterprise architecture",
     "transmission"
    ],
+   "agency": false,
+   "currency": "£"
+  },
+  {
+   "source": "Reed",
+   "source_id": "57418649",
+   "title": "AI Solutions Architect - SMBC",
+   "company": "eFinancialCareers",
+   "location": "London",
+   "country": "GB",
+   "url": "https://www.reed.co.uk/jobs/ai-solutions-architect-smbc/57418649",
+   "posted_at": "2026-10-02T00:00:00+00:00",
+   "description": "SMBC: A trusted partner for the long term Here at SMBC Group, we want to help you find the next step in your career so read on to discover if this opportunity is the one for you. We like to recognise potential in our people, so we welcome your application even when your experience doesn't perfectly align with the job description. Whilst we'll always strive to be better, we're proud of our inclusive culture, and encourage our applicants and colle...",
+   "salary": "",
+   "contract": "",
+   "channel": "aggregator",
+   "sponsorship": "licensed_sponsor",
+   "sponsor_register": "",
+   "sponsor_routes": [],
+   "sector": "",
+   "domain": "",
+   "role": "",
+   "region": "",
+   "english": true,
+   "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
+   "tier": 3,
+   "size": "unknown",
+   "contacts": [],
+   "id": "012ae39cd26a",
+   "match": 25,
+   "reasons": [
+    "+20 Solution / technical architect title",
+    "+5 senior / architect level"
+   ],
+   "flags": [
+    "Salary not stated"
+   ],
+   "matched_keywords": [],
    "agency": false,
    "currency": "£"
   },
@@ -327,6 +329,8 @@
    "region": "",
    "english": true,
    "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
    "tier": 3,
    "size": "unknown",
    "contacts": [],
@@ -342,6 +346,91 @@
    ],
    "matched_keywords": [],
    "agency": true,
+   "currency": "£"
+  },
+  {
+   "source": "Reed",
+   "source_id": "57420958",
+   "title": "Solutions Architect - Juniper",
+   "company": "Appcast Enterprise",
+   "location": "Bracknell",
+   "country": "GB",
+   "url": "https://www.reed.co.uk/jobs/solutions-architect-juniper/57420958",
+   "posted_at": "2026-10-05T00:00:00+00:00",
+   "description": "Design complex solutions. Influence strategy. Deliver technology that transforms businesses. At TD SYNNEX, we're looking for a Juniper Solutions Architect to help shape and deliver complex technology solutions for our partners and customers. This is a senior technical role for an experienced Juniper presales architect with expertise around enterprise networking and security, and a passion for solving complex business challenges. Working with partners, vendors, end users, and internal stakeholders, you'll design innovative multi-technology solutions, guide technical strategy, and lead projects…",
+   "salary": "",
+   "contract": "",
+   "channel": "aggregator",
+   "sponsorship": "unverified",
+   "sponsor_register": "",
+   "sponsor_routes": [],
+   "sector": "",
+   "domain": "",
+   "role": "",
+   "region": "",
+   "english": true,
+   "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
+   "tier": 3,
+   "size": "unknown",
+   "contacts": [],
+   "id": "b3649cc47b4e",
+   "match": 22,
+   "reasons": [
+    "+20 Solution / technical architect title",
+    "+2 architecture practice / GCP",
+    "+5 senior / architect level",
+    "-5 sponsorship / work permit not confirmed"
+   ],
+   "flags": [
+    "Salary not stated"
+   ],
+   "matched_keywords": [
+    "solution architecture"
+   ],
+   "agency": false,
+   "currency": "£"
+  },
+  {
+   "source": "Reed",
+   "source_id": "57423896",
+   "title": "Lead Solution Architect",
+   "company": "Appcast Enterprise",
+   "location": "London",
+   "country": "GB",
+   "url": "https://www.reed.co.uk/jobs/lead-solution-architect/57423896",
+   "posted_at": "2026-10-05T00:00:00+00:00",
+   "description": "Entity: Technology Job Family Group: IT&S Group Job Description: We’re looking for a Lead Architect to shape the technology behind our Gas & Power Trading International (GPTI) business. This role sits across the full trading landscape — from front-office systems to back-office processing, data platforms, integrations and infrastructure. You’ll take ownership of the technology roadmap across the trading technology estate, ensuring core pl...",
+   "salary": "",
+   "contract": "",
+   "channel": "aggregator",
+   "sponsorship": "unverified",
+   "sponsor_register": "",
+   "sponsor_routes": [],
+   "sector": "",
+   "domain": "",
+   "role": "",
+   "region": "",
+   "english": true,
+   "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
+   "tier": 3,
+   "size": "unknown",
+   "contacts": [],
+   "id": "9efcea2c263f",
+   "match": 20,
+   "reasons": [
+    "+20 Solution / technical architect title",
+    "+5 senior / architect level",
+    "-5 sponsorship / work permit not confirmed"
+   ],
+   "flags": [
+    "Salary not stated"
+   ],
+   "matched_keywords": [],
+   "agency": false,
    "currency": "£"
   },
   {
@@ -366,6 +455,8 @@
    "region": "",
    "english": true,
    "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
    "tier": 3,
    "size": "unknown",
    "contacts": [],
@@ -403,6 +494,8 @@
    "region": "",
    "english": true,
    "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
    "tier": 3,
    "size": "unknown",
    "contacts": [],
@@ -442,6 +535,8 @@
    "region": "",
    "english": true,
    "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
    "tier": 3,
    "size": "unknown",
    "contacts": [],
@@ -481,6 +576,8 @@
    "region": "",
    "english": true,
    "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
    "tier": 3,
    "size": "unknown",
    "contacts": [],
@@ -520,6 +617,8 @@
    "region": "",
    "english": true,
    "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
    "tier": 3,
    "size": "unknown",
    "contacts": [],
