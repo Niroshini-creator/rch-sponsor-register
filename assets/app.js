@@ -18,7 +18,7 @@ const REGION_OPTIONS = {
   "AE-DXB": { label: "Dubai (UAE)", flag: "AE", test: (j) => j.country === "AE" && j.region === "Dubai" },
   EU: { label: "Europe (excl. UK)", flag: "EU", test: (j) => !["GB", "US", "AE"].includes(j.country) },
 };
-const DEFAULT_FEATURED = ["GB", "GB-SCT", "US", "NL", "LU", "SE", "FI", "PL", "ES", "AE", "AE-DXB"];
+const DEFAULT_FEATURED = ["GB", "GB-SCT", "IE", "US", "NL", "LU", "SE", "FI", "PL", "ES", "AE", "AE-DXB"];
 const PUBLIC_SECTORS = new Set(["Public Sector & Government", "NHS & Healthcare", "Charity & Non-profit"]);
 // Quick views across the top; each narrows the filtered list further (the directory replaces it).
 const VIEWS = {
@@ -26,6 +26,7 @@ const VIEWS = {
   university: { label: "Universities & research", test: (j) => j.sector === "University & Research Institute" },
   school: { label: "Schools & colleges", test: (j) => j.sector === "School & College" },
   public: { label: "Public sector & NHS", test: (j) => PUBLIC_SECTORS.has(j.sector) },
+  aviation: { label: "Aviation & operations", test: (j) => !!j.aviation },
   early: { label: "PSW & OPT friendly", test: (j) => !!j.early_career },
   directory: { label: "PSW & OPT employers", test: () => true },
 };
@@ -84,6 +85,8 @@ function readFilters() {
     hasContact: form.get("hasContact") === "1",
     english: form.get("english") === "1",
     early: form.get("early") === "1",
+    hideLow: form.get("hideLow") === "1",
+    aviation: form.get("aviation") || "",
     role: new Set(form.getAll("role")),
     channel: new Set(form.getAll("channel")),
     tier: new Set(form.getAll("tier")),
@@ -105,6 +108,9 @@ function matches(job, f, view = state.view) {
   if (!VIEWS[view].test(job)) return false;
   if (f.english && !job.english) return false;
   if (f.early && !job.early_career) return false;
+  if (f.hideLow && job.low_sponsorship) return false;
+  if (f.aviation === "any" && !job.aviation) return false;
+  if (f.aviation && f.aviation !== "any" && job.aviation !== f.aviation) return false;
   if (!f.role.has(job.role)) return false;
   if (!f.sponsorship.has(job.sponsorship)) return false;
   if (!f.channel.has(job.channel)) return false;
@@ -213,7 +219,7 @@ function jobHtml(j) {
       <span class="muted">${esc(j.size === "unknown" ? "size unknown" : j.size)}</span></p>
     <p class="meta">${flag(j.country)} ${esc(j.location || countryName(j.country))}${j.region && !(j.location || "").includes(j.region) ? ` · ${esc(j.region)}` : ""}
       ${j.salary ? ` · ${esc(j.salary)}` : ""}${j.contract ? ` · ${esc(j.contract)}` : ""}</p>
-    <p class="tags">${channelTag}${sponsorTag}${earlyTag(j)}${englishTag}${register}<span class="tag">${esc(j.role !== "Other" ? j.role : j.domain)}</span><span class="tag">${esc(j.sector)}</span></p>
+    <p class="tags">${channelTag}${sponsorTag}${earlyTag(j)}${englishTag}${register}${j.aviation ? `<span class="tag direct" title="Aviation &amp; operations job family">✈ ${esc(j.aviation)}</span>` : ""}${j.low_sponsorship ? `<span class="tag warn" title="Front-line role that rarely meets sponsorship skill and salary levels">Rarely sponsored</span>` : ""}<span class="tag">${esc(j.role !== "Other" ? j.role : j.domain)}</span><span class="tag">${esc(j.sector)}</span></p>
     ${j.description ? `<p class="desc">${esc(j.description)}</p>` : ""}
     <div class="job-foot">
       <div class="contact-block"><h3>Hiring contact</h3>${contacts}</div>
@@ -316,7 +322,8 @@ function render() {
 const GROUP_LABELS = { channel: "Apply via", sponsorship: "Sponsorship evidence", role: "Job role", tier: "Employer tier",
   size: "Employer size", sector: "Sector", domain: "Role domain" };
 // Single "only …" checkboxes: ticking them narrows the list.
-const NEGATIVE_FILTERS = { english: "English-speaking only", early: "PSW / OPT friendly only", hasContact: "With hiring contact only" };
+const NEGATIVE_FILTERS = { english: "English-speaking only", early: "PSW / OPT friendly only", hasContact: "With hiring contact only",
+  hideLow: "Rarely sponsored roles hidden" };
 
 // Which single filter, if relaxed, would bring back jobs that match everything else.
 function hiddenBy() {
@@ -366,7 +373,7 @@ function renderMeta(data) {
 // ------------------------------------------------------------------ CSV
 function exportCsv() {
   const cols = ["posted_at", "title", "company", "tier", "size", "sector", "role", "domain", "country", "region",
-    "location", "salary", "sponsorship", "sponsor_register", "early_career", "english", "channel", "contact_names",
+    "location", "salary", "sponsorship", "sponsor_register", "early_career", "english", "aviation", "channel", "contact_names",
     "contact_emails", "contact_phones", "url", "source"];
   const cell = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
   const lines = [cols.join(",")];
@@ -393,7 +400,7 @@ function syncUrl() {
     if (el?.type !== "checkbox" && v && !isDefault) params.append(k, v);
   }
   // Only record checkbox groups that differ from the default.
-  for (const name of ["sponsorship", "channel", "tier", "size", "sector", "domain", "role", "hasContact", "english", "early"]) {
+  for (const name of ["sponsorship", "channel", "tier", "size", "sector", "domain", "role", "hasContact", "english", "early", "hideLow"]) {
     const boxes = [...document.querySelectorAll(`#filters input[name="${name}"]`)];
     if (boxes.some((b) => b.checked !== b.defaultChecked)) {
       params.set(name, boxes.filter((b) => b.checked).map((b) => b.value).join("|") || "-");
@@ -452,9 +459,11 @@ async function main() {
     // Feeds from before the language check: only native-English countries can be assumed.
     english: j.english ?? ENGLISH_COUNTRIES.has(j.country),
     early_career: j.early_career || "",
+    aviation: j.aviation || "",
+    low_sponsorship: !!j.low_sponsorship,
     _posted: new Date(j.posted_at),
     _haystack: [j.title, j.company, j.location, j.region, j.sector, j.domain, j.role, countryName(j.country), j.description,
-      ...(j.contacts || []).map((c) => c.name)].join(" ").toLowerCase(),
+      j.aviation, ...(j.contacts || []).map((c) => c.name)].join(" ").toLowerCase(),
   }));
 
   // Country filter: the board's featured countries and regions first, then any other country with jobs.
@@ -475,6 +484,8 @@ async function main() {
   checkboxes("#f-sector", "sector", data.sectors || []);
   checkboxes("#f-domain", "domain", data.domains || []);
   checkboxes("#f-role", "role", data.roles || ["Other"]);
+  $("select[name=aviation]").insertAdjacentHTML("beforeend",
+    (data.aviation_families || []).map((a) => `<option value="${esc(a)}">${esc(a)}</option>`).join(""));
 
   fetch(TIERS_URL).then((r) => r.json()).then((cfg) => {
     $("#tier-defs").innerHTML = Object.entries(cfg.tier_definitions || {})

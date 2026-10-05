@@ -41,6 +41,8 @@ class Job:
     region: str = ""            # sub-national region shown as its own filter, e.g. "Scotland", "Dubai"
     english: bool = False       # advert is in English and asks for no other language
     early_career: str = ""      # "stated" | "likely": open to UK Graduate visa (PSW) / US OPT holders
+    aviation: str = ""          # aviation / aerospace job family, see classify.AVIATION_FAMILIES
+    low_sponsorship: bool = False  # front-line role (agent, receptionist...) that is rarely sponsored
     tier: int = 3
     size: str = "unknown"      # "large" | "medium" | "small" | "unknown"
     contacts: list[dict] = field(default_factory=list)

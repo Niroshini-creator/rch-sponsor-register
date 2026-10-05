@@ -51,6 +51,13 @@ consultancies are removed.**
    * **Job role** (from the title): Software Developer, DevOps & Cloud, Data Science & AI, Data Analyst,
      Business Analyst, IT Support, Application Support, Engineering, Project Manager, Finance & Accounting,
      HR & Recruitment, Digital Marketing, Logistics & Supply Chain, Medical Laboratory, Aviation, Other.
+   * **Aviation & operations family** (when the title is one of them and the employer or advert is in aviation or
+     aerospace): Operations & Control; Planning, Network & Scheduling; Business, Strategy & Performance;
+     Aerospace & Engineering; Projects, Programmes & PMO; Logistics, Supply Chain & Procurement; Commercial Aviation.
+     Shown in the *Aviation & operations* tab and filter.
+   * **Rarely sponsored**: front-line roles (passenger service, check-in, gate, baggage and ramp agents,
+     reservations, customer service advisers, administrators, receptionists, retail and hospitality) are flagged
+     and hidden by default, because they seldom meet sponsorship skill and salary levels.
    * **Region**: Scotland (UK jobs in Scottish places or employers such as NHS Lothian), Dubai and Abu Dhabi.
    * **English-speaking**: the advert is written in English and asks for no other language ("Dutch is a plus" is
      fine; "fluent German required" is not). Jobs in the UK, Ireland and the US always count.
@@ -211,6 +218,11 @@ tests/                       offline unit tests (no network needed)
 
 * Being on a sponsor register means an employer *can* sponsor, not that it will for every role. Jobs marked
   **Licensed sponsor** need confirming with the employer.
+* Ireland publishes no sponsor register: Irish jobs appear when the advert offers sponsorship or an employment
+  permit (Critical Skills or General Employment Permit). Most Irish job-board coverage comes from Adzuna, so add its key.
+* Many airlines and airports (Ryanair, easyJet, Wizz Air, British Airways, Heathrow, Dublin Airport, Emirates,
+  flydubai) recruit through enterprise systems with no public feed (SuccessFactors, Taleo, Oracle, Avature, iCIMS).
+  Their adverts reach the board only through the Reed and Adzuna aviation searches.
 * Only the UK and the Netherlands publish sponsor registers, and the US publishes H-1B petition data. For other
   countries (Luxembourg, Sweden, Finland, Poland, Spain…), jobs appear only when the advert itself offers sponsorship
   or work-permit support.

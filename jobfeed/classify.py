@@ -30,6 +30,10 @@ _POSITIVE = [re.compile(p, re.I) for p in (
     r"\bh-?1b (sponsorship|transfer)s? (is |are )?(available|offered|provided|considered|supported|welcome)",
     r"(will|can|happy to|able to) sponsor (an? |your )?(h-?1b|visa|work visa|green card)",
     r"\bgreen card sponsorship\b",
+    r"\bcritical skills employment permits? (is |are |will be |can be )?(available|offered|provided|considered|supported|sponsored)",
+    r"(support|sponsor|apply for|assist with)\w* (an? |your |the )?(critical skills|general) employment permit",
+    r"\bemployment permits? (support|sponsorship|assistance)\b",
+    r"\b(golden|uae) visa (provided|sponsored|offered)|\bresidence visa (provided|sponsored|offered)",
 )]
 _STRONG_NEGATIVE = [re.compile(p, re.I) for p in (
     r"(unable|not able|cannot|can ?not|can't|do not|don't|does not|doesn't|won't|will not|are not able|is not able)"
@@ -236,6 +240,86 @@ def classify_role(job: Job) -> str:
         if rx.search(job.title):
             return role
     return "Other"
+
+
+# ----------------------------------------------------------------------------- aviation & operations focus
+# Job families for aviation, airline, airport and aerospace careers, from the board owner's target list.
+AVIATION_FAMILIES = ["Operations & Control", "Planning, Network & Scheduling", "Business, Strategy & Performance",
+                     "Aerospace & Engineering", "Projects, Programmes & PMO", "Logistics, Supply Chain & Procurement",
+                     "Commercial Aviation"]
+
+_AVIATION_RULES: list[tuple[str, re.Pattern]] = [
+    ("Operations & Control", re.compile(
+        r"\b(flight|airline|aviation|airport|airside|terminal|integrated|network|station) operations?\b|"
+        r"\boperations? control|\bops control|\bnetwork control|\boperations? (controller|optimi[sz]ation|"
+        r"planning (analyst|specialist|manager))|\boperational (performance|resilience)|\bdisruption management|"
+        r"\bpunctuality\b|\b(otp|on[- ]time performance)\b|\bflight data\b|\baviation safety\b|\bflight (controller|dispatch)|"
+        r"\bstation manager\b|\bduty manager\b|\bairside\b|\bterminal (operations|manager)", re.I)),
+    ("Planning, Network & Scheduling", re.compile(
+        r"\b(network|schedule|scheduling|capacity|resource|fleet|aircraft|flight|crew|airport|route|strategic|"
+        r"maintenance) (planning|planner|development|scheduler|scheduling)\b|\b(aviation|operations|airline network) planner\b|"
+        r"\bnetwork planner\b", re.I)),
+    ("Commercial Aviation", re.compile(
+        r"\bcommercial (analyst|manager|planning|strategy|specialist)|\brevenue (management|analyst|manager)|"
+        r"\bpricing (analyst|specialist|manager)|\b(route|network) economics|\bbusiness development|\bpartnerships? "
+        r"(analyst|manager|specialist)|\bcontracts? manager", re.I)),
+    ("Aerospace & Engineering", re.compile(
+        r"\baeronautic|\baerospace (engineer|analyst|systems)|\baircraft (systems|performance)|\baviation systems|"
+        r"\bsystems (integration )?engineer|\bflight operations engineer|\bmanufacturing (engineer|analyst)|"
+        r"\bproduction engineer|\bprocess engineer|\b(supplier )?quality (engineer|analyst|specialist|manager)|"
+        r"\breliability (engineer|analyst)|\bmaintenance planning|\bcontinuing airworthiness|\bairworthiness|"
+        r"\btechnical services|\bproject engineer|\bengineering (planning|analyst|project manager)|"
+        r"\btechnical (planning|project manager)", re.I)),
+    ("Logistics, Supply Chain & Procurement", re.compile(
+        r"\blogistics\b|\bsupply chain|\bprocurement|\bpurchasing|\binventory (analyst|planner|manager)|"
+        r"\bmaterials? (analyst|planner|manager)|\btransport planning|\bair cargo|\bcargo operations|"
+        r"\bsupplier (performance|management)|\bdemand planner|\bstrategic sourcing|\bbuyer\b", re.I)),
+    ("Projects, Programmes & PMO", re.compile(
+        r"\bproject (analyst|planner|controls|planning|manager|management)|\bprogramme (analyst|planning|manager)|"
+        r"\bprogram manager|\bpmo\b|\bassistant project manager", re.I)),
+    ("Business, Strategy & Performance", re.compile(
+        r"\bbusiness (analyst|operations|process|improvement|transformation)|\bperformance analyst|"
+        r"\bstrategy (analyst|manager)|\btransformation (analyst|manager|specialist)|\bchange (analyst|manager)|"
+        r"\b(process|continuous) improvement|\boperational excellence|\bmanagement information|"
+        r"\b(aviation|airport|airline|transport|operations|management) consultant", re.I)),
+]
+# The employer or advert must be in aviation / aerospace for generic titles (Business Analyst, Buyer...).
+_AVIATION_CONTEXT_RE = re.compile(
+    r"\bairlines?\b|\bairports?\b|\baviation\b|\baerospace\b|\baircraft\b|\bairside\b|\bflight operations\b|"
+    r"\bair cargo\b|\bair traffic\b|\bairworthiness\b|\bmro\b|\baeronautic|\bflight (crew|schedul|planning)|"
+    r"\bairways\b|\bair lines\b|\bairbus\b|\bboeing\b|"
+    # Airlines, airports, ground handlers, lessors and aerospace firms whose names don't say "aviation".
+    r"\bryanair\b|\baer lingus\b|\beasyjet\b|\bjet2\b|\bwizz ?air\b|\bvirgin atlantic\b|\bemirates\b|\betihad\b|"
+    r"\bflydubai\b|\bqatar airways\b|\blufthansa\b|\bklm\b|\bair france\b|\biag\b|\bloganair\b|\btui airways\b|"
+    r"\bcityjet\b|\bemerald airlines\b|\bheathrow\b|\bgatwick\b|\bstansted\b|\bluton airport\b|\bdaa\b|"
+    r"\bmanchester airports\b|\bnats\b|\bswissport\b|\bmenzies\b|\bdnata\b|\baercap\b|\bavolon\b|"
+    r"\bsmbc aviation\b|\brolls[- ]royce\b|\bbae systems\b|\bleonardo\b|\bgkn aerospace\b|\bspirit aero|"
+    r"\bsafran\b|\bcollins aerospace\b|\brtx\b|\bge aerospace\b|\bcae\b|\bcirium\b|\boag\b|\bembraer\b|"
+    r"\bbombardier\b|\bzeroavia\b|\bvertical aerospace\b|\bskyports\b|\bjoby\b|\barcher aviation\b", re.I)
+# Front-line roles that rarely meet sponsorship skill and salary thresholds.
+_LOW_SPONSORSHIP_RE = re.compile(
+    r"\bpassenger service|\bcustomer service (agent|advisor|adviser|assistant|representative)|\bcheck[- ]in agent|"
+    r"\bgate agent|\bbaggage (agent|handler|operative)|\bramp (agent|operative)|\bground (operations|handling) agent|"
+    r"\breservations? agent|\bticketing agent|\badministrative assistant|\bgeneral administrator|\breceptionist\b|"
+    r"\bretail (assistant|associate|colleague)|\bsales assistant|\bhospitality (assistant|associate)|\bwaiter|\bwaitress|"
+    r"\bbarista\b|\bkitchen porter", re.I)
+
+
+def is_low_sponsorship(job: Job) -> bool:
+    return bool(_LOW_SPONSORSHIP_RE.search(job.title))
+
+
+def classify_aviation(job: Job) -> str:
+    """The aviation job family, when the title is one of them and the job is in aviation / aerospace."""
+    if is_low_sponsorship(job):
+        return ""
+    family = next((name for name, rx in _AVIATION_RULES if rx.search(job.title)), "")
+    if not family:
+        return ""
+    if _AVIATION_CONTEXT_RE.search(f"{job.title} {job.company}"):
+        return family
+    # Otherwise the advert itself must be about aviation (two mentions, not one passing reference).
+    return family if len(_AVIATION_CONTEXT_RE.findall(job.description[:3000])) >= 2 else ""
 
 
 # ----------------------------------------------------------------------------- region (Scotland, Dubai)

@@ -47,6 +47,13 @@ ROLE_QUERIES = [
     "logistics", "data scientist", "devops", "software developer", "engineer", "accountant", "hr",
     "digital marketing", "aviation", "project manager",
 ]
+# Aviation, airline, airport and aerospace searches (see classify.AVIATION_FAMILIES).
+AVIATION_QUERIES = [
+    "flight operations", "airline operations", "airport operations", "operations control airline",
+    "network planning airline", "schedule planning airline", "crew planning", "fleet planning",
+    "revenue management airline", "aviation analyst", "aviation project manager", "aerospace engineer",
+    "continuing airworthiness", "maintenance planning aircraft", "aviation procurement", "air cargo",
+]
 # Early-career searches for UK Graduate visa (PSW) and US OPT holders.
 EARLY_CAREER_QUERIES = {"gb": ["graduate visa", "graduate scheme sponsorship"],
                         "us": ["opt", "h1b sponsorship", "new grad visa sponsorship"]}
@@ -68,6 +75,11 @@ def _adzuna_searches() -> Iterator[tuple[str, dict, int]]:
     for code in ADZUNA_COUNTRIES:
         yield code, {"what_phrase": "visa sponsorship"}, 5 if code in ("gb", "us") else 2
     yield "gb", {"what_phrase": "visa sponsorship", "where": "Scotland"}, 3
+    yield "ie", {"what_phrase": "employment permit"}, 2
+    yield "ie", {"what_and": "critical skills"}, 2
+    for code in ("gb", "ie"):
+        for words in AVIATION_QUERIES:
+            yield code, {"what_and": words}, 1
     for code in ("gb", "us"):
         for words in EARLY_CAREER_QUERIES[code]:
             yield code, {"what_and": words}, 2
@@ -127,6 +139,7 @@ def reed(days: int) -> Iterator[Job]:
     queries = [(q, 500) for q in DOMAIN_QUERIES]
     queries += [(f"sponsorship {role}", 200) for role in ROLE_QUERIES]
     queries += [(q, 200) for q in EARLY_CAREER_QUERIES["gb"]]
+    queries += [(q, 100) for q in AVIATION_QUERIES]
     for query, limit in queries:
         for skip in range(0, limit, 100):
             data = http.get_json("https://www.reed.co.uk/api/1.0/search",
@@ -650,6 +663,9 @@ _COUNTRY_WORDS = {
     "new york": "US", "cambridge, ma": "US", "cambridge, massachusetts": "US", "birmingham, al": "US",
     "london, on": "CA", "london, ontario": "CA", "new england": "US", "united states": "US", "usa": "US",
     "perth, wa": "AU", "perth, western australia": "AU", "hamilton, on": "CA", "hamilton, ontario": "CA",
+    "shannon": "IE", "waterford": "IE", "kildare": "IE", "athlone": "IE", "swords": "IE", "sligo": "IE",
+    "kilkenny": "IE", "wexford": "IE", "drogheda": "IE", "dundalk": "IE", "letterkenny": "IE", "maynooth": "IE",
+    "blanchardstown": "IE", "sandyford": "IE", "ballsbridge": "IE", "éire": "IE", "co. dublin": "IE", "county cork": "IE",
     "hamilton, new zealand": "NZ", "canada": "CA", "toronto": "CA", "india": "IN", "bengaluru": "IN",
     "bangalore": "IN", "singapore": "SG", "australia": "AU", "sydney": "AU", "melbourne": "AU", "japan": "JP",
     "tokyo": "JP", "brazil": "BR", "são paulo": "BR", "mexico": "MX", "china": "CN", "hong kong": "HK",

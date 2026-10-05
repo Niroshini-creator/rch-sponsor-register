@@ -11,9 +11,9 @@ from typing import Iterable
 
 from . import careers, sources, sponsors
 from .agencies import AgencyFilter
-from .classify import (DOMAINS, ENGLISH_SPEAKING_COUNTRIES, ROLES, SECTORS, TierRules, classify_domain,
-                       classify_early_career, classify_english, classify_region, classify_role, classify_sector,
-                       sponsorship_signal)
+from .classify import (AVIATION_FAMILIES, DOMAINS, ENGLISH_SPEAKING_COUNTRIES, ROLES, SECTORS, TierRules,
+                       classify_aviation, classify_domain, classify_early_career, classify_english, classify_region,
+                       classify_role, classify_sector, is_low_sponsorship, sponsorship_signal)
 from .contacts import ContactBook
 from .models import Job
 from .text import normalise_company
@@ -26,7 +26,7 @@ COUNTRIES = careers.TARGET_COUNTRIES | {"LI"}
 # Countries where the employer sponsors every foreign hire's work visa by law (UAE residence visas).
 EMPLOYER_VISA_COUNTRIES = {"AE"}
 # Shown first in the country filter, even before they have jobs.
-FEATURED_COUNTRIES = ["GB", "GB-SCT", "US", "NL", "LU", "SE", "FI", "PL", "ES", "AE", "AE-DXB"]
+FEATURED_COUNTRIES = ["GB", "GB-SCT", "IE", "US", "NL", "LU", "SE", "FI", "PL", "ES", "AE", "AE-DXB"]
 REGISTERS = [("UK Home Office", sponsors.load_uk_register), ("NL IND", sponsors.load_nl_register),
              ("US H-1B", sponsors.load_us_h1b)]
 CHANNELS = ["career_site", "official", "aggregator"]
@@ -121,6 +121,8 @@ def enrich(jobs: Iterable[Job], index: sponsors.SponsorIndex, tiers: TierRules,
         job.sector = classify_sector(job)
         job.domain = classify_domain(job)
         job.role = classify_role(job)
+        job.aviation = classify_aviation(job)
+        job.low_sponsorship = is_low_sponsorship(job)
         job.region = classify_region(job)
         job.english = job.country in ENGLISH_SPEAKING_COUNTRIES or classify_english(job)
         job.early_career = job.early_career or classify_early_career(job)
@@ -161,6 +163,7 @@ def run(days: int, out_path: Path) -> dict:
         "sectors": SECTORS,
         "domains": DOMAINS,
         "roles": ROLES,
+        "aviation_families": AVIATION_FAMILIES,
         "channels": CHANNELS,
         "featured_countries": FEATURED_COUNTRIES,
         "sources": status,
