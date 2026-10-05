@@ -1,15 +1,26 @@
 {
- "generated_at": "2026-10-05T05:08:01+00:00",
+ "generated_at": "2026-10-05T05:40:42+00:00",
  "window_days": 7,
  "profile": {
   "name": "Mugilan Ramalingam",
   "headline": "OSS/BSS Solution Architect · 17+ yrs telecom · GCP Associate Cloud Engineer",
-  "min_salary": 60000,
+  "min_salary": {
+   "GB": 60000,
+   "FR": 70000
+  },
   "min_match": 45,
   "notice_period_days": 90,
   "visa": "Global Business Mobility (employer sponsorship needed to change employer)",
   "driving_licence": "UK",
-  "clearance": "none (SC / DV roles are excluded)"
+  "clearance": "none (SC / DV roles are excluded)",
+  "countries": [
+   "GB",
+   "FR"
+  ],
+  "visa_by_country": {
+   "GB": "Needs a UK employer to sponsor (Skilled Worker) when leaving the Global Business Mobility visa",
+   "FR": "Needs a French work permit via the employer (e.g. Talent Passport - qualified employee, EU Blue Card)"
+  }
  },
  "sources": {
   "UK sponsor register": {
@@ -18,7 +29,7 @@
   },
   "Reed": {
    "status": "ok",
-   "count": 352
+   "count": 354
   },
   "Adzuna": {
    "status": "skipped",
@@ -30,10 +41,11 @@
   }
  },
  "counts": {
-  "fetched": 352,
+  "fetched": 354,
   "clearance_removed": 79,
   "no_sponsorship_removed": 0,
-  "below_threshold": 273,
+  "language_removed": 0,
+  "below_threshold": 275,
   "full_advert_fetched": 80,
   "published": 0
  },
@@ -59,7 +71,7 @@
    "domain": "",
    "role": "",
    "region": "",
-   "english": false,
+   "english": true,
    "early_career": "",
    "tier": 3,
    "size": "unknown",
@@ -80,7 +92,8 @@
     "gcp",
     "solution architecture"
    ],
-   "agency": false
+   "agency": false,
+   "currency": "£"
   },
   {
    "source": "Reed",
@@ -102,7 +115,7 @@
    "domain": "",
    "role": "",
    "region": "",
-   "english": false,
+   "english": true,
    "early_career": "",
    "tier": 3,
    "size": "unknown",
@@ -113,7 +126,7 @@
     "+20 Solution / technical architect title",
     "+3 architecture practice / GCP",
     "+5 senior / architect level",
-    "+5 pay reaches £60,000+"
+    "+5 pay reaches the 60,000 expectation"
    ],
    "flags": [
     "Recruitment agency advert"
@@ -121,7 +134,8 @@
    "matched_keywords": [
     "gcp"
    ],
-   "agency": true
+   "agency": true,
+   "currency": "£"
   },
   {
    "source": "Reed",
@@ -143,7 +157,7 @@
    "domain": "",
    "role": "",
    "region": "",
-   "english": false,
+   "english": true,
    "early_career": "",
    "tier": 3,
    "size": "unknown",
@@ -153,13 +167,14 @@
    "reasons": [
     "+20 Solution / technical architect title",
     "+5 senior / architect level",
-    "+5 pay reaches £60,000+"
+    "+5 pay reaches the 60,000 expectation"
    ],
    "flags": [
     "Recruitment agency advert"
    ],
    "matched_keywords": [],
-   "agency": true
+   "agency": true,
+   "currency": "£"
   },
   {
    "source": "Reed",
@@ -181,7 +196,7 @@
    "domain": "",
    "role": "",
    "region": "",
-   "english": false,
+   "english": true,
    "early_career": "",
    "tier": 3,
    "size": "unknown",
@@ -194,7 +209,7 @@
     "+3 network technology (GPON/DOCSIS/MPLS/SDH/DWDM…)",
     "+2 architecture practice / GCP",
     "+5 senior / architect level",
-    "-5 sponsorship not confirmed"
+    "-5 sponsorship / work permit not confirmed"
    ],
    "flags": [
     "Salary not stated"
@@ -204,7 +219,8 @@
     "enterprise architecture",
     "transmission"
    ],
-   "agency": false
+   "agency": false,
+   "currency": "£"
   },
   {
    "source": "Reed",
@@ -226,7 +242,7 @@
    "domain": "",
    "role": "",
    "region": "",
-   "english": false,
+   "english": true,
    "early_career": "",
    "tier": 3,
    "size": "unknown",
@@ -242,7 +258,8 @@
     "Recruitment agency advert"
    ],
    "matched_keywords": [],
-   "agency": true
+   "agency": true,
+   "currency": "£"
   },
   {
    "source": "Reed",
@@ -264,7 +281,7 @@
    "domain": "",
    "role": "",
    "region": "",
-   "english": false,
+   "english": true,
    "early_career": "",
    "tier": 3,
    "size": "unknown",
@@ -276,7 +293,7 @@
     "+3 network technology (GPON/DOCSIS/MPLS/SDH/DWDM…)",
     "+2 architecture practice / GCP",
     "+5 senior / architect level",
-    "-5 sponsorship not confirmed"
+    "-5 sponsorship / work permit not confirmed"
    ],
    "flags": [
     "Salary not stated"
@@ -285,7 +302,8 @@
     "enterprise architecture",
     "transmission"
    ],
-   "agency": false
+   "agency": false,
+   "currency": "£"
   },
   {
    "source": "Reed",
@@ -307,7 +325,7 @@
    "domain": "",
    "role": "",
    "region": "",
-   "english": false,
+   "english": true,
    "early_career": "",
    "tier": 3,
    "size": "unknown",
@@ -323,7 +341,8 @@
     "Recruitment agency advert"
    ],
    "matched_keywords": [],
-   "agency": true
+   "agency": true,
+   "currency": "£"
   },
   {
    "source": "Reed",
@@ -345,7 +364,7 @@
    "domain": "",
    "role": "",
    "region": "",
-   "english": false,
+   "english": true,
    "early_career": "",
    "tier": 3,
    "size": "unknown",
@@ -355,11 +374,12 @@
    "reasons": [
     "+10 Architect title",
     "+5 senior / architect level",
-    "+5 pay reaches £60,000+"
+    "+5 pay reaches the 60,000 expectation"
    ],
    "flags": [],
    "matched_keywords": [],
-   "agency": false
+   "agency": false,
+   "currency": "£"
   },
   {
    "source": "Reed",
@@ -381,7 +401,7 @@
    "domain": "",
    "role": "",
    "region": "",
-   "english": false,
+   "english": true,
    "early_career": "",
    "tier": 3,
    "size": "unknown",
@@ -391,13 +411,14 @@
    "reasons": [
     "+10 Architect title",
     "+5 senior / architect level",
-    "+5 pay reaches £60,000+"
+    "+5 pay reaches the 60,000 expectation"
    ],
    "flags": [
     "Recruitment agency advert"
    ],
    "matched_keywords": [],
-   "agency": true
+   "agency": true,
+   "currency": "£"
   },
   {
    "source": "Reed",
@@ -419,7 +440,7 @@
    "domain": "",
    "role": "",
    "region": "",
-   "english": false,
+   "english": true,
    "early_career": "",
    "tier": 3,
    "size": "unknown",
@@ -429,13 +450,14 @@
    "reasons": [
     "+10 Architect title",
     "+5 senior / architect level",
-    "+5 pay reaches £60,000+"
+    "+5 pay reaches the 60,000 expectation"
    ],
    "flags": [
     "Recruitment agency advert"
    ],
    "matched_keywords": [],
-   "agency": true
+   "agency": true,
+   "currency": "£"
   },
   {
    "source": "Reed",
@@ -457,7 +479,7 @@
    "domain": "",
    "role": "",
    "region": "",
-   "english": false,
+   "english": true,
    "early_career": "",
    "tier": 3,
    "size": "unknown",
@@ -467,13 +489,14 @@
    "reasons": [
     "+20 Solution / technical architect title",
     "+5 senior / architect level",
-    "-5 sponsorship not confirmed"
+    "-5 sponsorship / work permit not confirmed"
    ],
    "flags": [
     "Salary not stated"
    ],
    "matched_keywords": [],
-   "agency": false
+   "agency": false,
+   "currency": "£"
   },
   {
    "source": "Reed",
@@ -495,7 +518,7 @@
    "domain": "",
    "role": "",
    "region": "",
-   "english": false,
+   "english": true,
    "early_career": "",
    "tier": 3,
    "size": "unknown",
@@ -505,13 +528,14 @@
    "reasons": [
     "+20 Solution / technical architect title",
     "+5 senior / architect level",
-    "-5 sponsorship not confirmed"
+    "-5 sponsorship / work permit not confirmed"
    ],
    "flags": [
     "Salary not stated"
    ],
    "matched_keywords": [],
-   "agency": false
+   "agency": false,
+   "currency": "£"
   }
  ]
 }
