@@ -21,7 +21,7 @@ def main(argv: list[str] | None = None) -> int:
     for name, st in payload["sources"].items():
         print(f"  {name:<22} {st['status']:<8} {st.get('count', st.get('reason') or st.get('error') or '')}")
     c = payload["counts"]
-    print(f"fetched {c['fetched']} → {c['clearance_removed']} need clearance, {c['no_sponsorship_removed']} refuse sponsorship, "
+    print(f"fetched {c['fetched']} → {c['clearance_removed']} need clearance, {c['no_sponsorship_removed']} refuse sponsorship, {c.get('language_removed', 0)} need French, "
           f"{c['below_threshold']} below threshold ({c.get('full_advert_fetched', 0)} full adverts read) → published {c['published']} → {args.out}")
     return 0
 

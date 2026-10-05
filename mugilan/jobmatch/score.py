@@ -152,17 +152,17 @@ def score_job(title: str, description: str, salary: str = "", min_salary: int = 
     if hi is not None:
         if hi >= min_salary:
             total += 5
-            reasons.append(f"+5 pay reaches £{int(min_salary):,}+")
+            reasons.append(f"+5 pay reaches the {int(min_salary):,} expectation")
         else:
             total -= 10
-            reasons.append(f"-10 pay tops out below £{int(min_salary):,}")
+            reasons.append(f"-10 pay tops out below the {int(min_salary):,} expectation")
             flags.append("Below salary expectation")
     else:
         flags.append("Salary not stated")
 
-    if sponsorship == "unverified":
+    if sponsorship in ("unverified", "permit_check"):
         total -= 5
-        reasons.append("-5 sponsorship not confirmed")
+        reasons.append("-5 sponsorship / work permit not confirmed")
     if IMMEDIATE_RE.search(text):
         flags.append("Wants immediate start (candidate's notice is 90 days)")
 

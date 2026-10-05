@@ -20,7 +20,7 @@ from jobfeed.text import parse_date, strip_html
 
 log = logging.getLogger("mugilan")
 ADZUNA_PAUSE = float(os.environ.get("ADZUNA_PAUSE", "2.5"))
-ADZUNA_MAX_CALLS = int(os.environ.get("MUGILAN_ADZUNA_MAX_CALLS", "80"))
+ADZUNA_MAX_CALLS = int(os.environ.get("MUGILAN_ADZUNA_MAX_CALLS", "120"))
 
 
 def reed(days: int, searches: list[str]) -> Iterator[Job]:
@@ -48,36 +48,39 @@ def reed(days: int, searches: list[str]) -> Iterator[Job]:
                 break
 
 
-def adzuna(days: int, searches: list[str]) -> Iterator[Job]:
+def adzuna(days: int, searches: dict[str, list[str]]) -> Iterator[Job]:
+    """`searches` maps an ISO country (GB, FR) to its queries; Adzuna's site code is the lower-cased ISO code."""
     app_id, app_key = os.environ.get("ADZUNA_APP_ID"), os.environ.get("ADZUNA_APP_KEY")
     if not (app_id and app_key):
         raise SkipSource("ADZUNA_APP_ID / ADZUNA_APP_KEY not set")
     cutoff = datetime.now(timezone.utc) - timedelta(days=days)
     calls = 0
-    for query in searches:
-        for page in (1, 2):
-            if calls >= ADZUNA_MAX_CALLS:
-                return
-            if calls:
-                time.sleep(ADZUNA_PAUSE)
-            calls += 1
-            data = http.get_json(f"https://api.adzuna.com/v1/api/jobs/gb/search/{page}",
-                                 params={"app_id": app_id, "app_key": app_key, "results_per_page": 50,
-                                         "max_days_old": days, "sort_by": "date", "what_phrase": query})
-            results = data.get("results", [])
-            for r in results:
-                posted = parse_date(r.get("created"))
-                if not posted or posted < cutoff:
-                    continue
-                yield Job(source="Adzuna", source_id=str(r.get("id")), title=strip_html(r.get("title")),
-                          company=(r.get("company") or {}).get("display_name", ""),
-                          location=(r.get("location") or {}).get("display_name", ""), country="GB",
-                          url=r.get("redirect_url", ""), posted_at=posted,
-                          description=strip_html(r.get("description")),
-                          salary=_salary(r.get("salary_min"), r.get("salary_max")),
-                          contract=r.get("contract_time") or "")
-            if len(results) < 50:
-                break
+    for iso, queries in searches.items():
+        site = iso.lower()
+        for query in queries:
+            for page in (1, 2):
+                if calls >= ADZUNA_MAX_CALLS:
+                    return
+                if calls:
+                    time.sleep(ADZUNA_PAUSE)
+                calls += 1
+                data = http.get_json(f"https://api.adzuna.com/v1/api/jobs/{site}/search/{page}",
+                                     params={"app_id": app_id, "app_key": app_key, "results_per_page": 50,
+                                             "max_days_old": days, "sort_by": "date", "what_phrase": query})
+                results = data.get("results", [])
+                for r in results:
+                    posted = parse_date(r.get("created"))
+                    if not posted or posted < cutoff:
+                        continue
+                    yield Job(source="Adzuna", source_id=str(r.get("id")), title=strip_html(r.get("title")),
+                              company=(r.get("company") or {}).get("display_name", ""),
+                              location=(r.get("location") or {}).get("display_name", ""), country=iso,
+                              url=r.get("redirect_url", ""), posted_at=posted,
+                              description=strip_html(r.get("description")),
+                              salary=_salary(r.get("salary_min"), r.get("salary_max")),
+                              contract=r.get("contract_time") or "")
+                if len(results) < 50:
+                    break
 
 
 def career_feeds(days: int, employers: list[dict], report: dict) -> Iterator[Job]:

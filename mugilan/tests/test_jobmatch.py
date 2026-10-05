@@ -87,6 +87,22 @@ class PipelineTests(unittest.TestCase):
         out, _ = self.build([job(country="US"), job(source="Adzuna", source_id="9"), job()])
         self.assertEqual(len(out), 1)
 
+    def test_france_keeps_english_adverts_and_drops_french_only(self):
+        english = job(source="Adzuna", source_id="f1", country="FR", location="Paris", salary="75,000 – 90,000",
+                      title="OSS/BSS Solution Architect",
+                      description="Design NetCracker network inventory and order management for GPON. You will work with our telecom teams in Paris.")
+        french = job(source="Adzuna", source_id="f2", country="FR", location="Lyon", title="Architecte OSS BSS",
+                     description="Nous recherchons un architecte pour concevoir des solutions OSS BSS pour notre client. Maîtrise du français exigée, le candidat doit avoir une expérience dans les télécommunications.")
+        out, stats = self.build([english, french])
+        self.assertEqual([r["source_id"] for r in out], ["f1"])
+        self.assertEqual(out[0]["currency"], "€")
+        self.assertEqual(out[0]["sponsorship"], "permit_check")
+        self.assertEqual(stats["language_removed"], 1)
+
+    def test_salary_threshold_is_per_country(self):
+        self.assertEqual(pipeline.min_salary_for(PROFILE, "GB"), 60000)
+        self.assertEqual(pipeline.min_salary_for(PROFILE, "FR"), 70000)
+
     def test_near_misses_are_collected_but_not_published(self):
         mid = job(source_id="30", title="Solution Architect", description="Retail platform", salary="70,000")
         stats = {"clearance_removed": 0, "no_sponsorship_removed": 0, "below_threshold": 0}
