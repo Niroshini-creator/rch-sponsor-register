@@ -176,3 +176,26 @@ class DirectPreferenceTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TeamtailorTests(unittest.TestCase):
+    def test_teamtailor_rss(self):
+        stamp = NOW.strftime("%a, %d %b %Y %H:%M:%S +0000")
+        rss = f"""<?xml version="1.0" encoding="UTF-8"?>
+            <rss version="2.0" xmlns:tt="https://teamtailor.com/locations"><channel><title>Voi Technology</title>
+            <item><title>Fleet Specialist</title><description>&lt;p&gt;Visa sponsorship available.&lt;/p&gt;</description>
+              <pubDate>{stamp}</pubDate><link>https://careers.voi.com/jobs/8484982-fleet</link><remoteStatus>onsite</remoteStatus>
+              <guid>59647acd</guid><tt:locations><tt:location><tt:name>Poznan</tt:name><tt:city>Gadki</tt:city>
+              <tt:country>Poland</tt:country></tt:location></tt:locations></item>
+            <item><title>Old</title><pubDate>Thu, 01 Jan 2026 00:00:00 +0000</pubDate><link>x</link><guid>old</guid></item>
+            </channel></rss>""".encode()
+        emp = {"name": "Voi Technology", "ats": "teamtailor", "host": "careers.voi.com", "country": "SE"}
+        with mock.patch.object(careers.http, "get", return_value=rss) as get:
+            jobs = list(careers.teamtailor(emp, CUTOFF))
+        get.assert_called_once_with("https://careers.voi.com/jobs.rss")
+        self.assertEqual(len(jobs), 1)
+        self.assertEqual((jobs[0].country, jobs[0].location, jobs[0].description, jobs[0].channel),
+                         ("PL", "Gadki, Poland", "Visa sponsorship available.", "career_site"))
+        with mock.patch.object(careers.http, "get", return_value=rss) as get:
+            list(careers.teamtailor({"name": "Kry", "id": "kryhealthcare"}, CUTOFF))
+        get.assert_called_once_with("https://kryhealthcare.teamtailor.com/jobs.rss")

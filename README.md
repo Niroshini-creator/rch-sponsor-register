@@ -116,7 +116,7 @@ address is published, the card links to the advert and to LinkedIn people search
 
 Most employers run their careers page on an applicant tracking system that publishes a public job feed.
 The board reads that feed directly, so the job and its Apply button are the employer's own. Supported:
-**Greenhouse, Lever, Ashby, SmartRecruiters, Workable, Recruitee, Personio, Workday**.
+**Greenhouse, Lever, Ashby, SmartRecruiters, Workable, Recruitee, Personio, Workday, Teamtailor**.
 
 To add an employer, open its careers page, look at the address of a job link, and add one line:
 
@@ -135,6 +135,7 @@ To add an employer, open its careers page, look at the address of a job link, an
 | `acme.recruitee.com` | recruitee | acme |
 | `acme.jobs.personio.de` | personio | acme |
 | `gsk.wd5.myworkdayjobs.com/GSKCareers` | workday | `host` + `site` |
+| `acme.teamtailor.com` (or its own domain, e.g. `careers.voi.com`) | teamtailor | acme (or `"host": "careers.voi.com"`) |
 
 * `register_name` is the employer's legal name on the UK sponsor register, when it differs from the brand
   name. It lets the licence check match.
@@ -195,7 +196,7 @@ python -m http.server 8000            # open http://localhost:8000
 
 ```
 index.html, assets/          static front end
-jobfeed/careers.py           employer career sites (Greenhouse, Lever, Ashby, SmartRecruiters, Workable, Recruitee, Personio, Workday)
+jobfeed/careers.py           employer career sites (Greenhouse, Lever, Ashby, SmartRecruiters, Workable, Recruitee, Personio, Workday, Teamtailor)
 jobfeed/agencies.py          recruitment agency / consultancy detection
 jobfeed/sources.py           NHS Jobs, Teaching Vacancies, Platsbanken, RSS and job-board connectors
 jobfeed/sponsors.py          UK Home Office + NL IND sponsor registers, USCIS H-1B employer data

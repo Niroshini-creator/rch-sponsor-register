@@ -12,7 +12,8 @@ Employers are listed in config/employers.json:
 `id` is the employer's board name in the ATS; find it in the careers page URL
 (boards.greenhouse.io/<id>, jobs.lever.co/<id>, jobs.ashbyhq.com/<id>,
 <id>.recruitee.com, <id>.jobs.personio.de, apply.workable.com/<id>,
-jobs.smartrecruiters.com/<id>). Workday also needs `host` and `site`, taken from
+jobs.smartrecruiters.com/<id>, <id>.teamtailor.com). A Teamtailor site on its own
+domain (careers.voi.com) takes `host` instead of `id`. Workday also needs `host` and `site`, taken from
 https://<host>/<site> e.g. host "gsk.wd5.myworkdayjobs.com", site "GSKCareers".
 """
 
@@ -156,6 +157,27 @@ def personio(emp: dict, cutoff: datetime) -> Iterator[Job]:
                    description=description, contract=f.get("employmentType", ""))
 
 
+# ----------------------------------------------------------------------------- Teamtailor
+def teamtailor(emp: dict, cutoff: datetime) -> Iterator[Job]:
+    """Teamtailor career sites publish an RSS feed at <site>/jobs.rss (e.g. careers.voi.com,
+    kryhealthcare.teamtailor.com): title, link, publication date, description and locations."""
+    host = emp.get("host") or f"{emp['id']}.teamtailor.com"
+    root = ET.fromstring(http.get(f"https://{host}/jobs.rss"))
+    for item in (el for el in root.iter() if _local(el.tag) == "item"):
+        f = {_local(c.tag): (c.text or "").strip() for c in item}
+        posted = parse_date(f.get("pubDate"))
+        if not posted or posted < cutoff:
+            continue
+        places = [{_local(c.tag): (c.text or "").strip() for c in loc}
+                  for loc in item.iter() if _local(loc.tag) == "location"]
+        first = places[0] if places else {}
+        city = first.get("city") or first.get("name", "")
+        yield _job(emp, source_id=f.get("guid") or f.get("link", ""), title=f.get("title", ""),
+                   location=", ".join(filter(None, [city, first.get("country")])), country=_iso(first.get("country")),
+                   url=f.get("link", ""), posted_at=posted, description=strip_html(f.get("description")),
+                   contract=f.get("remoteStatus", ""))
+
+
 # ----------------------------------------------------------------------------- Workday
 _WORKDAY_AGE = re.compile(r"(\d+)\+?\s+days? ago", re.I)
 
@@ -205,6 +227,7 @@ def workday(emp: dict, cutoff: datetime) -> Iterator[Job]:
 ATS: dict[str, EmployerFeed] = {
     "greenhouse": greenhouse, "lever": lever, "ashby": ashby, "smartrecruiters": smartrecruiters,
     "workable": workable, "recruitee": recruitee, "personio": personio, "workday": workday,
+    "teamtailor": teamtailor,
 }
 
 
