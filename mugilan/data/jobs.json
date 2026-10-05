@@ -1,7 +1,40 @@
 {
- "generated_at": null,
+ "generated_at": "2026-10-05T04:34:50+00:00",
  "window_days": 7,
- "sources": {},
- "counts": {},
+ "profile": {
+  "name": "Mugilan Ramalingam",
+  "headline": "OSS/BSS Solution Architect · 17+ yrs telecom · GCP Associate Cloud Engineer",
+  "min_salary": 60000,
+  "min_match": 45,
+  "notice_period_days": 90,
+  "visa": "Global Business Mobility (employer sponsorship needed to change employer)",
+  "driving_licence": "UK",
+  "clearance": "none (SC / DV roles are excluded)"
+ },
+ "sources": {
+  "UK sponsor register": {
+   "status": "ok",
+   "count": 132591
+  },
+  "Reed": {
+   "status": "ok",
+   "count": 352
+  },
+  "Adzuna": {
+   "status": "skipped",
+   "reason": "ADZUNA_APP_ID / ADZUNA_APP_KEY not set"
+  },
+  "Career sites": {
+   "status": "ok",
+   "count": 0
+  }
+ },
+ "counts": {
+  "fetched": 352,
+  "clearance_removed": 37,
+  "no_sponsorship_removed": 0,
+  "below_threshold": 315,
+  "published": 0
+ },
  "jobs": []
 }
