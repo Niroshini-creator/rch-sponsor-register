@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import json
 import logging
+import os
+import time
 import traceback
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -22,6 +24,9 @@ log = logging.getLogger("mugilan")
 HERE = Path(__file__).resolve().parent.parent          # mugilan/
 MAIN_CONFIG = HERE.parent / "config"                   # read-only: the main board's agency list
 DEFAULT_OUT = HERE / "data" / "jobs.json"
+DEEP_MIN_SCORE = 20                                    # snippet score that makes an advert worth reading in full
+DEEP_MAX = int(os.environ.get("MUGILAN_DEEP_MAX", "80"))
+DEEP_PAUSE = float(os.environ.get("MUGILAN_DEEP_PAUSE", "0.2"))
 
 
 def load_profile() -> dict:
@@ -50,6 +55,36 @@ def fetch(days: int, profile: dict, status: dict) -> list[Job]:
             log.debug(traceback.format_exc())
             status[name] = {"status": "error", "count": len(jobs) - before, "error": str(err)[:300]}
     return jobs
+
+
+def deepen(jobs: list[Job], profile: dict, stats: dict, fetch_full=sources.reed_full_text) -> None:
+    """Replace Reed's short search snippet with the full advert for roles that already look promising.
+
+    Reed's search API truncates descriptions, so OSS/BSS keywords deep in an advert would otherwise be missed
+    (and clearance / sponsorship wording too). Best candidates first; capped at DEEP_MAX calls per run.
+    """
+    stats.setdefault("full_advert_fetched", 0)
+    cutoff = datetime.now(timezone.utc) - timedelta(days=profile["window_days"])
+    candidates = []
+    for job in jobs:
+        if job.source != "Reed" or job.posted_at < cutoff or job.country != "GB":
+            continue
+        pre = score_job(job.title, job.description, job.salary, profile["min_salary"], "confirmed").score
+        if pre >= DEEP_MIN_SCORE:
+            candidates.append((pre, job))
+    candidates.sort(key=lambda c: c[0], reverse=True)
+    for _, job in candidates[:DEEP_MAX]:
+        try:
+            full = fetch_full(job.source_id)
+        except SkipSource:
+            return
+        except Exception as err:  # noqa: BLE001 - keep the snippet when one advert can't be read
+            log.warning("full advert %s unavailable: %s", job.source_id, err)
+            continue
+        if len(full) > len(job.description):
+            job.description = full
+            stats["full_advert_fetched"] += 1
+        time.sleep(DEEP_PAUSE)
 
 
 def build(jobs: list[Job], profile: dict, days: int, index: sponsors.SponsorIndex | None,
@@ -126,6 +161,7 @@ def run(days: int, out_path: Path = DEFAULT_OUT) -> dict:
         status["UK sponsor register"] = {"status": "error", "error": str(err)[:300]}
     raw = fetch(days, profile, status)
     stats = {"clearance_removed": 0, "no_sponsorship_removed": 0, "below_threshold": 0}
+    deepen(raw, profile, stats)
     agency_path = MAIN_CONFIG / "agencies.json"
     agencies = AgencyFilter.load(agency_path) if agency_path.exists() else None
     fresh = build(raw, profile, days, index, agencies, stats)

@@ -22,7 +22,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"  {name:<22} {st['status']:<8} {st.get('count', st.get('reason') or st.get('error') or '')}")
     c = payload["counts"]
     print(f"fetched {c['fetched']} → {c['clearance_removed']} need clearance, {c['no_sponsorship_removed']} refuse sponsorship, "
-          f"{c['below_threshold']} below threshold → published {c['published']} → {args.out}")
+          f"{c['below_threshold']} below threshold ({c.get('full_advert_fetched', 0)} full adverts read) → published {c['published']} → {args.out}")
     return 0
 
 
