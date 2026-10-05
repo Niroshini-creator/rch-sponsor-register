@@ -13,7 +13,7 @@
     <div class="wrap">
       <div>
         <h1>Sponsored Jobs Board</h1>
-        <p class="tagline">Apply direct to visa-sponsoring employers in the UK, Scotland, Europe, the USA and Dubai: employer careers sites, NHS, universities, schools and the public sector, plus employers that take UK Graduate visa (PSW) and US OPT holders. No agencies.</p>
+        <p class="tagline">Apply direct to visa-sponsoring employers in the UK, Scotland, Ireland, Europe, the USA and Dubai: employer careers sites, NHS, universities, schools and the public sector, plus employers that take UK Graduate visa (PSW) and US OPT holders. No agencies.</p>
       </div>
       <p class="updated" id="updated">Loading…</p>
     </div>
@@ -49,6 +49,14 @@
           <legend>Apply via</legend>
         </fieldset>
 
+        <label class="field">
+          <span>Aviation &amp; operations</span>
+          <select name="aviation">
+            <option value="">Any job</option>
+            <option value="any">Any aviation / aerospace role</option>
+          </select>
+        </label>
+
         <fieldset id="f-role"><legend>Job role</legend></fieldset>
 
         <fieldset>
@@ -63,6 +71,7 @@
           <legend>Language &amp; visa route <button type="button" class="info" data-dialog="route-help" aria-label="What are PSW and OPT?">?</button></legend>
           <label><input type="checkbox" name="english" value="1"> English-speaking roles only</label>
           <label><input type="checkbox" name="early" value="1"> PSW (UK Graduate visa) / US OPT friendly</label>
+          <label><input type="checkbox" name="hideLow" value="1" checked> Hide roles rarely sponsored (agents, admin, retail)</label>
         </fieldset>
 
         <fieldset>
@@ -138,6 +147,13 @@
         USCIS H-1B data or that uses E-Verify.</dd>
       <dt>English-speaking</dt>
       <dd>The advert is written in English and does not ask for another language (a language "is a plus" is fine).</dd>
+      <dt>Ireland</dt>
+      <dd>Ireland publishes no sponsor register, so Irish jobs appear when the advert offers sponsorship or an
+        employment permit (Critical Skills or General Employment Permit).</dd>
+      <dt>Rarely sponsored roles</dt>
+      <dd>Front-line roles such as passenger service, check-in, gate, baggage and ramp agents, reservations, customer
+        service advisers, administrators, receptionists and retail or hospitality jobs seldom meet sponsorship skill and
+        salary levels, so they are hidden unless you untick the option.</dd>
       <dt>UAE (Dubai)</dt>
       <dd>UAE employers sponsor the residence and work visa of every foreign hire, so every UAE job is listed.</dd>
     </dl>

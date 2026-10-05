@@ -333,3 +333,66 @@ class SourceResilienceTests(unittest.TestCase):
              mock.patch.object(sources, "EURAXESS_PAUSE", 0):
             jobs = list(sources.euraxess(7))
         self.assertEqual([j.title for j in jobs], ["Postdoc"])
+
+
+class AviationTests(unittest.TestCase):
+    def test_families(self):
+        cases = {
+            ("Flight Operations Analyst", "Acme"): "Operations & Control",
+            ("Airport Duty Manager", "Gatwick Airport Limited"): "Operations & Control",
+            ("Station Manager", "Menzies Aviation"): "Operations & Control",
+            ("Network Planning Analyst", "Ryanair DAC"): "Planning, Network & Scheduling",
+            ("Crew Planner", "easyJet"): "Planning, Network & Scheduling",
+            ("Revenue Management Analyst", "Aer Lingus"): "Commercial Aviation",
+            ("Continuing Airworthiness Engineer", "Acme"): "Aerospace & Engineering",
+            ("Supply Chain Analyst", "Airbus Operations Limited"): "Logistics, Supply Chain & Procurement",
+            ("Aerospace Buyer", "Acme"): "Logistics, Supply Chain & Procurement",
+            ("Project Manager", "Rolls-Royce plc"): "Projects, Programmes & PMO",
+            ("Business Analyst", "Heathrow Airport Limited"): "Business, Strategy & Performance",
+            # Generic titles outside aviation are not aviation roles.
+            ("Business Analyst", "Barclays"): "",
+            ("Commercial Analyst", "Tesco"): "",
+            ("Network Operations Analyst", "BT"): "",
+        }
+        for (title, company), family in cases.items():
+            self.assertEqual(classify.classify_aviation(make_job(title=title, company=company)), family, title)
+        self.assertEqual(set(classify.AVIATION_FAMILIES),
+                         {f for _, f in cases.items() if f})
+
+    def test_advert_context(self):
+        aviation = "You will join our airline's network team, working with airport partners on aircraft rotations."
+        self.assertEqual(classify.classify_aviation(make_job(title="Business Analyst", company="Acme", description=aviation)),
+                         "Business, Strategy & Performance")
+        once = "Occasional flights to clients may be needed; our airline client is one of many."
+        self.assertEqual(classify.classify_aviation(make_job(title="Business Analyst", company="Acme",
+                                                             description=once.replace("airline client", "client"))), "")
+
+    def test_low_sponsorship_roles(self):
+        for title in ("Passenger Service Agent", "Check-in Agent", "Gate Agent", "Baggage Handler", "Ramp Agent",
+                      "Ground Operations Agent", "Reservations Agent", "Ticketing Agent", "Customer Service Advisor",
+                      "Administrative Assistant", "Receptionist", "Retail Assistant"):
+            job = make_job(title=title, company="Swissport")
+            self.assertTrue(classify.is_low_sponsorship(job), title)
+            self.assertEqual(classify.classify_aviation(job), "", title)
+        self.assertFalse(classify.is_low_sponsorship(make_job(title="Airport Operations Manager")))
+
+    def test_irish_permit_wording(self):
+        for text in ("We will support a Critical Skills Employment Permit application for the right candidate.",
+                     "Critical Skills Employment Permit is available for this role.",
+                     "Employment permit support provided."):
+            self.assertEqual(classify.sponsorship_signal(text), "positive", text)
+        self.assertEqual(sources._guess_country("Swords, Co. Dublin", default=""), "IE")
+        self.assertEqual(sources._guess_country("Shannon, Ireland", default=""), "IE")
+
+    def test_pipeline_sets_aviation_fields(self):
+        index = sponsors.SponsorIndex()
+        tiers = classify.TierRules.load(CONFIG / "company_tiers.json")
+        jobs = [make_job(source_id="ops", title="Operations Control Analyst", company="Aer Lingus", country="IE",
+                         location="Dublin", description="Critical Skills Employment Permit sponsorship available."),
+                make_job(source_id="agent", title="Passenger Service Agent", company="Swissport",
+                         description="Visa sponsorship available.")]
+        out = {j.source_id: j for j in pipeline.enrich(jobs, index, tiers, contacts.ContactBook({}), days=7)}
+        self.assertEqual((out["ops"].aviation, out["ops"].sponsorship, out["ops"].low_sponsorship),
+                         ("Operations & Control", "confirmed", False))
+        self.assertEqual((out["agent"].aviation, out["agent"].low_sponsorship), ("", True))
+        self.assertIn("aviation", out["ops"].to_dict())

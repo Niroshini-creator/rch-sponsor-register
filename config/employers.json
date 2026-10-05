@@ -113,6 +113,14 @@
     { "name": "Capital One", "ats": "workday", "host": "capitalone.wd12.myworkdayjobs.com", "site": "Capital_One", "country": "US", "max_jobs": 400 },
     { "name": "Adobe", "ats": "workday", "host": "adobe.wd5.myworkdayjobs.com", "site": "external_experienced", "country": "US", "max_jobs": 400 },
     { "name": "Mastercard", "ats": "workday", "host": "mastercard.wd1.myworkdayjobs.com", "site": "CorporateCareers", "country": "US", "max_jobs": 400 },
-    { "name": "Pfizer", "ats": "workday", "host": "pfizer.wd1.myworkdayjobs.com", "site": "PfizerCareers", "country": "US", "max_jobs": 400 }
+    { "name": "Pfizer", "ats": "workday", "host": "pfizer.wd1.myworkdayjobs.com", "site": "PfizerCareers", "country": "US", "max_jobs": 400 },
+    { "name": "Airbus", "ats": "workday", "host": "ag.wd3.myworkdayjobs.com", "site": "Airbus", "country": "GB", "register_name": "Airbus Operations Limited", "max_jobs": 600 },
+    { "name": "Boeing", "ats": "workday", "host": "boeing.wd1.myworkdayjobs.com", "site": "EXTERNAL_CAREERS", "country": "US", "max_jobs": 500 },
+    { "name": "CAE", "ats": "workday", "host": "cae.wd3.myworkdayjobs.com", "site": "career", "country": "GB", "max_jobs": 400 },
+    { "name": "Cirium", "ats": "workday", "host": "relx.wd3.myworkdayjobs.com", "site": "CiriumCareers", "country": "GB" },
+    { "name": "Etihad Airways", "ats": "smartrecruiters", "id": "EtihadAirways5", "country": "AE" },
+    { "name": "dnata", "ats": "recruitee", "id": "dnata", "country": "AE" },
+    { "name": "Vertical Aerospace", "ats": "ashby", "id": "vertical-aerospace", "country": "GB" },
+    { "name": "ZeroAvia", "ats": "workable", "id": "zeroavia", "country": "GB" }
   ]
 }
