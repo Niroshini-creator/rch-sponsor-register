@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mugilan · Matched Roles</title>
+  <meta name="description" content="UK OSS/BSS and telecom architect roles posted in the last 7 days, scored against the candidate's CV. Refreshed daily.">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <div>
+        <h1>Matched roles for <span id="who">the candidate</span></h1>
+        <p class="tagline" id="headline"></p>
+      </div>
+      <p class="updated" id="updated">Loading…</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="profile" id="profile" aria-label="Candidate profile"></section>
+
+    <form id="filters" class="bar" autocomplete="off">
+      <label>Search <input type="search" name="q" placeholder="Title, employer, keyword…"></label>
+      <label>Min match <input type="range" name="min" min="0" max="100" step="5" value="45"> <output id="min-out">45%</output></label>
+      <label>Posted within
+        <select name="days"><option value="7">7 days</option><option value="3">3 days</option><option value="1">24 hours</option></select>
+      </label>
+      <label>Sponsorship
+        <select name="spons">
+          <option value="">Any</option>
+          <option value="confirmed">Advert offers sponsorship</option>
+          <option value="licensed_sponsor">Licensed sponsor</option>
+          <option value="unverified">Not verified</option>
+          <option value="agency">Agency advert</option>
+        </select>
+      </label>
+      <label>Source <select name="source"><option value="">All</option></select></label>
+      <label class="chk"><input type="checkbox" name="paid"> Salary £60k+ stated</label>
+      <button type="button" id="csv" class="btn">Export CSV</button>
+    </form>
+
+    <p id="count" class="count" role="status"></p>
+    <div id="results"></div>
+
+    <details class="status"><summary>Data sources &amp; last run</summary><div id="sources"></div></details>
+    <p class="note">Match % is a transparent keyword score against the CV (title 40, OSS/BSS domain 35, network tech 10, architecture/GCP 5,
+      seniority 5, salary 5; penalties for junior roles, low pay, unverified sponsorship). Adverts needing SC/DV clearance or refusing
+      sponsorship are removed. Always confirm sponsorship and salary with the employer.</p>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+{
+  "_comment": "Optional telecom employers whose own careers feed is read directly (same format and ATS support as the main board's config/employers.json: greenhouse, lever, ashby, smartrecruiters, workable, recruitee, personio, workday). Board ids are NOT guessed here. Add a line after checking the employer's careers page, e.g. { \"name\": \"Acme Telecom\", \"ats\": \"workday\", \"host\": \"acme.wd3.myworkdayjobs.com\", \"site\": \"Careers\", \"country\": \"GB\", \"local\": true }. Failing employers are listed on the page under Source status.",
+  "employers": []
+}
