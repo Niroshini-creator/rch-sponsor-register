@@ -56,7 +56,8 @@ consultancies are removed.**
      Aerospace & Engineering; Projects, Programmes & PMO; Logistics, Supply Chain & Procurement; Commercial Aviation.
      Shown in the *Aviation & operations* tab and filter.
    * **Rarely sponsored**: front-line roles (passenger service, check-in, gate, baggage and ramp agents,
-     reservations, customer service advisers, administrators, receptionists, retail and hospitality) are flagged
+     reservations, customer service advisers, administrators, receptionists, retail and hospitality, and
+     apprenticeships) are flagged
      and hidden by default, because they seldom meet sponsorship skill and salary levels.
    * **Region**: Scotland (UK jobs in Scottish places or employers such as NHS Lothian), Dubai and Abu Dhabi.
    * **English-speaking**: the advert is written in English and asks for no other language ("Dutch is a plus" is

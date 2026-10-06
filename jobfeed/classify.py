@@ -302,7 +302,9 @@ _LOW_SPONSORSHIP_RE = re.compile(
     r"\bgate agent|\bbaggage (agent|handler|operative)|\bramp (agent|operative)|\bground (operations|handling) agent|"
     r"\breservations? agent|\bticketing agent|\badministrative assistant|\bgeneral administrator|\breceptionist\b|"
     r"\bretail (assistant|associate|colleague)|\bsales assistant|\bhospitality (assistant|associate)|\bwaiter|\bwaitress|"
-    r"\bbarista\b|\bkitchen porter", re.I)
+    r"\bbarista\b|\bkitchen porter|"
+    # UK apprenticeships are funded for people with settled residence, so they are seldom open to sponsorship.
+    r"\bapprentice(ship)?s?\b", re.I)
 
 
 def is_low_sponsorship(job: Job) -> bool:

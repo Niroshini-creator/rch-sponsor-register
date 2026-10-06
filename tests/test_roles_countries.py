@@ -375,6 +375,9 @@ class AviationTests(unittest.TestCase):
             self.assertTrue(classify.is_low_sponsorship(job), title)
             self.assertEqual(classify.classify_aviation(job), "", title)
         self.assertFalse(classify.is_low_sponsorship(make_job(title="Airport Operations Manager")))
+        apprentice = make_job(title="Aerospace Engineering Degree Apprenticeship", company="Airbus")
+        self.assertTrue(classify.is_low_sponsorship(apprentice))
+        self.assertEqual(classify.classify_aviation(apprentice), "")
 
     def test_irish_permit_wording(self):
         for text in ("We will support a Critical Skills Employment Permit application for the right candidate.",
