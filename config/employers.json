@@ -128,7 +128,7 @@
     { "name": "PayPal", "ats": "workday", "host": "paypal.wd1.myworkdayjobs.com", "site": "jobs", "country": "US" },
     { "name": "Informa", "ats": "smartrecruiters", "id": "InformaGroupPlc", "country": "GB", "register_name": "Informa UK Limited" },
     { "name": "Veolia UK", "ats": "workday", "host": "veoliauki.wd3.myworkdayjobs.com", "site": "VESCareers", "country": "GB", "local": true, "register_name": "Veolia ES (UK) Limited" },
-    { "name": "Veolia Ireland", "ats": "workday", "host": "veoliauki.wd3.myworkdayjobs.com", "site": "VeoliaIrelandCareers", "country": "IE", "local": true },
+    { "name": "Veolia Ireland", "ats": "workday", "host": "veoliauki.wd3.myworkdayjobs.com", "site": "VeoliaIrelandCareers", "country": "IE", "local": true, "register_name": "Veolia" },
     { "name": "Vertiv", "ats": "oracle", "host": "egup.fa.us2.oraclecloud.com", "site": "CX", "country": "US", "max_jobs": 600 },
     { "name": "Heathrow Airport", "ats": "oracle", "host": "encd.fa.em3.oraclecloud.com", "site": "CX_3001", "country": "GB", "local": true, "register_name": "Heathrow Airport Limited" },
     { "name": "Manchester Airports Group", "ats": "successfactors", "host": "careers.magairports.com", "country": "GB", "register_name": "Manchester Airport PLC" },
