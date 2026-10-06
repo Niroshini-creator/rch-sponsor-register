@@ -77,6 +77,10 @@ def _adzuna_searches() -> Iterator[tuple[str, dict, int]]:
     yield "gb", {"what_phrase": "visa sponsorship", "where": "Scotland"}, 3
     yield "ie", {"what_phrase": "employment permit"}, 2
     yield "ie", {"what_and": "critical skills"}, 2
+    # Stamp 1G graduates can take any Irish job, so Ireland is searched by role, not only by sponsorship wording.
+    yield "ie", {"what_or": "stamp 1g graduate"}, 2
+    for role in ROLE_QUERIES:
+        yield "ie", {"what": role}, 1
     for code in ("gb", "ie"):
         for words in AVIATION_QUERIES:
             yield code, {"what_and": words}, 1
@@ -374,10 +378,14 @@ def jobs_ac_uk(days: int) -> Iterator[Job]:
     """
     cutoff, now = _cutoff(days), datetime.now(timezone.utc)
     links: dict[str, datetime] = {}
-    for query in ("visa sponsorship", "skilled worker", "certificate of sponsorship", "sponsorship", "visa"):
+    # Sponsorship wording finds UK roles; Irish roles are searched by place, since Stamp 1G graduates need no
+    # permit (the site's location filter is not applied to search URLs, so the place goes in the keywords).
+    searches = [{"keywords": q} for q in ("visa sponsorship", "skilled worker", "certificate of sponsorship",
+                                          "sponsorship", "visa", "Ireland", "Dublin")]
+    for search in searches:
         for start in range(1, 401, 25):
             page = http.get_text("https://www.jobs.ac.uk/search/",
-                                 params={"keywords": query, "sortOrder": 1, "startIndex": start})
+                                 params={**search, "sortOrder": 1, "startIndex": start})
             blocks = page.split('class="j-search-result__result')[1:]
             old = 0
             for block in blocks:
@@ -429,7 +437,7 @@ def the_unijobs(days: int) -> Iterator[Job]:
     from .careers import TARGET_COUNTRIES
     cutoff = _cutoff(days)
     items: dict[str, tuple[dict, str, datetime]] = {}
-    for query in ("visa sponsorship", "visa", "sponsorship", "skilled worker"):
+    for query in ("visa sponsorship", "visa", "sponsorship", "skilled worker", "ireland", "dublin"):
         for page in range(1, 6):
             root = ET.fromstring(http.get("https://www.timeshighereducation.com/unijobs/jobsrss/",
                                           params={"keywords": query, "page": page}))
@@ -482,7 +490,7 @@ def euraxess(days: int) -> Iterator[Job]:
     cutoff = _cutoff(days)
     found: dict[str, dict] = {}
     calls = 0
-    for query in ("visa", "work permit"):
+    for query in ("visa", "work permit", "ireland"):
         for page in range(0, 3):
             # EURAXESS rate-limits (HTTP 429) quick successive searches: space them out.
             if calls:

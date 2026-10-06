@@ -219,8 +219,11 @@ tests/                       offline unit tests (no network needed)
 
 * Being on a sponsor register means an employer *can* sponsor, not that it will for every role. Jobs marked
   **Licensed sponsor** need confirming with the employer.
-* Ireland publishes no sponsor register: Irish jobs appear when the advert offers sponsorship or an employment
-  permit (Critical Skills or General Employment Permit). Most Irish job-board coverage comes from Adzuna, so add its key.
+* Ireland: Stamp 1G (Third Level Graduate Programme) holders can work for any employer without a permit, so every
+  Irish role is listed unless the advert rules them out ("Stamp 4 required", "EU/EEA citizens only", "permanent
+  right to work"); adverts that also offer an employment permit are marked "Sponsorship offered". Irish universities
+  come through jobs.ac.uk, Times Higher Education and EURAXESS (their own CoreHR sites have no public feed); the HSE
+  and publicjobs.ie have no public feed either, so most other Irish coverage comes from Adzuna: add its key.
 * Many airlines and airports (Ryanair, easyJet, Wizz Air, British Airways, Heathrow, Dublin Airport, Emirates,
   flydubai) recruit through enterprise systems with no public feed (SuccessFactors, Taleo, Oracle, Avature, iCIMS).
   Their adverts reach the board only through the Reed and Adzuna aviation searches.
