@@ -28,7 +28,7 @@ EMPLOYER_VISA_COUNTRIES = {"AE"}
 # Shown first in the country filter, even before they have jobs.
 FEATURED_COUNTRIES = ["GB", "GB-SCT", "IE", "US", "NL", "LU", "SE", "FI", "PL", "ES", "AE", "AE-DXB"]
 REGISTERS = [("UK Home Office", sponsors.load_uk_register), ("NL IND", sponsors.load_nl_register),
-             ("US H-1B", sponsors.load_us_h1b)]
+             ("US H-1B", sponsors.load_us_h1b), ("IE employment permits", sponsors.load_ie_permits)]
 CHANNELS = ["career_site", "official", "aggregator"]
 _CHANNEL_RANK = {"career_site": 2, "official": 1, "aggregator": 0}
 
@@ -104,7 +104,13 @@ def enrich(jobs: Iterable[Job], index: sponsors.SponsorIndex, tiers: TierRules,
             # doesn't close to them ("Stamp 4 required", "EU citizens only").
             if stamp1g_status(job) == "excluded":
                 continue
-            job.sponsorship = "confirmed" if signal == "positive" or job.source_says_sponsorship else "stamp_1g"
+            if signal == "positive" or job.source_says_sponsorship:
+                job.sponsorship = "confirmed"
+            elif entry and sponsors.REGISTER_COUNTRY.get(entry.register) == "IE":
+                # Issued employment permits this year or last: Ireland's record of who sponsors.
+                job.sponsorship = "licensed_sponsor"
+            else:
+                job.sponsorship = "stamp_1g"  # no sponsorship evidence; shown only when Stamp 1G is ticked
         elif signal == "negative":
             # No sponsorship, but the advert welcomes Graduate visa (PSW) / OPT holders, who need none.
             if classify_early_career(job) != "stated":

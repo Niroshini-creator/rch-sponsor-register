@@ -185,10 +185,10 @@ function earlyTag(j) {
 function jobHtml(j) {
   const sponsorTag = {
     confirmed: `<span class="tag ok" title="The advert states visa sponsorship is available">Sponsorship offered</span>`,
-    licensed_sponsor: `<span class="tag warn" title="Employer is on the official sponsor register but the advert does not mention sponsorship — ask before applying">${j.sponsor_register === "US H-1B" ? "H-1B sponsor" : "Licensed sponsor"}</span>`,
+    licensed_sponsor: `<span class="tag warn" title="Employer is on the official sponsor register but the advert does not mention sponsorship — ask before applying">${{ "US H-1B": "H-1B sponsor", "IE employment permits": "Permit employer" }[j.sponsor_register] || "Licensed sponsor"}</span>`,
     employer_visa: `<span class="tag ok" title="UAE employers sponsor every foreign hire's residence and work visa">Employer visa (UAE)</span>`,
     graduate_route: `<span class="tag warn" title="No sponsorship, but Graduate visa (PSW) / OPT holders are welcome">No sponsorship · ${j.country === "US" ? "OPT" : "Graduate visa"} OK</span>`,
-    stamp_1g: `<span class="tag ok" title="Ireland: Stamp 1G graduates can take this job without an employment permit; the advert does not rule them out">Open to Stamp 1G</span>`,
+    stamp_1g: `<span class="tag warn" title="Ireland: no sponsorship evidence. Stamp 1G graduates can take this job without an employment permit; the advert does not rule them out">Open to Stamp 1G</span>`,
   }[j.sponsorship] || "";
   const englishTag = j.english && !ENGLISH_COUNTRIES.has(j.country)
     ? `<span class="tag direct" title="Advert in English, no other language required">English-speaking</span>` : "";

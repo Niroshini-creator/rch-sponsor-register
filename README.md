@@ -35,11 +35,17 @@ consultancies are removed.**
      register for that country: the [UK Home Office register of licensed sponsors](https://www.gov.uk/government/publications/register-of-licensed-sponsors-workers)
      or the [Dutch IND register of recognised sponsors](https://ind.nl/en/public-register-recognised-sponsors/public-register-regular-labour-and-highly-skilled-migrants),
      or, for US jobs, the [USCIS H-1B Employer Data Hub](https://www.uscis.gov/tools/reports-and-studies/h-1b-employer-data-hub)
-     (employers with approved H-1B petitions).
+     (employers with approved H-1B petitions), or, for Irish jobs, the Department of Enterprise list of
+     [employment permits issued to companies](https://enterprise.gov.ie/en/what-we-do/workplace-and-skills/employment-permits/statistics/)
+     this year or last (shown as "Permit employer").
    * **Employer visa (UAE)**: UAE employers sponsor the residence and work visa of every foreign hire, so every job in
      the UAE is kept.
-   * **Graduate visa / OPT accepted**: the advert rules sponsorship out but says it welcomes Graduate visa (PSW) or
-     OPT holders, who need no sponsorship.
+   * **Graduate visa / OPT accepted** (hidden by default): the advert rules sponsorship out but says it welcomes
+     Graduate visa (PSW) or OPT holders, who need no sponsorship.
+   * **Ireland: open to Stamp 1G** (hidden by default): an Irish job with no sponsorship evidence that doesn't rule
+     Stamp 1G holders out.
+
+   The board opens on the first three (sponsorship evidence); the last two are for candidates who don't need it.
 
    Any other advert that rules sponsorship out ("unable to sponsor", "right to work without sponsorship",
    "must be a US citizen") is dropped.
@@ -222,9 +228,9 @@ tests/                       offline unit tests (no network needed)
 
 * Being on a sponsor register means an employer *can* sponsor, not that it will for every role. Jobs marked
   **Licensed sponsor** need confirming with the employer.
-* Ireland: Stamp 1G (Third Level Graduate Programme) holders can work for any employer without a permit, so every
-  Irish role is listed unless the advert rules them out ("Stamp 4 required", "EU/EEA citizens only", "permanent
-  right to work"); adverts that also offer an employment permit are marked "Sponsorship offered". Irish universities
+* Ireland: an Irish role counts as sponsored when the advert offers an employment permit, or the employer was issued
+  permits this year or last. Other Irish roles are kept for Stamp 1G holders (who need no permit) unless the advert
+  rules them out ("Stamp 4 required", "EU/EEA citizens only"), and only show when that option is ticked. Irish universities
   come through jobs.ac.uk, Times Higher Education and EURAXESS (their own CoreHR sites have no public feed); the HSE
   and publicjobs.ie have no public feed either. Adzuna has no Irish site, so other Irish roles come from employer
   career sites (Stripe, Intercom, Mastercard, Ryanair, Veolia Ireland and others with Dublin offices).
