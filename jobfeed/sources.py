@@ -11,6 +11,7 @@ import logging
 import os
 import re
 import time
+import urllib.error
 import xml.etree.ElementTree as ET
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
@@ -24,7 +25,7 @@ log = logging.getLogger("jobfeed")
 
 # Adzuna country codes covered, mapped to ISO 3166 codes.
 ADZUNA_COUNTRIES = {
-    "gb": "GB", "us": "US", "nl": "NL", "pl": "PL", "es": "ES", "ie": "IE", "de": "DE", "fr": "FR",
+    "gb": "GB", "us": "US", "nl": "NL", "pl": "PL", "es": "ES", "de": "DE", "fr": "FR",
     "be": "BE", "at": "AT", "ch": "CH", "it": "IT",
 }
 
@@ -79,15 +80,8 @@ def _adzuna_searches() -> Iterator[tuple[str, dict, int]]:
     for code in ADZUNA_COUNTRIES:
         yield code, {"what_phrase": "visa sponsorship"}, 5 if code in ("gb", "us") else 2
     yield "gb", {"what_phrase": "visa sponsorship", "where": "Scotland"}, 3
-    yield "ie", {"what_phrase": "employment permit"}, 2
-    yield "ie", {"what_and": "critical skills"}, 2
-    # Stamp 1G graduates can take any Irish job, so Ireland is searched by role, not only by sponsorship wording.
-    yield "ie", {"what_or": "stamp 1g graduate"}, 2
-    for role in ROLE_QUERIES:
-        yield "ie", {"what": role}, 1
-    for code in ("gb", "ie"):
-        for words in AVIATION_QUERIES:
-            yield code, {"what_and": words}, 1
+    for words in AVIATION_QUERIES:
+        yield "gb", {"what_and": words}, 1
     for code in ("de", "nl", "fr", "be", "at", "ch", "it", "es", "pl"):
         for words in EUROPE_AVIATION_QUERIES:
             yield code, {"what_and": words}, 1
@@ -117,11 +111,18 @@ def adzuna(days: int) -> Iterator[Job]:
             if calls:
                 time.sleep(ADZUNA_PAUSE)
             calls += 1
-            data = http.get_json(
-                f"https://api.adzuna.com/v1/api/jobs/{code}/search/{page}",
-                params={"app_id": app_id, "app_key": app_key, "results_per_page": 50,
-                        "max_days_old": days, "sort_by": "date", **query},
-            )
+            try:
+                data = http.get_json(
+                    f"https://api.adzuna.com/v1/api/jobs/{code}/search/{page}",
+                    params={"app_id": app_id, "app_key": app_key, "results_per_page": 50,
+                            "max_days_old": days, "sort_by": "date", **query},
+                )
+            except urllib.error.HTTPError as err:
+                # One rejected search (bad query, unsupported country) must not stop the others.
+                if err.code in (401, 403, 429):
+                    raise
+                log.warning("Adzuna %s %s failed: %s", code, query, err)
+                break
             results = data.get("results", [])
             for r in results:
                 posted = parse_date(r.get("created"))

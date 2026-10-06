@@ -3,6 +3,7 @@
 import json
 import tempfile
 import unittest
+import urllib.error
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from unittest import mock
@@ -232,6 +233,15 @@ class NewSourceTests(unittest.TestCase):
             list(sources.adzuna(7))
         self.assertEqual(get.call_count, 3)
         self.assertIn("/gb/", get.call_args_list[0].args[0])
+
+    def test_adzuna_skips_a_rejected_search(self):
+        not_found = urllib.error.HTTPError("u", 404, "Not Found", {}, None)
+        with mock.patch.dict("os.environ", {"ADZUNA_APP_ID": "a", "ADZUNA_APP_KEY": "b"}), \
+             mock.patch.object(sources, "ADZUNA_MAX_CALLS", 3), mock.patch.object(sources, "ADZUNA_PAUSE", 0), \
+             mock.patch.object(sources.http, "get_json", side_effect=[not_found, {"results": []}, {"results": []}]) as get:
+            list(sources.adzuna(7))
+        self.assertEqual(get.call_count, 3)
+        self.assertNotIn("ie", sources.ADZUNA_COUNTRIES)  # Adzuna has no Irish site
 
     def test_teaching_vacancies_salary(self):
         self.assertEqual(sources._schema_salary(

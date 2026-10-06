@@ -166,7 +166,7 @@ To add an employer, open its careers page, look at the address of a job link, an
 | [Platsbanken JobSearch API](https://jobsearch.api.jobtechdev.se/) (Arbetsförmedlingen) | Every advert in Sweden incl. universities, regions, municipalities (official) | none |
 | [Teaching Vacancies API](https://teaching-vacancies.service.gov.uk/) (DfE) | State schools in England (official) | none |
 | RSS feeds in `config/sources.json` | any extra feed you add, e.g. a council's vacancies (official) | none |
-| [Adzuna API](https://developer.adzuna.com/) | UK (incl. a Scotland search), US, NL, PL, ES + 7 more EU countries; one search per job role for the UK and US (job board) | `ADZUNA_APP_ID`, `ADZUNA_APP_KEY` (free) |
+| [Adzuna API](https://developer.adzuna.com/) | UK (incl. a Scotland search), US, NL, PL, ES, DE, FR, BE, AT, CH, IT (no Irish site); one search per job role for the UK and US, airport operations and aeronautical searches across Europe (job board) | `ADZUNA_APP_ID`, `ADZUNA_APP_KEY` (free) |
 | [Reed API](https://www.reed.co.uk/developers/jobseeker) | UK, direct employers only; one search per job role (job board) | `REED_API_KEY` (free) |
 | [Arbeitnow API](https://www.arbeitnow.com/api) | Germany / EU, visa-sponsorship filter (job board) | none |
 
@@ -226,10 +226,12 @@ tests/                       offline unit tests (no network needed)
   Irish role is listed unless the advert rules them out ("Stamp 4 required", "EU/EEA citizens only", "permanent
   right to work"); adverts that also offer an employment permit are marked "Sponsorship offered". Irish universities
   come through jobs.ac.uk, Times Higher Education and EURAXESS (their own CoreHR sites have no public feed); the HSE
-  and publicjobs.ie have no public feed either, so most other Irish coverage comes from Adzuna: add its key.
-* Many airlines and airports (Ryanair, easyJet, Wizz Air, British Airways, Heathrow, Dublin Airport, Emirates,
-  flydubai) recruit through enterprise systems with no public feed (SuccessFactors, Taleo, Oracle, Avature, iCIMS).
-  Their adverts reach the board only through the Reed and Adzuna aviation searches.
+  and publicjobs.ie have no public feed either. Adzuna has no Irish site, so other Irish roles come from employer
+  career sites (Stripe, Intercom, Mastercard, Ryanair, Veolia Ireland and others with Dublin offices).
+* Heathrow and Vertiv (Oracle) and Manchester Airports Group, Swissport, Wizz Air, Brussels Airport, Ryanair and EY
+  (SuccessFactors) are read directly. Other airlines and airports (easyJet, British Airways, Virgin Atlantic,
+  Gatwick, Dublin Airport, Schiphol, Emirates, flydubai) have no public feed; their adverts reach the board only
+  through the Reed and Adzuna aviation searches.
 * Only the UK and the Netherlands publish sponsor registers, and the US publishes H-1B petition data. For other
   countries (Luxembourg, Sweden, Finland, Poland, Spain…), jobs appear only when the advert itself offers sponsorship
   or work-permit support.
