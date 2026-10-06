@@ -52,11 +52,17 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/jobs.json
-          git commit -m "Refresh sponsored jobs feed"
-          # main may have moved while the feed was building (a merge, another run): replay on top.
+          cp data/jobs.json "${RUNNER_TEMP}/jobs.json"
+          # main may have moved while the feed was building (a merge, another run). Put this run's feed on
+          # top of the latest main as a whole file: a rebase would merge two feeds line by line into a mix.
           for attempt in 1 2 3; do
-            git pull --rebase -X theirs origin "${GITHUB_REF_NAME}" && git push && exit 0
+            git fetch origin "${GITHUB_REF_NAME}"
+            git reset --hard "origin/${GITHUB_REF_NAME}"
+            cp "${RUNNER_TEMP}/jobs.json" data/jobs.json
+            git add data/jobs.json
+            git diff --cached --quiet && exit 0
+            git commit -m "Refresh sponsored jobs feed"
+            git push origin "HEAD:${GITHUB_REF_NAME}" && exit 0
             sleep $((attempt * 5))
           done
           exit 1
