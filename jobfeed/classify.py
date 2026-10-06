@@ -244,17 +244,27 @@ def classify_role(job: Job) -> str:
 
 # ----------------------------------------------------------------------------- aviation & operations focus
 # Job families for aviation, airline, airport and aerospace careers, from the board owner's target list.
-AVIATION_FAMILIES = ["Operations & Control", "Planning, Network & Scheduling", "Business, Strategy & Performance",
-                     "Aerospace & Engineering", "Projects, Programmes & PMO", "Logistics, Supply Chain & Procurement",
+AVIATION_FAMILIES = ["Airport Operations", "Operations & Control", "Planning, Network & Scheduling",
+                     "Business, Strategy & Performance", "Aerospace & Aeronautical Engineering", "Projects, Programmes & PMO", "Logistics, Supply Chain & Procurement",
                      "Commercial Aviation"]
 
 _AVIATION_RULES: list[tuple[str, re.Pattern]] = [
+    ("Airport Operations", re.compile(
+        r"\bairport (operations?|duty|terminal|services|planning|control|performance|resilience|safety)|"
+        r"\bairside (operations?|safety|duty|services|manager|controller|supervisor)|\bairfield (operations?|manager|"
+        r"officer|safety)|\bapron (control|controller|manager|management)|\b(aocc|apoc|amoc)\b|"
+        r"\bterminal (duty manager|operations|manager|controller)|\bturnaround (co-?ordinator|manager|controller)|"
+        r"\bground operations (manager|controller|supervisor|lead|planner|analyst)|\bstation (manager|operations)|"
+        r"\blandside operations|\baviation security (manager|lead|compliance|analyst)|\bbaggage (systems|operations) "
+        r"(manager|engineer|controller|analyst)|\bpassenger (operations|flow|experience) (manager|analyst|lead)|"
+        r"\bduty (operations )?manager\b|\boperations duty manager|\bstand (planner|allocation)|\bslot (co-?ordinator|"
+        r"manager|analyst)|\bwildlife hazard|\bfire (and|&) rescue (manager|officer)", re.I)),
     ("Operations & Control", re.compile(
         r"\b(flight|airline|aviation|airport|airside|terminal|integrated|network|station) operations?\b|"
         r"\boperations? control|\bops control|\bnetwork control|\boperations? (controller|optimi[sz]ation|"
         r"planning (analyst|specialist|manager))|\boperational (performance|resilience)|\bdisruption management|"
         r"\bpunctuality\b|\b(otp|on[- ]time performance)\b|\bflight data\b|\baviation safety\b|\bflight (controller|dispatch)|"
-        r"\bstation manager\b|\bduty manager\b|\bairside\b|\bterminal (operations|manager)", re.I)),
+        r"\bairside\b", re.I)),
     ("Planning, Network & Scheduling", re.compile(
         r"\b(network|schedule|scheduling|capacity|resource|fleet|aircraft|flight|crew|airport|route|strategic|"
         r"maintenance) (planning|planner|development|scheduler|scheduling)\b|\b(aviation|operations|airline network) planner\b|"
@@ -263,8 +273,14 @@ _AVIATION_RULES: list[tuple[str, re.Pattern]] = [
         r"\bcommercial (analyst|manager|planning|strategy|specialist)|\brevenue (management|analyst|manager)|"
         r"\bpricing (analyst|specialist|manager)|\b(route|network) economics|\bbusiness development|\bpartnerships? "
         r"(analyst|manager|specialist)|\bcontracts? manager", re.I)),
-    ("Aerospace & Engineering", re.compile(
-        r"\baeronautic|\baerospace (engineer|analyst|systems)|\baircraft (systems|performance)|\baviation systems|"
+    ("Aerospace & Aeronautical Engineering", re.compile(
+        r"\baeronautic|\bavionics?\b|\baerodynamic|\bflight (test|dynamics|controls?|physics|sciences?) "
+        r"(engineer|analyst|specialist)|\b(stress|structures?|structural|propulsion|powerplant|certification|"
+        r"airworthiness|design|airframe|composites?) engineer|\b(licen[cs]ed )?aircraft (maintenance )?(engineer|"
+        r"technician|mechanic)|\bb[12](\.\d)? (licen[cs]ed|licen[cs]e|engineer|mechanic|technician|avionics)|"
+        r"\bcamo\b|\bpart[- ]?(145|21|m|camo)\b|\bmro\b|\bengine (shop|performance|engineer)|\bsystems safety|"
+        r"\bsafety (and|&) certification|\baerospace (engineer|analyst|systems)|\baircraft (systems|performance)|"
+        r"\baviation systems|"
         r"\bsystems (integration )?engineer|\bflight operations engineer|\bmanufacturing (engineer|analyst)|"
         r"\bproduction engineer|\bprocess engineer|\b(supplier )?quality (engineer|analyst|specialist|manager)|"
         r"\breliability (engineer|analyst)|\bmaintenance planning|\bcontinuing airworthiness|\bairworthiness|"
@@ -295,7 +311,14 @@ _AVIATION_CONTEXT_RE = re.compile(
     r"\bmanchester airports\b|\bnats\b|\bswissport\b|\bmenzies\b|\bdnata\b|\baercap\b|\bavolon\b|"
     r"\bsmbc aviation\b|\brolls[- ]royce\b|\bbae systems\b|\bleonardo\b|\bgkn aerospace\b|\bspirit aero|"
     r"\bsafran\b|\bcollins aerospace\b|\brtx\b|\bge aerospace\b|\bcae\b|\bcirium\b|\boag\b|\bembraer\b|"
-    r"\bbombardier\b|\bzeroavia\b|\bvertical aerospace\b|\bskyports\b|\bjoby\b|\barcher aviation\b", re.I)
+    r"\bbombardier\b|\bzeroavia\b|\bvertical aerospace\b|\bskyports\b|\bjoby\b|\barcher aviation\b|"
+    r"\bavionics?\b|\baerodrome\b|\bschiphol\b|\bfraport\b|\baena\b|\bgroupe adp\b|\bavinor\b|\bswedavia\b|"
+    r"\bfinavia\b|\bdubai airports\b|\bflydubai\b|\bsaudia\b|\bair arabia\b|\bsata\b|\bsas\b|\bfinnair\b|"
+    r"\btransavia\b|\beurowings\b|\bcondor\b|\bbrussels airlines\b|\bvueling\b|\biberia\b|\blot polish\b|"
+    r"\beurocontrol\b|\beasa\b|\bcivil aviation\b|\bmtu aero\b|\bpratt (&|and) whitney\b|\bthales\b|"
+    # Airport in other European languages (Flughafen, luchthaven, aeroporto, aéroport, aeropuerto, lotnisko...).
+    r"\bflughafen\b|\bluchthaven\b|\baeroporto\b|\ba[ée]roport\b|\baeropuerto\b|\blotnisko\b|\blentoasema\b|"
+    r"\bflygplats\b|\blufthavn\b|\bluftfahrt|\bluchtvaart", re.I)
 # Front-line roles that rarely meet sponsorship skill and salary thresholds.
 _LOW_SPONSORSHIP_RE = re.compile(
     r"\bpassenger service|\bcustomer service (agent|advisor|adviser|assistant|representative)|\bcheck[- ]in agent|"

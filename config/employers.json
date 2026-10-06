@@ -8,7 +8,9 @@
     "workable": "apply.workable.com/<id>",
     "recruitee": "<id>.recruitee.com",
     "personio": "<id>.jobs.personio.de  (or .com -> add \"tld\": \"com\")",
-    "workday": "<host>/<site>, e.g. gsk.wd5.myworkdayjobs.com/GSKCareers -> host gsk.wd5.myworkdayjobs.com, site GSKCareers"
+    "workday": "<host>/<site>, e.g. gsk.wd5.myworkdayjobs.com/GSKCareers -> host gsk.wd5.myworkdayjobs.com, site GSKCareers",
+    "oracle": "<host>/hcmUI/CandidateExperience/en/sites/<site>, e.g. encd.fa.em3.oraclecloud.com ... sites/CX_3001 -> host + site",
+    "successfactors": "career sites whose images load from rmkcdn.successfactors.com: host is the careers domain (jobs.swissport.com); optional keywords list for very large sites"
   },
   "employers": [
     { "name": "Monzo", "ats": "greenhouse", "id": "monzo", "country": "GB", "register_name": "Monzo Bank Limited" },
@@ -34,7 +36,7 @@
     { "name": "Synthesia", "ats": "ashby", "id": "synthesia", "country": "GB" },
     { "name": "ElevenLabs", "ats": "ashby", "id": "elevenlabs", "country": "GB" },
     { "name": "Bosch", "ats": "smartrecruiters", "id": "BoschGroup", "country": "DE" },
-    { "name": "Visa", "ats": "smartrecruiters", "id": "Visa", "country": "GB" },
+    { "name": "Visa", "ats": "workday", "host": "visa.wd5.myworkdayjobs.com", "site": "Visa", "country": "GB", "register_name": "Visa Europe Limited", "max_jobs": 800 },
     { "name": "AstraZeneca", "ats": "workday", "host": "astrazeneca.wd3.myworkdayjobs.com", "site": "Careers", "country": "GB" },
     { "name": "GSK", "ats": "workday", "host": "gsk.wd5.myworkdayjobs.com", "site": "GSKCareers", "country": "GB" },
     { "name": "Shell", "ats": "workday", "host": "shell.wd3.myworkdayjobs.com", "site": "ShellCareers", "country": "GB" },
@@ -112,7 +114,7 @@
     { "name": "Intel", "ats": "workday", "host": "intel.wd1.myworkdayjobs.com", "site": "External", "country": "US", "max_jobs": 400 },
     { "name": "Capital One", "ats": "workday", "host": "capitalone.wd12.myworkdayjobs.com", "site": "Capital_One", "country": "US", "max_jobs": 400 },
     { "name": "Adobe", "ats": "workday", "host": "adobe.wd5.myworkdayjobs.com", "site": "external_experienced", "country": "US", "max_jobs": 400 },
-    { "name": "Mastercard", "ats": "workday", "host": "mastercard.wd1.myworkdayjobs.com", "site": "CorporateCareers", "country": "US", "max_jobs": 400 },
+    { "name": "Mastercard", "ats": "workday", "host": "mastercard.wd1.myworkdayjobs.com", "site": "CorporateCareers", "country": "US", "max_jobs": 1200 },
     { "name": "Pfizer", "ats": "workday", "host": "pfizer.wd1.myworkdayjobs.com", "site": "PfizerCareers", "country": "US", "max_jobs": 400 },
     { "name": "Airbus", "ats": "workday", "host": "ag.wd3.myworkdayjobs.com", "site": "Airbus", "country": "GB", "register_name": "Airbus Operations Limited", "max_jobs": 600 },
     { "name": "Boeing", "ats": "workday", "host": "boeing.wd1.myworkdayjobs.com", "site": "EXTERNAL_CAREERS", "country": "US", "max_jobs": 500 },
@@ -121,6 +123,19 @@
     { "name": "Etihad Airways", "ats": "smartrecruiters", "id": "EtihadAirways5", "country": "AE" },
     { "name": "dnata", "ats": "recruitee", "id": "dnata", "country": "AE" },
     { "name": "Vertical Aerospace", "ats": "ashby", "id": "vertical-aerospace", "country": "GB" },
-    { "name": "ZeroAvia", "ats": "workable", "id": "zeroavia", "country": "GB" }
+    { "name": "ZeroAvia", "ats": "workable", "id": "zeroavia", "country": "GB" },
+    { "name": "eBay", "ats": "workday", "host": "ebay.wd5.myworkdayjobs.com", "site": "apply", "country": "US", "register_name": "eBay (UK) Limited" },
+    { "name": "PayPal", "ats": "workday", "host": "paypal.wd1.myworkdayjobs.com", "site": "jobs", "country": "US" },
+    { "name": "Informa", "ats": "smartrecruiters", "id": "InformaGroupPlc", "country": "GB", "register_name": "Informa UK Limited" },
+    { "name": "Veolia UK", "ats": "workday", "host": "veoliauki.wd3.myworkdayjobs.com", "site": "VESCareers", "country": "GB", "local": true, "register_name": "Veolia ES (UK) Limited" },
+    { "name": "Veolia Ireland", "ats": "workday", "host": "veoliauki.wd3.myworkdayjobs.com", "site": "VeoliaIrelandCareers", "country": "IE", "local": true },
+    { "name": "Vertiv", "ats": "oracle", "host": "egup.fa.us2.oraclecloud.com", "site": "CX", "country": "US", "max_jobs": 600 },
+    { "name": "Heathrow Airport", "ats": "oracle", "host": "encd.fa.em3.oraclecloud.com", "site": "CX_3001", "country": "GB", "local": true, "register_name": "Heathrow Airport Limited" },
+    { "name": "Manchester Airports Group", "ats": "successfactors", "host": "careers.magairports.com", "country": "GB", "register_name": "Manchester Airport PLC" },
+    { "name": "Swissport", "ats": "successfactors", "host": "jobs.swissport.com", "country": "CH" },
+    { "name": "Wizz Air", "ats": "successfactors", "host": "careers.wizzair.com", "country": "HU", "register_name": "Wizz Air UK Limited" },
+    { "name": "Brussels Airport", "ats": "successfactors", "host": "jobs.brusselsairport.be", "country": "BE", "local": true },
+    { "name": "Ryanair", "ats": "successfactors", "host": "jobs.ryanair.com", "country": "IE", "register_name": "Ryanair DAC" },
+    { "name": "EY", "ats": "successfactors", "host": "careers.ey.com", "country": "GB", "register_name": "Ernst & Young LLP" }
   ]
 }

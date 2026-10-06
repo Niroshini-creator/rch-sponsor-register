@@ -52,8 +52,8 @@ consultancies are removed.**
      Business Analyst, IT Support, Application Support, Engineering, Project Manager, Finance & Accounting,
      HR & Recruitment, Digital Marketing, Logistics & Supply Chain, Medical Laboratory, Aviation, Other.
    * **Aviation & operations family** (when the title is one of them and the employer or advert is in aviation or
-     aerospace): Operations & Control; Planning, Network & Scheduling; Business, Strategy & Performance;
-     Aerospace & Engineering; Projects, Programmes & PMO; Logistics, Supply Chain & Procurement; Commercial Aviation.
+     aerospace): Airport Operations; Operations & Control; Planning, Network & Scheduling; Business, Strategy &
+     Performance; Aerospace & Aeronautical Engineering; Projects, Programmes & PMO; Logistics, Supply Chain & Procurement; Commercial Aviation.
      Shown in the *Aviation & operations* tab and filter.
    * **Rarely sponsored**: front-line roles (passenger service, check-in, gate, baggage and ramp agents,
      reservations, customer service advisers, administrators, receptionists, retail and hospitality, and
@@ -124,7 +124,8 @@ address is published, the card links to the advert and to LinkedIn people search
 
 Most employers run their careers page on an applicant tracking system that publishes a public job feed.
 The board reads that feed directly, so the job and its Apply button are the employer's own. Supported:
-**Greenhouse, Lever, Ashby, SmartRecruiters, Workable, Recruitee, Personio, Workday, Teamtailor**.
+**Greenhouse, Lever, Ashby, SmartRecruiters, Workable, Recruitee, Personio, Workday, Teamtailor, Oracle Recruiting
+Cloud, SAP SuccessFactors**.
 
 To add an employer, open its careers page, look at the address of a job link, and add one line:
 
@@ -144,6 +145,8 @@ To add an employer, open its careers page, look at the address of a job link, an
 | `acme.jobs.personio.de` | personio | acme |
 | `gsk.wd5.myworkdayjobs.com/GSKCareers` | workday | `host` + `site` |
 | `acme.teamtailor.com` (or its own domain, e.g. `careers.voi.com`) | teamtailor | acme (or `"host": "careers.voi.com"`) |
+| `encd.fa.em3.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_3001` | oracle | `host` + `site` (CX_3001) |
+| `jobs.swissport.com` (images from `rmkcdn.successfactors.com`) | successfactors | `"host": "jobs.swissport.com"` |
 
 * `register_name` is the employer's legal name on the UK sponsor register, when it differs from the brand
   name. It lets the licence check match.
@@ -204,7 +207,7 @@ python -m http.server 8000            # open http://localhost:8000
 
 ```
 index.html, assets/          static front end
-jobfeed/careers.py           employer career sites (Greenhouse, Lever, Ashby, SmartRecruiters, Workable, Recruitee, Personio, Workday, Teamtailor)
+jobfeed/careers.py           employer career sites (Greenhouse, Lever, Ashby, SmartRecruiters, Workable, Recruitee, Personio, Workday, Teamtailor, Oracle, SuccessFactors)
 jobfeed/agencies.py          recruitment agency / consultancy detection
 jobfeed/sources.py           NHS Jobs, Teaching Vacancies, Platsbanken, RSS and job-board connectors
 jobfeed/sponsors.py          UK Home Office + NL IND sponsor registers, USCIS H-1B employer data

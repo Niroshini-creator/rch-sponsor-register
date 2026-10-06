@@ -199,3 +199,49 @@ class TeamtailorTests(unittest.TestCase):
         with mock.patch.object(careers.http, "get", return_value=rss) as get:
             list(careers.teamtailor({"name": "Kry", "id": "kryhealthcare"}, CUTOFF))
         get.assert_called_once_with("https://kryhealthcare.teamtailor.com/jobs.rss")
+
+    def test_oracle_recruiting_cloud(self):
+        today, old = NOW.date().isoformat(), (NOW - timedelta(days=30)).date().isoformat()
+        listing = {"items": [{"requisitionList": [
+            {"Id": "5672", "Title": "Airport Duty Manager", "PostedDate": today, "PrimaryLocation": "London, United Kingdom",
+             "PrimaryLocationCountry": "GB", "WorkplaceType": ""},
+            {"Id": "5670", "Title": "Engineer", "PostedDate": today, "PrimaryLocation": "Pune, India",
+             "PrimaryLocationCountry": "IN"},
+            {"Id": "5001", "Title": "Old role", "PostedDate": old, "PrimaryLocationCountry": "GB"}]}]}
+        detail = {"items": [{"ExternalDescriptionStr": "<p>Run the terminal.</p>", "ExternalContactName": "Sam Lee",
+                             "ExternalContactEmail": "sam.lee@heathrow.com"}]}
+        emp = {"name": "Heathrow Airport", "ats": "oracle", "host": "encd.fa.em3.oraclecloud.com", "site": "CX_3001",
+               "country": "GB"}
+        with mock.patch.object(careers.http, "get_json", side_effect=[listing, detail]) as get:
+            jobs = list(careers.oracle(emp, CUTOFF))
+        self.assertIn("finder=findReqs;siteNumber=CX_3001,limit=25,offset=0", get.call_args_list[0].args[0])
+        self.assertIn("finder=ById;Id=%225672%22,siteNumber=CX_3001", get.call_args_list[1].args[0])
+        self.assertEqual(len(jobs), 1)  # India skipped; the listing stops at the first old role
+        job = jobs[0]
+        self.assertEqual((job.country, job.description, job.url),
+                         ("GB", "Run the terminal.",
+                          "https://encd.fa.em3.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_3001/job/5672"))
+        self.assertEqual(job.advert_contacts, [{"name": "Sam Lee", "role": "Recruiter", "email": "sam.lee@heathrow.com"}])
+
+    def test_successfactors_rss(self):
+        stamp = NOW.strftime("%a, %d %b %Y %H:%M:%S GMT")
+        rss = f"""<?xml version="1.0" encoding="UTF-8" ?><rss version='2.0'><channel><title>MAG</title>
+            <item><title><![CDATA[Airside Operations Manager (Manchester Airport, GB, M90 1QX)]]></title>
+              <description><![CDATA[<p>Visa sponsorship available.</p>]]></description><pubDate>{stamp}</pubDate>
+              <link>https://careers.magairports.com/job/Manchester-Airport-Airside/1434082833/</link></item>
+            <item><title><![CDATA[Tax Analyst (Lima, PE, 15073)]]></title><pubDate>{stamp}</pubDate><link>y</link></item>
+            <item><title><![CDATA[Old (Stansted, GB)]]></title><pubDate>Thu, 01 Jan 2026 00:00:00 GMT</pubDate><link>z</link></item>
+            </channel></rss>""".encode()
+        emp = {"name": "Manchester Airports Group", "ats": "successfactors", "host": "careers.magairports.com",
+               "country": "GB"}
+        with mock.patch.object(careers.http, "get", return_value=rss) as get:
+            jobs = list(careers.successfactors(emp, CUTOFF))
+        get.assert_called_once_with("https://careers.magairports.com/services/rss/job/",
+                                    params={"locale": "en_GB", "keywords": "", "rows": 1000})
+        self.assertEqual(len(jobs), 1)
+        self.assertEqual((jobs[0].title, jobs[0].location, jobs[0].country, jobs[0].description),
+                         ("Airside Operations Manager", "Manchester Airport, GB, M90 1QX", "GB", "Visa sponsorship available."))
+        # Keyword searches are merged without duplicates.
+        with mock.patch.object(careers.http, "get", return_value=rss) as get:
+            jobs = list(careers.successfactors(dict(emp, keywords=["London", "Dublin"]), CUTOFF))
+        self.assertEqual((get.call_count, len(jobs)), (2, 1))

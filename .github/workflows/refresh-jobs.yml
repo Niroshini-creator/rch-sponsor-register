@@ -17,7 +17,8 @@ permissions:
   contents: write
 
 concurrency:
-  group: refresh-jobs
+  # Renamed from "refresh-jobs": that group's lock got stuck on 2026-10-06 and held every run in "pending".
+  group: refresh-jobs-feed
   cancel-in-progress: false
 
 jobs:

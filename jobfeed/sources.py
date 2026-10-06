@@ -53,7 +53,11 @@ AVIATION_QUERIES = [
     "network planning airline", "schedule planning airline", "crew planning", "fleet planning",
     "revenue management airline", "aviation analyst", "aviation project manager", "aerospace engineer",
     "continuing airworthiness", "maintenance planning aircraft", "aviation procurement", "air cargo",
+    "airport duty manager", "airside operations", "terminal operations airport", "aeronautical engineer",
+    "avionics engineer", "aircraft maintenance engineer", "licensed aircraft engineer",
 ]
+# Airport operations and aeronautical searches across Europe (Adzuna country sites).
+EUROPE_AVIATION_QUERIES = ["airport operations", "aerospace engineer", "aeronautical engineer", "avionics"]
 # Early-career searches for UK Graduate visa (PSW) and US OPT holders.
 EARLY_CAREER_QUERIES = {"gb": ["graduate visa", "graduate scheme sponsorship"],
                         "us": ["opt", "h1b sponsorship", "new grad visa sponsorship"]}
@@ -83,6 +87,9 @@ def _adzuna_searches() -> Iterator[tuple[str, dict, int]]:
         yield "ie", {"what": role}, 1
     for code in ("gb", "ie"):
         for words in AVIATION_QUERIES:
+            yield code, {"what_and": words}, 1
+    for code in ("de", "nl", "fr", "be", "at", "ch", "it", "es", "pl"):
+        for words in EUROPE_AVIATION_QUERIES:
             yield code, {"what_and": words}, 1
     for code in ("gb", "us"):
         for words in EARLY_CAREER_QUERIES[code]:
