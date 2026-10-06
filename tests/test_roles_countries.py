@@ -469,7 +469,7 @@ class Stamp1GTests(unittest.TestCase):
         import zipfile
         shared = ("<sst xmlns='http://schemas.openxmlformats.org/spreadsheetml/2006/main'>"
                   "<si><t>Employer Name</t></si><si><t>Mastercard Ireland Limited</t></si>"
-                  "<si><t>Salesforce Ireland Unlimited Company</t></si><si><t>Grand Total</t></si>"
+                  "<si><t>Salesforce.com Ireland Unlimited Company</t></si><si><t>Grand Total</t></si>"
                   "<si><t>A Portal Company 01 Production Test (Please Ignore)</t></si></sst>")
         rows = "".join(f"<row r='{i + 1}'><c r='A{i + 1}' t='s'><v>{i}</v></c><c r='B{i + 1}'><v>7</v></c></row>"
                        for i in range(5))
@@ -487,3 +487,12 @@ class Stamp1GTests(unittest.TestCase):
         self.assertEqual(index.lookup("Mastercard", "IE").name, "Mastercard Ireland Limited")
         self.assertEqual(index.lookup("Salesforce", "IE").register, "IE employment permits")
         self.assertIsNone(index.lookup("Grand Total"))
+
+    def test_irish_group_prefix_match(self):
+        index = sponsors.SponsorIndex()
+        for name in ("Pfizer Ireland Pharmaceuticals", "Pfizer Healthcare Ireland"):
+            index.add(sponsors.SponsorEntry(name, "IE employment permits"))
+        index.add(sponsors.SponsorEntry("Acme Labs Ltd", "UK Home Office"))
+        index.add(sponsors.SponsorEntry("Acme Tools Ltd", "UK Home Office"))
+        self.assertEqual(index.lookup_prefix("Pfizer", "IE").register, "IE employment permits")
+        self.assertIsNone(index.lookup_prefix("Acme", "GB"))  # ambiguous UK prefixes stay unmatched

@@ -89,7 +89,11 @@ class SponsorIndex:
         if (key, country) not in self._prefix_cache:
             hits = {id(e): e for name, regs in self._by_name.items() if name.startswith(key + " ")
                     for r, e in regs.items() if not country or REGISTER_COUNTRY.get(r) == country}
-            self._prefix_cache[(key, country)] = next(iter(hits.values())) if len(hits) == 1 else None
+            entries = sorted(hits.values(), key=lambda e: e.name)
+            # Several Irish permit holders from one group ("Pfizer Ireland Pharmaceuticals", "Pfizer Healthcare
+            # Ireland") all count: the permit list records who sponsors, not one licence per legal entity.
+            group = len(entries) > 1 and all(e.register == "IE employment permits" for e in entries)
+            self._prefix_cache[(key, country)] = entries[0] if len(entries) == 1 or group else None
         return self._prefix_cache[(key, country)]
 
     def __len__(self) -> int:
@@ -213,7 +217,7 @@ def load_ie_permits(index: SponsorIndex) -> None:
     if not names:
         raise RuntimeError("no Irish permit employers found (" + "; ".join(errors) + ")")
     for name in sorted(names):
-        words = normalise_company(name).split()
+        words = normalise_company(re.sub(r"\.com\b", "", name, flags=re.I)).split()  # "Salesforce.com Ireland"
         while len(words) > 1 and words[-1] in _IE_ENTITY_WORDS:
             words.pop()
         alias = " ".join(words)
