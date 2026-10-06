@@ -52,10 +52,16 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add mugilan/data/jobs.json
-          git commit -m "Refresh Mugilan matched jobs"
+          cp mugilan/data/jobs.json "${RUNNER_TEMP}/mugilan-jobs.json"
+          # Put this run's feed on top of the latest main as a whole file (a rebase merges two feeds line by line).
           for attempt in 1 2 3; do
-            git pull --rebase -X theirs origin "${GITHUB_REF_NAME}" && git push && exit 0
+            git fetch origin "${GITHUB_REF_NAME}"
+            git reset --hard "origin/${GITHUB_REF_NAME}"
+            cp "${RUNNER_TEMP}/mugilan-jobs.json" mugilan/data/jobs.json
+            git add mugilan/data/jobs.json
+            git diff --cached --quiet && exit 0
+            git commit -m "Refresh Mugilan matched jobs"
+            git push origin "HEAD:${GITHUB_REF_NAME}" && exit 0
             sleep $((attempt * 5))
           done
           exit 1
