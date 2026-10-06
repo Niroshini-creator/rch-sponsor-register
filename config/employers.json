@@ -136,6 +136,6 @@
     { "name": "Wizz Air", "ats": "successfactors", "host": "careers.wizzair.com", "country": "HU", "register_name": "Wizz Air UK Limited" },
     { "name": "Brussels Airport", "ats": "successfactors", "host": "jobs.brusselsairport.be", "country": "BE", "local": true },
     { "name": "Ryanair", "ats": "successfactors", "host": "jobs.ryanair.com", "country": "IE", "register_name": "Ryanair DAC" },
-    { "name": "EY", "ats": "successfactors", "host": "careers.ey.com", "country": "GB", "register_name": "Ernst & Young LLP" }
+    { "name": "EY", "ats": "successfactors", "host": "careers.ey.com", "country": "GB", "register_name": "Ernst & Young LLP", "rows": 500, "keywords": ["London", "Manchester", "Birmingham", "Leeds", "Edinburgh", "Glasgow", "Belfast", "Bristol", "Dublin", "Dubai", "Amsterdam", "Luxembourg"] }
   ]
 }
