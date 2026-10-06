@@ -46,7 +46,7 @@ DOMAIN_QUERIES = [
 ROLE_QUERIES = [
     "data analyst", "business analyst", "it support", "application support", "biomedical scientist",
     "logistics", "data scientist", "devops", "software developer", "engineer", "accountant", "hr",
-    "digital marketing", "aviation", "project manager",
+    "digital marketing", "aviation", "project manager", "mechanical engineer",
 ]
 # Aviation, airline, airport and aerospace searches (see classify.AVIATION_FAMILIES).
 AVIATION_QUERIES = [
@@ -57,6 +57,9 @@ AVIATION_QUERIES = [
     "airport duty manager", "airside operations", "terminal operations airport", "aeronautical engineer",
     "avionics engineer", "aircraft maintenance engineer", "licensed aircraft engineer",
 ]
+# Mechanical engineering, experienced and entry level (Reed and Adzuna UK; Adzuna Europe/US by title).
+MECHANICAL_QUERIES = ["mechanical engineer", "graduate mechanical engineer", "mechanical design engineer", "hvac engineer",
+                      "maintenance engineer", "manufacturing engineer", "building services engineer"]
 # Airport operations and aeronautical searches across Europe (Adzuna country sites).
 EUROPE_AVIATION_QUERIES = ["airport operations", "aerospace engineer", "aeronautical engineer", "avionics"]
 # Early-career searches for UK Graduate visa (PSW) and US OPT holders.
@@ -85,6 +88,10 @@ def _adzuna_searches() -> Iterator[tuple[str, dict, int]]:
     for code in ("de", "nl", "fr", "be", "at", "ch", "it", "es", "pl"):
         for words in EUROPE_AVIATION_QUERIES:
             yield code, {"what_and": words}, 1
+    for words in MECHANICAL_QUERIES:
+        yield "gb", {"what_and": words}, 1
+    for code in ("us", "nl", "de", "pl", "es"):
+        yield code, {"what_and": "mechanical engineer"}, 1
     for code in ("gb", "us"):
         for words in EARLY_CAREER_QUERIES[code]:
             yield code, {"what_and": words}, 2
@@ -152,6 +159,7 @@ def reed(days: int) -> Iterator[Job]:
     queries += [(f"sponsorship {role}", 200) for role in ROLE_QUERIES]
     queries += [(q, 200) for q in EARLY_CAREER_QUERIES["gb"]]
     queries += [(q, 100) for q in AVIATION_QUERIES]
+    queries += [(q, 100) for q in MECHANICAL_QUERIES]
     for query, limit in queries:
         for skip in range(0, limit, 100):
             data = http.get_json("https://www.reed.co.uk/api/1.0/search",

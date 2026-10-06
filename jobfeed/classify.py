@@ -140,7 +140,7 @@ def classify_domain(job: Job) -> str:
 
 # ----------------------------------------------------------------------------- job role (job family)
 ROLES = ["Software Developer", "DevOps & Cloud", "Data Science & AI", "Data Analyst", "Business Analyst",
-         "IT Support", "Application Support", "Engineering", "Project Manager", "Finance & Accounting",
+         "IT Support", "Application Support", "Mechanical Engineering", "Engineering", "Project Manager", "Finance & Accounting",
          "HR & Recruitment", "Digital Marketing", "Logistics & Supply Chain", "Medical Laboratory", "Aviation",
          "Other"]
 
@@ -225,8 +225,18 @@ _ROLE_RULES: list[tuple[str, re.Pattern]] = [
         r"\btest (engineer|analyst|automation)|\bsdet\b|\bsoftware tester|\bembedded (software|engineer|developer)|"
         r"\bfirmware\b|\bgame (developer|programmer)|\bsolutions? architect|\bsoftware architect|\btechnical lead\b|"
         r"\btech lead\b|\bengineering manager\b|\bproduct engineer\b|\bsecurity engineer\b|\bapi\b", re.I)),
+    ("Mechanical Engineering", re.compile(
+        r"\bmechanical\b|\bm&e\b|\bmep\b|\bhvac\b|\bbuilding services (engineer|design)|\bthermal (engineer|analyst)|"
+        r"\b(cfd|fea|fem) (engineer|analyst)|\bthermodynamic|\bstress (engineer|analyst)|\bpiping (engineer|designer)|"
+        r"\brotating equipment|\bturbine (engineer|technician)|\b(pump|compressor|valve) (engineer|technician)|"
+        r"\bmaintenance (engineer|technician|planner|manager)|\bmanufacturing (engineer|engineering)|"
+        r"\bproduction engineer|\bproduct design engineer|(?<!electrical )(?<!electronic )(?<!electronics )(?<!software )"
+        r"(?<!civil )(?<!structural )(?<!hardware )\bdesign engineer|\bmechatronic|\bautomotive (engineer|design)|"
+        r"\bpowertrain|\bvehicle (engineer|dynamics|integration)|\bchassis\b|\bnvh\b|\bsolidworks\b|\bcatia\b|"
+        r"\btooling (engineer|designer)|\breliability engineer|\bplant engineer|\bfacilities engineer|\bmaschinenbau|"
+        r"\bwerktuigbouw|\bm[ée]canique\b|\bmec[aá]nic[oa]\b|\bmechanik", re.I)),
     ("Engineering", re.compile(
-        r"\bengineer|\bengineering\b|\bmechanical\b|\belectrical\b|\bcivil\b|\bstructural\b|\bchemical\b|\bprocess (engineer|"
+        r"\bengineer|\bengineering\b|\belectrical\b|\bcivil\b|\bstructural\b|\bchemical\b|\bprocess (engineer|"
         r"technician)|\bmanufacturing\b|\bmaintenance (technician|engineer|manager)|\bdesign engineer|\bcad\b|"
         r"\bquantity surveyor|\bsurveyor\b|\bgeotechnical|\bhvac\b|\bcommissioning\b|\bquality (engineer|manager|inspector)|"
         r"\bhealth (and|&) safety\b|\bmechatronic|\brobotics\b|\bautomation (engineer|technician)|\bplc\b|"
@@ -428,7 +438,8 @@ _EARLY_TITLE_RE = re.compile(
     r"\bgraduate\b|\bgrad\b|\bnew grad|\bentry[- ]level\b|\bjunior\b|\bjr\.?\b|\btrainee\b|\bintern(ship)?\b|"
     r"\bplacement\b|\bearly career|\bassociate (software|engineer|developer|analyst|consultant|data)|"
     r"\b(analyst|engineer|developer|scientist|consultant) (i|1)\b|\bcampus\b|\bstudent\b|\bresidency\b|"
-    r"\bfoundation (year|doctor|programme)|\bfy1\b|\bnewly qualified\b|\bect\b|\bpostdoc|\bpost-doctoral\b", re.I)
+    r"\bfoundation (year|doctor|programme)|\bfy1\b|\bnewly qualified\b|\bect\b|\bpostdoc|\bpost-doctoral\b|"
+    r"\bassistant (engineer|designer)|\bengineer in training\b", re.I)
 _PSW_RE = re.compile(
     r"\bgraduate (visa|route)\b|\bpost[- ]study work\b|\bpsw\b|\bgraduate immigration route\b|"
     r"\b(tier 4|student) visa (holders?|to skilled worker)\b|\bswitch(ing)? (from|to) (a |the )?(graduate|skilled worker) visa", re.I)
