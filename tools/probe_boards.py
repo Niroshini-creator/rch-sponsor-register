@@ -61,28 +61,15 @@ def wd(host, site):
          json.dumps({"appliedFacets": {}, "limit": 1, "offset": 0, "searchText": ""}).encode(), "application/json")
 
 
-TITLES = re.compile(r"<title><!\[CDATA\[(.*?)\]\]>")
-api = "https://encd.fa.em3.oraclecloud.com/hcmRestApi/resources/latest"
-status, body, _ = get(f"{api}/recruitingCEJobRequisitions?onlyData=true&expand=requisitionList.secondaryLocations"
-                      "&finder=findReqs;siteNumber=CX_3001,limit=2,offset=0,sortBy=POSTING_DATES_DESC")
-req = json.loads(body)["items"][0]["requisitionList"][0]
-print("ORACLE REQ:", json.dumps(req)[:1500])
-status, body, _ = get(f"{api}/recruitingCEJobRequisitionDetails?expand=all&onlyData=true"
-                      f"&finder=ById;Id=%22{req['Id']}%22,siteNumber=CX_3001")
-d = json.loads(body)["items"][0]
-print("ORACLE DETAIL keys:", sorted(d.keys()))
-print("ORACLE DETAIL desc:", str(d.get("ExternalDescriptionStr"))[:300])
+def page(name_url):
+    name, url = name_url
+    status, body, final = get(url)
+    hints = sorted(set(h.lower().rstrip("/") for h in HINTS.findall(body)))[:12]
+    return f"PAGE {name}: [{status}] {final} len={len(body)} hints={hints}"
 
-for q in ["", "&startrow=20", "&startrow=20&sortColumn=referencedate&sortDirection=desc", "&rows=100"]:
-    status, body, _ = get(f"https://careers.ey.com/services/rss/job/?locale=en_GB&keywords={q}")
-    print(f"SF EY {q!r}: [{status}] items={body.count('<item')} first={TITLES.findall(body)[1:3]}")
-status, body, _ = get("https://careers.magairports.com/services/rss/job/?locale=en_GB&keywords=")
-item = body[body.find("<item"):body.find("</item>")]
-print("SF ITEM tags:", re.findall(r"<([a-zA-Z:]+)[ >]", item)[:30])
-print("SF pubDate:", re.findall(r"<pubDate>(.*?)</pubDate>", item), re.findall(r"<link>(.*?)</link>", item))
-status, body, _ = get("https://careers.ey.com/services/rss/job/?locale=en_GB&keywords=london")
-print("SF EY london items", body.count("<item"), TITLES.findall(body)[1:4])
 
+status, body, _ = get("https://careers.ey.com/services/rss/job/?locale=en_GB&keywords=&rows=1000")
+print("SF EY rows=1000 items", body.count("<item"))
 for label, url in [("Gatwick", "https://jobs.gatwickairport.com/jobs/home/"), ("Bristol", "https://jobs.bristolairport.co.uk/vacancies"),
                    ("NATS", "https://www.nats.aero/careers/vacancies/"), ("Rolls-Royce", "https://careers.rolls-royce.com/en/jobs"),
                    ("Leonardo", "https://careers.uk.leonardo.com/gb/en/search-results"), ("Munich", "https://www.munich-airport.de/alle-jobs-jetzt-bewerben-94732"),
