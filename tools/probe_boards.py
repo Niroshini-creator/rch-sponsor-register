@@ -61,40 +61,34 @@ def wd(host, site):
          json.dumps({"appliedFacets": {}, "limit": 1, "offset": 0, "searchText": ""}).encode(), "application/json")
 
 
-# Oracle Recruiting Cloud
-oracle("Vertiv", "egup.fa.us2.oraclecloud.com", "CX")
-oracle("Heathrow", "encd.fa.em3.oraclecloud.com", "CX_3001")
-for site in ["CX_1", "CX", "CX_1001", "CX_2001", "CX_3001"]:
-    oracle("IAG", "iagime.fa.ocs.oraclecloud.com", site)
-status, body, _ = get("https://careers.virginatlantic.com/")
-print("VA oracle hints:", sorted(set(re.findall(r"iagime[^\"'<> ]{0,200}", body)))[:5])
-status, body, _ = get("https://careers.ba.com/")
-print("BA hints:", sorted(set(re.findall(r"https?://[a-z0-9.-]+/[^\"'<> ]{0,120}(?:job|vacanc|search)[^\"'<> ]{0,80}", body, re.I)))[:15])
+TITLES = re.compile(r"<title><!\[CDATA\[(.*?)\]\]>")
+api = "https://encd.fa.em3.oraclecloud.com/hcmRestApi/resources/latest"
+status, body, _ = get(f"{api}/recruitingCEJobRequisitions?onlyData=true&expand=requisitionList.secondaryLocations"
+                      "&finder=findReqs;siteNumber=CX_3001,limit=2,offset=0,sortBy=POSTING_DATES_DESC")
+req = json.loads(body)["items"][0]["requisitionList"][0]
+print("ORACLE REQ:", json.dumps(req)[:1500])
+status, body, _ = get(f"{api}/recruitingCEJobRequisitionDetails?expand=all&onlyData=true"
+                      f"&finder=ById;Id=%22{req['Id']}%22,siteNumber=CX_3001")
+d = json.loads(body)["items"][0]
+print("ORACLE DETAIL keys:", sorted(d.keys()))
+print("ORACLE DETAIL desc:", str(d.get("ExternalDescriptionStr"))[:300])
 
-# SuccessFactors Recruiting Marketing RSS
-for host in ["careers.magairports.com", "jobs.swissport.com", "careers.wizzair.com", "jobs.brusselsairport.be",
-             "careers.ey.com", "careers.edinburghairport.com", "jobs.ryanair.com"]:
-    show(f"SF RSS {host}", f"https://{host}/services/rss/job/?locale=en_GB&keywords=", 900)
+for q in ["", "&startrow=20", "&startrow=20&sortColumn=referencedate&sortDirection=desc", "&rows=100"]:
+    status, body, _ = get(f"https://careers.ey.com/services/rss/job/?locale=en_GB&keywords={q}")
+    print(f"SF EY {q!r}: [{status}] items={body.count('<item')} first={TITLES.findall(body)[1:3]}")
+status, body, _ = get("https://careers.magairports.com/services/rss/job/?locale=en_GB&keywords=")
+item = body[body.find("<item"):body.find("</item>")]
+print("SF ITEM tags:", re.findall(r"<([a-zA-Z:]+)[ >]", item)[:30])
+print("SF pubDate:", re.findall(r"<pubDate>(.*?)</pubDate>", item), re.findall(r"<link>(.*?)</link>", item))
+status, body, _ = get("https://careers.ey.com/services/rss/job/?locale=en_GB&keywords=london")
+print("SF EY london items", body.count("<item"), TITLES.findall(body)[1:4])
 
-# Avature (Emirates)
-show("Avature Emirates", "https://emiratesjobs.avature.net/en_US/careers/SearchJobs/?jobRecordsPerPage=6", 400)
-show("Avature Emirates feed", "https://emiratesjobs.avature.net/en_US/careers/SearchJobs/feed/?jobRecordsPerPage=6", 900)
-links("Emirates", "https://www.emiratesgroupcareers.com/")
-
-# Veolia UK / Ireland Workday
-for site in ["vescareers", "veoliairelandcareers", "VESCareers", "VeoliaIrelandCareers"]:
-    wd("veoliauki.wd3.myworkdayjobs.com", site)
-
-# Pages without a recognised ATS: list job links
-for label, url in [("KPMG UK", "https://www.kpmgcareers.co.uk/"), ("KPMG IE", "https://kpmg.com/ie/en/careers.html"),
-                   ("Optum IE", "https://www.optum.ie/careers.html"), ("Optum", "https://www.optum.com/en/careers.html"),
-                   ("Gatwick", "https://www.gatwickairport.com/company/careers.html"), ("NATS", "https://www.nats.aero/careers/"),
-                   ("Rolls-Royce", "https://careers.rolls-royce.com/en"), ("Jet2", "https://jet2careers.com/"),
-                   ("Edinburgh", "https://careers.edinburghairport.com/"), ("Bristol", "https://www.bristolairport.co.uk/corporate/careers/"),
-                   ("Munich", "https://www.munich-airport.com/careers-263141"), ("Schiphol", "https://www.schipholcareers.nl/"),
-                   ("Avolon", "https://www.avolon.aero/careers"), ("AerCap", "https://www.aercap.com/careers/life-at-aercap"),
-                   ("SMBC", "https://www.smbc.aero/WorkingWithUs"), ("Eurocontrol", "https://www.eurocontrol.int/careers"),
-                   ("Leonardo", "https://uk.leonardo.com/en/people"), ("eBay", "https://careers.ebayinc.com/"),
-                   ("Vertiv", "https://www.vertiv.com/en-us/about/career-center/")]:
-        links(label, url)
-show("UHG search", "https://careers.unitedhealthgroup.com/search-jobs/results?ActiveFacetID=0&CurrentPage=1&RecordsPerPage=3&Keywords=&Location=Ireland&SearchResultsModuleName=Search+Results&SearchFiltersModuleName=Search+Filters&SortCriteria=0&SortDirection=0&SearchType=5", 900)
+for label, url in [("Gatwick", "https://jobs.gatwickairport.com/jobs/home/"), ("Bristol", "https://jobs.bristolairport.co.uk/vacancies"),
+                   ("NATS", "https://www.nats.aero/careers/vacancies/"), ("Rolls-Royce", "https://careers.rolls-royce.com/en/jobs"),
+                   ("Leonardo", "https://careers.uk.leonardo.com/gb/en/search-results"), ("Munich", "https://www.munich-airport.de/alle-jobs-jetzt-bewerben-94732"),
+                   ("Edinburgh", "https://careers.edinburghairport.com/careers"), ("Emirates", "https://www.emiratesgroupcareers.com/search-and-apply/"),
+                   ("Eurocontrol", "https://jobs.eurocontrol.int/all-vacancies"), ("AerCap", "https://www.aercap.com/careers/career-opportunities"),
+                   ("Jet2", "https://jet2careers.com/search-careers/"), ("Schiphol", "https://www.schipholcareers.nl/vacatures"),
+                   ("eBay", "https://jobs.ebayinc.com/us/en/search-results"), ("UHG IE", "https://careers.unitedhealthgroup.com/ireland-careers-jobs")]:
+    print(page((label, url)), flush=True)
+    links(label, url)
