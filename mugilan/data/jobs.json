@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-05T15:15:59+00:00",
+ "generated_at": "2026-10-06T08:41:21+00:00",
  "window_days": 7,
  "profile": {
   "name": "Mugilan Ramalingam",
@@ -29,11 +29,11 @@
   },
   "Reed": {
    "status": "ok",
-   "count": 412
+   "count": 344
   },
   "Adzuna": {
-   "status": "skipped",
-   "reason": "ADZUNA_APP_ID / ADZUNA_APP_KEY not set"
+   "status": "ok",
+   "count": 26
   },
   "Career sites": {
    "status": "ok",
@@ -41,16 +41,62 @@
   }
  },
  "counts": {
-  "fetched": 412,
-  "clearance_removed": 88,
+  "fetched": 370,
+  "clearance_removed": 61,
   "no_sponsorship_removed": 4,
-  "language_removed": 0,
-  "below_threshold": 320,
-  "full_advert_fetched": 80,
+  "language_removed": 19,
+  "below_threshold": 286,
+  "full_advert_fetched": 61,
   "published": 0
  },
  "jobs": [],
  "near_misses": [
+  {
+   "source": "Reed",
+   "source_id": "57418649",
+   "title": "AI Solutions Architect - SMBC",
+   "company": "eFinancialCareers",
+   "location": "London",
+   "country": "GB",
+   "url": "https://www.reed.co.uk/jobs/ai-solutions-architect-smbc/57418649",
+   "posted_at": "2026-10-02T00:00:00+00:00",
+   "description": "SMBC: A trusted partner for the long term Here at SMBC Group, we want to help you find the next step in your career so read on to discover if this opportunity is the one for you. We like to recognise potential in our people, so we welcome your application even when your experience doesn't perfectly align with the job description. Whilst we'll always strive to be better, we're proud of our inclusive culture, and encourage our applicants and colleagues to be their authentic, unique selves. Who we are United by a sense of purpose towards our customers - to be a trusted partner for the long-term…",
+   "salary": "",
+   "contract": "",
+   "channel": "aggregator",
+   "sponsorship": "licensed_sponsor",
+   "sponsor_register": "",
+   "sponsor_routes": [],
+   "sector": "",
+   "domain": "",
+   "role": "",
+   "region": "",
+   "english": true,
+   "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
+   "tier": 3,
+   "size": "unknown",
+   "contacts": [],
+   "id": "012ae39cd26a",
+   "match": 33,
+   "reasons": [
+    "+20 Solution / technical architect title",
+    "+3 telecom OSS/BSS keywords",
+    "+5 architecture practice / GCP",
+    "+5 senior / architect level"
+   ],
+   "flags": [
+    "Salary not stated"
+   ],
+   "matched_keywords": [
+    "design authority",
+    "gcp",
+    "solution architecture"
+   ],
+   "agency": false,
+   "currency": "£"
+  },
   {
    "source": "Reed",
    "source_id": "57406264",
@@ -97,18 +143,18 @@
   },
   {
    "source": "Reed",
-   "source_id": "57403633",
-   "title": "Solution Architect",
-   "company": "Proactive Appointments",
-   "location": "Scotland",
+   "source_id": "57425677",
+   "title": "Lead Solution Architect",
+   "company": "Appcast Enterprise",
+   "location": "London",
    "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/solution-architect/57403633",
-   "posted_at": "2026-09-29T00:00:00+00:00",
-   "description": "Solution Architect – Remote Our client is urgently looking for an experienced Solution Architect, with experience of GIS (Geographic Information System) to join their team on a permanent basis. Please note, the role is remote but can be hybrid or office based. Our client has offices dotted around the UK. This means the working arrangement that works best for you can be met. You will design and deliver across a broad range of solutions across a variety of industries, using state of the art geospatial and enterprise technologies. You will be rewarded with an excellent salary, as well as a…",
-   "salary": "60,000 – 70,000",
+   "url": "https://www.reed.co.uk/jobs/lead-solution-architect/57425677",
+   "posted_at": "2026-10-06T00:00:00+00:00",
+   "description": "Entity: Technology Job Family Group: IT&S Group Job Description: We’re looking for a Lead Architect to shape the technology behind our Gas & Power Trading International (GPTI) business. This role sits across the full trading landscape — from front-office systems to back-office processing, data platforms, integrations and infrastructure. You’ll take ownership of the technology roadmap across the trading technology estate, ensuring core platforms, modern digital services, integrations and data capabilities work together effectively while progressively reducing reliance on specialist knowledge…",
+   "salary": "",
    "contract": "",
    "channel": "aggregator",
-   "sponsorship": "agency",
+   "sponsorship": "unverified",
    "sponsor_register": "",
    "sponsor_routes": [],
    "sector": "",
@@ -122,18 +168,25 @@
    "tier": 3,
    "size": "unknown",
    "contacts": [],
-   "id": "efa7836f62a7",
-   "match": 30,
+   "id": "cd5d4bec963f",
+   "match": 28,
    "reasons": [
     "+20 Solution / technical architect title",
+    "+3 telecom OSS/BSS keywords",
+    "+3 network technology (GPON/DOCSIS/MPLS/SDH/DWDM…)",
+    "+2 architecture practice / GCP",
     "+5 senior / architect level",
-    "+5 pay reaches the 60,000 expectation"
+    "-5 sponsorship / work permit not confirmed"
    ],
    "flags": [
-    "Recruitment agency advert"
+    "Salary not stated"
    ],
-   "matched_keywords": [],
-   "agency": true,
+   "matched_keywords": [
+    "design authority",
+    "enterprise architecture",
+    "transmission"
+   ],
+   "agency": false,
    "currency": "£"
   },
   {
@@ -177,6 +230,47 @@
    "matched_keywords": [
     "enterprise architecture"
    ],
+   "agency": true,
+   "currency": "£"
+  },
+  {
+   "source": "Reed",
+   "source_id": "57424646",
+   "title": "AI Enterprise Architect",
+   "company": "Lorien",
+   "location": "London",
+   "country": "GB",
+   "url": "https://www.reed.co.uk/jobs/ai-enterprise-architect/57424646",
+   "posted_at": "2026-10-05T00:00:00+00:00",
+   "description": ". AI Enterprise Architect - London (Contract) Must be DV Clearable 5 Days On-Site Future-State Architecture · Roadmapping · Capability Modelling Are you a strategic thinker who can translate complex business needs into clear, long-term architectural direction? We're looking for an AI Enterprise Architect to shape the future-state architecture of a large, data-driven organisation - defining capabilities, governance frameworks and technology roadmaps that enable sustainable, scalable growth. This role will suit someone who brings a balance of big-picture vision and practical delivery…",
+   "salary": "",
+   "contract": "",
+   "channel": "aggregator",
+   "sponsorship": "agency",
+   "sponsor_register": "",
+   "sponsor_routes": [],
+   "sector": "",
+   "domain": "",
+   "role": "",
+   "region": "",
+   "english": true,
+   "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
+   "tier": 3,
+   "size": "unknown",
+   "contacts": [],
+   "id": "7c053b8dfcea",
+   "match": 25,
+   "reasons": [
+    "+20 Solution / technical architect title",
+    "+5 senior / architect level"
+   ],
+   "flags": [
+    "Salary not stated",
+    "Recruitment agency advert"
+   ],
+   "matched_keywords": [],
    "agency": true,
    "currency": "£"
   },
@@ -269,46 +363,6 @@
   },
   {
    "source": "Reed",
-   "source_id": "57418649",
-   "title": "AI Solutions Architect - SMBC",
-   "company": "eFinancialCareers",
-   "location": "London",
-   "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/ai-solutions-architect-smbc/57418649",
-   "posted_at": "2026-10-02T00:00:00+00:00",
-   "description": "SMBC: A trusted partner for the long term Here at SMBC Group, we want to help you find the next step in your career so read on to discover if this opportunity is the one for you. We like to recognise potential in our people, so we welcome your application even when your experience doesn't perfectly align with the job description. Whilst we'll always strive to be better, we're proud of our inclusive culture, and encourage our applicants and colle...",
-   "salary": "",
-   "contract": "",
-   "channel": "aggregator",
-   "sponsorship": "licensed_sponsor",
-   "sponsor_register": "",
-   "sponsor_routes": [],
-   "sector": "",
-   "domain": "",
-   "role": "",
-   "region": "",
-   "english": true,
-   "early_career": "",
-   "aviation": "",
-   "low_sponsorship": false,
-   "tier": 3,
-   "size": "unknown",
-   "contacts": [],
-   "id": "012ae39cd26a",
-   "match": 25,
-   "reasons": [
-    "+20 Solution / technical architect title",
-    "+5 senior / architect level"
-   ],
-   "flags": [
-    "Salary not stated"
-   ],
-   "matched_keywords": [],
-   "agency": false,
-   "currency": "£"
-  },
-  {
-   "source": "Reed",
    "source_id": "57413341",
    "title": "Solution Architect - Platform, Event, Domain Driven",
    "company": "Sanderson ",
@@ -345,6 +399,50 @@
     "Recruitment agency advert"
    ],
    "matched_keywords": [],
+   "agency": true,
+   "currency": "£"
+  },
+  {
+   "source": "Reed",
+   "source_id": "57411353",
+   "title": "Lead Databricks Architect",
+   "company": "Tenth Revolution Group",
+   "location": "London",
+   "country": "GB",
+   "url": "https://www.reed.co.uk/jobs/lead-databricks-architect/57411353",
+   "posted_at": "2026-10-01T00:00:00+00:00",
+   "description": "Lead Databricks Architect - London (Hybrid) Databricks - Azure - Data & AI Leadership - Up to £115,000 Are you looking to take ownership of large-scale Data & AI transformation programmes while leading teams and shaping technical delivery? Due to continued growth, we're hiring multiple Lead Databricks Architects to join a rapidly expanding Data & AI practice delivering complex transformation programmes for enterprise organisations across a range of industries. This is a leadership-focused role combining architecture, technical leadership and delivery oversight. You'll work closely with…",
+   "salary": "85,000 – 115,000",
+   "contract": "",
+   "channel": "aggregator",
+   "sponsorship": "agency",
+   "sponsor_register": "",
+   "sponsor_routes": [],
+   "sector": "",
+   "domain": "",
+   "role": "",
+   "region": "",
+   "english": true,
+   "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
+   "tier": 3,
+   "size": "unknown",
+   "contacts": [],
+   "id": "ed028ce4fd53",
+   "match": 23,
+   "reasons": [
+    "+10 Architect title",
+    "+3 architecture practice / GCP",
+    "+5 senior / architect level",
+    "+5 pay reaches the 60,000 expectation"
+   ],
+   "flags": [
+    "Recruitment agency advert"
+   ],
+   "matched_keywords": [
+    "gcp"
+   ],
    "agency": true,
    "currency": "£"
   },
@@ -394,47 +492,6 @@
   },
   {
    "source": "Reed",
-   "source_id": "57423896",
-   "title": "Lead Solution Architect",
-   "company": "Appcast Enterprise",
-   "location": "London",
-   "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/lead-solution-architect/57423896",
-   "posted_at": "2026-10-05T00:00:00+00:00",
-   "description": "Entity: Technology Job Family Group: IT&S Group Job Description: We’re looking for a Lead Architect to shape the technology behind our Gas & Power Trading International (GPTI) business. This role sits across the full trading landscape — from front-office systems to back-office processing, data platforms, integrations and infrastructure. You’ll take ownership of the technology roadmap across the trading technology estate, ensuring core pl...",
-   "salary": "",
-   "contract": "",
-   "channel": "aggregator",
-   "sponsorship": "unverified",
-   "sponsor_register": "",
-   "sponsor_routes": [],
-   "sector": "",
-   "domain": "",
-   "role": "",
-   "region": "",
-   "english": true,
-   "early_career": "",
-   "aviation": "",
-   "low_sponsorship": false,
-   "tier": 3,
-   "size": "unknown",
-   "contacts": [],
-   "id": "9efcea2c263f",
-   "match": 20,
-   "reasons": [
-    "+20 Solution / technical architect title",
-    "+5 senior / architect level",
-    "-5 sponsorship / work permit not confirmed"
-   ],
-   "flags": [
-    "Salary not stated"
-   ],
-   "matched_keywords": [],
-   "agency": false,
-   "currency": "£"
-  },
-  {
-   "source": "Reed",
    "source_id": "57419328",
    "title": "Senior Data Architect | Permanent | Up to £150,000 + Bonus",
    "company": "WeDo Technology Solutions Limited",
@@ -442,7 +499,7 @@
    "country": "GB",
    "url": "https://www.reed.co.uk/jobs/senior-data-architect--permanent--up-to-150000--bonus/57419328",
    "posted_at": "2026-10-03T00:00:00+00:00",
-   "description": "Senior Data Architect | Permanent | Up to 150,000 + Bonus Location: Hybrid – London (3 days per week on-site) Salary: Up to 150,000 + c.20% bonus + additional benefits Employment: Permanent We're supporting a major UK financial services organisation as they undertake a significant programme of data architecture modernisation and transformation , alongside substantial investment in their wider Data & AI capabilities. We're looking for an expe...",
+   "description": "Senior Data Architect | Permanent | Up to £150,000 + Bonus Location: Hybrid – London (3 days per week on-site) Salary: Up to £150,000 + c.20% bonus + additional benefits Employment: Permanent We're supporting a major UK financial services organisation as they undertake a significant programme of data architecture modernisation and transformation , alongside substantial investment in their wider Data & AI capabilities. We're looking for an experienced Senior Data Architect who combines deep technical expertise with the ability to shape enterprise-scale data architecture, challenge existing…",
    "salary": "120,000 – 150,000",
    "contract": "",
    "channel": "aggregator",
@@ -473,19 +530,19 @@
    "currency": "£"
   },
   {
-   "source": "Reed",
-   "source_id": "57411353",
-   "title": "Lead Databricks Architect",
-   "company": "Tenth Revolution Group",
-   "location": "London",
-   "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/lead-databricks-architect/57411353",
-   "posted_at": "2026-10-01T00:00:00+00:00",
-   "description": "Lead Databricks Architect - London (Hybrid) Databricks - Azure - Data & AI Leadership - Up to 115,000 Are you looking to take ownership of large-scale Data & AI transformation programmes while leading teams and shaping technical delivery? Due to continued growth, we're hiring multiple Lead Databricks Architects to join a rapidly expanding Data & AI practice delivering complex transformation programmes for enterprise organisations acr...",
-   "salary": "85,000 – 115,000",
-   "contract": "",
+   "source": "Adzuna",
+   "source_id": "5908392886",
+   "title": "Solutions Architect - NVIDIA AI Cloud Partners",
+   "company": "NVIDIA",
+   "location": "Courbevoie, Nanterre",
+   "country": "FR",
+   "url": "https://www.adzuna.fr/details/5908392886?utm_medium=api&utm_source=2f99c3af",
+   "posted_at": "2026-10-02T18:11:58+00:00",
+   "description": "NVIDIA is widely considered to be one of the technology world’s most desirable employers. We have some of the most forward-thinking and hardworking people in the world working for us. If you're creative, hard-working, and self-motivated, we want to hear from you! We are looking for a Network Solutions Architect to join the NVIDIA team focused on supporting NVIDIA AI Cloud Partners as they build the next-generation GPU infrastructure for their customers. As a part of the NVIDIA solutions archite…",
+   "salary": "",
+   "contract": "full_time",
    "channel": "aggregator",
-   "sponsorship": "agency",
+   "sponsorship": "permit_check",
    "sponsor_register": "",
    "sponsor_routes": [],
    "sector": "",
@@ -499,19 +556,19 @@
    "tier": 3,
    "size": "unknown",
    "contacts": [],
-   "id": "ed028ce4fd53",
+   "id": "727fa2cf366b",
    "match": 20,
    "reasons": [
-    "+10 Architect title",
+    "+20 Solution / technical architect title",
     "+5 senior / architect level",
-    "+5 pay reaches the 60,000 expectation"
+    "-5 sponsorship / work permit not confirmed"
    ],
    "flags": [
-    "Recruitment agency advert"
+    "Salary not stated"
    ],
    "matched_keywords": [],
-   "agency": true,
-   "currency": "£"
+   "agency": false,
+   "currency": "€"
   },
   {
    "source": "Reed",
@@ -522,7 +579,7 @@
    "country": "GB",
    "url": "https://www.reed.co.uk/jobs/senior-software-architect-remote/57407908",
    "posted_at": "2026-09-30T00:00:00+00:00",
-   "description": "Senior Software Architect - Remote Our new client is a leading force in their commercial space. They are looking for an experienced Software Architect who has a background in the WMS space, ideally creating automated systems from the ground up. We are looking for an experienced Senior Software Architect to lead a team of software engineers and take technical responsibility for the design, development, testing and integration of software solution...",
+   "description": "Senior Software Architect - Remote Our new client is a leading force in their commercial space. They are looking for an experienced Software Architect who has a background in the WMS space, ideally creating automated systems from the ground up. We are looking for an experienced Senior Software Architect to lead a team of software engineers and take technical responsibility for the design, development, testing and integration of software solutions within complex customer projects. This is a hands-on leadership role, combining technical design, team leadership, software development and project…",
    "salary": "75,000 – 85,000",
    "contract": "",
    "channel": "aggregator",
@@ -552,88 +609,6 @@
    ],
    "matched_keywords": [],
    "agency": true,
-   "currency": "£"
-  },
-  {
-   "source": "Reed",
-   "source_id": "57404488",
-   "title": "Enterprise Architect - Software Engineering",
-   "company": "Advanced Resource Managers Limited",
-   "location": "Reading",
-   "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/enterprise-architect-software-engineering/57404488",
-   "posted_at": "2026-09-29T00:00:00+00:00",
-   "description": "Must be UK Born Citizen (Italian and Japanese can be considered) Valid SC is Essential Rate - TBC Start - 26th October 2026 Duration - 6 months to start, project likely 3-4 years Location - Hybrid (2 days per week in Reading once office up and running) Function: Digital Engineering - Software Engineering Job purpose Enterprise Architect - Software Engineering is responsible for the integration of the Software Factory solution within the whole Di...",
-   "salary": "",
-   "contract": "",
-   "channel": "aggregator",
-   "sponsorship": "unverified",
-   "sponsor_register": "",
-   "sponsor_routes": [],
-   "sector": "",
-   "domain": "",
-   "role": "",
-   "region": "",
-   "english": true,
-   "early_career": "",
-   "aviation": "",
-   "low_sponsorship": false,
-   "tier": 3,
-   "size": "unknown",
-   "contacts": [],
-   "id": "faed7a0a8294",
-   "match": 20,
-   "reasons": [
-    "+20 Solution / technical architect title",
-    "+5 senior / architect level",
-    "-5 sponsorship / work permit not confirmed"
-   ],
-   "flags": [
-    "Salary not stated"
-   ],
-   "matched_keywords": [],
-   "agency": false,
-   "currency": "£"
-  },
-  {
-   "source": "Reed",
-   "source_id": "57404490",
-   "title": "Enterprise Architect - Synthetics, ITEA & TLS",
-   "company": "Advanced Resource Managers Limited",
-   "location": "Reading",
-   "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/enterprise-architect-synthetics-itea-tls/57404490",
-   "posted_at": "2026-09-29T00:00:00+00:00",
-   "description": "Applicant must be UK Born Citizens (Italian or Japanses) Rate - TBC Start - 26th October 2026 Duration - 6 months to start, project likely 3-4 years Location - Hybrid (2 days per week in Reading once office up and running) Applicants must hold a Valid SC or DV Function: Digital Engineering - Synthetics, ITEA & TLS Job purpose Enterprise Architect - Synthetics, ITEA & TLS digital engineering is responsible for the integration of the Virtu...",
-   "salary": "",
-   "contract": "",
-   "channel": "aggregator",
-   "sponsorship": "unverified",
-   "sponsor_register": "",
-   "sponsor_routes": [],
-   "sector": "",
-   "domain": "",
-   "role": "",
-   "region": "",
-   "english": true,
-   "early_career": "",
-   "aviation": "",
-   "low_sponsorship": false,
-   "tier": 3,
-   "size": "unknown",
-   "contacts": [],
-   "id": "9891c817c663",
-   "match": 20,
-   "reasons": [
-    "+20 Solution / technical architect title",
-    "+5 senior / architect level",
-    "-5 sponsorship / work permit not confirmed"
-   ],
-   "flags": [
-    "Salary not stated"
-   ],
-   "matched_keywords": [],
-   "agency": false,
    "currency": "£"
   }
  ]
