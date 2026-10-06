@@ -77,6 +77,10 @@ def _adzuna_searches() -> Iterator[tuple[str, dict, int]]:
     yield "gb", {"what_phrase": "visa sponsorship", "where": "Scotland"}, 3
     yield "ie", {"what_phrase": "employment permit"}, 2
     yield "ie", {"what_and": "critical skills"}, 2
+    # Stamp 1G graduates can take any Irish job, so Ireland is searched by role, not only by sponsorship wording.
+    yield "ie", {"what_or": "stamp 1g graduate"}, 2
+    for role in ROLE_QUERIES:
+        yield "ie", {"what": role}, 1
     for code in ("gb", "ie"):
         for words in AVIATION_QUERIES:
             yield code, {"what_and": words}, 1

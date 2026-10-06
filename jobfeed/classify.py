@@ -433,6 +433,28 @@ def _sentence(text: str, pos: int) -> str:
     return text[turn[-1].end() if turn else start:min(ends) if ends else len(text)]
 
 
+# ----------------------------------------------------------------------------- Ireland: Stamp 1G
+# Stamp 1G (Third Level Graduate Programme) lets graduates of Irish universities work full-time for any
+# employer without an employment permit, so every Irish job is open to them unless the advert rules it out.
+_STAMP1G_RE = re.compile(r"\bstamp ?1 ?g\b|\bthird level graduate (programme|scheme)|\bgraduate (programme|scheme) visa\b", re.I)
+_STAMP1G_EXCLUDED_RE = re.compile(
+    r"\bstamp ?4\b[^.;]{0,40}\b(required|essential|only|must|needed|holders? only)|\b(must|need to|required to) "
+    r"(hold|have)\b[^.;]{0,25}\bstamp ?4\b|\b(eu|eea|eu/eea|irish|eu/eea/uk)\b[^.;]{0,20}\b(citizens?|nationals?|"
+    r"passport holders?)\b[^.;]{0,15}\bonly\b|\b(irish|eu|eea) citizenship (is )?(required|essential|mandatory)|"
+    r"\bpermanent (right|permission) to (work|reside|remain)\b|\bstamp ?1 ?g\b[^.;]{0,40}\b(not|cannot|can't|unable)\b"
+    r"|\b(not|cannot|can't|unable to|do not|don't)\b[^.;]{0,30}\b(accept|consider)\w*[^.;]{0,20}\bstamp ?1 ?g\b", re.I)
+
+
+def stamp1g_status(job: Job) -> str:
+    """Irish jobs: "stated" (advert welcomes Stamp 1G), "open" (no restriction stated) or "excluded"."""
+    text = f"{job.title} {job.description}"
+    if _STAMP1G_EXCLUDED_RE.search(text):
+        return "excluded"
+    if any(not _NEGATION_RE.search(_sentence(text, m.start())) for m in _STAMP1G_RE.finditer(text)):
+        return "stated"
+    return "open"
+
+
 def classify_early_career(job: Job) -> str:
     """Whether a UK Graduate visa (PSW) or US F-1 OPT holder can realistically take the job.
 
@@ -441,6 +463,11 @@ def classify_early_career(job: Job) -> str:
       so the Graduate visa can later switch to Skilled Worker; US: files H-1Bs or is an E-Verify employer,
       which STEM OPT requires).
     """
+    if job.country == "IE":
+        status = stamp1g_status(job)
+        if status == "stated":
+            return "stated"
+        return "likely" if status == "open" and _EARLY_TITLE_RE.search(job.title) else ""
     if job.country not in ("GB", "US"):
         return ""
     text = f"{job.title} {job.description}"
