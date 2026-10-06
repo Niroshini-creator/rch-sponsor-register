@@ -274,7 +274,7 @@ class AcademicSourceTests(unittest.TestCase):
                                                                          "unitText": "YEAR"}}})
         page = f'<html><script type="application/ld+json">{advert}</script></html>'
         empty = '<div id="job-listings"></div>'
-        with mock.patch.object(sources.http, "get_text", side_effect=[search] + [empty] * 5 + [page]), \
+        with mock.patch.object(sources.http, "get_text", side_effect=[search] + [empty] * 6 + [page]), \
              mock.patch.object(sources, "ACADEMIC_PAUSE", 0):
             jobs = list(sources.jobs_ac_uk(7))
         self.assertEqual(len(jobs), 1)
@@ -314,7 +314,7 @@ class AcademicSourceTests(unittest.TestCase):
             <span> Work Locations: </span></div><div class="ecl-text-standard ecl-u-d-flex"> Number of offers: 1, Spain,
             IQUADRAT INFORMATICA, Barcelona, 08006 </div></article></li></ul>"""
         with mock.patch.object(sources.http, "get_text",
-                               side_effect=[search, "", search, "", "<main>Visa support.</main>"]), \
+                               side_effect=[search, "", search, "", search, "", "<main>Visa support.</main>"]), \
              mock.patch.object(sources, "EURAXESS_PAUSE", 0):
             jobs = list(sources.euraxess(7))
         self.assertEqual(len(jobs), 1)
@@ -399,3 +399,34 @@ class AviationTests(unittest.TestCase):
                          ("Operations & Control", "confirmed", False))
         self.assertEqual((out["agent"].aviation, out["agent"].low_sponsorship), ("", True))
         self.assertIn("aviation", out["ops"].to_dict())
+
+
+class Stamp1GTests(unittest.TestCase):
+    def test_status(self):
+        open_job = make_job(country="IE", location="Dublin", description="Join our Dublin data team.")
+        self.assertEqual(classify.stamp1g_status(open_job), "open")
+        self.assertEqual(classify.stamp1g_status(make_job(country="IE", description="Stamp 1G holders are welcome to apply.")),
+                         "stated")
+        for text in ("Applicants must hold Stamp 4 or be EU citizens.", "Stamp 4 required.",
+                     "EU/EEA citizens only.", "Irish or EU citizenship is required.",
+                     "Candidates need permanent right to work in Ireland.", "We cannot accept Stamp 1G holders.",
+                     "Stamp 1G holders are not eligible for this role."):
+            self.assertEqual(classify.stamp1g_status(make_job(country="IE", description=text)), "excluded", text)
+
+    def test_pipeline_keeps_irish_roles(self):
+        index = sponsors.SponsorIndex()
+        tiers = classify.TierRules.load(CONFIG / "company_tiers.json")
+        jobs = [make_job(source_id="open", country="IE", location="Dublin", company="Stripe", title="Data Analyst",
+                         description="Join our Dublin team. We are unable to offer visa sponsorship."),
+                make_job(source_id="permit", country="IE", location="Cork", title="Software Engineer",
+                         description="Critical Skills Employment Permit sponsorship available."),
+                make_job(source_id="stamp4", country="IE", location="Galway", title="Analyst",
+                         description="Applicants must hold Stamp 4."),
+                make_job(source_id="grad", country="IE", location="Dublin", title="Graduate Analyst",
+                         description="Stamp 1G holders welcome."),
+                make_job(source_id="uk", country="GB", company="Unknown Co", title="Analyst", description="Great role.")]
+        out = {j.source_id: j for j in pipeline.enrich(jobs, index, tiers, contacts.ContactBook({}), days=7)}
+        self.assertEqual(set(out), {"open", "permit", "grad"})
+        self.assertEqual(out["open"].sponsorship, "stamp_1g")  # "no sponsorship" does not close it to Stamp 1G
+        self.assertEqual(out["permit"].sponsorship, "confirmed")
+        self.assertEqual((out["grad"].sponsorship, out["grad"].early_career), ("stamp_1g", "stated"))
