@@ -378,9 +378,10 @@ def jobs_ac_uk(days: int) -> Iterator[Job]:
     """
     cutoff, now = _cutoff(days), datetime.now(timezone.utc)
     links: dict[str, datetime] = {}
-    # Sponsorship wording finds UK roles; Ireland is searched by location, since Stamp 1G graduates need no permit.
+    # Sponsorship wording finds UK roles; Irish roles are searched by place, since Stamp 1G graduates need no
+    # permit (the site's location filter is not applied to search URLs, so the place goes in the keywords).
     searches = [{"keywords": q} for q in ("visa sponsorship", "skilled worker", "certificate of sponsorship",
-                                          "sponsorship", "visa")] + [{"location": "Ireland"}]
+                                          "sponsorship", "visa", "Ireland", "Dublin")]
     for search in searches:
         for start in range(1, 401, 25):
             page = http.get_text("https://www.jobs.ac.uk/search/",

@@ -274,7 +274,7 @@ class AcademicSourceTests(unittest.TestCase):
                                                                          "unitText": "YEAR"}}})
         page = f'<html><script type="application/ld+json">{advert}</script></html>'
         empty = '<div id="job-listings"></div>'
-        with mock.patch.object(sources.http, "get_text", side_effect=[search] + [empty] * 6 + [page]), \
+        with mock.patch.object(sources.http, "get_text", side_effect=[search] + [empty] * 7 + [page]), \
              mock.patch.object(sources, "ACADEMIC_PAUSE", 0):
             jobs = list(sources.jobs_ac_uk(7))
         self.assertEqual(len(jobs), 1)
