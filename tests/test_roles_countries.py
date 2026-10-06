@@ -447,3 +447,39 @@ class Stamp1GTests(unittest.TestCase):
         self.assertEqual(out["open"].sponsorship, "stamp_1g")  # "no sponsorship" does not close it to Stamp 1G
         self.assertEqual(out["permit"].sponsorship, "confirmed")
         self.assertEqual((out["grad"].sponsorship, out["grad"].early_career), ("stamp_1g", "stated"))
+
+    def test_irish_permit_employer_counts_as_sponsor(self):
+        index = sponsors.SponsorIndex()
+        index.add(sponsors.SponsorEntry("Mastercard Ireland Limited", "IE employment permits"), aliases=("mastercard",))
+        tiers = classify.TierRules.load(CONFIG / "company_tiers.json")
+        jobs = [make_job(source_id="mc", country="IE", location="Dublin", company="Mastercard", title="Data Analyst",
+                         description="Join our Dublin team."),
+                make_job(source_id="other", country="IE", location="Dublin", company="Small Co", title="Analyst",
+                         description="Join our team.")]
+        out = {j.source_id: j for j in pipeline.enrich(jobs, index, tiers, contacts.ContactBook({}), days=7)}
+        self.assertEqual((out["mc"].sponsorship, out["mc"].sponsor_register), ("licensed_sponsor", "IE employment permits"))
+        self.assertEqual(out["other"].sponsorship, "stamp_1g")
+
+    def test_ie_permit_spreadsheet(self):
+        import io
+        import zipfile
+        shared = ("<sst xmlns='http://schemas.openxmlformats.org/spreadsheetml/2006/main'>"
+                  "<si><t>Employer Name</t></si><si><t>Mastercard Ireland Limited</t></si>"
+                  "<si><t>Salesforce Ireland Unlimited Company</t></si><si><t>Grand Total</t></si>"
+                  "<si><t>A Portal Company 01 Production Test (Please Ignore)</t></si></sst>")
+        rows = "".join(f"<row r='{i + 1}'><c r='A{i + 1}' t='s'><v>{i}</v></c><c r='B{i + 1}'><v>7</v></c></row>"
+                       for i in range(5))
+        sheet = f"<worksheet xmlns='http://schemas.openxmlformats.org/spreadsheetml/2006/main'><sheetData>{rows}</sheetData></worksheet>"
+        buf = io.BytesIO()
+        with zipfile.ZipFile(buf, "w") as z:
+            z.writestr("xl/sharedStrings.xml", shared)
+            z.writestr("xl/worksheets/sheet1.xml", sheet)
+        page = '<a href="/en/publications/publication-files/employment-permits-issued-to-companies-2026.xlsx">x</a>'
+        index = sponsors.SponsorIndex()
+        with mock.patch.object(sponsors.http, "get_text", return_value=page), \
+             mock.patch.object(sponsors.http, "get", return_value=buf.getvalue()):
+            sponsors.load_ie_permits(index)
+        self.assertEqual(index.counts["IE employment permits"], 2)
+        self.assertEqual(index.lookup("Mastercard", "IE").name, "Mastercard Ireland Limited")
+        self.assertEqual(index.lookup("Salesforce", "IE").register, "IE employment permits")
+        self.assertIsNone(index.lookup("Grand Total"))

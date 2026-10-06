@@ -4,6 +4,8 @@
 * NL  — IND public register of recognised sponsors (regular labour & highly skilled migrants).
 * US  — USCIS H-1B Employer Data Hub: employers with approved H-1B petitions (not a licence,
         but the official record of who sponsors).
+* IE  — Department of Enterprise "Employment permits issued to companies" (this year and last):
+        Ireland has no sponsor licence, so this is the official record of who sponsors.
 
 Other countries have no public sponsor register; for those, jobs are only kept
 when the advert (or the source) explicitly offers visa sponsorship. In the UAE every
@@ -30,7 +32,9 @@ NL_REGISTER_PAGE = ("https://ind.nl/en/public-register-recognised-sponsors/"
 US_H1B_HUB_PAGE = "https://www.uscis.gov/tools/reports-and-studies/h-1b-employer-data-hub"
 US_H1B_CSV_PATTERN = "https://www.uscis.gov/sites/default/files/document/data/h1b_datahubexport-{year}.csv"
 
-REGISTER_COUNTRY = {"UK Home Office": "GB", "NL IND": "NL", "US H-1B": "US"}
+IE_PERMITS_PAGE = "https://enterprise.gov.ie/en/publications/employment-permit-statistics-{year}.html"
+
+REGISTER_COUNTRY = {"UK Home Office": "GB", "NL IND": "NL", "US H-1B": "US", "IE employment permits": "IE"}
 
 
 @dataclass
@@ -49,10 +53,10 @@ class SponsorIndex:
         self._prefix_cache: dict[tuple[str, str], SponsorEntry | None] = {}
         self.counts: dict[str, int] = {}
 
-    def add(self, entry: SponsorEntry) -> None:
+    def add(self, entry: SponsorEntry, aliases: tuple[str, ...] = ()) -> None:
         self.counts[entry.register] = self.counts.get(entry.register, 0) + 1
         # Register names often read "Legal Name Ltd T/A Trading Name": index both halves.
-        for part in re.split(r"\bt/a\b|\btrading as\b", entry.name, flags=re.I):
+        for part in [*re.split(r"\bt/a\b|\btrading as\b", entry.name, flags=re.I), *aliases]:
             key = normalise_company(part)
             if not key:
                 continue
@@ -181,6 +185,68 @@ def load_us_h1b(index: SponsorIndex) -> None:
                                town=(row.get("Petitioner City") or row.get("City") or "").title(), routes={"H-1B"}))
     if not seen:
         raise RuntimeError("H-1B data contained no employers")
+
+
+# Words after the brand in Irish subsidiaries' names: "Mastercard Ireland", "Salesforce Ireland Unlimited".
+_IE_ENTITY_WORDS = {"ireland", "irish", "unlimited", "dac", "uc", "international", "europe", "emea", "eu", "dublin",
+                    "cork", "galway", "limerick", "technologies", "technology", "services", "operations", "global",
+                    "teoranta", "ie"}
+_IE_SKIP = re.compile(r"^(grand )?total$|^employer name$|production test|^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)"
+                      r"[a-z]*$", re.I)
+
+
+def load_ie_permits(index: SponsorIndex) -> None:
+    """Companies issued Irish employment permits this year or last (Department of Enterprise statistics)."""
+    names: set[str] = set()
+    errors = []
+    for year in (date.today().year, date.today().year - 1):
+        try:
+            page = http.get_text(IE_PERMITS_PAGE.format(year=year))
+            link = re.search(r'href="([^"]*issued-to-companies[^"]*\.xlsx)"', page, re.I)
+            if not link:
+                raise RuntimeError(f"no company file on the {year} statistics page")
+            url = link.group(1) if link.group(1).startswith("http") else "https://enterprise.gov.ie" + link.group(1)
+            names |= set(_xlsx_first_column(http.get(url)))
+        except Exception as err:  # noqa: BLE001 - the current year's page may not exist yet in January
+            errors.append(f"{year}: {err}")
+    names = {n for n in names if n and not _IE_SKIP.search(n)}
+    if not names:
+        raise RuntimeError("no Irish permit employers found (" + "; ".join(errors) + ")")
+    for name in sorted(names):
+        words = normalise_company(name).split()
+        while len(words) > 1 and words[-1] in _IE_ENTITY_WORDS:
+            words.pop()
+        alias = " ".join(words)
+        useful = len(alias) >= 3 and alias not in _IE_ENTITY_WORDS
+        index.add(SponsorEntry(name=name, register="IE employment permits", routes={"Employment permit"}),
+                  aliases=(alias,) if useful else ())
+
+
+def _xlsx_first_column(raw: bytes) -> list[str]:
+    """Text in column A of the first worksheet of an .xlsx file (stdlib only)."""
+    import xml.etree.ElementTree as ET
+    import zipfile
+
+    ns = {"m": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
+    with zipfile.ZipFile(io.BytesIO(raw)) as z:
+        shared = []
+        if "xl/sharedStrings.xml" in z.namelist():
+            for si in ET.fromstring(z.read("xl/sharedStrings.xml")).findall("m:si", ns):
+                shared.append("".join(t.text or "" for t in si.iter(f"{{{ns['m']}}}t")))
+        sheet = ET.fromstring(z.read("xl/worksheets/sheet1.xml"))
+    out = []
+    for cell in sheet.iter(f"{{{ns['m']}}}c"):
+        if not re.fullmatch(r"A\d+", cell.get("r", "")):
+            continue
+        if cell.get("t") == "s":
+            value = cell.find("m:v", ns)
+            text = shared[int(value.text)] if value is not None and value.text else ""
+        elif cell.get("t") == "inlineStr":
+            text = "".join(t.text or "" for t in cell.iter(f"{{{ns['m']}}}t"))
+        else:
+            continue  # numbers are counts, not names
+        out.append(" ".join(text.split()))
+    return out
 
 
 def _number(value) -> float:
