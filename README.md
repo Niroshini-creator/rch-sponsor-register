@@ -52,8 +52,8 @@ consultancies are removed.**
      Business Analyst, IT Support, Application Support, Engineering, Project Manager, Finance & Accounting,
      HR & Recruitment, Digital Marketing, Logistics & Supply Chain, Medical Laboratory, Aviation, Other.
    * **Aviation & operations family** (when the title is one of them and the employer or advert is in aviation or
-     aerospace): Operations & Control; Planning, Network & Scheduling; Business, Strategy & Performance;
-     Aerospace & Engineering; Projects, Programmes & PMO; Logistics, Supply Chain & Procurement; Commercial Aviation.
+     aerospace): Airport Operations; Operations & Control; Planning, Network & Scheduling; Business, Strategy &
+     Performance; Aerospace & Aeronautical Engineering; Projects, Programmes & PMO; Logistics, Supply Chain & Procurement; Commercial Aviation.
      Shown in the *Aviation & operations* tab and filter.
    * **Rarely sponsored**: front-line roles (passenger service, check-in, gate, baggage and ramp agents,
      reservations, customer service advisers, administrators, receptionists, retail and hospitality, and
@@ -124,7 +124,8 @@ address is published, the card links to the advert and to LinkedIn people search
 
 Most employers run their careers page on an applicant tracking system that publishes a public job feed.
 The board reads that feed directly, so the job and its Apply button are the employer's own. Supported:
-**Greenhouse, Lever, Ashby, SmartRecruiters, Workable, Recruitee, Personio, Workday, Teamtailor**.
+**Greenhouse, Lever, Ashby, SmartRecruiters, Workable, Recruitee, Personio, Workday, Teamtailor, Oracle Recruiting
+Cloud, SAP SuccessFactors**.
 
 To add an employer, open its careers page, look at the address of a job link, and add one line:
 
@@ -144,6 +145,8 @@ To add an employer, open its careers page, look at the address of a job link, an
 | `acme.jobs.personio.de` | personio | acme |
 | `gsk.wd5.myworkdayjobs.com/GSKCareers` | workday | `host` + `site` |
 | `acme.teamtailor.com` (or its own domain, e.g. `careers.voi.com`) | teamtailor | acme (or `"host": "careers.voi.com"`) |
+| `encd.fa.em3.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_3001` | oracle | `host` + `site` (CX_3001) |
+| `jobs.swissport.com` (images from `rmkcdn.successfactors.com`) | successfactors | `"host": "jobs.swissport.com"` |
 
 * `register_name` is the employer's legal name on the UK sponsor register, when it differs from the brand
   name. It lets the licence check match.
@@ -163,7 +166,7 @@ To add an employer, open its careers page, look at the address of a job link, an
 | [Platsbanken JobSearch API](https://jobsearch.api.jobtechdev.se/) (Arbetsförmedlingen) | Every advert in Sweden incl. universities, regions, municipalities (official) | none |
 | [Teaching Vacancies API](https://teaching-vacancies.service.gov.uk/) (DfE) | State schools in England (official) | none |
 | RSS feeds in `config/sources.json` | any extra feed you add, e.g. a council's vacancies (official) | none |
-| [Adzuna API](https://developer.adzuna.com/) | UK (incl. a Scotland search), US, NL, PL, ES + 7 more EU countries; one search per job role for the UK and US (job board) | `ADZUNA_APP_ID`, `ADZUNA_APP_KEY` (free) |
+| [Adzuna API](https://developer.adzuna.com/) | UK (incl. a Scotland search), US, NL, PL, ES, DE, FR, BE, AT, CH, IT (no Irish site); one search per job role for the UK and US, airport operations and aeronautical searches across Europe (job board) | `ADZUNA_APP_ID`, `ADZUNA_APP_KEY` (free) |
 | [Reed API](https://www.reed.co.uk/developers/jobseeker) | UK, direct employers only; one search per job role (job board) | `REED_API_KEY` (free) |
 | [Arbeitnow API](https://www.arbeitnow.com/api) | Germany / EU, visa-sponsorship filter (job board) | none |
 
@@ -204,7 +207,7 @@ python -m http.server 8000            # open http://localhost:8000
 
 ```
 index.html, assets/          static front end
-jobfeed/careers.py           employer career sites (Greenhouse, Lever, Ashby, SmartRecruiters, Workable, Recruitee, Personio, Workday, Teamtailor)
+jobfeed/careers.py           employer career sites (Greenhouse, Lever, Ashby, SmartRecruiters, Workable, Recruitee, Personio, Workday, Teamtailor, Oracle, SuccessFactors)
 jobfeed/agencies.py          recruitment agency / consultancy detection
 jobfeed/sources.py           NHS Jobs, Teaching Vacancies, Platsbanken, RSS and job-board connectors
 jobfeed/sponsors.py          UK Home Office + NL IND sponsor registers, USCIS H-1B employer data
@@ -223,10 +226,12 @@ tests/                       offline unit tests (no network needed)
   Irish role is listed unless the advert rules them out ("Stamp 4 required", "EU/EEA citizens only", "permanent
   right to work"); adverts that also offer an employment permit are marked "Sponsorship offered". Irish universities
   come through jobs.ac.uk, Times Higher Education and EURAXESS (their own CoreHR sites have no public feed); the HSE
-  and publicjobs.ie have no public feed either, so most other Irish coverage comes from Adzuna: add its key.
-* Many airlines and airports (Ryanair, easyJet, Wizz Air, British Airways, Heathrow, Dublin Airport, Emirates,
-  flydubai) recruit through enterprise systems with no public feed (SuccessFactors, Taleo, Oracle, Avature, iCIMS).
-  Their adverts reach the board only through the Reed and Adzuna aviation searches.
+  and publicjobs.ie have no public feed either. Adzuna has no Irish site, so other Irish roles come from employer
+  career sites (Stripe, Intercom, Mastercard, Ryanair, Veolia Ireland and others with Dublin offices).
+* Heathrow and Vertiv (Oracle) and Manchester Airports Group, Swissport, Wizz Air, Brussels Airport, Ryanair and EY
+  (SuccessFactors) are read directly. Other airlines and airports (easyJet, British Airways, Virgin Atlantic,
+  Gatwick, Dublin Airport, Schiphol, Emirates, flydubai) have no public feed; their adverts reach the board only
+  through the Reed and Adzuna aviation searches.
 * Only the UK and the Netherlands publish sponsor registers, and the US publishes H-1B petition data. For other
   countries (Luxembourg, Sweden, Finland, Poland, Spain…), jobs appear only when the advert itself offers sponsorship
   or work-permit support.

@@ -14,7 +14,9 @@ Employers are listed in config/employers.json:
 <id>.recruitee.com, <id>.jobs.personio.de, apply.workable.com/<id>,
 jobs.smartrecruiters.com/<id>, <id>.teamtailor.com). A Teamtailor site on its own
 domain (careers.voi.com) takes `host` instead of `id`. Workday also needs `host` and `site`, taken from
-https://<host>/<site> e.g. host "gsk.wd5.myworkdayjobs.com", site "GSKCareers".
+https://<host>/<site> e.g. host "gsk.wd5.myworkdayjobs.com", site "GSKCareers". Oracle Recruiting Cloud
+takes `host` and `site` from <host>/hcmUI/CandidateExperience/en/sites/<site>; SAP SuccessFactors career
+sites take the careers domain as `host` (jobs.swissport.com).
 """
 
 from __future__ import annotations
@@ -223,11 +225,84 @@ def workday(emp: dict, cutoff: datetime) -> Iterator[Job]:
             break
 
 
+# ----------------------------------------------------------------------------- Oracle Recruiting Cloud
+def oracle(emp: dict, cutoff: datetime) -> Iterator[Job]:
+    """Oracle Recruiting Cloud candidate sites (<host>/hcmUI/CandidateExperience/en/sites/<site>), e.g.
+    Heathrow and Vertiv. The site's own REST API lists requisitions newest first; one detail call per kept role."""
+    host, site = emp["host"], emp["site"]
+    api = f"https://{host}/hcmRestApi/resources/latest"
+    for offset in range(0, emp.get("max_jobs", 500), 25):
+        # finder arguments are separated by ";" and "," and must not be URL-encoded.
+        items = http.get_json(f"{api}/recruitingCEJobRequisitions?onlyData=true&expand=requisitionList.secondaryLocations"
+                              f"&finder=findReqs;siteNumber={site},limit=25,offset={offset},sortBy=POSTING_DATES_DESC"
+                              ).get("items") or []
+        reqs = (items[0].get("requisitionList") or []) if items else []
+        for r in reqs:
+            posted = parse_date(r.get("PostedDate"))
+            if not posted or posted < cutoff:
+                return  # newest first: everything after this is older
+            country = _iso(r.get("PrimaryLocationCountry"))
+            if country and country not in TARGET_COUNTRIES:
+                continue
+            req_id = r.get("Id", "")
+            try:
+                detail = (http.get_json(f"{api}/recruitingCEJobRequisitionDetails?expand=all&onlyData=true"
+                                        f"&finder=ById;Id=%22{req_id}%22,siteNumber={site}").get("items") or [{}])[0]
+            except Exception:  # noqa: BLE001
+                detail = {}
+            description = " ".join(strip_html(detail.get(k)) for k in
+                                   ("ExternalDescriptionStr", "ExternalResponsibilitiesStr", "ExternalQualificationsStr")
+                                   if detail.get(k)) or r.get("ShortDescriptionStr", "")
+            # The recruiter named on the advert, when the employer publishes one.
+            contacts = [{"name": detail.get("ExternalContactName") or "", "role": "Recruiter",
+                         "email": (detail.get("ExternalContactEmail") or "").strip()}] \
+                if detail.get("ExternalContactEmail") else []
+            yield _job(emp, source_id=str(req_id), title=r.get("Title", ""), location=r.get("PrimaryLocation", ""),
+                       country=country, url=f"https://{host}/hcmUI/CandidateExperience/en/sites/{site}/job/{req_id}",
+                       posted_at=posted, description=description, contract=r.get("WorkplaceType", ""),
+                       advert_contacts=contacts)
+        if len(reqs) < 25:
+            break
+
+
+# ----------------------------------------------------------------------------- SAP SuccessFactors
+def successfactors(emp: dict, cutoff: datetime) -> Iterator[Job]:
+    """SuccessFactors Recruiting Marketing career sites (jobs.swissport.com, careers.magairports.com...)
+    publish every live vacancy as RSS at <host>/services/rss/job/."""
+    items = []
+    # The feed is not sorted by date, so ask for every vacancy; big global sites search by keyword (e.g. city).
+    for keywords in emp.get("keywords") or [""]:
+        root = ET.fromstring(http.get(f"https://{emp['host']}/services/rss/job/",
+                                      params={"locale": emp.get("locale", "en_GB"), "keywords": keywords,
+                                              "rows": emp.get("rows", 1000)}))
+        items += [el for el in root.iter() if _local(el.tag) == "item"]
+    seen = set()
+    for item in items:
+        f = {_local(c.tag): (c.text or "").strip() for c in item}
+        posted = parse_date(f.get("pubDate"))
+        if not posted or posted < cutoff or f.get("link") in seen:
+            continue
+        seen.add(f.get("link"))
+        title = f.get("title", "")
+        # Titles usually end with the place: "Duty Manager (Manchester, GB, M90 1QX)".
+        place = re.search(r"\(([^()]*)\)\s*$", title)
+        location = place.group(1) if place else ""
+        if place:
+            title = title[:place.start()].strip()
+        codes = re.findall(r"\b[A-Z]{2}\b", location)  # the ISO country code comes last, before any postcode
+        country = _iso(codes[-1]) if codes else ""
+        if country and country not in TARGET_COUNTRIES:
+            continue
+        yield _job(emp, source_id=f.get("guid") or f.get("link", ""), title=title, location=location,
+                   country=country, url=f.get("link", ""), posted_at=posted,
+                   description=strip_html(f.get("description")))
+
+
 # ----------------------------------------------------------------------------- driver
 ATS: dict[str, EmployerFeed] = {
     "greenhouse": greenhouse, "lever": lever, "ashby": ashby, "smartrecruiters": smartrecruiters,
     "workable": workable, "recruitee": recruitee, "personio": personio, "workday": workday,
-    "teamtailor": teamtailor,
+    "teamtailor": teamtailor, "oracle": oracle, "successfactors": successfactors,
 }
 
 

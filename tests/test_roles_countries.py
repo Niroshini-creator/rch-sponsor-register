@@ -3,6 +3,7 @@
 import json
 import tempfile
 import unittest
+import urllib.error
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from unittest import mock
@@ -233,6 +234,15 @@ class NewSourceTests(unittest.TestCase):
         self.assertEqual(get.call_count, 3)
         self.assertIn("/gb/", get.call_args_list[0].args[0])
 
+    def test_adzuna_skips_a_rejected_search(self):
+        not_found = urllib.error.HTTPError("u", 404, "Not Found", {}, None)
+        with mock.patch.dict("os.environ", {"ADZUNA_APP_ID": "a", "ADZUNA_APP_KEY": "b"}), \
+             mock.patch.object(sources, "ADZUNA_MAX_CALLS", 3), mock.patch.object(sources, "ADZUNA_PAUSE", 0), \
+             mock.patch.object(sources.http, "get_json", side_effect=[not_found, {"results": []}, {"results": []}]) as get:
+            list(sources.adzuna(7))
+        self.assertEqual(get.call_count, 3)
+        self.assertNotIn("ie", sources.ADZUNA_COUNTRIES)  # Adzuna has no Irish site
+
     def test_teaching_vacancies_salary(self):
         self.assertEqual(sources._schema_salary(
             {"currency": "GBP", "value": {"minValue": 30000, "maxValue": 40000, "unitText": "YEAR"}}), "£30,000 – 40,000 a year")
@@ -339,12 +349,19 @@ class AviationTests(unittest.TestCase):
     def test_families(self):
         cases = {
             ("Flight Operations Analyst", "Acme"): "Operations & Control",
-            ("Airport Duty Manager", "Gatwick Airport Limited"): "Operations & Control",
-            ("Station Manager", "Menzies Aviation"): "Operations & Control",
+            ("Airport Duty Manager", "Gatwick Airport Limited"): "Airport Operations",
+            ("Station Manager", "Menzies Aviation"): "Airport Operations",
             ("Network Planning Analyst", "Ryanair DAC"): "Planning, Network & Scheduling",
             ("Crew Planner", "easyJet"): "Planning, Network & Scheduling",
             ("Revenue Management Analyst", "Aer Lingus"): "Commercial Aviation",
-            ("Continuing Airworthiness Engineer", "Acme"): "Aerospace & Engineering",
+            ("Continuing Airworthiness Engineer", "Acme"): "Aerospace & Aeronautical Engineering",
+            ("Airside Operations Controller", "Dublin Airport (daa)"): "Airport Operations",
+            ("Terminal Duty Manager", "Flughafen München GmbH"): "Airport Operations",
+            ("Turnaround Coordinator", "Schiphol Group"): "Airport Operations",
+            ("Aeronautical Engineer", "Acme"): "Aerospace & Aeronautical Engineering",
+            ("Avionics Engineer", "Acme"): "Aerospace & Aeronautical Engineering",
+            ("B1 Licensed Aircraft Engineer", "Jet2"): "Aerospace & Aeronautical Engineering",
+            ("Stress Engineer", "GKN Aerospace"): "Aerospace & Aeronautical Engineering",
             ("Supply Chain Analyst", "Airbus Operations Limited"): "Logistics, Supply Chain & Procurement",
             ("Aerospace Buyer", "Acme"): "Logistics, Supply Chain & Procurement",
             ("Project Manager", "Rolls-Royce plc"): "Projects, Programmes & PMO",
