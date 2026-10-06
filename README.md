@@ -55,7 +55,7 @@ consultancies are removed.**
    * **Role domain**: Technical & Engineering, Management & Business, Science & Research,
      Healthcare & Clinical, Teaching & Academic, Finance & Legal.
    * **Job role** (from the title): Software Developer, DevOps & Cloud, Data Science & AI, Data Analyst,
-     Business Analyst, IT Support, Application Support, Engineering, Project Manager, Finance & Accounting,
+     Business Analyst, IT Support, Application Support, Mechanical Engineering, Engineering, Project Manager, Finance & Accounting,
      HR & Recruitment, Digital Marketing, Logistics & Supply Chain, Medical Laboratory, Aviation, Other.
    * **Aviation & operations family** (when the title is one of them and the employer or advert is in aviation or
      aerospace): Airport Operations; Operations & Control; Planning, Network & Scheduling; Business, Strategy &

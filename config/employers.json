@@ -136,6 +136,17 @@
     { "name": "Wizz Air", "ats": "successfactors", "host": "careers.wizzair.com", "country": "HU", "register_name": "Wizz Air UK Limited" },
     { "name": "Brussels Airport", "ats": "successfactors", "host": "jobs.brusselsairport.be", "country": "BE", "local": true },
     { "name": "Ryanair", "ats": "successfactors", "host": "jobs.ryanair.com", "country": "IE", "register_name": "Ryanair DAC" },
-    { "name": "EY", "ats": "successfactors", "host": "careers.ey.com", "country": "GB", "register_name": "Ernst & Young LLP", "rows": 500, "keywords": ["London", "Manchester", "Birmingham", "Leeds", "Edinburgh", "Glasgow", "Belfast", "Bristol", "Dublin", "Dubai", "Amsterdam", "Luxembourg"] }
+    { "name": "EY", "ats": "successfactors", "host": "careers.ey.com", "country": "GB", "register_name": "Ernst & Young LLP", "rows": 500, "keywords": ["London", "Manchester", "Birmingham", "Leeds", "Edinburgh", "Glasgow", "Belfast", "Bristol", "Dublin", "Dubai", "Amsterdam", "Luxembourg"] },
+    { "name": "Renishaw", "ats": "workday", "host": "renishaw.wd3.myworkdayjobs.com", "site": "Renishaw", "country": "GB", "register_name": "Renishaw PLC" },
+    { "name": "Weir", "ats": "workday", "host": "weir.wd3.myworkdayjobs.com", "site": "weir_external_careers", "country": "GB" },
+    { "name": "Thales", "ats": "workday", "host": "thales.wd3.myworkdayjobs.com", "site": "Careers", "country": "GB", "search": "engineer", "max_jobs": 400 },
+    { "name": "Hitachi", "ats": "workday", "host": "hitachi.wd1.myworkdayjobs.com", "site": "hitachi", "country": "GB", "search": "engineer", "max_jobs": 400 },
+    { "name": "GE Vernova", "ats": "workday", "host": "gevernova.wd5.myworkdayjobs.com", "site": "Vernova_ExternalSite", "country": "GB", "search": "engineer", "max_jobs": 400 },
+    { "name": "Cummins", "ats": "oracle", "host": "fa-espx-saasfaprod1.fa.ocs.oraclecloud.com", "site": "CX_1", "country": "GB", "max_jobs": 400 },
+    { "name": "Emerson", "ats": "oracle", "host": "hdjq.fa.us2.oraclecloud.com", "site": "CX_1", "country": "US", "max_jobs": 400 },
+    { "name": "Honeywell", "ats": "oracle", "host": "ibqbjb.fa.ocs.oraclecloud.com", "site": "Honeywell", "country": "US", "max_jobs": 400 },
+    { "name": "Jaguar Land Rover", "ats": "successfactors", "host": "www.jaguarlandrovercareers.com", "country": "GB", "register_name": "Jaguar Land Rover Limited" },
+    { "name": "Vestas", "ats": "successfactors", "host": "careers.vestas.com", "country": "DK" },
+    { "name": "Alstom", "ats": "successfactors", "host": "jobsearch.alstom.com", "country": "FR" }
   ]
 }
