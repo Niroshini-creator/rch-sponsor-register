@@ -7,6 +7,8 @@ pipeline always produces output from whatever sources are available.
 
 from __future__ import annotations
 
+import dataclasses
+import json
 import logging
 import os
 import re
@@ -104,6 +106,30 @@ def _adzuna_searches() -> Iterator[tuple[str, dict, int]]:
 
 
 def adzuna(days: int) -> Iterator[Job]:
+    """Adzuna's free plan allows a few full searches a day, so refreshes in between can reuse the
+    last live results: ADZUNA_CACHE names the file they are saved to, and ADZUNA_FROM_CACHE=1 reads it."""
+    cache = os.environ.get("ADZUNA_CACHE", "")
+    if cache and os.environ.get("ADZUNA_FROM_CACHE") == "1" and os.path.exists(cache):
+        cutoff = _cutoff(days)
+        with open(cache, encoding="utf-8") as fh:
+            for raw in json.load(fh):
+                job = Job(**{**raw, "posted_at": datetime.fromisoformat(raw["posted_at"])})
+                if job.posted_at >= cutoff:
+                    yield job
+        return
+    fetched: list[Job] = []
+    try:
+        for job in _adzuna_live(days):
+            fetched.append(job)
+            yield job
+    finally:
+        if cache and fetched:  # keep partial results too: better than none for the next refreshes
+            os.makedirs(os.path.dirname(cache) or ".", exist_ok=True)
+            with open(cache, "w", encoding="utf-8") as fh:
+                json.dump([{**dataclasses.asdict(j), "posted_at": j.posted_at.isoformat()} for j in fetched], fh)
+
+
+def _adzuna_live(days: int) -> Iterator[Job]:
     app_id, app_key = os.environ.get("ADZUNA_APP_ID"), os.environ.get("ADZUNA_APP_KEY")
     if not (app_id and app_key):
         raise SkipSource("ADZUNA_APP_ID / ADZUNA_APP_KEY not set")

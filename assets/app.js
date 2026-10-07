@@ -1,4 +1,12 @@
 const DATA_URL = "data/jobs.json";
+// The latest feed lives on the repository's "feed" branch, which every two-hourly refresh replaces;
+// main keeps a daily copy (DATA_URL) as the fallback, e.g. when the site is served locally.
+const FEED_URL = (() => {
+  const owner = location.hostname.endsWith(".github.io") ? location.hostname.split(".")[0] : "";
+  const repo = location.pathname.split("/").filter(Boolean)[0];
+  return owner && repo ? `https://raw.githubusercontent.com/${owner}/${repo}/feed/data/jobs.json` : "";
+})();
+const RECHECK_MS = 30 * 60 * 1000;  // an open page checks for a newer feed every 30 minutes
 const TIERS_URL = "config/company_tiers.json";
 const PAGE_SIZE = 40;
 const DAY_MS = 86_400_000;
@@ -311,7 +319,7 @@ function render() {
     } else {
       const where = readFilters().country;
       showNotice(where
-        ? "No jobs in this location in the current feed yet. The feed refreshes twice a day; try another country or a longer time window."
+        ? "No jobs in this location in the current feed yet. The feed refreshes every 2 hours; try another country or a longer time window."
         : "No roles match these filters. Try widening them or pressing Reset.");
     }
   } else {
@@ -358,7 +366,7 @@ function renderMeta(data) {
   const generated = new Date(data.generated_at);
   const staleHours = (Date.now() - generated) / 3_600_000;
   $("#updated").innerHTML = `Updated ${esc(ago(generated))}<br><span class="muted small">${esc(generated.toLocaleString())}</span>`;
-  if (staleHours > 36) $("#updated").classList.add("stale");
+  if (staleHours > 12) $("#updated").classList.add("stale");
 
   const rows = Object.entries(data.sources || {}).map(([name, s]) =>
     `<tr><td>${esc(name)}</td><td><span class="dot ${esc(s.status)}"></span>${esc(s.status)}</td>
@@ -438,12 +446,39 @@ function legacyChannel(source = "") {
 }
 
 // ------------------------------------------------------------------ boot
+async function loadFeed() {
+  let lastErr;
+  for (const url of [FEED_URL, DATA_URL].filter(Boolean)) {
+    try {
+      // One URL per 30-minute slot, so browsers and GitHub's cache don't serve an old feed for long.
+      const res = await fetch(`${url}?v=${Math.floor(Date.now() / RECHECK_MS)}`, { cache: "no-cache" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.json();
+    } catch (err) {
+      lastErr = err;
+    }
+  }
+  throw lastErr;
+}
+
+// Reload when a newer feed is published, keeping the filters (they live in the URL). If the visitor is
+// typing in a field, offer a button instead of interrupting them.
+function watchForNewJobs() {
+  setInterval(async () => {
+    const latest = await loadFeed().catch(() => null);
+    if (!latest || latest.generated_at === state.data.generated_at) return;
+    if (document.activeElement?.matches("input:not([type=checkbox]), textarea, select")) {
+      showNotice(`New jobs are available. <button type="button" class="btn" onclick="location.reload()">Show them</button>`);
+    } else {
+      location.reload();
+    }
+  }, RECHECK_MS);
+}
+
 async function main() {
   let data;
   try {
-    const res = await fetch(DATA_URL, { cache: "no-cache" });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    data = await res.json();
+    data = await loadFeed();
   } catch (err) {
     $("#updated").textContent = "Feed unavailable";
     showNotice(`Could not load <code>${DATA_URL}</code> (${esc(err.message)}). If you opened this file directly, serve the folder instead: <code>python -m http.server</code>.`);
@@ -494,6 +529,7 @@ async function main() {
   }).catch(() => {});
 
   renderMeta(data);
+  watchForNewJobs();
   restoreUrl();
   if (matchMedia("(max-width: 860px)").matches) $("#filter-panel").open = false;
 
