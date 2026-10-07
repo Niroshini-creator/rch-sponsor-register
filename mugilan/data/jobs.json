@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-06T13:37:11+00:00",
+ "generated_at": "2026-10-07T13:55:03+00:00",
  "window_days": 7,
  "profile": {
   "name": "Mugilan Ramalingam",
@@ -25,15 +25,15 @@
  "sources": {
   "UK sponsor register": {
    "status": "ok",
-   "count": 132623
+   "count": 132641
   },
   "Reed": {
    "status": "ok",
-   "count": 386
+   "count": 409
   },
   "Adzuna": {
    "status": "ok",
-   "count": 27
+   "count": 21
   },
   "Career sites": {
    "status": "ok",
@@ -41,106 +41,16 @@
   }
  },
  "counts": {
-  "fetched": 413,
-  "clearance_removed": 70,
+  "fetched": 430,
+  "clearance_removed": 58,
   "no_sponsorship_removed": 4,
-  "language_removed": 18,
-  "below_threshold": 321,
-  "full_advert_fetched": 74,
+  "language_removed": 13,
+  "below_threshold": 355,
+  "full_advert_fetched": 75,
   "published": 0
  },
  "jobs": [],
  "near_misses": [
-  {
-   "source": "Reed",
-   "source_id": "57418649",
-   "title": "AI Solutions Architect - SMBC",
-   "company": "eFinancialCareers",
-   "location": "London",
-   "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/ai-solutions-architect-smbc/57418649",
-   "posted_at": "2026-10-02T00:00:00+00:00",
-   "description": "SMBC: A trusted partner for the long term Here at SMBC Group, we want to help you find the next step in your career so read on to discover if this opportunity is the one for you. We like to recognise potential in our people, so we welcome your application even when your experience doesn't perfectly align with the job description. Whilst we'll always strive to be better, we're proud of our inclusive culture, and encourage our applicants and colleagues to be their authentic, unique selves. Who we are United by a sense of purpose towards our customers - to be a trusted partner for the long-term…",
-   "salary": "",
-   "contract": "",
-   "channel": "aggregator",
-   "sponsorship": "licensed_sponsor",
-   "sponsor_register": "",
-   "sponsor_routes": [],
-   "sector": "",
-   "domain": "",
-   "role": "",
-   "region": "",
-   "english": true,
-   "early_career": "",
-   "aviation": "",
-   "low_sponsorship": false,
-   "tier": 3,
-   "size": "unknown",
-   "contacts": [],
-   "id": "012ae39cd26a",
-   "match": 33,
-   "reasons": [
-    "+20 Solution / technical architect title",
-    "+3 telecom OSS/BSS keywords",
-    "+5 architecture practice / GCP",
-    "+5 senior / architect level"
-   ],
-   "flags": [
-    "Salary not stated"
-   ],
-   "matched_keywords": [
-    "design authority",
-    "gcp",
-    "solution architecture"
-   ],
-   "agency": false,
-   "currency": "£"
-  },
-  {
-   "source": "Reed",
-   "source_id": "57406264",
-   "title": "AI Solution Architect - GCP / Agentic AI",
-   "company": "F5",
-   "location": "London",
-   "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/ai-solution-architect-gcp-agentic-ai/57406264",
-   "posted_at": "2026-09-30T00:00:00+00:00",
-   "description": "AI Solution Architect - GCP / Agentic AI UK-wide hybrid | London preferred | Permanent Competitive salary + Bonus with flexibility for proven experience Delivered agentic AI solutions on Google Cloud for a real business? This is an opportunity to take the technical lead on a major customer operations transformation, with an established team ready to deliver. You'll join a global technology consultancy's intelligent automation practice, leading the design and delivery of AI solutions for a major consumer products and retail client. There's scope to shape the current project and build your…",
-   "salary": "95,000 – 120,000",
-   "contract": "",
-   "channel": "aggregator",
-   "sponsorship": "agency",
-   "sponsor_register": "",
-   "sponsor_routes": [],
-   "sector": "",
-   "domain": "",
-   "role": "",
-   "region": "",
-   "english": true,
-   "early_career": "",
-   "aviation": "",
-   "low_sponsorship": false,
-   "tier": 3,
-   "size": "unknown",
-   "contacts": [],
-   "id": "68e42f9eca4b",
-   "match": 33,
-   "reasons": [
-    "+20 Solution / technical architect title",
-    "+3 architecture practice / GCP",
-    "+5 senior / architect level",
-    "+5 pay reaches the 60,000 expectation"
-   ],
-   "flags": [
-    "Recruitment agency advert"
-   ],
-   "matched_keywords": [
-    "gcp"
-   ],
-   "agency": true,
-   "currency": "£"
-  },
   {
    "source": "Reed",
    "source_id": "57427247",
@@ -189,54 +99,6 @@
   },
   {
    "source": "Reed",
-   "source_id": "57426986",
-   "title": "Lead Solution Architect",
-   "company": "Appcast Enterprise",
-   "location": "London",
-   "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/lead-solution-architect/57426986",
-   "posted_at": "2026-10-06T00:00:00+00:00",
-   "description": "Entity: Technology Job Family Group: IT&S Group Job Description: We’re looking for a Lead Architect to shape the technology behind our Gas & Power Trading International (GPTI) business. This role sits across the full trading landscape — from front-office systems to back-office processing, data platforms, integrations and infrastructure. You’ll take ownership of the technology roadmap across the trading technology estate, ensuring core platforms, modern digital services, integrations and data capabilities work together effectively while progressively reducing reliance on specialist knowledge…",
-   "salary": "",
-   "contract": "",
-   "channel": "aggregator",
-   "sponsorship": "unverified",
-   "sponsor_register": "",
-   "sponsor_routes": [],
-   "sector": "",
-   "domain": "",
-   "role": "",
-   "region": "",
-   "english": true,
-   "early_career": "",
-   "aviation": "",
-   "low_sponsorship": false,
-   "tier": 3,
-   "size": "unknown",
-   "contacts": [],
-   "id": "74c72c1d014a",
-   "match": 28,
-   "reasons": [
-    "+20 Solution / technical architect title",
-    "+3 telecom OSS/BSS keywords",
-    "+3 network technology (GPON/DOCSIS/MPLS/SDH/DWDM…)",
-    "+2 architecture practice / GCP",
-    "+5 senior / architect level",
-    "-5 sponsorship / work permit not confirmed"
-   ],
-   "flags": [
-    "Salary not stated"
-   ],
-   "matched_keywords": [
-    "design authority",
-    "enterprise architecture",
-    "transmission"
-   ],
-   "agency": false,
-   "currency": "£"
-  },
-  {
-   "source": "Reed",
    "source_id": "57421965",
    "title": "Salesforce Technical Architect",
    "company": "Proactive Appointments",
@@ -276,6 +138,48 @@
    "matched_keywords": [
     "enterprise architecture"
    ],
+   "agency": true,
+   "currency": "£"
+  },
+  {
+   "source": "Reed",
+   "source_id": "57430228",
+   "title": "Zscaler Solution Architect",
+   "company": "Enorth Resourcing Limited",
+   "location": "Leeds",
+   "country": "GB",
+   "url": "https://www.reed.co.uk/jobs/zscaler-solution-architect/57430228",
+   "posted_at": "2026-10-07T00:00:00+00:00",
+   "description": "About the role Enorth Resourcing is partnering with a leading Zero Trust and network security consultancy to find an experienced Zscaler Solutions Architect for a 30-day UK engagement. This is a design-led consulting role, not a build-and-run position. You'll work directly with the end customer to understand their operational and security requirements and translate them into a Zscaler solution and policy framework that balances risk, usability, and business outcomes. Only part of the engagement is hands-on technical work. The rest centres on stakeholder engagement: running workshops,…",
+   "salary": "",
+   "contract": "",
+   "channel": "aggregator",
+   "sponsorship": "agency",
+   "sponsor_register": "",
+   "sponsor_routes": [],
+   "sector": "",
+   "domain": "",
+   "role": "",
+   "region": "",
+   "english": true,
+   "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
+   "tier": 3,
+   "size": "unknown",
+   "contacts": [],
+   "id": "f1a45042bcb5",
+   "match": 25,
+   "reasons": [
+    "+20 Solution / technical architect title",
+    "+5 senior / architect level"
+   ],
+   "flags": [
+    "Salary not stated",
+    "Wants immediate start (candidate's notice is 90 days)",
+    "Recruitment agency advert"
+   ],
+   "matched_keywords": [],
    "agency": true,
    "currency": "£"
   },
@@ -400,86 +304,6 @@
    "matched_keywords": [],
    "agency": true,
    "currency": "£"
-  },
-  {
-   "source": "Adzuna",
-   "source_id": "5910975163",
-   "title": "Solutions Architect - NVIDIA AI Cloud Partners",
-   "company": "NVIDIA Corporation",
-   "location": "France",
-   "country": "FR",
-   "url": "https://www.adzuna.fr/details/5910975163?utm_medium=api&utm_source=2f99c3af",
-   "posted_at": "2026-10-04T05:13:10+00:00",
-   "description": "Solutions Architect - NVIDIA AI Cloud PartnersApply: France, Courbevoie: France, Remote: Full time: Posted Yesterday: JR2021296NVIDIA is widely considered to be one of the technology world’s most desirable employers. We have some of the most forward-thinking and hardworking people in the world working for us. If you're creative, hard-working, and self-motivated, we want to hear from you!We are looking for a Network Solutions Architect to join the NVIDIA team focused on supporting NVIDIA AI Clo…",
-   "salary": "90,000 – 130,000",
-   "contract": "full_time",
-   "channel": "aggregator",
-   "sponsorship": "permit_check",
-   "sponsor_register": "",
-   "sponsor_routes": [],
-   "sector": "",
-   "domain": "",
-   "role": "",
-   "region": "",
-   "english": true,
-   "early_career": "",
-   "aviation": "",
-   "low_sponsorship": false,
-   "tier": 3,
-   "size": "unknown",
-   "contacts": [],
-   "id": "7489878ba063",
-   "match": 25,
-   "reasons": [
-    "+20 Solution / technical architect title",
-    "+5 senior / architect level",
-    "+5 pay reaches the 70,000 expectation",
-    "-5 sponsorship / work permit not confirmed"
-   ],
-   "flags": [],
-   "matched_keywords": [],
-   "agency": false,
-   "currency": "€"
-  },
-  {
-   "source": "Adzuna",
-   "source_id": "5910974842",
-   "title": "Solutions Architect - NVIDIA AI Cloud Partners",
-   "company": "NVIDIA Corporation",
-   "location": "Courbevoie, Nanterre",
-   "country": "FR",
-   "url": "https://www.adzuna.fr/details/5910974842?utm_medium=api&utm_source=2f99c3af",
-   "posted_at": "2026-10-04T05:13:02+00:00",
-   "description": "NVIDIA is widely considered to be one of the technology world’s most desirable employers. We have some of the most forward-thinking and hardworking people in the world working for us. If you're creative, hard-working, and self-motivated, we want to hear from you! We are looking for a Network Solutions Architect to join the NVIDIA team focused on supporting NVIDIA AI Cloud Partners as they build the next-generation GPU infrastructure for their customers. As a part of the NVIDIA solutions archite…",
-   "salary": "90,000 – 120,000",
-   "contract": "full_time",
-   "channel": "aggregator",
-   "sponsorship": "permit_check",
-   "sponsor_register": "",
-   "sponsor_routes": [],
-   "sector": "",
-   "domain": "",
-   "role": "",
-   "region": "",
-   "english": true,
-   "early_career": "",
-   "aviation": "",
-   "low_sponsorship": false,
-   "tier": 3,
-   "size": "unknown",
-   "contacts": [],
-   "id": "1e39c5cc12cc",
-   "match": 25,
-   "reasons": [
-    "+20 Solution / technical architect title",
-    "+5 senior / architect level",
-    "+5 pay reaches the 70,000 expectation",
-    "-5 sponsorship / work permit not confirmed"
-   ],
-   "flags": [],
-   "matched_keywords": [],
-   "agency": false,
-   "currency": "€"
   },
   {
    "source": "Reed",
@@ -655,13 +479,57 @@
   },
   {
    "source": "Reed",
-   "source_id": "57426959",
+   "source_id": "57431828",
+   "title": "Lead Solution Architect",
+   "company": "Appcast Enterprise",
+   "location": "London",
+   "country": "GB",
+   "url": "https://www.reed.co.uk/jobs/lead-solution-architect/57431828",
+   "posted_at": "2026-10-07T00:00:00+00:00",
+   "description": "Entity: Technology Job Family Group: IT&S Group Job Description: Our purpose is to deliver energy to the world, today and tomorrow. For over 100 years, bp has focused on discovering, developing, and producing oil and gas in the nations where we operate. We are one of the few companies globally that can provide governments and customers with an integrated energy offering. Delivering our strategy sustainably is fundamental to achieving our ambition to be a net zero company by 2050 or sooner. It's an exciting time to join bp. Meeting the energy challenge requires many different approaches and…",
+   "salary": "",
+   "contract": "",
+   "channel": "aggregator",
+   "sponsorship": "unverified",
+   "sponsor_register": "",
+   "sponsor_routes": [],
+   "sector": "",
+   "domain": "",
+   "role": "",
+   "region": "",
+   "english": true,
+   "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
+   "tier": 3,
+   "size": "unknown",
+   "contacts": [],
+   "id": "3f0d1a91ca15",
+   "match": 22,
+   "reasons": [
+    "+20 Solution / technical architect title",
+    "+2 architecture practice / GCP",
+    "+5 senior / architect level",
+    "-5 sponsorship / work permit not confirmed"
+   ],
+   "flags": [
+    "Salary not stated"
+   ],
+   "matched_keywords": [
+    "togaf"
+   ],
+   "agency": false,
+   "currency": "£"
+  },
+  {
+   "source": "Reed",
+   "source_id": "57430021",
    "title": "Solutions Architect - Juniper",
    "company": "Appcast Enterprise",
    "location": "Bracknell",
    "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/solutions-architect-juniper/57426959",
-   "posted_at": "2026-10-06T00:00:00+00:00",
+   "url": "https://www.reed.co.uk/jobs/solutions-architect-juniper/57430021",
+   "posted_at": "2026-10-07T00:00:00+00:00",
    "description": "Design complex solutions. Influence strategy. Deliver technology that transforms businesses. At TD SYNNEX, we're looking for a Juniper Solutions Architect to help shape and deliver complex technology solutions for our partners and customers. This is a senior technical role for an experienced Juniper presales architect with expertise around enterprise networking and security, and a passion for solving complex business challenges. Working with partners, vendors, end users, and internal stakeholders, you'll design innovative multi-technology solutions, guide technical strategy, and lead projects…",
    "salary": "",
    "contract": "",
@@ -680,7 +548,7 @@
    "tier": 3,
    "size": "unknown",
    "contacts": [],
-   "id": "f509ace63f01",
+   "id": "2c49f2f6e9d1",
    "match": 22,
    "reasons": [
     "+20 Solution / technical architect title",
@@ -693,6 +561,50 @@
    ],
    "matched_keywords": [
     "solution architecture"
+   ],
+   "agency": false,
+   "currency": "£"
+  },
+  {
+   "source": "Reed",
+   "source_id": "57428476",
+   "title": "ISP Solution Architect",
+   "company": "4Recruitment Services ",
+   "location": "BD11HX",
+   "country": "GB",
+   "url": "https://www.reed.co.uk/jobs/isp-solution-architect/57428476",
+   "posted_at": "2026-10-06T00:00:00+00:00",
+   "description": "ISP Solution Architect – Bradford Council Ongoing contract Location: Bradford, BD1 1HX Rate: £550 per day Umbrella Contract: Interim Bradford Council is seeking an experienced ISP Solution Architect to join its IT Services team, working across Enterprise Architecture and Information Management. Key requirements: Strong experience developing IT technical and solution architectures Experience producing enterprise/solution architecture documentation Strong knowledge of ITIL and IT service management Experience supporting IT infrastructure and end users Strong problem-solving and technical…",
+   "salary": "550",
+   "contract": "",
+   "channel": "aggregator",
+   "sponsorship": "unverified",
+   "sponsor_register": "",
+   "sponsor_routes": [],
+   "sector": "",
+   "domain": "",
+   "role": "",
+   "region": "",
+   "english": true,
+   "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
+   "tier": 3,
+   "size": "unknown",
+   "contacts": [],
+   "id": "bf937d1b1bdc",
+   "match": 22,
+   "reasons": [
+    "+20 Solution / technical architect title",
+    "+2 architecture practice / GCP",
+    "+5 senior / architect level",
+    "-5 sponsorship / work permit not confirmed"
+   ],
+   "flags": [
+    "Salary not stated"
+   ],
+   "matched_keywords": [
+    "enterprise architecture"
    ],
    "agency": false,
    "currency": "£"
@@ -781,19 +693,19 @@
    "currency": "£"
   },
   {
-   "source": "Reed",
-   "source_id": "57407908",
-   "title": "Senior Software Architect - REMOTE",
-   "company": "Proactive Appointments",
-   "location": "West Midlands (Region)",
-   "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/senior-software-architect-remote/57407908",
-   "posted_at": "2026-09-30T00:00:00+00:00",
-   "description": "Senior Software Architect - Remote Our new client is a leading force in their commercial space. They are looking for an experienced Software Architect who has a background in the WMS space, ideally creating automated systems from the ground up. We are looking for an experienced Senior Software Architect to lead a team of software engineers and take technical responsibility for the design, development, testing and integration of software solutions within complex customer projects. This is a hands-on leadership role, combining technical design, team leadership, software development and project…",
-   "salary": "75,000 – 85,000",
-   "contract": "",
+   "source": "Adzuna",
+   "source_id": "5908392886",
+   "title": "Solutions Architect - NVIDIA AI Cloud Partners",
+   "company": "NVIDIA",
+   "location": "Courbevoie, Nanterre",
+   "country": "FR",
+   "url": "https://www.adzuna.fr/details/5908392886?utm_medium=api&utm_source=2f99c3af",
+   "posted_at": "2026-10-02T18:11:58+00:00",
+   "description": "NVIDIA is widely considered to be one of the technology world’s most desirable employers. We have some of the most forward-thinking and hardworking people in the world working for us. If you're creative, hard-working, and self-motivated, we want to hear from you! We are looking for a Network Solutions Architect to join the NVIDIA team focused on supporting NVIDIA AI Cloud Partners as they build the next-generation GPU infrastructure for their customers. As a part of the NVIDIA solutions archite…",
+   "salary": "",
+   "contract": "full_time",
    "channel": "aggregator",
-   "sponsorship": "agency",
+   "sponsorship": "permit_check",
    "sponsor_register": "",
    "sponsor_routes": [],
    "sector": "",
@@ -807,19 +719,19 @@
    "tier": 3,
    "size": "unknown",
    "contacts": [],
-   "id": "1cf8c01d299c",
+   "id": "727fa2cf366b",
    "match": 20,
    "reasons": [
-    "+10 Architect title",
+    "+20 Solution / technical architect title",
     "+5 senior / architect level",
-    "+5 pay reaches the 60,000 expectation"
+    "-5 sponsorship / work permit not confirmed"
    ],
    "flags": [
-    "Recruitment agency advert"
+    "Salary not stated"
    ],
    "matched_keywords": [],
-   "agency": true,
-   "currency": "£"
+   "agency": false,
+   "currency": "€"
   }
  ]
 }
