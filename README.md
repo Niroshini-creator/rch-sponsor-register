@@ -16,7 +16,12 @@ consultancies are removed.**
   PSW & OPT employer directory. Export to CSV.
 * **Data pipeline** (`jobfeed/`): Python 3.10+, standard library only. It fetches vacancies,
   checks employers against the official sponsor registers, classifies each job and writes `data/jobs.json`.
-* **GitHub Actions** (`.github/workflows/refresh-jobs.yml`): runs the tests and rebuilds the feed twice a day.
+* **GitHub Actions** (`.github/workflows/refresh-jobs.yml`): runs the tests and rebuilds the feed every 2 hours
+  (01:17, 03:17 … 23:17 UTC). Each run publishes `data/jobs.json` to the `feed` branch, which holds a single commit
+  replaced every time so the repository doesn't grow; the page reads it from there and re-checks every 30 minutes.
+  `main` keeps a daily copy (the 05 UTC run, plus one after each merge) as a fallback. Adzuna is searched live at
+  05, 13 and 21 UTC (its free plan allows a few full searches a day); the runs in between reuse those results
+  (saved with the Actions cache).
 
 ## How a job gets onto the board
 
@@ -194,7 +199,7 @@ a public body's careers site runs on one of the supported ATS platforms (often W
 1. **Enable GitHub Pages**: *Settings → Pages → Deploy from branch → `main` / root*.
 2. **Add API keys** (optional, recommended): *Settings → Secrets and variables → Actions*, then add
    `ADZUNA_APP_ID`, `ADZUNA_APP_KEY`, `REED_API_KEY`.
-3. **Run the feed**: *Actions → Refresh sponsored jobs → Run workflow*. After that it runs at 05:17 and 13:17 UTC.
+3. **Run the feed**: *Actions → Refresh sponsored jobs → Run workflow*. After that it runs every 2 hours.
 
 ### Run locally
 

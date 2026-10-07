@@ -2,8 +2,7 @@ name: Refresh sponsored jobs
 
 on:
   schedule:
-    - cron: "17 5 * * *"   # daily, 05:17 UTC
-    - cron: "17 13 * * *"  # and 13:17 UTC so the feed stays fresh through the day
+    - cron: "17 1-23/2 * * *"  # every 2 hours (01:17, 03:17 ... 23:17 UTC); a run takes 60-90 minutes
   workflow_dispatch:
     inputs:
       days:
@@ -39,20 +38,65 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Restore saved Adzuna results
+        uses: actions/cache/restore@v4
+        with:
+          path: .cache/adzuna.json
+          key: adzuna-${{ github.run_id }}
+          restore-keys: adzuna-
       - name: Build feed
+        id: build
         env:
           ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
           ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
+          ADZUNA_CACHE: .cache/adzuna.json
           REED_API_KEY: ${{ secrets.REED_API_KEY }}
-        run: python -m jobfeed --days "${{ github.event.inputs.days || '7' }}"
-      - name: Commit updated feed
         run: |
+          # Adzuna's free plan covers about three full searches a day: search it live at 05, 13 and 21 UTC
+          # (and on merges / manual runs); the other two-hourly refreshes reuse those results. GitHub can start a
+          # scheduled run late, so the following hour counts too.
+          HOUR=$(date -u +%H)
+          echo "start_hour=${HOUR}" >> "$GITHUB_OUTPUT"
+          if [ "${GITHUB_EVENT_NAME}" = "schedule" ] && [ -f .cache/adzuna.json ] && ! echo " 05 06 13 14 21 22 " | grep -q " ${HOUR} "; then
+            export ADZUNA_FROM_CACHE=1
+            echo "adzuna_live=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "adzuna_live=true" >> "$GITHUB_OUTPUT"
+          fi
+          python -m jobfeed --days "${{ github.event.inputs.days || '7' }}"
+          cp data/jobs.json "${RUNNER_TEMP}/jobs.json"
+      - name: Save Adzuna results
+        if: steps.build.outputs.adzuna_live == 'true' && hashFiles('.cache/adzuna.json') != ''
+        uses: actions/cache/save@v4
+        with:
+          path: .cache/adzuna.json
+          key: adzuna-${{ github.run_id }}
+      - name: Publish feed
+        # The site reads the latest feed from the "feed" branch, which holds a single commit that every
+        # refresh replaces, so frequent refreshes don't grow the repository.
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -q --orphan feed-publish
+          git rm -rqf --cached .
+          mkdir -p data && cp "${RUNNER_TEMP}/jobs.json" data/jobs.json
+          git add data/jobs.json
+          git commit -qm "Latest sponsored jobs feed"
+          git push -f origin HEAD:refs/heads/feed
+          git checkout -qf "${GITHUB_REF_NAME}"
+          git branch -D feed-publish -q
+      - name: Commit daily copy to main
+        # main keeps one feed a day (the run that starts at 05 UTC) as a fallback, plus one after each merge.
+        env:
+          START_HOUR: ${{ steps.build.outputs.start_hour }}
+        run: |
+          if [ "${GITHUB_EVENT_NAME}" = "schedule" ] && [ "${START_HOUR}" != "05" ] && [ "${START_HOUR}" != "06" ]; then
+            echo "Not the daily run; main keeps its copy"; exit 0
+          fi
+          cp "${RUNNER_TEMP}/jobs.json" data/jobs.json
           if git diff --quiet -- data/jobs.json; then
             echo "No changes"; exit 0
           fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          cp data/jobs.json "${RUNNER_TEMP}/jobs.json"
           # main may have moved while the feed was building (a merge, another run). Put this run's feed on
           # top of the latest main as a whole file: a rebase would merge two feeds line by line into a mix.
           for attempt in 1 2 3; do

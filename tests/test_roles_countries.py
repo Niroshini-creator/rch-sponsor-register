@@ -238,6 +238,25 @@ class NewSourceTests(unittest.TestCase):
         self.assertEqual(get.call_count, 3)
         self.assertIn("/gb/", get.call_args_list[0].args[0])
 
+    def test_adzuna_cache_between_live_searches(self):
+        now = datetime.now(timezone.utc).isoformat()
+        result = {"results": [{"id": 1, "title": "Engineer", "company": {"display_name": "Acme"},
+                               "location": {"display_name": "London"}, "redirect_url": "https://x/1",
+                               "created": now, "description": "Visa sponsorship available."}]}
+        with tempfile.TemporaryDirectory() as d:
+            cache = str(Path(d) / "adzuna.json")
+            env = {"ADZUNA_APP_ID": "a", "ADZUNA_APP_KEY": "b", "ADZUNA_CACHE": cache}
+            with mock.patch.dict("os.environ", env), mock.patch.object(sources, "ADZUNA_MAX_CALLS", 1), \
+                 mock.patch.object(sources, "ADZUNA_PAUSE", 0), \
+                 mock.patch.object(sources.http, "get_json", return_value=result):
+                live = list(sources.adzuna(7))
+            # A later refresh reads the saved results and makes no Adzuna calls.
+            with mock.patch.dict("os.environ", {**env, "ADZUNA_FROM_CACHE": "1"}), \
+                 mock.patch.object(sources.http, "get_json", side_effect=AssertionError("no live call")):
+                cached = list(sources.adzuna(7))
+        self.assertEqual([(j.title, j.company, j.posted_at) for j in cached],
+                         [(j.title, j.company, j.posted_at) for j in live])
+
     def test_adzuna_skips_a_rejected_search(self):
         not_found = urllib.error.HTTPError("u", 404, "Not Found", {}, None)
         with mock.patch.dict("os.environ", {"ADZUNA_APP_ID": "a", "ADZUNA_APP_KEY": "b"}), \
