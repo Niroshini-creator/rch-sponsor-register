@@ -47,9 +47,11 @@ def _job(emp: dict, **kw) -> Job:
     # Global employers list jobs worldwide, so an unrecognised location is not assumed to be
     # in the employer's home country unless the config marks every vacancy as local.
     fallback = emp.get("country", "GB") if (emp.get("local") or not location.strip()) else ""
-    country = kw.pop("country", "") or _guess_country(location, default=fallback)
+    country = (kw.pop("country", "") or _guess_country(location, default=fallback)).upper()[:2]
+    # The legal name on a country's sponsor register when it differs by country ("register_names": {"IE": ...}).
+    register_name = (emp.get("register_names") or {}).get(country) or emp.get("register_name", "")
     return Job(source=f"{emp['name']} careers", channel="career_site", company=emp["name"],
-               register_name=emp.get("register_name", ""), location=location, country=country.upper()[:2], **kw)
+               register_name=register_name, location=location, country=country, **kw)
 
 
 # ----------------------------------------------------------------------------- Greenhouse

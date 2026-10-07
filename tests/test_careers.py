@@ -200,6 +200,14 @@ class TeamtailorTests(unittest.TestCase):
             list(careers.teamtailor({"name": "Kry", "id": "kryhealthcare"}, CUTOFF))
         get.assert_called_once_with("https://kryhealthcare.teamtailor.com/jobs.rss")
 
+    def test_register_name_per_country(self):
+        emp = {"name": "Salesforce", "country": "US", "register_name": "Salesforce UK Limited",
+               "register_names": {"IE": "SFDC Ireland Limited"}}
+        ie = careers._job(emp, source_id="1", title="AE", location="Dublin, Ireland", url="u", posted_at=NOW)
+        uk = careers._job(emp, source_id="2", title="AE", location="London, UK", url="u", posted_at=NOW)
+        self.assertEqual((ie.country, ie.register_name), ("IE", "SFDC Ireland Limited"))
+        self.assertEqual((uk.country, uk.register_name), ("GB", "Salesforce UK Limited"))
+
     def test_oracle_recruiting_cloud(self):
         today, old = NOW.date().isoformat(), (NOW - timedelta(days=30)).date().isoformat()
         listing = {"items": [{"requisitionList": [
