@@ -44,6 +44,10 @@ class Job:
     early_career: str = ""      # "stated" | "likely": open to UK Graduate visa (PSW) / US OPT holders
     aviation: str = ""          # aviation / aerospace job family, see classify.AVIATION_FAMILIES
     low_sponsorship: bool = False  # front-line role (agent, receptionist...) that is rarely sponsored
+    # Advertised pay against the visa minimum, see salary.salary_check: "meets" | "partial" | "reduced" | "below" | "".
+    salary_check: str = ""
+    salary_annual: int = 0      # top of the advertised range as a yearly figure (0 when unread)
+    salary_threshold: int = 0   # the minimum it was compared with, in the country's currency
     tier: int = 3
     size: str = "unknown"      # "large" | "medium" | "small" | "unknown"
     contacts: list[dict] = field(default_factory=list)

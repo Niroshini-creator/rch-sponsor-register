@@ -16,6 +16,7 @@ from .classify import (AVIATION_FAMILIES, DOMAINS, ENGLISH_SPEAKING_COUNTRIES, R
                        classify_role, classify_sector, is_low_sponsorship, sponsorship_evidence, stamp1g_status)
 from .contacts import ContactBook
 from .models import Job
+from .salary import salary_check
 from .text import normalise_company
 
 log = logging.getLogger("jobfeed")
@@ -141,6 +142,9 @@ def enrich(jobs: Iterable[Job], index: sponsors.SponsorIndex, tiers: TierRules,
         job.role = classify_role(job)
         job.aviation = classify_aviation(job)
         job.low_sponsorship = is_low_sponsorship(job)
+        if job.sponsorship not in ("graduate_route", "stamp_1g"):
+            # Graduate visa / Stamp 1G holders need no sponsorship, so no salary minimum applies to them.
+            job.salary_check, job.salary_annual, job.salary_threshold = salary_check(job)
         job.region = classify_region(job)
         job.english = job.country in ENGLISH_SPEAKING_COUNTRIES or classify_english(job)
         job.early_career = job.early_career or classify_early_career(job)

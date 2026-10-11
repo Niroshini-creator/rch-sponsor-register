@@ -74,6 +74,15 @@ consultancies are removed.**
      reservations, customer service advisers, administrators, receptionists, retail and hospitality, and
      apprenticeships) are flagged
      and hidden by default, because they seldom meet sponsorship skill and salary levels.
+   * **Minimum salary** (UK and Ireland, `jobfeed/salary.py`): the advertised pay is turned into a yearly figure
+     (hourly at 37.5 hours a week; day rates and ambiguous amounts are left unread) and compared with the visa minimum.
+     UK Skilled Worker: £41,700, or £33,400 for new entrants / PhD jobs / Immigration Salary List roles, or £25,000
+     for nurses, doctors, allied health professionals and teachers on national pay scales. Ireland: €36,605 (General
+     Employment Permit), €32,691 for healthcare assistants and home carers. Cards say whether pay meets the minimum,
+     meets it only at the top of the range, meets only the new-entrant rate, or is below it; jobs below every
+     minimum are hidden by default. Jobs that don't state pay are kept with a "Check pay" reminder. Graduate visa /
+     Stamp 1G jobs are not checked because they need no sponsorship. Update the figures in `jobfeed/salary.py` when
+     the rules change.
    * **Region**: Scotland (UK jobs in Scottish places or employers such as NHS Lothian), Dubai and Abu Dhabi.
    * **English-speaking**: the advert is written in English and asks for no other language ("Dutch is a plus" is
      fine; "fluent German required" is not). Jobs in the UK, Ireland and the US always count.
@@ -227,6 +236,7 @@ jobfeed/agencies.py          recruitment agency / consultancy detection
 jobfeed/sources.py           NHS Jobs, Teaching Vacancies, Platsbanken, RSS and job-board connectors
 jobfeed/sponsors.py          UK Home Office + NL IND sponsor registers, USCIS H-1B employer data
 jobfeed/classify.py          sponsorship wording, sector, domain, job role, region, language, PSW/OPT, tier and size rules
+jobfeed/salary.py            advertised pay vs. UK Skilled Worker and Irish permit salary minimums
 jobfeed/contacts.py          advert email extraction + verified contact book
 jobfeed/pipeline.py          fetch → verify → classify → dedupe → data/jobs.json
 config/                      sources, employer career sites, agencies, tiers, verified contacts
