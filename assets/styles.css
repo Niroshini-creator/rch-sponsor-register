@@ -126,6 +126,7 @@ fieldset label { display: flex; gap: 6px; align-items: center; font-size: .9rem;
 .tag.direct { background: var(--direct-bg); color: var(--direct-text); }
 .tag.warn { background: var(--warn-bg); color: var(--warn-text); }
 .desc { color: var(--muted); font-size: .9rem; overflow-wrap: anywhere; }
+.evidence { font-size: .88rem; font-style: italic; border-left: 3px solid var(--ok-text); padding-left: 8px; margin: 6px 0; overflow-wrap: anywhere; }
 .job-foot { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; margin-top: 10px;
   border-top: 1px solid var(--border); padding-top: 10px; flex-wrap: wrap; }
 .contact-block h3 { font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 0 0 4px; }

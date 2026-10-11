@@ -34,8 +34,12 @@ consultancies are removed.**
    to `never_agency`.
 3. **Sponsorship check.** A job is kept only if one of these is true:
    * **Sponsorship offered**: the advert says so ("visa sponsorship available", "Skilled Worker
-     sponsorship will be considered", "EU Blue Card", NHS Jobs' standard sponsorship wording), or the source
-     flags it.
+     sponsorship will be considered", "EU Blue Card", NHS Jobs' standard sponsorship wording), or Teaching
+     Vacancies' official visa field is set. The job card quotes the advert's sentence. A sentence that is itself
+     negated ("we cannot offer a certificate of sponsorship", "sponsorship is available for nurses, but this
+     role is not eligible") is not an offer, and any statement that sponsorship is unavailable overrides
+     everything else, including the employer's register entry. Job boards' own "visa sponsorship" flags
+     (Arbeitnow) are not trusted.
    * **Licensed sponsor**: the advert doesn't mention sponsorship, but the employer is on the official
      register for that country: the [UK Home Office register of licensed sponsors](https://www.gov.uk/government/publications/register-of-licensed-sponsors-workers)
      or the [Dutch IND register of recognised sponsors](https://ind.nl/en/public-register-recognised-sponsors/public-register-regular-labour-and-highly-skilled-migrants),
