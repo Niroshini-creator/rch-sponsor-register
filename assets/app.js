@@ -43,9 +43,18 @@ const ENGLISH_COUNTRIES = new Set(["GB", "IE", "US", "MT"]);
 const SCOTLAND_RE = /\b(scotland|scottish|glasgow|edinburgh|aberdeen|dundee|inverness|stirling|st andrews|paisley|fife|lothian|lanarkshire|ayrshire|perth|nhs (lothian|grampian|tayside|highland))\b/i;
 const $ = (sel) => document.querySelector(sel);
 
-const state = { data: null, jobs: [], filtered: [], shown: PAGE_SIZE, view: "all" };
+// employer: set by an employer's "Open roles" in the directory to list exactly that employer's jobs.
+const state = { data: null, jobs: [], filtered: [], shown: PAGE_SIZE, view: "all", employer: null };
 
 // ------------------------------------------------------------------ helpers
+// Same rule as jobfeed.text.normalise_company, so the directory's role counts and this list agree.
+const NAME_NOISE = new Set(["ltd", "limited", "plc", "llp", "llc", "inc", "incorporated", "corp", "corporation", "sl",
+  "co", "company", "group", "holdings", "uk", "gb", "the", "and", "gmbh", "ag", "bv",
+  "nv", "sa", "sas", "sarl", "srl", "spa", "ab", "as", "oy", "se", "kg"]);
+const normCompany = (name) => String(name || "").normalize("NFKD").replace(/[^\x00-\x7f]/g, "").toLowerCase()
+  .replace(/&/g, " and ").replace(/\(.*?\)/g, " ").replace(/\./g, "").replace(/[^a-z0-9 ]+/g, " ")
+  .split(/\s+/).filter((w) => w && !NAME_NOISE.has(w)).join(" ");
+
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 
@@ -112,6 +121,10 @@ function matchesCountry(job, country) {
 }
 
 function matches(job, f, view = state.view) {
+  // An employer picked in the directory: all of its jobs, whatever the other filters say.
+  if (state.employer) {
+    return job.country === state.employer.country && job._company === state.employer.key && VIEWS[view].test(job);
+  }
   if (Date.now() - job._posted > f.days * DAY_MS) return false;
   if (!matchesCountry(job, f.country)) return false;
   if (!VIEWS[view].test(job)) return false;
@@ -290,7 +303,7 @@ function renderDirectory() {
       `<a href="https://www.google.com/search?q=${q}" target="_blank" rel="noopener">Web</a>`,
     ].filter(Boolean).join(" · ");
     const roles = e.open_roles
-      ? `<button type="button" class="linkish" data-employer="${esc(e.name)}">${e.open_roles}${e.early_career_roles ? ` (${e.early_career_roles} entry-level)` : ""}</button>`
+      ? `<button type="button" class="linkish" data-employer="${esc(e.name)}" data-country="${esc(e.country)}">${e.open_roles}${e.early_career_roles ? ` (${e.early_career_roles} entry-level)` : ""}</button>`
       : "0";
     return `<tr><td><strong>${esc(e.name)}</strong> ${flag(e.country)}<br><span class="muted small">${esc(e.programme || e.sector)}${e.curated ? "" : " · found in feed"}</span></td>
       <td>${esc(route)}</td><td>${esc(e.size)} · Tier ${esc(e.tier)}</td><td>${record}</td><td>${roles}</td><td>${links}</td></tr>`;
@@ -313,7 +326,13 @@ function render() {
   }
   renderStats();
   const { filtered, shown } = state;
-  $("#summary").textContent = `${filtered.length} of ${state.jobs.length} roles match`;
+  if (state.employer) {
+    $("#summary").innerHTML = `${filtered.length} ${filtered.length === 1 ? "role" : "roles"} at <strong>${esc(state.employer.name)}</strong>
+      (all of its jobs, other filters ignored) <button type="button" class="btn ghost small-btn" id="clear-employer">Back to all jobs</button>`;
+    $("#clear-employer").addEventListener("click", () => { state.employer = null; apply(); });
+  } else {
+    $("#summary").textContent = `${filtered.length} of ${state.jobs.length} roles match`;
+  }
   $("#jobs").innerHTML = filtered.slice(0, shown).map(jobHtml).join("");
   $("#more").hidden = filtered.length <= shown;
 
@@ -518,6 +537,7 @@ async function main() {
     salary_check: j.salary_check || "",
     salary_threshold: j.salary_threshold || 0,
     _posted: new Date(j.posted_at),
+    _company: normCompany(j.company),
     _haystack: [j.title, j.company, j.location, j.region, j.sector, j.domain, j.role, countryName(j.country), j.description,
       j.aviation, ...(j.contacts || []).map((c) => c.name)].join(" ").toLowerCase(),
   }));
@@ -554,8 +574,8 @@ async function main() {
   if (matchMedia("(max-width: 860px)").matches) $("#filter-panel").open = false;
 
   const form = $("#filters");
-  form.addEventListener("input", apply);
-  form.addEventListener("reset", () => setTimeout(() => { state.view = "all"; apply(); }));
+  form.addEventListener("input", () => { state.employer = null; apply(); });
+  form.addEventListener("reset", () => setTimeout(() => { state.view = "all"; state.employer = null; apply(); }));
   $("#sort").addEventListener("change", apply);
   $("#export").addEventListener("click", exportCsv);
   $("#more").addEventListener("click", () => { state.shown += PAGE_SIZE; render(); });
@@ -563,15 +583,17 @@ async function main() {
     const btn = e.target.closest("[data-view]");
     if (!btn) return;
     state.view = btn.dataset.view;
+    state.employer = null;
     apply();
   });
   // "Open roles" in the directory: search the jobs list for that employer.
   $("#employers").addEventListener("click", (e) => {
     const btn = e.target.closest("[data-employer]");
     if (!btn) return;
-    $("#filters [name=q]").value = btn.dataset.employer;
+    state.employer = { key: normCompany(btn.dataset.employer), country: btn.dataset.country, name: btn.dataset.employer };
     state.view = "all";
     apply();
+    $("#summary").scrollIntoView({ block: "start" });
   });
   document.querySelectorAll("[data-dialog]").forEach((b) =>
     b.addEventListener("click", () => document.getElementById(b.dataset.dialog).showModal()));
