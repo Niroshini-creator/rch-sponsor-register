@@ -188,8 +188,9 @@ class SourceParserTests(unittest.TestCase):
                              "visa_sponsorship": True}], "links": {"next": None}}
         with mock.patch.object(sources.http, "get_json", return_value=payload):
             jobs = list(sources.arbeitnow(7))
+        # Arbeitnow's poster-set flag is not trusted: only the advert's words count.
         self.assertEqual((jobs[0].country, jobs[0].source_says_sponsorship, jobs[0].description),
-                         ("DE", True, "Hi"))
+                         ("DE", False, "Hi"))
 
     def test_nhs_xml(self):
         xml = f"""<nhsJobs><vacancyDetails><id>C9-1</id><title>Staff Nurse</title>

@@ -326,7 +326,8 @@ def arbeitnow(days: int) -> Iterator[Job]:
                 url=r.get("url", ""), posted_at=posted,
                 description=strip_html(r.get("description")),
                 contract=", ".join(r.get("job_types") or []),
-                source_says_sponsorship=bool(r.get("visa_sponsorship", True)),
+                # Arbeitnow's own "visa sponsorship" flag is set by the poster and often contradicts the advert,
+                # so only the advert's words (or the employer's register entry) count.
             )
         if not results or not (data.get("links") or {}).get("next"):
             break

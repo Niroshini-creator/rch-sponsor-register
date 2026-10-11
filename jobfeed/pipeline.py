@@ -13,7 +13,7 @@ from . import careers, sources, sponsors
 from .agencies import AgencyFilter
 from .classify import (AVIATION_FAMILIES, DOMAINS, ENGLISH_SPEAKING_COUNTRIES, ROLES, SECTORS, TierRules,
                        classify_aviation, classify_domain, classify_early_career, classify_english, classify_region,
-                       classify_role, classify_sector, is_low_sponsorship, sponsorship_signal, stamp1g_status)
+                       classify_role, classify_sector, is_low_sponsorship, sponsorship_evidence, stamp1g_status)
 from .contacts import ContactBook
 from .models import Job
 from .text import normalise_company
@@ -95,7 +95,7 @@ def enrich(jobs: Iterable[Job], index: sponsors.SponsorIndex, tiers: TierRules,
             stats["agency_removed"] += 1
             continue
 
-        signal = sponsorship_signal(f"{job.title} {job.description}")
+        signal, evidence = sponsorship_evidence(f"{job.title}. {job.description}")
         entry = index.lookup(job.register_name or job.company, job.country)
         if job.channel == "career_site" and (entry is None or sponsors.REGISTER_COUNTRY.get(entry.register) != job.country):
             entry = index.lookup_prefix(job.register_name or job.company, job.country) or entry
@@ -104,13 +104,14 @@ def enrich(jobs: Iterable[Job], index: sponsors.SponsorIndex, tiers: TierRules,
             # doesn't close to them ("Stamp 4 required", "EU citizens only").
             if stamp1g_status(job) == "excluded":
                 continue
-            if signal == "positive" or job.source_says_sponsorship:
+            if signal == "positive" or (job.source_says_sponsorship and signal != "negative"):
                 job.sponsorship = "confirmed"
-            elif entry and sponsors.REGISTER_COUNTRY.get(entry.register) == "IE":
+            elif signal != "negative" and entry and sponsors.REGISTER_COUNTRY.get(entry.register) == "IE":
                 # Issued employment permits this year or last: Ireland's record of who sponsors.
                 job.sponsorship = "licensed_sponsor"
             else:
-                job.sponsorship = "stamp_1g"  # no sponsorship evidence; shown only when Stamp 1G is ticked
+                # No sponsorship evidence, or the advert rules sponsorship out: shown only when Stamp 1G is ticked.
+                job.sponsorship = "stamp_1g"
         elif signal == "negative":
             # No sponsorship, but the advert welcomes Graduate visa (PSW) / OPT holders, who need none.
             if classify_early_career(job) != "stated":
@@ -126,6 +127,11 @@ def enrich(jobs: Iterable[Job], index: sponsors.SponsorIndex, tiers: TierRules,
             job.sponsorship = "employer_visa"
         else:
             continue
+        # Quote the advert's own words when they decide the label, so candidates can check it.
+        if job.sponsorship == "confirmed" and signal == "positive":
+            job.sponsorship_evidence = evidence
+        elif job.sponsorship in ("graduate_route", "stamp_1g") and signal == "negative":
+            job.sponsorship_evidence = evidence
         if entry:
             job.sponsor_register = entry.register
             job.sponsor_routes = sorted(entry.routes)

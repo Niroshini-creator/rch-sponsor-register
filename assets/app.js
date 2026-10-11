@@ -192,7 +192,7 @@ function earlyTag(j) {
 
 function jobHtml(j) {
   const sponsorTag = {
-    confirmed: `<span class="tag ok" title="The advert states visa sponsorship is available">Sponsorship offered</span>`,
+    confirmed: `<span class="tag ok" title="The advert itself states that visa sponsorship is available">Sponsorship offered</span>`,
     licensed_sponsor: `<span class="tag warn" title="Employer is on the official sponsor register but the advert does not mention sponsorship — ask before applying">${{ "US H-1B": "H-1B sponsor", "IE employment permits": "Permit employer" }[j.sponsor_register] || "Licensed sponsor"}</span>`,
     employer_visa: `<span class="tag ok" title="UAE employers sponsor every foreign hire's residence and work visa">Employer visa (UAE)</span>`,
     graduate_route: `<span class="tag warn" title="No sponsorship, but Graduate visa (PSW) / OPT holders are welcome">No sponsorship · ${j.country === "US" ? "OPT" : "Graduate visa"} OK</span>`,
@@ -229,6 +229,7 @@ function jobHtml(j) {
     <p class="meta">${flag(j.country)} ${esc(j.location || countryName(j.country))}${j.region && !(j.location || "").includes(j.region) ? ` · ${esc(j.region)}` : ""}
       ${j.salary ? ` · ${esc(j.salary)}` : ""}${j.contract ? ` · ${esc(j.contract)}` : ""}</p>
     <p class="tags">${channelTag}${sponsorTag}${earlyTag(j)}${englishTag}${register}${j.aviation ? `<span class="tag direct" title="Aviation &amp; operations job family">✈ ${esc(j.aviation)}</span>` : ""}${j.low_sponsorship ? `<span class="tag warn" title="Front-line role that rarely meets sponsorship skill and salary levels">Rarely sponsored</span>` : ""}<span class="tag">${esc(j.role !== "Other" ? j.role : j.domain)}</span><span class="tag">${esc(j.sector)}</span></p>
+    ${j.sponsorship_evidence ? `<p class="evidence" title="Quoted from the advert">From the advert: “${esc(j.sponsorship_evidence)}”</p>` : ""}
     ${j.description ? `<p class="desc">${esc(j.description)}</p>` : ""}
     <div class="job-foot">
       <div class="contact-block"><h3>Hiring contact</h3>${contacts}</div>

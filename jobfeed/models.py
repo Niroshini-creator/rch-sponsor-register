@@ -34,6 +34,7 @@ class Job:
     # Filled in by the enrichment pipeline.
     sponsorship: str = ""       # "confirmed" | "licensed_sponsor"
     sponsor_register: str = ""  # which official register the employer was matched on
+    sponsorship_evidence: str = ""  # the advert's sentence that offers (or rules out) sponsorship
     sponsor_routes: list[str] = field(default_factory=list)
     sector: str = ""            # employer type, see classify.SECTORS
     domain: str = ""            # role function, see classify.DOMAINS

@@ -44,7 +44,21 @@ _STRONG_NEGATIVE = [re.compile(p, re.I) for p in (
     r"without (the need for |requiring |requirement for )?(visa |skilled worker |any )?sponsorship",
     r"sponsorship\s*:\s*no\b",
     r"\b(us|u\.s\.) citizenship (is )?required\b|\bmust be an? (us|u\.s\.) citizen\b|security clearance (is )?required",
+    # NHS / UK wording: "unable to provide certificates of sponsorship", "not applicable for certificate of sponsorship".
+    r"(unable|not able|cannot|can ?not|can't|do not|don't|does not|doesn't|won't|will not|not in a position)"
+    r" to (offer|provide|issue|grant|support|consider|assign) (a |any )?(certificates? of sponsorship|cos\b)",
+    r"does ?n[o']t (attract|qualify for|meet the (criteria|requirements|threshold) for) (visa |skilled worker )?sponsorship",
+    r"not (eligible|applicable|suitable|open) (for|to) (current or future |any |future )?(visa |skilled worker )?"
+    r"(sponsorship|certificates? of sponsorship)",
+    r"does ?n[o']t meet the (home office|ukvi)'?s? (criteria|requirements|threshold)",
+    r"(we are|we're|is) not (a |an )?(licensed|registered|approved) (visa )?sponsor|do not hold a sponsor(ship)? licen[cs]e",
+    r"(applicants|candidates|those|anyone) (who|that) (will )?(require|need)s? (a )?(visa |skilled worker |future )?"
+    r"(sponsorship|certificate of sponsorship).{0,80}(will not|cannot|can't|are not|unable|need not|not be)",
 )]
+# A sentence that says sponsorship is available but is itself negated ("we cannot offer a certificate of
+# sponsorship", "sponsorship is available for nurses, but this role is not eligible") is not an offer.
+_OFFER_NEGATED_RE = re.compile(
+    r"\b(not|unable|cannot|can ?not|unfortunately|ineligible|unavailable)\b|n't\b", re.I)
 _WEAK_NEGATIVE = [re.compile(p, re.I) for p in (
     r"must (already )?(have|hold) (the |a |full |existing |an existing )*right to work",
 )]
@@ -52,13 +66,39 @@ _WEAK_NEGATIVE = [re.compile(p, re.I) for p in (
 
 def sponsorship_signal(text: str) -> str:
     """Return "positive", "negative" or "" (no statement) for an advert's text."""
-    if any(p.search(text) for p in _STRONG_NEGATIVE):
-        return "negative"
-    if any(p.search(text) for p in _POSITIVE):
-        return "positive"
-    if any(p.search(text) for p in _WEAK_NEGATIVE):
-        return "negative"
-    return ""
+    return sponsorship_evidence(text)[0]
+
+
+def sponsorship_evidence(text: str) -> tuple[str, str]:
+    """("positive" | "negative" | "", the advert's sentence that says so). Any statement that sponsorship is
+    not available wins over one that it is: such adverts often say both ("sponsorship is available for
+    registered nurses ... this band 3 role is not eligible")."""
+    for p in _STRONG_NEGATIVE:
+        m = p.search(text)
+        if m:
+            return "negative", _quote(text, m.start())
+    offer = ""
+    for p in _POSITIVE:
+        for m in p.finditer(text):
+            sentence = _sentence(text, m.start())
+            if _OFFER_NEGATED_RE.search(sentence):
+                return "negative", _quote(text, m.start())
+            offer = offer or _quote(text, m.start())
+    if offer:
+        return "positive", offer
+    for p in _WEAK_NEGATIVE:
+        m = p.search(text)
+        if m:
+            return "negative", _quote(text, m.start())
+    return "", ""
+
+
+def _quote(text: str, pos: int, limit: int = 220) -> str:
+    """The sentence around `pos`, trimmed for display."""
+    start = max(text.rfind(c, 0, pos) for c in ".;!?\n") + 1
+    ends = [i for i in (text.find(c, pos) for c in ".;!?\n") if i != -1]
+    sentence = " ".join(text[start:(min(ends) + 1) if ends else len(text)].split())
+    return sentence if len(sentence) <= limit else sentence[:limit].rsplit(" ", 1)[0] + "…"
 
 
 # ----------------------------------------------------------------------------- sector (employer type)

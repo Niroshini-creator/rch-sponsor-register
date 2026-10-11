@@ -134,6 +134,54 @@ class SponsorshipWordingTests(unittest.TestCase):
             self.assertEqual(classify.sponsorship_signal(text), "negative", text)
 
 
+class NoSponsorshipWordingTests(unittest.TestCase):
+    """Adverts that rule sponsorship out must never be labelled "Sponsorship offered"."""
+
+    def test_negative_wording(self):
+        for text in (
+            "Currently we are unable to provide certificates of sponsorship for this role as it does not meet "
+            "the Home Office's criteria.",
+            "Not applicable for certificate of sponsorship. NHSP Migration - Health Care Assistants",
+            "Unfortunately this role does not attract sponsorship under current government legislation.",
+            "Please note, we cannot offer a Certificate of Sponsorship for this role.",
+            "PLEASE NOTE: This Band 4 role is not eligible for current or future visa sponsorship.",
+            "Sponsorship is available for registered nurses, but this band 3 role is not eligible.",
+            "We are not a licensed sponsor.",
+            "Candidates who require sponsorship will not be considered.",
+        ):
+            self.assertEqual(classify.sponsorship_signal(text), "negative", text)
+
+    def test_offer_kept_with_quote(self):
+        nhs = ("Applications from job seekers who require current Skilled worker sponsorship to work in the UK "
+               "are welcome and will be considered alongside all other applications.")
+        self.assertEqual(classify.sponsorship_evidence(f"Great team. {nhs} Apply now."), ("positive", nhs))
+        self.assertEqual(classify.sponsorship_signal("We offer visa sponsorship and relocation, no matter where "
+                                                     "you are."), "positive")
+
+    def test_pipeline_labels(self):
+        index = sponsors.SponsorIndex()
+        index.add(sponsors.SponsorEntry("Acme Ltd", "UK Home Office", routes={"Skilled Worker"}))
+        index.add(sponsors.SponsorEntry("Acme Ireland Limited", "IE employment permits"), aliases=("acme",))
+        tiers = classify.TierRules.load(CONFIG / "company_tiers.json")
+        no = "We cannot offer a Certificate of Sponsorship for this role."
+        jobs = [make_job(source_id="uk-no", company="Acme Ltd", title="Analyst", description=no),
+                make_job(source_id="ie-no", country="IE", location="Dublin", company="Acme", title="Analyst",
+                         description=no),
+                make_job(source_id="flag", company="Unknown Co", title="Data Analyst", description="Great team.",
+                         source_says_sponsorship=True),
+                make_job(source_id="flag-no", company="Unknown Co", title="Business Analyst", description=no,
+                         source_says_sponsorship=True),
+                make_job(source_id="yes", company="Unknown Co", title="Finance Analyst",
+                         description="Great team. Visa sponsorship is available for this role.")]
+        out = {j.source_id: j for j in pipeline.enrich(jobs, index, tiers, contacts.ContactBook({}), days=7)}
+        self.assertNotIn("uk-no", out)  # licensed sponsor, but the advert rules sponsorship out
+        self.assertNotIn("flag-no", out)
+        self.assertEqual((out["ie-no"].sponsorship, out["ie-no"].sponsorship_evidence), ("stamp_1g", no))
+        self.assertEqual((out["flag"].sponsorship, out["flag"].sponsorship_evidence), ("confirmed", ""))
+        self.assertEqual((out["yes"].sponsorship, out["yes"].sponsorship_evidence),
+                         ("confirmed", "Visa sponsorship is available for this role."))
+
+
 class EnrichNewCountriesTests(unittest.TestCase):
     def setUp(self):
         self.index = sponsors.SponsorIndex()
