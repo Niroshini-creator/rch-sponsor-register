@@ -98,8 +98,11 @@ def enrich(jobs: Iterable[Job], index: sponsors.SponsorIndex, tiers: TierRules,
 
         signal, evidence = sponsorship_evidence(f"{job.title}. {job.description}")
         entry = index.lookup(job.register_name or job.company, job.country)
-        if job.channel == "career_site" and (entry is None or sponsors.REGISTER_COUNTRY.get(entry.register) != job.country):
-            entry = index.lookup_prefix(job.register_name or job.company, job.country) or entry
+        # Career sites and named-employer searches know the employer, so a group prefix match is safe.
+        if (job.channel == "career_site" or job.register_name) and (
+                entry is None or sponsors.REGISTER_COUNTRY.get(entry.register) != job.country):
+            entry = (index.lookup_prefix(job.register_name or job.company, job.country)
+                     or (job.register_name and index.lookup_prefix(job.company, job.country)) or entry)
         if job.country == "IE":
             # Ireland: Stamp 1G graduates can take any job without a permit; keep every role the advert
             # doesn't close to them ("Stamp 4 required", "EU citizens only").

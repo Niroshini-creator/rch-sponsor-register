@@ -288,7 +288,7 @@ function directoryRows(f) {
 
 function renderDirectory() {
   const rows = directoryRows(readFilters());
-  const head = `<tr><th>Employer</th><th>Route</th><th>Size · tier</th><th>Sponsor record</th><th>Open roles</th><th>Find jobs</th></tr>`;
+  const head = `<tr><th>Employer</th><th>Route</th><th>Size · tier</th><th>Sponsor record</th><th>Open jobs (all roles)</th><th>Find more jobs</th></tr>`;
   const body = rows.map((e) => {
     const route = e.route === "OPT" ? "US OPT / STEM OPT" : "UK Graduate visa (PSW)";
     const record = e.on_register
@@ -297,14 +297,16 @@ function renderDirectory() {
         ? `<span class="tag" title="The official register could not be downloaded on this run">Not checked</span>`
         : `<span class="tag warn" title="Not matched by name on the register: check the employer's legal name">Not matched</span>`;
     const q = encodeURIComponent(`${e.name} ${e.route === "OPT" ? "new grad" : "graduate scheme"}`);
+    const where = encodeURIComponent(e.country === "US" ? "United States" : "United Kingdom");
     const links = [
       e.careers_url ? `<a href="${esc(safeUrl(e.careers_url))}" target="_blank" rel="noopener">Careers</a>` : "",
-      `<a href="https://www.linkedin.com/jobs/search/?keywords=${q}&f_E=1%2C2" target="_blank" rel="noopener">LinkedIn</a>`,
-      `<a href="https://www.google.com/search?q=${q}" target="_blank" rel="noopener">Web</a>`,
+      `<a href="https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(e.name)}&location=${where}" target="_blank" rel="noopener" title="Every vacancy at ${esc(e.name)} on LinkedIn">All jobs</a>`,
+      `<a href="https://www.linkedin.com/jobs/search/?keywords=${q}&f_E=1%2C2" target="_blank" rel="noopener" title="Graduate and entry-level roles on LinkedIn">Graduate</a>`,
+      `<a href="https://www.google.com/search?q=${encodeURIComponent(`${e.name} careers jobs`)}" target="_blank" rel="noopener">Web</a>`,
     ].filter(Boolean).join(" · ");
     const roles = e.open_roles
       ? `<button type="button" class="linkish" data-employer="${esc(e.name)}" data-country="${esc(e.country)}">${e.open_roles}${e.early_career_roles ? ` (${e.early_career_roles} entry-level)` : ""}</button>`
-      : "0";
+      : `<span class="muted" title="None in this feed: use All jobs or Careers to see the employer's vacancies">0 in feed</span>`;
     return `<tr><td><strong>${esc(e.name)}</strong> ${flag(e.country)}<br><span class="muted small">${esc(e.programme || e.sector)}${e.curated ? "" : " · found in feed"}</span></td>
       <td>${esc(route)}</td><td>${esc(e.size)} · Tier ${esc(e.tier)}</td><td>${record}</td><td>${roles}</td><td>${links}</td></tr>`;
   });

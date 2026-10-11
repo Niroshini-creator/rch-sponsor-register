@@ -17,11 +17,12 @@ import urllib.error
 import xml.etree.ElementTree as ET
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from typing import Callable, Iterator
 
 from . import http
 from .models import Job
-from .text import parse_date, strip_html
+from .text import normalise_company, parse_date, strip_html
 
 log = logging.getLogger("jobfeed")
 
@@ -67,8 +68,49 @@ EUROPE_AVIATION_QUERIES = ["airport operations", "aerospace engineer", "aeronaut
 # Early-career searches for UK Graduate visa (PSW) and US OPT holders.
 EARLY_CAREER_QUERIES = {"gb": ["graduate visa", "graduate scheme sponsorship"],
                         "us": ["opt", "h1b sponsorship", "new grad visa sponsorship"]}
-ADZUNA_MAX_CALLS = int(os.environ.get("ADZUNA_MAX_CALLS", "200"))
+ADZUNA_MAX_CALLS = int(os.environ.get("ADZUNA_MAX_CALLS", "260"))
 ADZUNA_PAUSE = float(os.environ.get("ADZUNA_PAUSE", "2.5"))  # free tier allows ~25 calls a minute
+
+
+EMPLOYERS_FILE = Path(__file__).resolve().parent.parent / "config" / "early_career_employers.json"
+EMPLOYER_PAGES = int(os.environ.get("ADZUNA_EMPLOYER_PAGES", "3"))
+
+
+@dataclasses.dataclass
+class EmployerSearch:
+    """Every vacancy at one graduate employer (config/early_career_employers.json), not only graduate roles."""
+    name: str
+    register_name: str
+    keys: tuple[str, ...]  # normalised company names an advert must carry to count as this employer
+
+    def owns(self, company: str) -> bool:
+        name = normalise_company(company)
+        return any(name == k or name.startswith(k + " ") for k in self.keys)
+
+    def claim(self, job: Job) -> Job | None:
+        """The advert relabelled to the employer's directory name, or None when another company posted it."""
+        if not self.owns(job.company):
+            return None
+        job.company, job.register_name = self.name, self.register_name
+        return job
+
+
+def _graduate_employers(path: Path = EMPLOYERS_FILE) -> list[tuple[EmployerSearch, dict]]:
+    """UK directory employers to search by name: (matcher, the row's search options)."""
+    rows = json.loads(path.read_text(encoding="utf-8")).get("employers", []) if path.exists() else []
+    out = []
+    for row in rows:
+        if row.get("country", "GB") != "GB":
+            continue
+        opts = row.get("search", {})
+        if opts is False:
+            opts = {"adzuna": False}
+        names = [row["name"], *opts.get("aliases", [])]
+        register = row.get("register_name") or row["name"]
+        register = register[0] if isinstance(register, list) else register
+        keys = tuple(dict.fromkeys(k for k in map(normalise_company, names) if k))
+        out.append((EmployerSearch(row["name"], register, keys), {**opts, "reed": row.get("reed", False)}))
+    return out
 
 
 class SkipSource(Exception):
@@ -80,8 +122,9 @@ def _cutoff(days: int) -> datetime:
 
 
 # --------------------------------------------------------------------------- Adzuna
-def _adzuna_searches() -> Iterator[tuple[str, dict, int]]:
-    """(country code, search params, max pages) in priority order, so the call budget covers the essentials first."""
+def _adzuna_searches() -> Iterator[tuple[str, dict, int] | tuple[str, dict, int, EmployerSearch]]:
+    """(country code, search params, max pages[, employer]) in priority order, so the call budget covers the
+    essentials first. Employer searches come last and keep only that employer's own adverts."""
     for code in ADZUNA_COUNTRIES:
         yield code, {"what_phrase": "visa sponsorship"}, 5 if code in ("gb", "us") else 2
     yield "gb", {"what_phrase": "visa sponsorship", "where": "Scotland"}, 3
@@ -103,6 +146,10 @@ def _adzuna_searches() -> Iterator[tuple[str, dict, int]]:
         yield "gb", {"what_and": query}, 2
     for code in ("nl", "pl", "es"):
         yield code, {"what_and": "relocation english"}, 1
+    for employer, opts in _graduate_employers():
+        if opts.get("adzuna", True):
+            query = {"what_and": opts["what_and"]} if opts.get("what_and") else {"company": employer.name}
+            yield "gb", query, EMPLOYER_PAGES, employer
 
 
 def adzuna(days: int) -> Iterator[Job]:
@@ -135,8 +182,9 @@ def _adzuna_live(days: int) -> Iterator[Job]:
         raise SkipSource("ADZUNA_APP_ID / ADZUNA_APP_KEY not set")
     cutoff = _cutoff(days)
     calls = 0
-    for code, query, pages in _adzuna_searches():
+    for code, query, pages, *employer in _adzuna_searches():
         iso = ADZUNA_COUNTRIES[code]
+        owner = employer[0] if employer else None
         for page in range(1, pages + 1):
             if calls >= ADZUNA_MAX_CALLS:
                 log.info("Adzuna call budget (%s) reached", ADZUNA_MAX_CALLS)
@@ -162,7 +210,7 @@ def _adzuna_live(days: int) -> Iterator[Job]:
                 if not posted or posted < cutoff:
                     continue
                 lo, hi = r.get("salary_min"), r.get("salary_max")
-                yield Job(
+                job = Job(
                     source="Adzuna", source_id=str(r.get("id")),
                     title=strip_html(r.get("title")),
                     company=(r.get("company") or {}).get("display_name", ""),
@@ -171,6 +219,8 @@ def _adzuna_live(days: int) -> Iterator[Job]:
                     description=strip_html(r.get("description")),
                     salary=_salary(lo, hi), contract=r.get("contract_time") or "",
                 )
+                if owner is None or owner.claim(job):
+                    yield job
             if len(results) < 50:
                 break
 
@@ -186,7 +236,10 @@ def reed(days: int) -> Iterator[Job]:
     queries += [(q, 200) for q in EARLY_CAREER_QUERIES["gb"]]
     queries += [(q, 100) for q in AVIATION_QUERIES]
     queries += [(q, 100) for q in MECHANICAL_QUERIES]
+    owners = {employer.name: employer for employer, opts in _graduate_employers() if opts.get("reed")}
+    queries += [(name, 200) for name in owners]
     for query, limit in queries:
+        owner = owners.get(query)
         for skip in range(0, limit, 100):
             data = http.get_json("https://www.reed.co.uk/api/1.0/search",
                                  params={"keywords": query, "resultsToTake": 100, "resultsToSkip": skip,
@@ -197,7 +250,7 @@ def reed(days: int) -> Iterator[Job]:
                 posted = parse_date(r.get("date"))
                 if not posted or posted < cutoff:
                     continue
-                yield Job(
+                job = Job(
                     source="Reed", source_id=str(r.get("jobId")),
                     title=r.get("jobTitle", ""), company=r.get("employerName", ""),
                     location=r.get("locationName", ""), country="GB",
@@ -205,6 +258,8 @@ def reed(days: int) -> Iterator[Job]:
                     description=strip_html(r.get("jobDescription")),
                     salary=_salary(r.get("minimumSalary"), r.get("maximumSalary")),
                 )
+                if owner is None or owner.claim(job):
+                    yield job
             if len(results) < 100:
                 break
 
