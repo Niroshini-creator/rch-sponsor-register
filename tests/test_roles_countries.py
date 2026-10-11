@@ -365,6 +365,39 @@ class NewSourceTests(unittest.TestCase):
         self.assertEqual(get.call_count, 3)
         self.assertNotIn("ie", sources.ADZUNA_COUNTRIES)  # Adzuna has no Irish site
 
+    def test_graduate_employer_searches(self):
+        employers = dict((e.name, (e, o)) for e, o in sources._graduate_employers())
+        lloyds, opts = employers["Lloyds Banking Group"]
+        self.assertTrue(opts["reed"])
+        self.assertTrue(lloyds.owns("Lloyds Bank plc"))
+        self.assertFalse(lloyds.owns("Lloyds Pharmacy Clinical Homecare"))
+        self.assertFalse(employers["GSK"][1].get("adzuna", True))  # has its own careers-site connector
+        now = datetime.now(timezone.utc).isoformat()
+
+        def result(company):
+            return {"id": company, "title": "Analyst", "company": {"display_name": company},
+                    "location": {"display_name": "London"}, "redirect_url": "https://x/" + company, "created": now}
+        # Only the employer search for Barclays is answered; another company's advert in it is dropped.
+        barclays = {"results": [result("Barclays Bank UK"), result("Robert Barclay Academy")]}
+
+        def fake(url, params):
+            return barclays if params.get("company") == "Barclays" else {"results": []}
+        with mock.patch.dict("os.environ", {"ADZUNA_APP_ID": "a", "ADZUNA_APP_KEY": "b"}), \
+             mock.patch.object(sources, "ADZUNA_PAUSE", 0), mock.patch.object(sources.http, "get_json", side_effect=fake):
+            jobs = list(sources.adzuna(7))
+        self.assertEqual([(j.company, j.register_name) for j in jobs],
+                         [("Barclays", "Barclays Execution Services Limited")])
+
+    def test_named_employer_matches_register_by_prefix(self):
+        index = sponsors.SponsorIndex()
+        index.add(sponsors.SponsorEntry("Deloitte LLP", "UK Home Office", routes={"Skilled Worker"}))
+        tiers = classify.TierRules.load(CONFIG / "company_tiers.json")
+        named = make_job(source="Adzuna", source_id="d", company="Deloitte", register_name="Deloitte", title="Tax Manager")
+        anon = make_job(source="Adzuna", source_id="a", company="Deloitte Digital Recruiters", title="Tax Senior")
+        out = {j.source_id: j for j in pipeline.enrich([named, anon], index, tiers, contacts.ContactBook({}), days=7)}
+        self.assertEqual(out["d"].sponsorship, "licensed_sponsor")
+        self.assertNotIn("a", out)  # an unnamed board advert still needs an exact register match
+
     def test_teaching_vacancies_salary(self):
         self.assertEqual(sources._schema_salary(
             {"currency": "GBP", "value": {"minValue": 30000, "maxValue": 40000, "unitText": "YEAR"}}), "£30,000 – 40,000 a year")

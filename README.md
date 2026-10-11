@@ -126,6 +126,12 @@ The *PSW & OPT employers* tab lists employers for UK Graduate visa and US OPT ho
 * **Found in feed**: any employer, of any size, with an entry-level role that is PSW / OPT friendly this week. This
   is where most small and mid-size employers come from.
 
+Every vacancy at the curated UK employers is fetched, not only graduate roles: Adzuna is searched by company name
+(`search` in the config sets another search word or the names Adzuna lists the employer under; `"search": false`
+skips employers that have their own careers-site connector), and Reed too where `"reed": true`. Only adverts posted
+under the employer's own name are kept. Clicking an employer's *Open jobs* count lists all of its jobs; the *All jobs*
+link opens its full LinkedIn listing.
+
 ## Hiring manager details
 
 The board shows a contact only if its origin is known:
@@ -195,7 +201,8 @@ To add an employer, open its careers page, look at the address of a job link, an
 | [Arbeitnow API](https://www.arbeitnow.com/api) | Germany / EU, visa-sponsorship filter (job board) | none |
 
 Adzuna's free tier allows about 25 calls a minute, so the connector pauses between calls (`ADZUNA_PAUSE`, default 2.5 s)
-and stops at `ADZUNA_MAX_CALLS` (default 200), running the most important searches first.
+and stops at `ADZUNA_MAX_CALLS` (default 260), running the most important searches first (the per-employer
+searches for the directory come last, up to `ADZUNA_EMPLOYER_PAGES` pages of 50 each).
 
 University boards and NHS Jobs read up to `ACADEMIC_MAX_ADVERTS` (default 150 per board) and `NHS_MAX_ADVERTS` (default 300)
 advert pages per run, pausing `ACADEMIC_PAUSE` seconds (default 0.3) between them.
