@@ -8,7 +8,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from unittest import mock
 
-from jobfeed import classify, contacts, pipeline, sources, sponsors
+from jobfeed import classify, contacts, pipeline, salary, sources, sponsors
 from jobfeed.models import Job
 
 CONFIG = Path(__file__).resolve().parent.parent / "config"
@@ -180,6 +180,57 @@ class NoSponsorshipWordingTests(unittest.TestCase):
         self.assertEqual((out["flag"].sponsorship, out["flag"].sponsorship_evidence), ("confirmed", ""))
         self.assertEqual((out["yes"].sponsorship, out["yes"].sponsorship_evidence),
                          ("confirmed", "Visa sponsorship is available for this role."))
+
+
+class SalaryThresholdTests(unittest.TestCase):
+    def test_annual_range(self):
+        cases = {
+            "£46,049 – 56,535 a year": (46049, 56535),
+            "£39959.00 to £48117.00": (39959, 48117),
+            "32,073 – 39,043": (32073, 39043),
+            "£35,602.00 - £52,490.00 Annually (FTE)": (35602, 52490),
+            "£45k - £55k": (45000, 55000),
+            "£13.46": (13.46 * 1950, 13.46 * 1950),
+            "£12.71 - £12.71 Hourly": (12.71 * 1950, 12.71 * 1950),
+            "£3,500 per month": (42000, 42000),
+            "£3,752.00 - £3,811.00 Annually (Actual)": (3752, 3811),
+        }
+        for text, expected in cases.items():
+            with self.subTest(text=text):
+                self.assertEqual(tuple(round(x) for x in salary.annual_range(text, "GB")), tuple(round(x) for x in expected))
+        for text in ("Negotiable", "MPS/UPS", "MPS / UPS plus TLR 2B (£6,410)", "1,950", "£500 per day", "$90,000"):
+            with self.subTest(text=text):
+                self.assertIsNone(salary.annual_range(text, "GB"))
+
+    def test_check(self):
+        def check(**kw):
+            return salary.salary_check(make_job(**kw))[0]
+        self.assertEqual(check(salary="£45,000 - £50,000"), "meets")
+        self.assertEqual(check(salary="£38,000 - £45,000"), "partial")
+        self.assertEqual(check(salary="£34,615"), "reduced")  # new-entrant / PhD rate only
+        self.assertEqual(check(salary="£25,272"), "below")
+        self.assertEqual(check(salary="Competitive"), "")
+        # Nurses and teachers on national pay scales: £25,000 floor. Their assistants are not.
+        self.assertEqual(check(title="Staff Nurse", domain="Healthcare & Clinical", salary="£31,049 - £37,796"), "meets")
+        self.assertEqual(check(title="Teacher of Mathematics", salary="£32,916 - £45,352"), "meets")
+        self.assertEqual(check(title="Teaching Assistant", salary="£24,000"), "below")
+        self.assertEqual(check(title="Dental Nurse", domain="Healthcare & Clinical", salary="£28,392"), "below")
+        self.assertEqual(check(title="HCA - GP Surgery", sector="NHS & Healthcare", salary="£13.00 to £15.00"), "below")
+        self.assertEqual(check(title="Management Consultant", salary="£31,000"), "below")
+        self.assertEqual(check(country="IE", salary="€38,000 p.a."), "meets")
+        self.assertEqual(check(country="IE", salary="€30,000"), "below")
+        self.assertEqual(check(country="DE", salary="€30,000"), "")
+
+    def test_pipeline_sets_check(self):
+        index = sponsors.SponsorIndex()
+        index.add(sponsors.SponsorEntry("Acme Ltd", "UK Home Office", routes={"Skilled Worker"}))
+        tiers = classify.TierRules.load(CONFIG / "company_tiers.json")
+        jobs = [make_job(source_id="low", title="Process Operator", salary="22,588"),
+                make_job(source_id="ok", title="Data Engineer", salary="£55,000")]
+        out = {j.source_id: j for j in pipeline.enrich(jobs, index, tiers, contacts.ContactBook({}), days=7)}
+        self.assertEqual((out["low"].salary_check, out["low"].salary_annual, out["low"].salary_threshold),
+                         ("below", 22588, 41700))
+        self.assertEqual(out["ok"].salary_check, "meets")
 
 
 class EnrichNewCountriesTests(unittest.TestCase):
