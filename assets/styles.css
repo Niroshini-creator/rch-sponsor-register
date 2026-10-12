@@ -147,3 +147,7 @@ dialog { border: 1px solid var(--border); border-radius: var(--radius); backgrou
 dialog::backdrop { background: rgb(0 0 0 / .4); }
 dialog dt { font-weight: 700; margin-top: 8px; }
 dialog dd { margin: 2px 0 0; color: var(--muted); }
+
+.apply { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; text-align: right; }
+.apply .small { font-size: .82rem; }
+@media (max-width: 640px) { .apply { align-items: stretch; text-align: left; } }

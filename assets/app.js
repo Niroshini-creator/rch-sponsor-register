@@ -220,6 +220,35 @@ function payTag(j) {
   }[j.salary_check] || `<span class="tag" title="The advert does not give a yearly salary; a sponsored offer must pay at least ${min}${reduced ? " (£33,400 for new entrants and PhD jobs)" : ""}">Check pay ≥ ${min}</span>`;
 }
 
+// The registrable domain of a careers site ("search.jobs.barclays" -> "jobs.barclays", "x.co.uk" -> "x.co.uk").
+function siteDomain(url) {
+  try {
+    const parts = new URL(url).hostname.replace(/^www\./, "").split(".");
+    const keep = /^(co|ac|org|gov|com|net)$/.test(parts[parts.length - 2]) && parts.length > 2 ? 3 : 2;
+    return parts.slice(-keep).join(".");
+  } catch { return ""; }
+}
+
+function applyHtml(j, label) {
+  const board = `<a class="btn" href="${esc(safeUrl(j.url))}" target="_blank" rel="noopener">${esc(label)}</a>`;
+  if (j.channel !== "aggregator") return board;
+  // Job-board links (Adzuna especially) can be closed to visitors outside the board's country: offer the employer's site.
+  const search = (q) => `https://www.google.com/search?q=${encodeURIComponent(q)}`;
+  if (j.employer_site) {
+    const domain = siteDomain(j.employer_site);
+    return `<div class="apply">
+      <a class="btn" href="${esc(search(`site:${domain} "${j.title}"`))}" target="_blank" rel="noopener"
+        title="Finds this vacancy on ${esc(j.company)}'s own website">Find on ${esc(j.company)} site</a>
+      <span class="small"><a href="${esc(safeUrl(j.employer_site))}" target="_blank" rel="noopener">${esc(j.company)} careers page</a> ·
+        <a href="${esc(safeUrl(j.url))}" target="_blank" rel="noopener" title="Job-board link; may only open in the board's country">advert via ${esc(j.source)}</a></span>
+    </div>`;
+  }
+  return `<div class="apply">${board}
+    <span class="small"><a href="${esc(search(`"${j.title}" ${j.company} careers`))}" target="_blank" rel="noopener"
+      title="If the job-board link doesn't open in your country, find the vacancy on the employer's own website">Find on employer's site</a></span>
+  </div>`;
+}
+
 function jobHtml(j) {
   const sponsorTag = {
     confirmed: `<span class="tag ok" title="The advert itself states that visa sponsorship is available">Sponsorship offered</span>`,
@@ -263,7 +292,7 @@ function jobHtml(j) {
     ${j.description ? `<p class="desc">${esc(j.description)}</p>` : ""}
     <div class="job-foot">
       <div class="contact-block"><h3>Hiring contact</h3>${contacts}</div>
-      <a class="btn" href="${esc(safeUrl(j.url))}" target="_blank" rel="noopener">${esc(applyLabel)}</a>
+      ${applyHtml(j, applyLabel)}
     </div>
   </li>`;
 }
@@ -538,6 +567,7 @@ async function main() {
     low_sponsorship: !!j.low_sponsorship,
     salary_check: j.salary_check || "",
     salary_threshold: j.salary_threshold || 0,
+    employer_site: j.employer_site || "",
     _posted: new Date(j.posted_at),
     _company: normCompany(j.company),
     _haystack: [j.title, j.company, j.location, j.region, j.sector, j.domain, j.role, countryName(j.country), j.description,

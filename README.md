@@ -131,6 +131,9 @@ Every vacancy at the curated UK employers is fetched, not only graduate roles: A
 skips employers that have their own careers-site connector), and Reed too where `"reed": true`. Only adverts posted
 under the employer's own name are kept. Clicking an employer's *Open jobs* count lists all of its jobs; the *All jobs*
 link opens its full LinkedIn listing.
+Each directory employer has a `careers_url`. Job-board adverts at those employers (Adzuna links only open from the
+UK) get a **Find on <employer> site** button, which searches the employer's own website for the job title, plus a
+link to the careers page; other job-board adverts get a *Find on employer's site* search link.
 
 ## Hiring manager details
 

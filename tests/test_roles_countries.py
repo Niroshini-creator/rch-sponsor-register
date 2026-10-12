@@ -404,6 +404,16 @@ class NewSourceTests(unittest.TestCase):
         self.assertEqual(out["d"].sponsorship, "licensed_sponsor")
         self.assertNotIn("a", out)  # an unnamed board advert still needs an exact register match
 
+    def test_board_adverts_link_employer_site(self):
+        board = make_job(source="Adzuna", source_id="b", company="Barclays", channel="aggregator")
+        other = make_job(source="Adzuna", source_id="o", company="Tiny Startup Ltd", channel="aggregator")
+        own = make_job(source="EY careers", source_id="e", company="EY", channel="career_site")
+        pipeline.link_employer_sites([board, other, own], CONFIG / "early_career_employers.json")
+        self.assertEqual(board.employer_site, "https://search.jobs.barclays/")
+        self.assertEqual((other.employer_site, own.employer_site), ("", ""))
+        rows = json.loads((CONFIG / "early_career_employers.json").read_text(encoding="utf-8"))["employers"]
+        self.assertTrue(all(r.get("careers_url", "").startswith("https://") for r in rows))
+
     def test_teaching_vacancies_salary(self):
         self.assertEqual(sources._schema_salary(
             {"currency": "GBP", "value": {"minValue": 30000, "maxValue": 40000, "unitText": "YEAR"}}), "£30,000 – 40,000 a year")
