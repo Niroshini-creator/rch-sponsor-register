@@ -110,6 +110,8 @@ def enrich(jobs: Iterable[Job], index: sponsors.SponsorIndex, tiers: TierRules,
                 continue
             if signal == "positive" or (job.source_says_sponsorship and signal != "negative"):
                 job.sponsorship = "confirmed"
+            elif signal == "possible":
+                job.sponsorship = "possible"
             elif signal != "negative" and entry and sponsors.REGISTER_COUNTRY.get(entry.register) == "IE":
                 # Issued employment permits this year or last: Ireland's record of who sponsors.
                 job.sponsorship = "licensed_sponsor"
@@ -117,13 +119,17 @@ def enrich(jobs: Iterable[Job], index: sponsors.SponsorIndex, tiers: TierRules,
                 # No sponsorship evidence, or the advert rules sponsorship out: shown only when Stamp 1G is ticked.
                 job.sponsorship = "stamp_1g"
         elif signal == "negative":
-            # No sponsorship, but the advert welcomes Graduate visa (PSW) / OPT holders, who need none.
-            if classify_early_career(job) != "stated":
-                continue
-            job.sponsorship = "graduate_route"
-            job.early_career = "stated"
+            if classify_early_career(job) == "stated":
+                # No sponsorship, but the advert welcomes Graduate visa (PSW) / OPT holders, who need none.
+                job.sponsorship = "graduate_route"
+                job.early_career = "stated"
+            else:
+                # Kept and labelled with the advert's words, so candidates see why not to apply.
+                job.sponsorship = "not_sponsored"
         elif signal == "positive" or job.source_says_sponsorship:
             job.sponsorship = "confirmed"
+        elif signal == "possible":
+            job.sponsorship = "possible"
         elif entry and sponsors.REGISTER_COUNTRY.get(entry.register) == job.country:
             # Employer holds a sponsor licence in the job's country; the advert is silent.
             job.sponsorship = "licensed_sponsor"
@@ -132,9 +138,9 @@ def enrich(jobs: Iterable[Job], index: sponsors.SponsorIndex, tiers: TierRules,
         else:
             continue
         # Quote the advert's own words when they decide the label, so candidates can check it.
-        if job.sponsorship == "confirmed" and signal == "positive":
+        if (job.sponsorship, signal) in (("confirmed", "positive"), ("possible", "possible")):
             job.sponsorship_evidence = evidence
-        elif job.sponsorship in ("graduate_route", "stamp_1g") and signal == "negative":
+        elif job.sponsorship in ("graduate_route", "stamp_1g", "not_sponsored") and signal == "negative":
             job.sponsorship_evidence = evidence
         if entry:
             job.sponsor_register = entry.register
@@ -145,7 +151,7 @@ def enrich(jobs: Iterable[Job], index: sponsors.SponsorIndex, tiers: TierRules,
         job.role = classify_role(job)
         job.aviation = classify_aviation(job)
         job.low_sponsorship = is_low_sponsorship(job)
-        if job.sponsorship not in ("graduate_route", "stamp_1g"):
+        if job.sponsorship not in ("graduate_route", "stamp_1g", "not_sponsored"):
             # Graduate visa / Stamp 1G holders need no sponsorship, so no salary minimum applies to them.
             job.salary_check, job.salary_annual, job.salary_threshold = salary_check(job)
         job.region = classify_region(job)
@@ -167,7 +173,9 @@ def enrich(jobs: Iterable[Job], index: sponsors.SponsorIndex, tiers: TierRules,
 
 
 def _rank(job: Job) -> tuple:
-    return (_CHANNEL_RANK.get(job.channel, 0), bool(job.contacts), job.sponsorship == "confirmed", job.posted_at)
+    # A copy that rules sponsorship out never hides one that offers it (two boards, two wordings).
+    return (job.sponsorship != "not_sponsored", _CHANNEL_RANK.get(job.channel, 0), bool(job.contacts),
+            job.sponsorship == "confirmed", job.posted_at)
 
 
 def run(days: int, out_path: Path) -> dict:

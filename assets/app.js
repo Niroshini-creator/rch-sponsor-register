@@ -216,7 +216,7 @@ function payTag(j) {
     meets: `<span class="tag ok" title="Advertised pay is at or above the ${min} visa minimum">Pay meets visa minimum</span>`,
     partial: `<span class="tag warn" title="The top of the range (${pay}) reaches the ${min} minimum; the offer must be at least ${min}">Pay meets minimum at top of range</span>`,
     reduced: `<span class="tag warn" title="Pay (up to ${pay}) is under ${min} but meets the £33,400 rate for new entrants (under 26, recent graduates, switching from the Graduate visa), PhD-level jobs and Immigration Salary List roles">Pay meets new-entrant rate only</span>`,
-    below: `<span class="tag warn" title="Pay (up to ${pay}) is under the ${min} minimum${reduced ? " and the £33,400 new-entrant rate" : ""}: it cannot be sponsored at this salary">Pay below visa minimum</span>`,
+    below: `<span class="tag no" title="Pay (up to ${pay}) is under the ${min} minimum${reduced ? " and the £33,400 new-entrant rate" : ""}: it cannot be sponsored at this salary">Not sponsorable at this pay (below ${min})</span>`,
   }[j.salary_check] || `<span class="tag" title="The advert does not give a yearly salary; a sponsored offer must pay at least ${min}${reduced ? " (£33,400 for new entrants and PhD jobs)" : ""}">Check pay ≥ ${min}</span>`;
 }
 
@@ -252,6 +252,8 @@ function applyHtml(j, label) {
 function jobHtml(j) {
   const sponsorTag = {
     confirmed: `<span class="tag ok" title="The advert itself states that visa sponsorship is available">Sponsorship offered</span>`,
+    possible: `<span class="tag warn" title="The advert says sponsorship may be possible (for example 'may be eligible' or 'will be considered'): ask the employer before applying">May be sponsored</span>`,
+    not_sponsored: `<span class="tag no" title="The advert says sponsorship is not available for this role">Not sponsored</span>`,
     licensed_sponsor: `<span class="tag warn" title="Employer is on the official sponsor register but the advert does not mention sponsorship — ask before applying">${{ "US H-1B": "H-1B sponsor", "IE employment permits": "Permit employer" }[j.sponsor_register] || "Licensed sponsor"}</span>`,
     employer_visa: `<span class="tag ok" title="UAE employers sponsor every foreign hire's residence and work visa">Employer visa (UAE)</span>`,
     graduate_route: `<span class="tag warn" title="No sponsorship, but Graduate visa (PSW) / OPT holders are welcome">No sponsorship · ${j.country === "US" ? "OPT" : "Graduate visa"} OK</span>`,
@@ -288,7 +290,7 @@ function jobHtml(j) {
     <p class="meta">${flag(j.country)} ${esc(j.location || countryName(j.country))}${j.region && !(j.location || "").includes(j.region) ? ` · ${esc(j.region)}` : ""}
       ${j.salary ? ` · ${esc(j.salary)}` : ""}${j.contract ? ` · ${esc(j.contract)}` : ""}</p>
     <p class="tags">${channelTag}${sponsorTag}${earlyTag(j)}${englishTag}${register}${j.aviation ? `<span class="tag direct" title="Aviation &amp; operations job family">✈ ${esc(j.aviation)}</span>` : ""}${j.low_sponsorship ? `<span class="tag warn" title="Front-line role that rarely meets sponsorship skill and salary levels">Rarely sponsored</span>` : ""}${payTag(j)}<span class="tag">${esc(j.role !== "Other" ? j.role : j.domain)}</span><span class="tag">${esc(j.sector)}</span></p>
-    ${j.sponsorship_evidence ? `<p class="evidence" title="Quoted from the advert">From the advert: “${esc(j.sponsorship_evidence)}”</p>` : ""}
+    ${j.sponsorship_evidence ? `<p class="evidence${["not_sponsored", "graduate_route", "stamp_1g"].includes(j.sponsorship) ? " no" : j.sponsorship === "possible" ? " maybe" : ""}" title="Quoted from the advert">From the advert: “${esc(j.sponsorship_evidence)}”</p>` : ""}
     ${j.description ? `<p class="desc">${esc(j.description)}</p>` : ""}
     <div class="job-foot">
       <div class="contact-block"><h3>Hiring contact</h3>${contacts}</div>

@@ -33,13 +33,15 @@ consultancies are removed.**
    agency"). Reed is queried for direct-employer adverts only. If a real employer is caught by mistake, add it
    to `never_agency`.
 3. **Sponsorship check.** A job is kept only if one of these is true:
-   * **Sponsorship offered**: the advert says so ("visa sponsorship available", "Skilled Worker
-     sponsorship will be considered", "EU Blue Card", NHS Jobs' standard sponsorship wording), or Teaching
-     Vacancies' official visa field is set. The job card quotes the advert's sentence. A sentence that is itself
+   * **Sponsorship offered**: the advert says so ("visa sponsorship available", "we are able to offer Skilled
+     Worker sponsorship", "EU Blue Card"), or Teaching Vacancies' official visa field is set. The job card quotes the advert's sentence. A sentence that is itself
      negated ("we cannot offer a certificate of sponsorship", "sponsorship is available for nurses, but this
      role is not eligible") is not an offer, and any statement that sponsorship is unavailable overrides
      everything else, including the employer's register entry. Job boards' own "visa sponsorship" flags
      (Arbeitnow) are not trusted.
+   * **May be sponsored**: the offer is hedged by the advert itself ("this post may be eligible for sponsorship",
+     "sponsorship may be available for certain positions", NHS Jobs' standard "applications from job seekers who
+     require sponsorship ... will be considered"). Quoted on the card; candidates should ask before applying.
    * **Licensed sponsor**: the advert doesn't mention sponsorship, but the employer is on the official
      register for that country: the [UK Home Office register of licensed sponsors](https://www.gov.uk/government/publications/register-of-licensed-sponsors-workers)
      or the [Dutch IND register of recognised sponsors](https://ind.nl/en/public-register-recognised-sponsors/public-register-regular-labour-and-highly-skilled-migrants),
@@ -54,10 +56,13 @@ consultancies are removed.**
    * **Ireland: open to Stamp 1G** (hidden by default): an Irish job with no sponsorship evidence that doesn't rule
      Stamp 1G holders out.
 
-   The board opens on the first three (sponsorship evidence); the last two are for candidates who don't need it.
+   * **Not sponsored** (hidden by default): any other advert that rules sponsorship out ("unable to sponsor",
+     "right to work without sponsorship", "must be a US citizen"). Kept and labelled, with the advert's sentence
+     quoted, so candidates can see why not to apply.
 
-   Any other advert that rules sponsorship out ("unable to sponsor", "right to work without sponsorship",
-   "must be a US citizen") is dropped.
+   The board opens on the first four (sponsorship evidence); the rest are for candidates who don't need it, or to
+   see what was ruled out. Jobs whose advertised pay is below the visa minimum are labelled *Not sponsorable at
+   this pay* and hidden by default (see Minimum salary).
 4. **Classified**:
    * **Sector** (employer type): NHS & Healthcare, University & Research Institute, School & College,
      Public Sector & Government, Charity & Non-profit, Private Sector.
