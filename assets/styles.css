@@ -8,6 +8,7 @@
   --accent-text: #ffffff;
   --ok-bg: #e3f4e8;  --ok-text: #1d6b35;
   --warn-bg: #fdf1dc; --warn-text: #8a5300;
+  --no-bg: #fbe4e4; --no-text: #9b1c1c;
   --tag-bg: #eef1f5;
   --direct-bg: #e4ecfb; --direct-text: #1f4f99;
   --t1: #6b3fd4; --t2: #1f7a8c; --t3: #6b7280;
@@ -20,6 +21,7 @@
     --bg: #111418; --surface: #1a1e24; --text: #e7eaee; --muted: #9aa4b1; --border: #2d333b;
     --accent: #6ea3f5; --accent-text: #0c1320;
     --ok-bg: #173522; --ok-text: #8fdca6; --warn-bg: #3a2a0f; --warn-text: #f3c77a;
+    --no-bg: #3d1717; --no-text: #f2a0a0;
     --tag-bg: #252b33; --direct-bg: #1b2a44; --direct-text: #9cc0ff; --t1: #b69cff; --t2: #6fcadb; --t3: #a3abb6;
     color-scheme: dark;
   }
@@ -28,6 +30,7 @@
     --bg: #111418; --surface: #1a1e24; --text: #e7eaee; --muted: #9aa4b1; --border: #2d333b;
     --accent: #6ea3f5; --accent-text: #0c1320;
     --ok-bg: #173522; --ok-text: #8fdca6; --warn-bg: #3a2a0f; --warn-text: #f3c77a;
+    --no-bg: #3d1717; --no-text: #f2a0a0;
     --tag-bg: #252b33; --direct-bg: #1b2a44; --direct-text: #9cc0ff; --t1: #b69cff; --t2: #6fcadb; --t3: #a3abb6;
     color-scheme: dark;
 }
@@ -125,8 +128,11 @@ fieldset label { display: flex; gap: 6px; align-items: center; font-size: .9rem;
 .tag.ok { background: var(--ok-bg); color: var(--ok-text); }
 .tag.direct { background: var(--direct-bg); color: var(--direct-text); }
 .tag.warn { background: var(--warn-bg); color: var(--warn-text); }
+.tag.no { background: var(--no-bg); color: var(--no-text); }
 .desc { color: var(--muted); font-size: .9rem; overflow-wrap: anywhere; }
 .evidence { font-size: .88rem; font-style: italic; border-left: 3px solid var(--ok-text); padding-left: 8px; margin: 6px 0; overflow-wrap: anywhere; }
+.evidence.maybe { border-left-color: var(--warn-text); }
+.evidence.no { border-left-color: var(--no-text); }
 .job-foot { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; margin-top: 10px;
   border-top: 1px solid var(--border); padding-top: 10px; flex-wrap: wrap; }
 .contact-block h3 { font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 0 0 4px; }

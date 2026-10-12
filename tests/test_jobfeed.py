@@ -36,10 +36,18 @@ class SponsorshipSignalTests(unittest.TestCase):
     def test_positive(self):
         for text in ("Visa sponsorship is available for this role.",
                      "We are able to offer Skilled Worker sponsorship.",
-                     "Applications from job seekers who require current Skilled worker sponsorship to work "
-                     "in the UK are welcome and will be considered alongside all other applications.",
                      "Relocation and visa support provided. EU Blue Card eligible."):
             self.assertEqual(classify.sponsorship_signal(text), "positive", text)
+
+    def test_possible(self):
+        for text in ("Applications from job seekers who require current Skilled worker sponsorship to work "
+                     "in the UK are welcome and will be considered alongside all other applications.",
+                     "This post may be eligible for sponsorship under the Skilled Worker route.",
+                     "Visa sponsorship may be available for certain positions and locations."):
+            self.assertEqual(classify.sponsorship_signal(text), "possible", text)
+        # A plain offer anywhere in the advert wins over a hedged one.
+        self.assertEqual(classify.sponsorship_signal(
+            "This post may be eligible for sponsorship. Visa sponsorship is available for this role."), "positive")
 
     def test_negative_beats_positive_words(self):
         for text in ("We are unable to offer visa sponsorship.",
@@ -143,7 +151,7 @@ class EnrichTests(unittest.TestCase):
     def test_rules(self):
         jobs = [
             make_job(source_id="old", posted_at=NOW - timedelta(days=8), description="Visa sponsorship available"),
-            make_job(source_id="neg", description="We cannot offer sponsorship"),
+            make_job(source_id="neg", title="Clerk", description="We cannot offer sponsorship"),
             make_job(source_id="licensed", description="Great role"),
             make_job(source_id="silent-unlicensed", company="Other Co", title="Analyst", description="Great role"),
             make_job(source_id="confirmed", company="Other Co", title="Nurse",
@@ -155,7 +163,9 @@ class EnrichTests(unittest.TestCase):
             make_job(source_id="canada", country="CA", title="Chemist", description="Visa sponsorship available"),
         ]
         out = {j.source_id: j for j in self.run_enrich(jobs)}
-        self.assertEqual(set(out), {"licensed", "confirmed", "us", "dubai"})
+        self.assertEqual(set(out), {"neg", "licensed", "confirmed", "us", "dubai"})
+        self.assertEqual((out["neg"].sponsorship, out["neg"].sponsorship_evidence),
+                         ("not_sponsored", "We cannot offer sponsorship"))
         self.assertEqual((out["dubai"].sponsorship, out["dubai"].region, out["dubai"].role),
                          ("employer_visa", "Dubai", "Finance & Accounting"))
         self.assertEqual(out["licensed"].sponsorship, "licensed_sponsor")

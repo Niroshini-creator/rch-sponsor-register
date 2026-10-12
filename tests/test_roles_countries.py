@@ -154,7 +154,7 @@ class NoSponsorshipWordingTests(unittest.TestCase):
     def test_offer_kept_with_quote(self):
         nhs = ("Applications from job seekers who require current Skilled worker sponsorship to work in the UK "
                "are welcome and will be considered alongside all other applications.")
-        self.assertEqual(classify.sponsorship_evidence(f"Great team. {nhs} Apply now."), ("positive", nhs))
+        self.assertEqual(classify.sponsorship_evidence(f"Great team. {nhs} Apply now."), ("possible", nhs))
         self.assertEqual(classify.sponsorship_signal("We offer visa sponsorship and relocation, no matter where "
                                                      "you are."), "positive")
         # A long advert scraped without full stops: the quote is taken around the sponsorship words.
@@ -180,8 +180,10 @@ class NoSponsorshipWordingTests(unittest.TestCase):
                 make_job(source_id="yes", company="Unknown Co", title="Finance Analyst",
                          description="Great team. Visa sponsorship is available for this role.")]
         out = {j.source_id: j for j in pipeline.enrich(jobs, index, tiers, contacts.ContactBook({}), days=7)}
-        self.assertNotIn("uk-no", out)  # licensed sponsor, but the advert rules sponsorship out
-        self.assertNotIn("flag-no", out)
+        # Licensed sponsor / source flag, but the advert rules sponsorship out: shown as "Not sponsored", quoted.
+        self.assertEqual((out["uk-no"].sponsorship, out["uk-no"].sponsorship_evidence), ("not_sponsored", no))
+        self.assertEqual(out["flag-no"].sponsorship, "not_sponsored")
+        self.assertEqual(out["uk-no"].salary_check, "")  # no salary minimum for a job that won't be sponsored
         self.assertEqual((out["ie-no"].sponsorship, out["ie-no"].sponsorship_evidence), ("stamp_1g", no))
         self.assertEqual((out["flag"].sponsorship, out["flag"].sponsorship_evidence), ("confirmed", ""))
         self.assertEqual((out["yes"].sponsorship, out["yes"].sponsorship_evidence),
@@ -260,7 +262,8 @@ class EnrichNewCountriesTests(unittest.TestCase):
                      description="We help you with your work permit. You will work in English with our team."),
             make_job(source_id="scot", location="Edinburgh", title="Business Analyst"),
         ])
-        self.assertEqual(set(out), {"us-h1b", "psw-only", "se", "scot"})
+        self.assertEqual(set(out), {"us-h1b", "psw-only", "no", "se", "scot"})
+        self.assertEqual(out["no"].sponsorship, "not_sponsored")
         self.assertEqual((out["us-h1b"].sponsorship, out["us-h1b"].sponsor_register), ("licensed_sponsor", "US H-1B"))
         self.assertEqual((out["us-h1b"].role, out["us-h1b"].early_career, out["us-h1b"].english), ("Data Analyst", "likely", True))
         self.assertEqual((out["psw-only"].sponsorship, out["psw-only"].early_career), ("graduate_route", "stated"))

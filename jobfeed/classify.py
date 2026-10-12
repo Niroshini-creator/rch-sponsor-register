@@ -59,6 +59,11 @@ _STRONG_NEGATIVE = [re.compile(p, re.I) for p in (
 # sponsorship", "sponsorship is available for nurses, but this role is not eligible") is not an offer.
 _OFFER_NEGATED_RE = re.compile(
     r"\b(not|unable|cannot|can ?not|unfortunately|ineligible|unavailable)\b|n't\b", re.I)
+# An offer hedged by the advert itself ("this post may be eligible for sponsorship", "applications from
+# candidates who require sponsorship will be considered"): sponsorship is possible, not promised.
+_HEDGE_RE = re.compile(
+    r"\b(may|might|could|possibl[ey]|potential(ly)?|case[- ]by[- ]case|in some cases|certain (roles|positions|"
+    r"locations)|depend(s|ing|ent)?|likelihood|considered|consider|where eligible|if eligible)\b", re.I)
 _WEAK_NEGATIVE = [re.compile(p, re.I) for p in (
     r"must (already )?(have|hold) (the |a |full |existing |an existing )*right to work",
 )]
@@ -70,22 +75,28 @@ def sponsorship_signal(text: str) -> str:
 
 
 def sponsorship_evidence(text: str) -> tuple[str, str]:
-    """("positive" | "negative" | "", the advert's sentence that says so). Any statement that sponsorship is
-    not available wins over one that it is: such adverts often say both ("sponsorship is available for
-    registered nurses ... this band 3 role is not eligible")."""
+    """("positive" | "possible" | "negative" | "", the advert's sentence that says so). Any statement that
+    sponsorship is not available wins over one that it is: such adverts often say both ("sponsorship is
+    available for registered nurses ... this band 3 role is not eligible"). A plain offer wins over a hedged
+    one ("may be eligible for sponsorship"), which is "possible"."""
     for p in _STRONG_NEGATIVE:
         m = p.search(text)
         if m:
             return "negative", _quote(text, m.start())
-    offer = ""
+    offer = hedged = ""
     for p in _POSITIVE:
         for m in p.finditer(text):
             sentence = _sentence(text, m.start())
             if _OFFER_NEGATED_RE.search(sentence):
                 return "negative", _quote(text, m.start())
-            offer = offer or _quote(text, m.start())
+            if _HEDGE_RE.search(sentence):
+                hedged = hedged or _quote(text, m.start())
+            else:
+                offer = offer or _quote(text, m.start())
     if offer:
         return "positive", offer
+    if hedged:
+        return "possible", hedged
     for p in _WEAK_NEGATIVE:
         m = p.search(text)
         if m:
