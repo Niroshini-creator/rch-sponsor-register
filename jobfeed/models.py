@@ -51,6 +51,8 @@ class Job:
     tier: int = 3
     size: str = "unknown"      # "large" | "medium" | "small" | "unknown"
     contacts: list[dict] = field(default_factory=list)
+    # Employer's own careers site, for job-board adverts at directory employers (board links can be region-locked).
+    employer_site: str = ""
 
     @property
     def id(self) -> str:

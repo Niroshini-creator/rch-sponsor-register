@@ -180,6 +180,7 @@ def run(days: int, out_path: Path) -> dict:
     agencies = AgencyFilter.load(CONFIG / "agencies.json") if source_cfg.get("exclude_agencies", True) else None
     tiers = TierRules.load(CONFIG / "company_tiers.json")
     jobs = enrich(raw, index, tiers, ContactBook.load(CONFIG / "contacts.json"), days, agencies, stats)
+    link_employer_sites(jobs, CONFIG / "early_career_employers.json")
     directory = build_directory(jobs, index, tiers, CONFIG / "early_career_employers.json")
 
     payload = {
@@ -199,6 +200,19 @@ def run(days: int, out_path: Path) -> dict:
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(payload, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     return payload
+
+
+def link_employer_sites(jobs: list[Job], path: Path) -> None:
+    """Give job-board adverts at the directory's employers a link to the employer's own careers site.
+
+    Board links (Adzuna, Reed) can be closed to visitors outside the board's country; the careers site is not.
+    """
+    cfg = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+    sites = {(normalise_company(e["name"]), e.get("country", "GB")): e["careers_url"]
+             for e in cfg.get("employers", []) if e.get("careers_url")}
+    for job in jobs:
+        if job.channel != "career_site":
+            job.employer_site = sites.get((normalise_company(job.company), job.country), "")
 
 
 def build_directory(jobs: list[Job], index: sponsors.SponsorIndex, tiers: TierRules, path: Path) -> list[dict]:
