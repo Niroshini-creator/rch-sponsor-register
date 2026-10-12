@@ -157,6 +157,12 @@ class NoSponsorshipWordingTests(unittest.TestCase):
         self.assertEqual(classify.sponsorship_evidence(f"Great team. {nhs} Apply now."), ("positive", nhs))
         self.assertEqual(classify.sponsorship_signal("We offer visa sponsorship and relocation, no matter where "
                                                      "you are."), "positive")
+        # A long advert scraped without full stops: the quote is taken around the sponsorship words.
+        bullets = " ".join(["Build reliable systems across our stack"] * 8)
+        signal, quote = classify.sponsorship_evidence(f"{bullets} Benefits We offer visa sponsorship for this role {bullets}")
+        self.assertEqual(signal, "positive")
+        self.assertIn("We offer visa sponsorship for this role", quote)
+        self.assertLessEqual(len(quote), 225)
 
     def test_pipeline_labels(self):
         index = sponsors.SponsorIndex()

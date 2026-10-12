@@ -97,8 +97,17 @@ def _quote(text: str, pos: int, limit: int = 220) -> str:
     """The sentence around `pos`, trimmed for display."""
     start = max(text.rfind(c, 0, pos) for c in ".;!?\n") + 1
     ends = [i for i in (text.find(c, pos) for c in ".;!?\n") if i != -1]
-    sentence = " ".join(text[start:(min(ends) + 1) if ends else len(text)].split())
-    return sentence if len(sentence) <= limit else sentence[:limit].rsplit(" ", 1)[0] + "…"
+    end = (min(ends) + 1) if ends else len(text)
+    if end - start > limit:
+        # Run-on text (bullet lists scraped without full stops): keep a window around the match itself.
+        start = max(start, pos - limit // 3)
+        end = min(end, start + limit)
+        start = text.find(" ", start, pos) + 1 if start > 0 and text[start - 1] != " " else start
+        end = text.rfind(" ", pos, end) if end < len(text) and text.rfind(" ", pos, end) > pos else end
+    sentence = " ".join(text[start:end].split())
+    lead = "…" if start > 0 and text[start - 1] not in ".;!?\n" and not text[:start].strip().endswith((".", ";", "!", "?")) else ""
+    tail = "…" if end < len(text) and text[end - 1:end] not in (".", "!", "?", ";") and text[end:end + 1] not in ".;!?\n" else ""
+    return f"{lead}{sentence}{tail}"
 
 
 # ----------------------------------------------------------------------------- sector (employer type)
