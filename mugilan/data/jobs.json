@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-11T13:31:01+00:00",
+ "generated_at": "2026-10-12T16:05:56+00:00",
  "window_days": 7,
  "profile": {
   "name": "Mugilan Ramalingam",
@@ -25,15 +25,15 @@
  "sources": {
   "UK sponsor register": {
    "status": "ok",
-   "count": 132668
+   "count": 132670
   },
   "Reed": {
    "status": "ok",
-   "count": 534
+   "count": 504
   },
   "Adzuna": {
    "status": "ok",
-   "count": 22
+   "count": 23
   },
   "Career sites": {
    "status": "ok",
@@ -41,11 +41,11 @@
   }
  },
  "counts": {
-  "fetched": 556,
-  "clearance_removed": 64,
-  "no_sponsorship_removed": 9,
-  "language_removed": 19,
-  "below_threshold": 464,
+  "fetched": 527,
+  "clearance_removed": 53,
+  "no_sponsorship_removed": 5,
+  "language_removed": 20,
+  "below_threshold": 449,
   "full_advert_fetched": 80,
   "published": 0
  },
@@ -82,6 +82,7 @@
    "tier": 3,
    "size": "unknown",
    "contacts": [],
+   "employer_site": "",
    "id": "4e0f1a864aea",
    "match": 44,
    "reasons": [
@@ -130,6 +131,7 @@
    "tier": 3,
    "size": "unknown",
    "contacts": [],
+   "employer_site": "",
    "id": "563f08a76e31",
    "match": 38,
    "reasons": [
@@ -179,6 +181,7 @@
    "tier": 3,
    "size": "unknown",
    "contacts": [],
+   "employer_site": "",
    "id": "0bb573c8da21",
    "match": 35,
    "reasons": [
@@ -193,6 +196,102 @@
    "matched_keywords": [
     "enterprise architecture",
     "google cloud"
+   ],
+   "agency": true,
+   "currency": "£"
+  },
+  {
+   "source": "Reed",
+   "source_id": "57450984",
+   "title": "SAP Technical Architect",
+   "company": "Salt Search",
+   "location": "London",
+   "country": "GB",
+   "url": "https://www.reed.co.uk/jobs/sap-technical-architect/57450984",
+   "posted_at": "2026-10-12T00:00:00+00:00",
+   "description": "SAP Technical Architect / Technology Lead Locations: London, Birmingham, Bristol or Manchester | Hybrid A leading global consultancy is looking for a senior SAP Technical Architect / Technology Lead to lead the technical architecture across major SAP S/4HANA transformation programmes . You'll work across both early-stage strategy/Phase 0 and delivery , defining target architecture, technology roadmaps and governance, while remaining close enough to delivery to resolve complex technical decisions. Key experience required: Led technical architecture across multiple ECC/S/4HANA transformations…",
+   "salary": "90,000 – 118,000",
+   "contract": "",
+   "channel": "aggregator",
+   "sponsorship": "licensed_sponsor",
+   "sponsor_register": "",
+   "sponsorship_evidence": "",
+   "sponsor_routes": [],
+   "sector": "",
+   "domain": "",
+   "role": "",
+   "region": "",
+   "english": true,
+   "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
+   "salary_check": "",
+   "salary_annual": 0,
+   "salary_threshold": 0,
+   "tier": 3,
+   "size": "unknown",
+   "contacts": [],
+   "employer_site": "",
+   "id": "e5d7c3d054b8",
+   "match": 33,
+   "reasons": [
+    "+20 Solution / technical architect title",
+    "+3 telecom OSS/BSS keywords",
+    "+5 senior / architect level",
+    "+5 pay reaches the 60,000 expectation"
+   ],
+   "flags": [],
+   "matched_keywords": [
+    "design authority"
+   ],
+   "agency": false,
+   "currency": "£"
+  },
+  {
+   "source": "Reed",
+   "source_id": "57450346",
+   "title": "Solution Architect",
+   "company": "Nigel Wright Group",
+   "location": "NE77XS",
+   "country": "GB",
+   "url": "https://www.reed.co.uk/jobs/solution-architect/57450346",
+   "posted_at": "2026-10-12T00:00:00+00:00",
+   "description": "Company Our client is a well-established organisation undertaking a significant programme of technology-enabled change and transformation. Technology is central to its future strategy, with continued investment in digital transformation, service improvement and the development of a modern, resilient and integrated technology landscape. Operating across a complex technology estate spanning legacy systems, modern platforms, enterprise applications, data, integrations and third-party solutions, the organisation is looking to strengthen its architecture capability and create greater consistency…",
+   "salary": "65,000 – 75,000",
+   "contract": "",
+   "channel": "aggregator",
+   "sponsorship": "agency",
+   "sponsor_register": "",
+   "sponsorship_evidence": "",
+   "sponsor_routes": [],
+   "sector": "",
+   "domain": "",
+   "role": "",
+   "region": "",
+   "english": true,
+   "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
+   "salary_check": "",
+   "salary_annual": 0,
+   "salary_threshold": 0,
+   "tier": 3,
+   "size": "unknown",
+   "contacts": [],
+   "employer_site": "",
+   "id": "687abfbd1975",
+   "match": 32,
+   "reasons": [
+    "+20 Solution / technical architect title",
+    "+2 architecture practice / GCP",
+    "+5 senior / architect level",
+    "+5 pay reaches the 60,000 expectation"
+   ],
+   "flags": [
+    "Recruitment agency advert"
+   ],
+   "matched_keywords": [
+    "non-functional"
    ],
    "agency": true,
    "currency": "£"
@@ -228,6 +327,7 @@
    "tier": 3,
    "size": "unknown",
    "contacts": [],
+   "employer_site": "",
    "id": "098465dc7a20",
    "match": 32,
    "reasons": [
@@ -276,6 +376,7 @@
    "tier": 3,
    "size": "unknown",
    "contacts": [],
+   "employer_site": "",
    "id": "c4844deff868",
    "match": 32,
    "reasons": [
@@ -324,6 +425,7 @@
    "tier": 3,
    "size": "unknown",
    "contacts": [],
+   "employer_site": "",
    "id": "8d52f0fdd3d2",
    "match": 32,
    "reasons": [
@@ -372,6 +474,7 @@
    "tier": 3,
    "size": "unknown",
    "contacts": [],
+   "employer_site": "",
    "id": "5f4255b03212",
    "match": 30,
    "reasons": [
@@ -421,6 +524,7 @@
    "tier": 3,
    "size": "unknown",
    "contacts": [],
+   "employer_site": "",
    "id": "0ffb34422a6e",
    "match": 30,
    "reasons": [
@@ -438,6 +542,57 @@
     "enterprise architecture"
    ],
    "agency": true,
+   "currency": "£"
+  },
+  {
+   "source": "Reed",
+   "source_id": "57449032",
+   "title": "Supply Solutions Architect",
+   "company": "ASDA",
+   "location": "LS115AD",
+   "country": "GB",
+   "url": "https://www.reed.co.uk/jobs/supply-solutions-architect/57449032",
+   "posted_at": "2026-10-12T00:00:00+00:00",
+   "description": "Job Title Supply Solutions Architect Location Asda House Employment Type Full time Contract Type Permanent Hours Per Week 37.5 Salary Competitive salary plus benefits Category Software Engineering Closing Date 25 October 2026 Are you an experienced?Solutions?Architect?with?a passion for designing and delivering technology?solutions in a rapidly evolving digital landscape?? Would you like to work on an advanced, contemporary application landscape, designing and optimising Asda’s technology change in a?mature architecture practice?? Asda are looking for an experienced Supply Chain Solution…",
+   "salary": "",
+   "contract": "",
+   "channel": "aggregator",
+   "sponsorship": "unverified",
+   "sponsor_register": "",
+   "sponsorship_evidence": "",
+   "sponsor_routes": [],
+   "sector": "",
+   "domain": "",
+   "role": "",
+   "region": "",
+   "english": true,
+   "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
+   "salary_check": "",
+   "salary_annual": 0,
+   "salary_threshold": 0,
+   "tier": 3,
+   "size": "unknown",
+   "contacts": [],
+   "employer_site": "",
+   "id": "fa6f1bdbec49",
+   "match": 29,
+   "reasons": [
+    "+20 Solution / technical architect title",
+    "+7 telecom OSS/BSS keywords",
+    "+2 architecture practice / GCP",
+    "+5 senior / architect level",
+    "-5 sponsorship / work permit not confirmed"
+   ],
+   "flags": [
+    "Salary not stated"
+   ],
+   "matched_keywords": [
+    "inventory management",
+    "security by design"
+   ],
+   "agency": false,
    "currency": "£"
   },
   {
@@ -471,6 +626,7 @@
    "tier": 3,
    "size": "unknown",
    "contacts": [],
+   "employer_site": "",
    "id": "0ec877efd5e0",
    "match": 27,
    "reasons": [
@@ -518,6 +674,7 @@
    "tier": 3,
    "size": "unknown",
    "contacts": [],
+   "employer_site": "",
    "id": "56804fe294b2",
    "match": 27,
    "reasons": [
@@ -565,6 +722,7 @@
    "tier": 3,
    "size": "unknown",
    "contacts": [],
+   "employer_site": "",
    "id": "406f004d8135",
    "match": 27,
    "reasons": [
@@ -584,15 +742,15 @@
   },
   {
    "source": "Reed",
-   "source_id": "57421965",
-   "title": "Salesforce Technical Architect",
-   "company": "Proactive Appointments",
+   "source_id": "57449747",
+   "title": "Cloud Solutions Architect - AWS/Azure",
+   "company": "Lorien",
    "location": "London",
    "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/salesforce-technical-architect/57421965",
-   "posted_at": "2026-10-05T00:00:00+00:00",
-   "description": "Salesforce Technical Architect As Salesforce Technical Architect, you will provide technical leadership across the Salesforce ecosystem, reviewing and enhancing the current architecture while ensuring the platform remains stable, scalable, maintainable, and fit for future growth. You will evaluate existing custom Apex code, Lightning Components, Flows, integrations, and platform configurations to identify architectural weaknesses, technical debt, and opportunities for optimisation. Working closely with development and business teams, you will determine what should be retained, standardised,…",
-   "salary": "500 – 550",
+   "url": "https://www.reed.co.uk/jobs/cloud-solutions-architect-aws-azure/57449747",
+   "posted_at": "2026-10-12T00:00:00+00:00",
+   "description": "Cloud Solution Architect City of London- Onsite 2/3 days a week 6 month contarct Inside of IR35 £650pd WearelookingforaSeniorCloudSolutionsArchitect to lead the design and delivery of secure, scalable, enterprisecloudsolutions. Key Responsibilities Designandgoverncloudandinfrastructurearchitectures. Leadcloudinitiativesacross AWS, Azure or hybrid environments. Developprivatecloud,compute,orchestrationandhybridstorage solutions. DriveInfrastructureasCode,CI/CD,automatedtestingand DevOps best practices. Architectcontainerplatformsandorchestration solutions such as Kubernetes.…",
+   "salary": "650",
    "contract": "",
    "channel": "aggregator",
    "sponsorship": "agency",
@@ -613,20 +771,18 @@
    "tier": 3,
    "size": "unknown",
    "contacts": [],
-   "id": "2e9081e605f9",
-   "match": 27,
+   "employer_site": "",
+   "id": "72190996f963",
+   "match": 25,
    "reasons": [
     "+20 Solution / technical architect title",
-    "+2 architecture practice / GCP",
     "+5 senior / architect level"
    ],
    "flags": [
     "Salary not stated",
     "Recruitment agency advert"
    ],
-   "matched_keywords": [
-    "enterprise architecture"
-   ],
+   "matched_keywords": [],
    "agency": true,
    "currency": "£"
   },
@@ -661,6 +817,7 @@
    "tier": 3,
    "size": "unknown",
    "contacts": [],
+   "employer_site": "",
    "id": "1c037f653019",
    "match": 25,
    "reasons": [
@@ -705,6 +862,7 @@
    "tier": 3,
    "size": "unknown",
    "contacts": [],
+   "employer_site": "",
    "id": "a752ce663017",
    "match": 25,
    "reasons": [
@@ -750,6 +908,7 @@
    "tier": 3,
    "size": "unknown",
    "contacts": [],
+   "employer_site": "",
    "id": "acf0bc641b37",
    "match": 25,
    "reasons": [
@@ -795,6 +954,7 @@
    "tier": 3,
    "size": "unknown",
    "contacts": [],
+   "employer_site": "",
    "id": "1254d55e0c7b",
    "match": 25,
    "reasons": [
@@ -840,6 +1000,7 @@
    "tier": 3,
    "size": "unknown",
    "contacts": [],
+   "employer_site": "",
    "id": "2a74422641f5",
    "match": 25,
    "reasons": [
@@ -856,50 +1017,6 @@
     "design authority",
     "enterprise architecture"
    ],
-   "agency": false,
-   "currency": "£"
-  },
-  {
-   "source": "Reed",
-   "source_id": "57439072",
-   "title": "Solution Architect",
-   "company": "eFinancialCareers",
-   "location": "London",
-   "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/solution-architect/57439072",
-   "posted_at": "2026-10-08T00:00:00+00:00",
-   "description": "90000 - 105000 GBP Bonus, Pension, Benefits Hybrid WORKING Location: Central London, Greater London - United Kingdom Type: Permanent Solution Architect Digital Transformation, Cloud & Software Architecture Location: London, Bristol, Manchester or Belfast / Hybrid Working Salary: Up to 105,000 Benefits About the Role We're supporting a leading consultancy as they continue to expand their architecture capability across large-scale digital tran...",
-   "salary": "",
-   "contract": "",
-   "channel": "aggregator",
-   "sponsorship": "licensed_sponsor",
-   "sponsor_register": "",
-   "sponsorship_evidence": "",
-   "sponsor_routes": [],
-   "sector": "",
-   "domain": "",
-   "role": "",
-   "region": "",
-   "english": true,
-   "early_career": "",
-   "aviation": "",
-   "low_sponsorship": false,
-   "salary_check": "",
-   "salary_annual": 0,
-   "salary_threshold": 0,
-   "tier": 3,
-   "size": "unknown",
-   "contacts": [],
-   "id": "f5f1a03f3967",
-   "match": 25,
-   "reasons": [
-    "+20 Solution / technical architect title",
-    "+5 senior / architect level"
-   ],
-   "flags": [
-    "Salary not stated"
-   ],
-   "matched_keywords": [],
    "agency": false,
    "currency": "£"
   },
@@ -934,6 +1051,7 @@
    "tier": 3,
    "size": "unknown",
    "contacts": [],
+   "employer_site": "",
    "id": "f1a45042bcb5",
    "match": 25,
    "reasons": [
@@ -980,6 +1098,7 @@
    "tier": 3,
    "size": "unknown",
    "contacts": [],
+   "employer_site": "",
    "id": "b10695178ff4",
    "match": 25,
    "reasons": [
@@ -996,15 +1115,15 @@
   },
   {
    "source": "Reed",
-   "source_id": "57429059",
+   "source_id": "57427230",
    "title": "Solution Architect",
    "company": "Method Resourcing",
    "location": "Southampton",
    "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/solution-architect/57429059",
+   "url": "https://www.reed.co.uk/jobs/solution-architect/57427230",
    "posted_at": "2026-10-06T00:00:00+00:00",
-   "description": "Solution Architect l SAP Hybris l PIM l OMS l Payments l Hybrid | £680 per day l Outside IR35 l Southampton I'm currently looking for a Solution architect to support a re platform fromSAPHybris to a new platform for an E-Commerce organisation in Southampton. What we're looking for Proven experience as a Solution architect specifically on E-Commerce transformations Ideally experience re platforming from SAP Hybris to new platforms however, replatforming experience in general is fine Experience implementing PIM and OMS Solutions Experience on payments/Gift Card Initiatives is a bonus Contract…",
-   "salary": "680",
+   "description": "Solution Architect l SAP Hybris l PIM l OMS l Payments l Hybrid | £625 per day l Outside IR35 l Southampton I'm currently looking for a Solution architect to support a re platform fromSAP Hybris to a new platform for an E-Commerce organisation in Southampton. What we're looking for Proven experience as a Solution architect specifically on E-Commerce transformations Ideally experience re platforming from SAP Hybris to new platforms Experience implementing PIM and OMS Solutions Experience on payments/Gift Card Initiatives Contract Details: Location: Hybrid (2 days a week in Southampton) IR35:…",
+   "salary": "625",
    "contract": "",
    "channel": "aggregator",
    "sponsorship": "agency",
@@ -1025,7 +1144,8 @@
    "tier": 3,
    "size": "unknown",
    "contacts": [],
-   "id": "f2f8b895ab74",
+   "employer_site": "",
+   "id": "f296901c2abd",
    "match": 25,
    "reasons": [
     "+20 Solution / technical architect title",
@@ -1070,6 +1190,7 @@
    "tier": 3,
    "size": "unknown",
    "contacts": [],
+   "employer_site": "",
    "id": "970233951081",
    "match": 25,
    "reasons": [
@@ -1080,99 +1201,6 @@
     "Salary not stated"
    ],
    "matched_keywords": [],
-   "agency": false,
-   "currency": "£"
-  },
-  {
-   "source": "Reed",
-   "source_id": "57424646",
-   "title": "AI Enterprise Architect",
-   "company": "Lorien",
-   "location": "London",
-   "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/ai-enterprise-architect/57424646",
-   "posted_at": "2026-10-05T00:00:00+00:00",
-   "description": ". AI Enterprise Architect - London (Contract) Must be DV Clearable 5 Days On-Site Future-State Architecture · Roadmapping · Capability Modelling Are you a strategic thinker who can translate complex business needs into clear, long-term architectural direction? We're looking for an AI Enterprise Architect to shape the future-state architecture of a large, data-driven organisation - defining capabilities, governance frameworks and technology roadm...",
-   "salary": "",
-   "contract": "",
-   "channel": "aggregator",
-   "sponsorship": "agency",
-   "sponsor_register": "",
-   "sponsorship_evidence": "",
-   "sponsor_routes": [],
-   "sector": "",
-   "domain": "",
-   "role": "",
-   "region": "",
-   "english": true,
-   "early_career": "",
-   "aviation": "",
-   "low_sponsorship": false,
-   "salary_check": "",
-   "salary_annual": 0,
-   "salary_threshold": 0,
-   "tier": 3,
-   "size": "unknown",
-   "contacts": [],
-   "id": "7c053b8dfcea",
-   "match": 25,
-   "reasons": [
-    "+20 Solution / technical architect title",
-    "+5 senior / architect level"
-   ],
-   "flags": [
-    "Salary not stated",
-    "Recruitment agency advert"
-   ],
-   "matched_keywords": [],
-   "agency": true,
-   "currency": "£"
-  },
-  {
-   "source": "Reed",
-   "source_id": "57440999",
-   "title": "Lead Solution Architect",
-   "company": "Appcast Enterprise",
-   "location": "London",
-   "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/lead-solution-architect/57440999",
-   "posted_at": "2026-10-09T00:00:00+00:00",
-   "description": "Entity: Technology Job Family Group: IT&S Group Job Description: Our purpose is to deliver energy to the world, today and tomorrow. For over 100 years, bp has focused on discovering, developing, and producing oil and gas in the nations where we operate. We are one of the few companies globally that can provide governments and customers with an integrated energy offering. Delivering our strategy sustainably is fundamental to achieving our ambition to be a net zero company by 2050 or sooner. It's an exciting time to join bp. Meeting the energy challenge requires many different approaches and…",
-   "salary": "",
-   "contract": "",
-   "channel": "aggregator",
-   "sponsorship": "unverified",
-   "sponsor_register": "",
-   "sponsorship_evidence": "",
-   "sponsor_routes": [],
-   "sector": "",
-   "domain": "",
-   "role": "",
-   "region": "",
-   "english": true,
-   "early_career": "",
-   "aviation": "",
-   "low_sponsorship": false,
-   "salary_check": "",
-   "salary_annual": 0,
-   "salary_threshold": 0,
-   "tier": 3,
-   "size": "unknown",
-   "contacts": [],
-   "id": "54ee897501c5",
-   "match": 22,
-   "reasons": [
-    "+20 Solution / technical architect title",
-    "+2 architecture practice / GCP",
-    "+5 senior / architect level",
-    "-5 sponsorship / work permit not confirmed"
-   ],
-   "flags": [
-    "Salary not stated"
-   ],
-   "matched_keywords": [
-    "togaf"
-   ],
    "agency": false,
    "currency": "£"
   },
@@ -1207,6 +1235,7 @@
    "tier": 3,
    "size": "unknown",
    "contacts": [],
+   "employer_site": "",
    "id": "bf937d1b1bdc",
    "match": 22,
    "reasons": [
