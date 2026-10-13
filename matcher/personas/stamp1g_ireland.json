@@ -1,0 +1,44 @@
+{
+ "name": "Ireland Stamp 1G graduate: Software",
+ "description": "Can work in Ireland without a permit; graduate roles only.",
+ "visa_expiry_days": 300,
+ "profile": {
+  "full_name": "Sample: Ravi (Stamp 1G)",
+  "visa_type": "stamp_1g",
+  "sponsorship_mode": "preferred",
+  "graduate_only": true,
+  "countries": [
+   "IE"
+  ],
+  "locations": [
+   "Dublin",
+   "Cork"
+  ],
+  "min_salary": {
+   "GB": 0,
+   "IE": 32000,
+   "EU": 0,
+   "IN": 0
+  }
+ },
+ "tracks": [
+  {
+   "name": "Software Developer",
+   "priority": 1,
+   "target_roles": [
+    "Software Developer",
+    "Software Engineer",
+    "Graduate Engineer"
+   ],
+   "keywords": [
+    "java",
+    "python",
+    "react",
+    "sql",
+    "aws"
+   ],
+   "filename": "ravi_cv.pdf",
+   "text": "Sample CV (fictional). Software developer, 4 years. Java, Spring, Python, JavaScript, React, REST APIs, microservices, SQL, Git, Docker, AWS, CI/CD, Jenkins, Kubernetes."
+  }
+ ]
+}

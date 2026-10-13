@@ -1,0 +1,40 @@
+{
+ "name": "UK FLR holder: Project Manager, would move to India for a high package",
+ "description": "Works in the UK now; shows Indian roles only when the package reaches 25 LPA.",
+ "visa_expiry_days": -20,
+ "profile": {
+  "full_name": "Sample: Karthik (FLR)",
+  "visa_type": "flr",
+  "sponsorship_mode": "preferred",
+  "sponsored_only": true,
+  "countries": [
+   "GB"
+  ],
+  "open_to_india": true,
+  "min_salary": {
+   "GB": 42000,
+   "IE": 0,
+   "EU": 0,
+   "IN": 25
+  }
+ },
+ "tracks": [
+  {
+   "name": "Project Manager",
+   "priority": 1,
+   "target_roles": [
+    "Project Manager",
+    "Programme Manager"
+   ],
+   "keywords": [
+    "prince2",
+    "pmp",
+    "stakeholder",
+    "budget",
+    "risk"
+   ],
+   "filename": "karthik_pm.docx",
+   "text": "Sample CV (fictional). Project manager, PRINCE2 and PMP certified. Budget ownership, risk registers, stakeholder management, milestones, governance, PMO reporting, waterfall and agile delivery."
+  }
+ ]
+}

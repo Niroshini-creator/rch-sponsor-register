@@ -1,0 +1,51 @@
+{
+ "name": "Skilled Worker visa: needs a sponsor now (Data Scientist)",
+ "description": "Must change employer, so only licensed sponsors and sponsorship-offering adverts, with pay checked against the visa minimum.",
+ "visa_expiry_days": 120,
+ "profile": {
+  "full_name": "Sample: Meena (Skilled Worker)",
+  "visa_type": "skilled_worker",
+  "sponsorship_mode": "required",
+  "countries": [
+   "GB"
+  ],
+  "min_salary": {
+   "GB": 45000,
+   "IE": 0,
+   "EU": 0,
+   "IN": 0
+  }
+ },
+ "tracks": [
+  {
+   "name": "Data Scientist",
+   "priority": 1,
+   "target_roles": [
+    "Data Scientist",
+    "Machine Learning Engineer"
+   ],
+   "keywords": [
+    "python",
+    "machine learning",
+    "pandas",
+    "tensorflow",
+    "nlp"
+   ],
+   "filename": "meena_ds.docx",
+   "text": "Sample CV (fictional). Data scientist. Python, machine learning, pandas, scikit-learn, TensorFlow, regression, classification, NLP, statistics, SQL, feature engineering, model deployment."
+  },
+  {
+   "name": "Data Analyst",
+   "priority": 2,
+   "target_roles": [
+    "Data Analyst"
+   ],
+   "keywords": [
+    "sql",
+    "power bi"
+   ],
+   "filename": "meena_da.docx",
+   "text": "Sample CV (fictional). Data Analyst. Built Power BI and Tableau dashboards, SQL reporting, Excel pivot tables, Python data cleaning, KPIs, ETL pipelines and statistics for retail and fintech teams."
+  }
+ ]
+}
