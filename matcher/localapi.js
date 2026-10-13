@@ -108,11 +108,35 @@
     }
     throw new Error("no document.xml");
   }
+  // PDF text is read in the browser with the bundled pdf.js (vendor/pdfjs), loaded only when a PDF is uploaded.
+  let pdfLib = null;
+  function loadPdfJs() {
+    if (window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
+    return pdfLib || (pdfLib = new Promise((resolve, reject) => {
+      const el = document.createElement("script");
+      el.src = "vendor/pdfjs/pdf.min.js";
+      el.onload = () => { window.pdfjsLib.GlobalWorkerOptions.workerSrc = "vendor/pdfjs/pdf.worker.min.js"; resolve(window.pdfjsLib); };
+      el.onerror = () => reject(new Error("The PDF reader could not be loaded"));
+      document.head.appendChild(el);
+    }));
+  }
+  async function pdfText(bytes) {
+    const lib = await loadPdfJs();
+    const doc = await lib.getDocument({ data: bytes.slice() }).promise;
+    const pages = [];
+    for (let i = 1; i <= Math.min(doc.numPages, 20); i++) {
+      const content = await (await doc.getPage(i)).getTextContent();
+      pages.push(content.items.filter(it => typeof it.str === "string").map(it => it.str + (it.hasEOL ? "\n" : " ")).join(""));
+    }
+    const text = pages.join("\n").replace(/[ \t]+/g, " ").replace(/ ?\n ?/g, "\n").trim();
+    return text.length >= 30 ? text : "";  // a scanned CV is only pictures: nothing to read
+  }
   async function extractText(filename, bytes) {
     const ext = extension(filename);
     if (ext === ".txt" || ext === ".md") return new TextDecoder().decode(bytes);
     if (ext === ".docx") return docxText(bytes);
-    return "";  // PDF: the candidate pastes the text
+    if (ext === ".pdf") return pdfText(bytes);
+    return "";
   }
   const fromBase64 = b64 => Uint8Array.from(atob(b64), c => c.charCodeAt(0));
 
