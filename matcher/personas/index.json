@@ -1,0 +1,27 @@
+[
+ {
+  "key": "psw_analyst",
+  "label": "UK Graduate visa holder: Business and Data Analyst",
+  "about": "Can work now; visa expires in about 8 months, so sponsoring employers rank first. Open to the Netherlands/Germany and to India for a good package."
+ },
+ {
+  "key": "stamp1g_ireland",
+  "label": "Ireland Stamp 1G graduate: Software",
+  "about": "Can work in Ireland without a permit; graduate roles only."
+ },
+ {
+  "key": "skilled_worker_now",
+  "label": "Skilled Worker visa: needs a sponsor now (Data Scientist)",
+  "about": "Must change employer, so only licensed sponsors and sponsorship-offering adverts, with pay checked against the visa minimum."
+ },
+ {
+  "key": "flr_to_india",
+  "label": "UK FLR holder: Project Manager, would move to India for a high package",
+  "about": "Works in the UK now; shows Indian roles only when the package reaches 25 LPA."
+ },
+ {
+  "key": "india_resident",
+  "label": "Living in India: Software Engineer, high package",
+  "about": "No visa rules; Indian roles compared with a 25 LPA minimum. Needs the live feed's India jobs (Adzuna India) to show results."
+ }
+]

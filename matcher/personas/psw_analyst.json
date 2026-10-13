@@ -1,0 +1,66 @@
+{
+ "name": "UK Graduate visa holder: Business and Data Analyst",
+ "description": "Can work now; visa expires in about 8 months, so sponsoring employers rank first. Open to the Netherlands/Germany and to India for a good package.",
+ "visa_expiry_days": 240,
+ "profile": {
+  "full_name": "Sample: Asha (PSW)",
+  "visa_type": "graduate",
+  "sponsorship_mode": "preferred",
+  "new_entrant": true,
+  "countries": [
+   "GB",
+   "IE"
+  ],
+  "locations": [
+   "London",
+   "Manchester",
+   "Leeds"
+  ],
+  "open_to_europe": true,
+  "open_to_india": true,
+  "min_salary": {
+   "GB": 30000,
+   "IE": 32000,
+   "EU": 38000,
+   "IN": 20
+  }
+ },
+ "tracks": [
+  {
+   "name": "Business Analyst",
+   "priority": 1,
+   "target_roles": [
+    "Business Analyst",
+    "Systems Analyst"
+   ],
+   "keywords": [
+    "requirements",
+    "stakeholder",
+    "user stories",
+    "jira",
+    "uat",
+    "bpmn"
+   ],
+   "filename": "asha_business_analyst.docx",
+   "text": "Sample CV (fictional). Business Analyst, 5 years in financial services. Gathered requirements, wrote user stories and acceptance criteria, ran stakeholder workshops, UAT and BPMN process mapping in Jira and Confluence. Gap analysis, agile delivery, wireframes."
+  },
+  {
+   "name": "Data Analyst",
+   "priority": 2,
+   "target_roles": [
+    "Data Analyst",
+    "Reporting Analyst"
+   ],
+   "keywords": [
+    "sql",
+    "power bi",
+    "tableau",
+    "excel",
+    "dashboards",
+    "python"
+   ],
+   "filename": "asha_data_analyst.docx",
+   "text": "Sample CV (fictional). Data Analyst. Built Power BI and Tableau dashboards, SQL reporting, Excel pivot tables, Python data cleaning, KPIs, ETL pipelines and statistics for retail and fintech teams."
+  }
+ ]
+}

@@ -1,0 +1,43 @@
+{
+ "name": "Living in India: Software Engineer, high package",
+ "description": "No visa rules; Indian roles compared with a 25 LPA minimum. Needs the live feed's India jobs (Adzuna India) to show results.",
+ "profile": {
+  "full_name": "Sample: Priya (India)",
+  "visa_type": "indian_resident",
+  "sponsorship_mode": "not_needed",
+  "countries": [
+   "IN"
+  ],
+  "locations": [
+   "Bengaluru",
+   "Hyderabad",
+   "Pune"
+  ],
+  "min_salary": {
+   "GB": 0,
+   "IE": 0,
+   "EU": 0,
+   "IN": 25
+  }
+ },
+ "tracks": [
+  {
+   "name": "Software Engineer",
+   "priority": 1,
+   "target_roles": [
+    "Software Engineer",
+    "Java Developer",
+    "Backend Developer"
+   ],
+   "keywords": [
+    "java",
+    "python",
+    "aws",
+    "microservices",
+    "kubernetes"
+   ],
+   "filename": "priya_cv.docx",
+   "text": "Sample CV (fictional). Software developer, 4 years. Java, Spring, Python, JavaScript, React, REST APIs, microservices, SQL, Git, Docker, AWS, CI/CD, Jenkins, Kubernetes."
+  }
+ ]
+}

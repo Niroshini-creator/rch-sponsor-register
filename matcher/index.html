@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Candidate Job Matcher (test)</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top">
+  <strong>Candidate Job Matcher</strong>
+  <nav id="nav" hidden>
+    <button data-view="jobs">Matched jobs</button>
+    <button data-view="employers">Career sites</button>
+    <button data-view="applications">My applications</button>
+    <button data-view="tracks">My CVs &amp; roles</button>
+    <button data-view="profile">Profile</button>
+    <button data-view="thresholds">Visa salary rules</button>
+    <button data-view="account">Account</button>
+    <button id="logout">Sign out</button>
+  </nav>
+</header>
+<div id="notice" class="notice" hidden></div>
+<main id="app"><p class="muted">Loading…</p></main>
+<script>window.CJM_JOBS_URL = "../data/jobs.json";</script>
+<script src="engine.js"></script>
+<script src="localapi.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
