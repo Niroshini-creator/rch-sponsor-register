@@ -172,7 +172,9 @@ function trackCard(t, reload) {
       const r = await api("POST", `/api/tracks/${t.id}/resume`, { filename: fl ? fl.name : "cv.txt", data, text: pasted.value });
       state.cvMessage = r.needs_text
         ? { cls: "warn", text: `"${r.filename}" was saved, but no text could be read from it (a scanned PDF is only a picture). Paste the CV text into the box under the file chooser for "${t.name}", then press Upload CV again.` }
-        : { cls: "ok", text: `Read "${r.filename}" for "${t.name}": ${r.keywords.length} skills and keywords found. Check them below, edit if needed, then press Save.` };
+        : { cls: "ok", text: `Read "${r.filename}" for "${t.name}": ${r.keywords.length} skills and keywords found.` +
+            (r.roles_set && r.roles_set.length ? ` Looking for these roles, based on your CV: ${r.roles_set.join(", ")}.` : "") + " Check them below and edit if needed." };
+      state.jobs = null;  // the matches must be recalculated with the new CV
       await reload();
     } catch (x) { err.textContent = x.message; }
   } }, t.filename ? "Replace CV" : "Upload CV");
@@ -246,7 +248,10 @@ async function jobsView() {
         d.offset > 0 && h("button", { class: "btn", onclick: async () => { state.offset = Math.max(0, d.offset - 25); await loadJobs(); draw(); window.scrollTo(0, 0); } }, "Previous"),
         d.offset + 25 < d.total && h("button", { class: "btn", onclick: async () => { state.offset = d.offset + 25; await loadJobs(); draw(); window.scrollTo(0, 0); } }, "Next")));
   }
-  $app.replaceChildren(h("h1", {}, "Matched jobs"), banner, stale,
+  const lookingFor = state.me.tracks.length ? h("p", { class: "muted small" }, "Looking for: ",
+    ...state.me.tracks.flatMap((t, i) => [i ? " · " : "", h("strong", {}, `${ordinal(t.priority)} ${t.name}`), ` (${t.target_roles.slice(0, 4).join(", ") || "no roles set"})`]),
+    " · ", h("a", { href: "#", onclick: e => { e.preventDefault(); state.view = "tracks"; render(); } }, "Change")) : "";
+  $app.replaceChildren(h("h1", {}, "Matched jobs"), lookingFor, banner, stale,
     !state.me.tracks.length ? h("div", { class: "box warn" }, "Add your CVs and the roles you want under ", h("a", { href: "#", onclick: e => { e.preventDefault(); state.view = "tracks"; render(); } }, "My CVs & roles"), " for better matches.") : "",
     h("div", { class: "card" }, h("div", { class: "row" }, search, h("button", { class: "btn primary", onclick: reload }, "Search")),
       h("div", { class: "row" }, field("CV / domain", trackSel), field("Country", countrySel)),

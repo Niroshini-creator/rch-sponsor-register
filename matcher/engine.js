@@ -356,12 +356,28 @@
       if (fit < 15) continue;
       const open = (vacancies || {})[role] || 0;
       const availability = Math.min(1, Math.log1p(open) / Math.log1p(60));
-      out.push({ role, fit, skills: skills.slice(0, 8), past_titles: titles.slice(0, 3), vacancies: open,
+      out.push({ role, fit, skills: skills.slice(0, 8), past_titles: titles.slice(0, 3), titles: cased(D.roles[role].titles.slice(0, 6)), vacancies: open,
         score: pyRound((0.6 * fit + 0.4 * 100 * availability) * 10) / 10 });
     }
     out.sort((a, b) => b.score - a.score);
     out.forEach((item, i) => { item.suggested_priority = i < 3 && item.fit >= 25 ? i + 1 : null; });
     return out.slice(0, limit);
+  }
+
+  const ACRONYMS = new Set(["bi", "mi", "it", "hr", "qa", "sdet", "pmo", "soc", "aml", "kyc", "oss", "bss", "etl", "nlp", "ai", "seo", "ppc", "sre"]);
+  const cased = list => list.map(t => t.split(/\s+/).filter(Boolean).map(w => (ACRONYMS.has(w) ? w.toUpperCase() : w.slice(0, 1).toUpperCase() + w.slice(1))).join(" "));
+  function rolesFromCv(text, domain, current) {
+    const name = domain.trim().toLowerCase();
+    if (current.length > 1 || (current.length && current[0].trim().toLowerCase() !== name)) return [];
+    const named = Object.keys(D.roles).find(r => name === r.toLowerCase() || D.roles[r].titles.includes(name));
+    let chosen = null;
+    if (named && roleFit(named, text)[0] >= 15) chosen = named;
+    else {
+      let best = null, bestFit = 0;
+      for (const role of Object.keys(D.roles)) { const fit = roleFit(role, text)[0]; if (fit > bestFit) { best = role; bestFit = fit; } }
+      chosen = bestFit >= 25 ? best : null;
+    }
+    return chosen ? cased(D.roles[chosen].titles.slice(0, 6)) : [];
   }
 
   // ---------------------------------------------------------------- directory (directory.py)
@@ -411,7 +427,7 @@
   }
 
   const api = { init, pyRound, inrAnnualRange, annualRange, evaluate, sponsorshipMode, minFor, tokens, extractKeywords, passesFilters,
-    score, matchJobs, countVacancies, suggestRoles, roleFit, titleMatches, normaliseCompany, baseName, directoryListing, linkFor,
+    score, matchJobs, countVacancies, suggestRoles, roleFit, titleMatches, rolesFromCv, normaliseCompany, baseName, directoryListing, linkFor,
     visaDaysLeft, tracksOf, get data() { return D; } };
   return api;
 });
