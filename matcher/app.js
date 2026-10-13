@@ -161,7 +161,7 @@ function trackCard(t, reload) {
   const roles = h("textarea", { rows: 3 }); roles.value = t.target_roles.join("\n");
   const kws = h("textarea", { rows: 3 }); kws.value = t.keywords.join(", ");
   const file = h("input", { type: "file", accept: ".docx,.pdf,.txt,.md" });
-  const pasted = h("textarea", { rows: 4, placeholder: "Or paste this CV's text (needed for PDFs)" });
+  const pasted = h("textarea", { rows: 4, placeholder: "Or paste this CV's text (only needed if a file can't be read, e.g. a scanned PDF)" });
   const cvInfo = h("div", { class: "small" }, t.filename ? ["CV for this domain: ", h("strong", {}, t.filename), STATIC ? " (text saved in this browser; keep your original file to apply)" : "", " "] : h("span", { class: "muted" }, "No CV uploaded for this domain yet. "),
     t.filename && !STATIC ? h("a", { href: "#", onclick: async e => { e.preventDefault(); const b = await api("GET", `/api/tracks/${t.id}/resume`); h("a", { href: URL.createObjectURL(b), download: t.filename }).click(); } }, "Download") : "");
   const upload = h("button", { class: "btn", type: "button", onclick: async () => {
@@ -170,8 +170,10 @@ function trackCard(t, reload) {
     try {
       const data = fl ? toBase64(new Uint8Array(await fl.arrayBuffer())) : btoa(unescape(encodeURIComponent(pasted.value)));
       const r = await api("POST", `/api/tracks/${t.id}/resume`, { filename: fl ? fl.name : "cv.txt", data, text: pasted.value });
-      if (r.needs_text) { err.textContent = "Saved, but no text could be read from that file. Paste the CV text for keyword matching."; return; }
-      status.textContent = "CV saved."; await reload();
+      state.cvMessage = r.needs_text
+        ? { cls: "warn", text: `"${r.filename}" was saved, but no text could be read from it (a scanned PDF is only a picture). Paste the CV text into the box under the file chooser for "${t.name}", then press Upload CV again.` }
+        : { cls: "ok", text: `Read "${r.filename}" for "${t.name}": ${r.keywords.length} skills and keywords found. Check them below, edit if needed, then press Save.` };
+      await reload();
     } catch (x) { err.textContent = x.message; }
   } }, t.filename ? "Replace CV" : "Upload CV");
   const save = h("button", { class: "btn primary", type: "button", onclick: async () => {
@@ -191,7 +193,8 @@ async function tracksView() {
   const reload = async () => { state.me = await api("GET", "/api/me"); draw(); };
   function draw() {
     const tracks = state.me.tracks;
-    box.replaceChildren(...tracks.map(t => h("div", {}, h("h2", {}, `${ordinal(t.priority)}: ${t.name}`), trackCard(t, reload))),
+    const msg = state.cvMessage; state.cvMessage = null;
+    box.replaceChildren(msg ? h("div", { class: "box " + msg.cls, role: "status" }, msg.text) : "", ...tracks.map(t => h("div", {}, h("h2", {}, `${ordinal(t.priority)}: ${t.name}`), trackCard(t, reload))),
       tracks.length ? "" : h("p", { class: "muted" }, "Add a domain for each kind of role you want, e.g. Business Analyst and Data Analyst, and attach the CV tailored to it."));
   }
   const add = async (name, roles, priority) => { try { await api("POST", "/api/tracks", { name, target_roles: roles || [name], priority }); state.jobs = null; await reload(); } catch (x) { alert(x.message); } };
