@@ -199,8 +199,11 @@
     t.filename = filename; t.text = text; t.uploaded_at = new Date().toISOString();
     const kws = Engine.extractKeywords(text);
     if (kws.length && !t.keywords.length) t.keywords = kws.slice(0, 30);
+    // Point the matching at real job titles for what the CV shows (unless the candidate already chose their own).
+    const rolesSet = text.trim() ? Engine.rolesFromCv(text, t.name, t.target_roles) : [];
+    if (rolesSet.length) t.target_roles = rolesSet;
     writeStore(s);
-    return { filename, keywords: kws, needs_text: !text.trim(), tracks: s.tracks.map(publicTrack) };
+    return { filename, keywords: kws, needs_text: !text.trim(), roles_set: rolesSet, tracks: s.tracks.map(publicTrack) };
   });
   route("DELETE", /^\/api\/tracks\/(\d+)\/resume$/, m => {
     const s = readStore(); const t = s.tracks.find(x => x.id === +m[1]); if (!t) fail(404, "Track not found.");
