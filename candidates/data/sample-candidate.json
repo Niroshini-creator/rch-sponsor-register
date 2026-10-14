@@ -1,7 +1,7 @@
 {
- "generated_at": "2026-10-14T14:06:05+00:00",
+ "generated_at": "2026-10-14T14:31:08+00:00",
  "window_days": 7,
- "rules_version": "df9e5f6697e1",
+ "rules_version": "b65870ac2c59",
  "candidate": {
   "slug": "sample-candidate",
   "name": "Sample Candidate (fictional)",
@@ -232,8 +232,8 @@
  "sources": {
   "Shared sponsor feed": {
    "status": "ok",
-   "count": 5015,
-   "feed_generated_at": "2026-10-14T12:10:31+00:00"
+   "count": 5011,
+   "feed_generated_at": "2026-10-14T14:29:13+00:00"
   },
   "UK sponsor register": {
    "status": "ok",
@@ -241,32 +241,32 @@
   },
   "Reed": {
    "status": "ok",
-   "count": 961
+   "count": 946
   },
   "Adzuna": {
    "status": "ok",
-   "count": 923
+   "count": 925
   },
   "NHS Jobs": {
    "status": "ok",
-   "count": 1332
+   "count": 1347
   },
   "jobs.ac.uk": {
    "status": "ok",
-   "count": 37
+   "count": 36
   }
  },
  "counts": {
-  "considered": 8266,
-  "not_relevant": 6553,
-  "below_threshold": 850,
-  "other_roles_without_sponsor": 95,
+  "considered": 8263,
+  "not_relevant": 6565,
+  "below_threshold": 838,
+  "other_roles_without_sponsor": 93,
   "full_advert_read": 60,
-  "published": 405,
+  "published": 404,
   "by_tier": {
-   "1": 194,
+   "1": 192,
    "2": 0,
-   "3": 180,
+   "3": 181,
    "4": 31
   }
  },
@@ -1030,88 +1030,6 @@
    "flags": [],
    "hidden_by_default": [],
    "first_seen": "2026-10-14T05:40:35+00:00"
-  },
-  {
-   "source": "Reed",
-   "source_id": "57446167",
-   "title": "Internal Audit Analyst - Inspiring Vet Care",
-   "company": "eFinancialCareers",
-   "location": "Keynsham",
-   "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/internal-audit-analyst-inspiring-vet-care/57446167",
-   "posted_at": "2026-10-12T00:00:00+00:00",
-   "description": "At IVC Evidensia, we are a leading veterinary services provider in Europe and North America with more than 2,500 clinics and hospitals across 19 countries and around 42,000 employees. We aim to have an extraordinary impact on animal lives, supporting in the region of 25,000 animals every single day across our international network. IVC Evidensia exists to champion the long-term health and welfare of animals and deliver our purpose of Healthy Animals, Happy Owners. As an Internal Audit Analyst, y",
-   "salary": "",
-   "contract": "",
-   "channel": "aggregator",
-   "sponsorship": "licensed_sponsor",
-   "sponsor_register": "UK Home Office",
-   "sponsorship_evidence": "",
-   "sponsor_routes": [
-    "Skilled Worker"
-   ],
-   "sector": "Private Sector",
-   "domain": "Finance & Legal",
-   "role": "IT Compliance Analyst",
-   "region": "",
-   "english": false,
-   "early_career": "",
-   "aviation": "",
-   "low_sponsorship": false,
-   "salary_check": "",
-   "salary_annual": 0,
-   "salary_threshold": 0,
-   "size": "large",
-   "employer_site": "",
-   "id": "b8a9c90878b3",
-   "employer_tier": 3,
-   "match": 78,
-   "reasons": [
-    "+44 title is a IT Risk, Controls & Compliance role",
-    "+24 3 CV skill(s) found in the advert",
-    "+10 level fits the CV"
-   ],
-   "skills_matched": [
-    "stakeholder",
-    "compliance",
-    "governance"
-   ],
-   "evidence": "full",
-   "tier": 1,
-   "family": "it_risk_compliance",
-   "family_label": "IT Risk, Controls & Compliance",
-   "track": "Business Analyst",
-   "cv_to_use": "business_analyst_sample.pdf",
-   "sponsorship_label": "Licensed sponsor (advert silent)",
-   "sponsorship_rank": 2,
-   "sponsorship_offered": true,
-   "sponsorability": "usual",
-   "sponsorability_note": "Degree-level role: normally eligible for Skilled Worker sponsorship.",
-   "clearance": {
-    "level": "none",
-    "stance": "",
-    "label": "No clearance mentioned",
-    "quote": "",
-    "blocks": false
-   },
-   "driving_licence": {
-    "need": "",
-    "quote": "",
-    "status": ""
-   },
-   "nationality": {
-    "restricted": false,
-    "quote": ""
-   },
-   "work_mode": "",
-   "visa_pay": {
-    "status": "unstated",
-    "required": 33400,
-    "note": "Pay not stated. Skilled Worker new-entrant rate is £33,400."
-   },
-   "flags": [],
-   "hidden_by_default": [],
-   "first_seen": "2026-10-14T13:19:49+00:00"
   },
   {
    "source": "NHS Jobs",
@@ -3073,7 +2991,7 @@
    "company": "Rexel",
    "location": "Elmdon, Birmingham",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5919669259?se=dGGDn9jH8RGAlfW_0MlPiQ&utm_medium=api&utm_source=2f99c3af&v=9AFFDF33EAE1F07A316C48A394341AD6EEB6A8E8",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5919669259?se=WKZFJNzH8RGhzNBA4tDS2g&utm_medium=api&utm_source=2f99c3af&v=9AFFDF33EAE1F07A316C48A394341AD6EEB6A8E8",
    "posted_at": "2026-10-08T23:32:13+00:00",
    "description": "Company Description Are you an IAM professional looking to make an impact for an industry leader? Rexel is a global leader in electrical wholesale, distributing advanced electrical and energy-efficient products worldwide. We deliver smart, sustainable solutions engineered to enhance comfort, safety, and security across the residential, commercial, and industrial sectors. We are currently seeking a motivated Identity and Access Management (IAM) Analyst to maintain the security and integrity of o…",
    "salary": "50,906",
@@ -3468,7 +3386,7 @@
    "location": "UK - London",
    "country": "GB",
    "url": "https://astrazeneca.wd3.myworkdayjobs.com/Careers/job/UK---London/IT-Analyst---IBEX_R-261650",
-   "posted_at": "2026-10-12T11:06:07.667132+00:00",
+   "posted_at": "2026-10-12T13:21:50.764116+00:00",
    "description": "Job Title: IT Analyst Location: London Competitive salary and benefits Introduction to role: Are you ready to turn frontline technology support into a catalyst for better decisions, faster science and ultimately improved patient outcomes? Join us to be the trusted first point of contact for colleagues across the UK, resolving issues quickly and enabling them to get the most from our digital tools…",
    "salary": "",
    "contract": "Full time",
@@ -3547,7 +3465,7 @@
    "company": "MCS Group",
    "location": "Belfast, Northern Ireland",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5924656973?se=MlXgpNjH8RGRaISrBz_shw&utm_medium=api&utm_source=2f99c3af&v=3B07CBA876F18509AE15022FE80415290B6284C8",
+   "url": "https://www.adzuna.co.uk/jobs/details/5924656973?utm_medium=api&utm_source=2f99c3af",
    "posted_at": "2026-10-12T20:13:55+00:00",
    "description": "MCS Group is looking for a hands-on Business Analyst to support a payroll system implementation, focusing on testing, operational processes and preparing the service to go live. This Business Analyst position will suit someone who can look beyond traditional business analysis, challenge processes from a user perspective and translate project outputs into practical steps that make the service operational. The Role Analyse how the new system and agreed solution will impact day-to-day payroll oper…",
    "salary": "60,000",
@@ -4099,7 +4017,7 @@
    "company": "Baillie Martin",
    "location": "Ballymena, Northern Ireland",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5926199815?se=2NF-k9jH8RGBcOcq8JGNMQ&utm_medium=api&utm_source=2f99c3af&v=002BB3CAD394B551DFDEEA69C64F4E7BDA8DD460",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5926199815?se=KBzLF9zH8RGFNsUPVwpCqA&utm_medium=api&utm_source=2f99c3af&v=002BB3CAD394B551DFDEEA69C64F4E7BDA8DD460",
    "posted_at": "2026-10-13T20:23:30+00:00",
    "description": "Business Systems Analyst * Business Analyst * Systems Analyst * Integration Analyst Ballymena area ( starting salary 55k-65k excellent benefits) Working Hours:- 38.25 hrs per week (flexible working), WFH 1 day a week & 2pm Friday finish : ) My client, a top 100 NI employer, has an excellent opportunity for a Business Systems Analyst to join their busy and expanding technology dept. In this position you would improve the business systems landscape, support project delivery, define processes, de…",
    "salary": "65,000",
@@ -13333,90 +13251,6 @@
    "first_seen": "2026-10-14T05:40:35+00:00"
   },
   {
-   "source": "Airbus careers",
-   "source_id": "JR10430897",
-   "title": "IT Business Analyst for Extended Enterprise Connectivity Placement (12.5 months)",
-   "company": "Airbus",
-   "location": "Bristol Area",
-   "country": "GB",
-   "url": "https://ag.wd3.myworkdayjobs.com/Airbus/job/Bristol-Area/IT-Business-Analyst-for-Extended-Enterprise-Connectivity-Placement--125-months-_JR10430897",
-   "posted_at": "2026-10-08T11:41:53.820247+00:00",
-   "description": "Job Description: Start date: 16 August 2027 Location: Filton, Bristol Duration: 12.5 months Applications close on 18 October 2026 ! We love your interest in joining Airbus! There is no limit on the number of positions you can apply for, however, please be aware that you can only progress in the selection process for one position at a time . We recommend reviewing all available opportunities and…",
-   "salary": "",
-   "contract": "Full time",
-   "channel": "career_site",
-   "sponsorship": "licensed_sponsor",
-   "sponsor_register": "UK Home Office",
-   "sponsorship_evidence": "",
-   "sponsor_routes": [
-    "Global Business Mobility: Graduate Trainee",
-    "Global Business Mobility: Senior or Specialist Worker",
-    "Global Business Mobility: Service Supplier",
-    "International Agreement",
-    "Skilled Worker"
-   ],
-   "sector": "Private Sector",
-   "domain": "Management & Business",
-   "role": "Junior Business Analyst",
-   "region": "",
-   "english": true,
-   "early_career": "likely",
-   "aviation": "Business, Strategy & Performance",
-   "low_sponsorship": false,
-   "salary_check": "",
-   "salary_annual": 0,
-   "salary_threshold": 41700,
-   "size": "large",
-   "employer_site": "",
-   "id": "fa9aad1fd493",
-   "employer_tier": 1,
-   "match": 48,
-   "reasons": [
-    "+44 title is a Business Analyst role",
-    "+0 0 CV skill(s) found in the advert (extract only)",
-    "+4 assistant-level title"
-   ],
-   "skills_matched": [],
-   "evidence": "extract",
-   "tier": 1,
-   "family": "business_analyst",
-   "family_label": "Business Analyst",
-   "track": "Business Analyst",
-   "cv_to_use": "business_analyst_sample.pdf",
-   "sponsorship_label": "Licensed sponsor (advert silent)",
-   "sponsorship_rank": 2,
-   "sponsorship_offered": true,
-   "sponsorability": "usual",
-   "sponsorability_note": "Degree-level role: normally eligible for Skilled Worker sponsorship.",
-   "clearance": {
-    "level": "none",
-    "stance": "",
-    "label": "No clearance in the extract: check the advert",
-    "quote": "",
-    "blocks": false
-   },
-   "driving_licence": {
-    "need": "",
-    "quote": "",
-    "status": ""
-   },
-   "nationality": {
-    "restricted": false,
-    "quote": ""
-   },
-   "work_mode": "",
-   "visa_pay": {
-    "status": "unstated",
-    "required": 33400,
-    "note": "Pay not stated. Skilled Worker new-entrant rate is £33,400."
-   },
-   "flags": [
-    "Assistant level, below the CV"
-   ],
-   "hidden_by_default": [],
-   "first_seen": "2026-10-14T05:25:02+00:00"
-  },
-  {
    "source": "Cummins careers",
    "source_id": "2439731",
    "title": "Placement Student - Business Analyst",
@@ -15358,7 +15192,7 @@
    "location": "London, County London, England, United Kingdom",
    "country": "GB",
    "url": "https://wd1.myworkdaysite.com/recruiting/paypal/jobs/job/London-County-London-England-United-Kingdom/Sr-Director--PayPal-UK-Chief-Risk-Officer_R0138385",
-   "posted_at": "2026-10-13T11:56:09.615925+00:00",
+   "posted_at": "2026-10-13T14:13:02.247680+00:00",
    "description": "The Company PayPal has been revolutionizing commerce globally for more than 25 years. Creating innovative experiences that make moving money, selling, and shopping simple, personalized, and secure, PayPal empowers consumers and businesses in approximately 200 markets to join and thrive in the global economy. We operate a global, two-sided network at scale that connects hundreds of millions of…",
    "salary": "",
    "contract": "Full time",
@@ -15599,7 +15433,7 @@
    "location": "Newport",
    "country": "GB",
    "url": "https://ag.wd3.myworkdayjobs.com/Airbus/job/Newport/SAP-Consultant_JR10431628",
-   "posted_at": "2026-10-08T11:41:53.820247+00:00",
+   "posted_at": "2026-10-08T13:57:39.642330+00:00",
    "description": "Job Description: SECURITY CLEARANCE: Must have or be able to obtain UK Eyes Only SC Security Clearance via the UK Intelligence Community (UKIC) process. (This means you need to be a sole British National living in the United Kingdom for a minimum of 5 years). LOCATION: Newport (with some hybrid working available subject to our Hybrid Working Policy) TYPE: Full time WHAT'S IN IT FOR YOU Financial…",
    "salary": "",
    "contract": "Full time",
@@ -15763,7 +15597,7 @@
    "company": "Travel Trade Recruitment Limited",
    "location": "Surrey, South East England",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5924432724?se=AIXFgNjH8RGRaISrBz_shw&utm_medium=api&utm_source=2f99c3af&v=838636DD6F215625C1C2BDB3E6B6D04ECCF00FBD",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5924432724?se=CGbEA9zH8RGK1v6FiLbUOA&utm_medium=api&utm_source=2f99c3af&v=838636DD6F215625C1C2BDB3E6B6D04ECCF00FBD",
    "posted_at": "2026-10-12T18:07:48+00:00",
    "description": "Marketing Executive Needed South West London / Surrey area Hybrid - 2 days office / 3 days remote £29,000-£32,000 per annum, depending on experience Key Responsibilities Work with the Marketing Manager to plan and deliver integrated marketing campaigns across multiple channels. Coordinate campaigns with external partners, ensuring agreed requirements and deadlines are met. Maintain the marketing calendar and coordinate the timely production of content and creative assets. Manage the production …",
    "salary": "29,000 – 32,000",
@@ -15836,87 +15670,6 @@
    "hidden_by_default": [
     "no_sponsorship",
     "pay_below_visa"
-   ],
-   "first_seen": "2026-10-14T05:40:35+00:00"
-  },
-  {
-   "source": "Reed",
-   "source_id": "57440380",
-   "title": "Trainee Digital Marketing Executive",
-   "company": "ITOL Recruit",
-   "location": "United Kingdom",
-   "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/trainee-digital-marketing-executive/57440380",
-   "posted_at": "2026-10-09T00:00:00+00:00",
-   "description": "Trainee Digital Marketer – No Experience Needed Future-proof your career in Digital Marketing – starting today. Looking for a career change? You may already be working but want a role with clearer progression and better long-term prospects. Or you might be between jobs and ready to move into a new career path. The ITOL Recruit Digital Marketing Job Programme is designed to help you move into an in-demand digital marketing role, even if you have no prior experience. Train online at your own pace ",
-   "salary": "28,000 – 38,000",
-   "contract": "",
-   "channel": "aggregator",
-   "sponsorship": "agency",
-   "sponsor_register": "",
-   "sponsorship_evidence": "",
-   "sponsor_routes": [],
-   "sector": "Private Sector",
-   "domain": "Management & Business",
-   "role": "Marketing Executive",
-   "region": "",
-   "english": false,
-   "early_career": "",
-   "aviation": "",
-   "low_sponsorship": false,
-   "salary_check": "",
-   "salary_annual": 0,
-   "salary_threshold": 0,
-   "size": "unknown",
-   "employer_site": "",
-   "id": "cf2de8806830",
-   "employer_tier": 3,
-   "match": 65,
-   "reasons": [
-    "+43 title contains the target role “Marketing Executive”",
-    "+16 2 CV skill(s) found in the advert",
-    "+6 junior/graduate title"
-   ],
-   "skills_matched": [
-    "marketing",
-    "campaigns?"
-   ],
-   "evidence": "full",
-   "tier": 3,
-   "family": "marketing_exec",
-   "family_label": "Marketing Executive / Analyst",
-   "track": "Business Analyst",
-   "cv_to_use": "business_analyst_sample.pdf",
-   "sponsorship_label": "Agency advert, end employer unknown",
-   "sponsorship_rank": 5,
-   "sponsorship_offered": false,
-   "sponsorability": "rare",
-   "sponsorability_note": "Usually below the Skilled Worker skill level, so even licensed sponsors seldom sponsor it. Treat as a role for the Graduate visa period, and ask first.",
-   "clearance": {
-    "level": "none",
-    "stance": "",
-    "label": "No clearance mentioned",
-    "quote": "",
-    "blocks": false
-   },
-   "driving_licence": {
-    "need": "",
-    "quote": "",
-    "status": ""
-   },
-   "nationality": {
-    "restricted": false,
-    "quote": ""
-   },
-   "work_mode": "",
-   "visa_pay": {
-    "status": "partial",
-    "required": 33400,
-    "note": "Only the top of the range reaches the £33,400 new-entrant rate."
-   },
-   "flags": [],
-   "hidden_by_default": [
-    "no_sponsorship"
    ],
    "first_seen": "2026-10-14T05:40:35+00:00"
   },
@@ -16497,7 +16250,7 @@
    "location": "Cannock",
    "country": "GB",
    "url": "https://veoliauki.wd3.myworkdayjobs.com/VESCareers/job/Cannock/Account-Based-Marketing-Executive_JR32395",
-   "posted_at": "2026-10-13T11:57:11.585007+00:00",
+   "posted_at": "2026-10-13T14:14:09.087883+00:00",
    "description": "Ready to find the right role for you? Account Based Marketing Market Research Executive Salary: £30,000 dependant on experience plus bonus and other Veolia benefits Hours: 40 hours per week Location: Hybrid working in our Cannock office When you see the world as we do, you see the chance to help the world take better care of its resources and help it become a better place for everyone. It's why…",
    "salary": "",
    "contract": "Full time",
@@ -16744,7 +16497,7 @@
    "company": "Michael Page Digital",
    "location": "London, UK",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5919021497?se=nGHWl9jH8RGBcOcq8JGNMQ&utm_medium=api&utm_source=2f99c3af&v=729017D1C204951F03677251F8795BC58EC0C02E",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5919021497?se=HDC6G9zH8RGJi8wytEof2g&utm_medium=api&utm_source=2f99c3af&v=729017D1C204951F03677251F8795BC58EC0C02E",
    "posted_at": "2026-10-08T14:48:03+00:00",
    "description": "As Digital Marketing Executive, you will manage and deliver effective online marketing campaigns to support business. You'll play a key part in driving digital performance, from content creation to analysing campaign results. Client Details A fashion-led beauty brand, with HQ in London Description Plan and execute digital marketing campaigns across various platforms. Create engaging content to boost brand awareness and customer engagement. Analyse campaign performance and report on key metrics.…",
    "salary": "34,509",
@@ -17070,7 +16823,7 @@
    "company": "Netcom Training",
    "location": "Balsall Heath, Birmingham",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5924432420?se=AIXFgNjH8RGRaISrBz_shw&utm_medium=api&utm_source=2f99c3af&v=39DC420B2DA724DD1A847FBB3711CB7AA3CA92D4",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5924432420?se=CGbEA9zH8RGK1v6FiLbUOA&utm_medium=api&utm_source=2f99c3af&v=39DC420B2DA724DD1A847FBB3711CB7AA3CA92D4",
    "posted_at": "2026-10-12T18:07:14+00:00",
    "description": "About the opportunity Turn your passion for social media and digital content into career-ready skills with Netcom Training’s government-funded IT & Digital Skills course. Learn content creation, website design, SEO and analytics through practical online workshops, developing the technical and creative skills needed to strengthen a business’s online presence and prepare for digital roles. Course Details * Duration: 13 weeks * Format: Online, practical workshops * Schedule: Monday-Thursday, 6-9pm…",
    "salary": "33,289",
@@ -17152,7 +16905,7 @@
    "company": "Optima Recruitment",
    "location": "Kingston Upon Thames, South West London",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5924432418?se=AIXFgNjH8RGRaISrBz_shw&utm_medium=api&utm_source=2f99c3af&v=2CE38EB4CFF324CB8CA8FD5C24AA30B635BF6DA5",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5924432418?se=CGbEA9zH8RGK1v6FiLbUOA&utm_medium=api&utm_source=2f99c3af&v=2CE38EB4CFF324CB8CA8FD5C24AA30B635BF6DA5",
    "posted_at": "2026-10-12T18:07:14+00:00",
    "description": "Digital Marketing Executive An exciting opportunity has arisen to join a growing and innovative business as a Digital Marketing Executive. The role would suit someone who is commercially minded, highly organised and confident managing multiple projects in a fast-paced environment. * Based in Chessington * No prior experience required * Upto £32,000 per annum bonus * Full-time * On site gym Key Responsibilities * Plan, deliver and optimise digital marketing campaigns across multiple channels. *…",
    "salary": "28,000 – 32,000",
@@ -17234,7 +16987,7 @@
    "company": "Michael Page",
    "location": "Oxfordshire, South East England",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5924639573?se=AIXFgNjH8RGRaISrBz_shw&utm_medium=api&utm_source=2f99c3af&v=6337A0FD5643C65BCBDA3B24126FDC7D7AFD1EAA",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5924639573?se=CGbEA9zH8RGK1v6FiLbUOA&utm_medium=api&utm_source=2f99c3af&v=6337A0FD5643C65BCBDA3B24126FDC7D7AFD1EAA",
    "posted_at": "2026-10-12T19:58:08+00:00",
    "description": "This role supports the delivery of B2B marketing campaigns and initiatives within a growing sector, working closely with business leaders to drive growth and engagement. It offers the opportunity to create impactful marketing activity that builds strong relationships with senior stakeholders and enhances market presence. Client Details My client is a growing consultancy with an excellent reputation, offering employees genuine opportunities for career progression within a high-performing, collab…",
    "salary": "40,290",
@@ -17315,7 +17068,7 @@
    "company": "Gleeson Recruitment Group",
    "location": "Rutland, East Midlands",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5924641838?se=AIXFgNjH8RGRaISrBz_shw&utm_medium=api&utm_source=2f99c3af&v=390E2D5BED1C34CDFB24EB25DF303788039C114D",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5924641838?se=CGbEA9zH8RGK1v6FiLbUOA&utm_medium=api&utm_source=2f99c3af&v=390E2D5BED1C34CDFB24EB25DF303788039C114D",
    "posted_at": "2026-10-12T19:59:43+00:00",
    "description": "Performance Marketing Executive - Paid Social & Affiliates Rutland | Hybrid (2 days in the office) £35,000 I'm working with a well-established lifestyle brand business who are looking for a Performance Marketing Executive to join their team. This is a great opportunity for someone with a strong paid social background who enjoys getting into the detail of campaign performance, understanding what makes creative work and using data to drive results. You'll work across a portfolio of established ou…",
    "salary": "30,000 – 35,000",
@@ -17478,7 +17231,7 @@
    "company": "The Portfolio Group",
    "location": "Burbage, Hinckley",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5925891856?se=_OGvftjH8RGBcOcq8JGNMQ&utm_medium=api&utm_source=2f99c3af&v=A6CEC375FF59BA7C364C7541182BFA5189C15165",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5925891856?se=zC8mANzH8RGZxMi4d2RQEw&utm_medium=api&utm_source=2f99c3af&v=A6CEC375FF59BA7C364C7541182BFA5189C15165",
    "posted_at": "2026-10-13T15:58:42+00:00",
    "description": "Are you an Email Marketing and Automation expert with a proven track record of delivering high-performing campaigns that generate leads and drive sales? Our client, an established consultancy group supporting SMEs across the UK, is part of a multi-million-pound organisation renowned for its entrepreneurial culture and innovative approach. They're looking for an Automations Campaigns Manager to take ownership of email marketing campaigns, nurture programmes, and customer segmentation strategies …",
    "salary": "28,000 – 32,000",
@@ -17642,7 +17395,7 @@
    "company": "Veolia",
    "location": "Churchbridge, Cannock",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5926186420?se=_OGvftjH8RGBcOcq8JGNMQ&utm_medium=api&utm_source=2f99c3af&v=1B25D25E65CF8B9E76EF3A84D68CFCBF673AA100",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5926186420?se=zC8mANzH8RGZxMi4d2RQEw&utm_medium=api&utm_source=2f99c3af&v=1B25D25E65CF8B9E76EF3A84D68CFCBF673AA100",
    "posted_at": "2026-10-13T20:06:45+00:00",
    "description": "Account Based Marketing Market Research Executive Salary: £30,000 dependant on experience plus bonus and other Veolia benefits Hours: 40 hours per week Location:Hybrid working in our Cannock office When you see the world as we do, you see the chance to help the world take better care of its resources and help it become a better place for everyone. It's why we're looking for someone who's just as committed as we are, to push for genuine change and bring our ambition of Ecological Transformation …",
    "salary": "30,000",
@@ -18954,7 +18707,7 @@
    "company": "Teacheroo",
    "location": "Muirend, Glasgow",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5920246318?se=NJ_LfNjH8RGNapdKhZMzQQ&utm_medium=api&utm_source=2f99c3af&v=DDBA794D821B069141ABB784C6F72CAF68251628",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5920246318?se=8oJF_tvH8RGK1v6FiLbUOA&utm_medium=api&utm_source=2f99c3af&v=DDBA794D821B069141ABB784C6F72CAF68251628",
    "posted_at": "2026-10-09T08:09:04+00:00",
    "description": "This is an exciting opportunity to join our small and dynamic Marketing, Admissions and Communications team at a pivotal moment in the School’s development. Reporting to the Head of External Relations, you’ll lead the creation and delivery of high-quality digital content that reflects our brand, values, and ambition. From managing day-to-day social media, to capturing photo and video content across campus, to driving digital engagement strategies – you’ll be at the heart of how we present ourse…",
    "salary": "28,000 – 30,000",
@@ -19356,7 +19109,7 @@
    "company": "Pertemps Southampton",
    "location": "Oakfield, Ryde",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5921115328?se=AIXFgNjH8RGRaISrBz_shw&utm_medium=api&utm_source=2f99c3af&v=51DB5F5D0CBB4BEF9A0630B183E8C3AD476AB4C4",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5921115328?se=CGbEA9zH8RGK1v6FiLbUOA&utm_medium=api&utm_source=2f99c3af&v=51DB5F5D0CBB4BEF9A0630B183E8C3AD476AB4C4",
    "posted_at": "2026-10-09T19:55:20+00:00",
    "description": "Marketing Executive Location: Isle of Wight (Hybrid working – minimum 2 days on-site) Salary: £35,000 – £40,000 per annum (depending on experience) Working Hours: Monday – Friday, 9:00 AM – 5:00 PM (flexibility required for events/meeting) Pertemps are currently recruiting for a commercially minded Customer Marketing Executive to join a leading business based on the Isle of Wight. The successful candidate will play a key role in driving brand visibility, rate of sale and growth across off-trade…",
    "salary": "35,000 – 40,000",
@@ -19516,7 +19269,7 @@
    "company": "VANRATH",
    "location": "Belfast, Northern Ireland",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5921123856?se=AIXFgNjH8RGRaISrBz_shw&utm_medium=api&utm_source=2f99c3af&v=AAE75F8C5844D06028E45872F046B3B863E469AC",
+   "url": "https://www.adzuna.co.uk/jobs/details/5921123856?utm_medium=api&utm_source=2f99c3af",
    "posted_at": "2026-10-09T20:17:19+00:00",
    "description": "VANRATH are recruiting for a Content Marketing Executive to join a high-profile organisation with a strong presence across Belfast and Northern Ireland. This is a varied, content-led marketing role suited to someone who enjoys creating engaging content, developing digital campaigns and telling stories that connect with different audiences. You'll work closely with businesses, organisations, community groups and external stakeholders to develop content that showcases people, projects and initiat…",
    "salary": "40,000",
@@ -19757,7 +19510,7 @@
    "company": "Sainsbury's",
    "location": "London, UK",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5921720523?se=AIXFgNjH8RGRaISrBz_shw&utm_medium=api&utm_source=2f99c3af&v=BAF8E41D2F11F26BADE3D4045A4B1FFB278215CE",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5921720523?se=CGbEA9zH8RGK1v6FiLbUOA&utm_medium=api&utm_source=2f99c3af&v=BAF8E41D2F11F26BADE3D4045A4B1FFB278215CE",
    "posted_at": "2026-10-10T06:23:14+00:00",
    "description": "About the team Nectar360 sits at the heart of Sainsbury's loyalty, data, insights and retail media offering. As our ambition as a strategic media owner grows, the B2B Marketing team plays an important part in showing brand, agency and industry audiences what makes our proposition distinctive. You will join a collaborative, fast-moving environment where strong ideas, customer understanding and commercial impact are turned into content that earns attention and builds authority. More about the rol…",
    "salary": "33,217",
@@ -20321,7 +20074,7 @@
    "company": "Sainsbury's",
    "location": "Farringdon, Central London",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5923031985?se=AIXFgNjH8RGRaISrBz_shw&utm_medium=api&utm_source=2f99c3af&v=3B0F38B413A1EC9BC6A7C9F2B3971824BD939A62",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5923031985?se=CGbEA9zH8RGK1v6FiLbUOA&utm_medium=api&utm_source=2f99c3af&v=3B0F38B413A1EC9BC6A7C9F2B3971824BD939A62",
    "posted_at": "2026-10-11T09:34:31+00:00",
    "description": "Description About the team Nectar360 sits at the heart of Sainsbury's loyalty, data, insights and retail media offering. As our ambition as a strategic media owner grows, the B2B Marketing team plays an important part in showing brand, agency and industry audiences what makes our proposition distinctive. You will join a collaborative, fast-moving environment where strong ideas, customer understanding and commercial impact are turned into content that earns attention and builds authority. More a…",
    "salary": "36,252",
@@ -20642,7 +20395,7 @@
    "company": "Share Bristol",
    "location": "Bristol, South West England",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5924627750?se=NJ_LfNjH8RGNapdKhZMzQQ&utm_medium=api&utm_source=2f99c3af&v=673DC80F5D04E7544A7A30CC22FF2C3468F67DBA",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5924627750?se=8oJF_tvH8RGK1v6FiLbUOA&utm_medium=api&utm_source=2f99c3af&v=673DC80F5D04E7544A7A30CC22FF2C3468F67DBA",
    "posted_at": "2026-10-12T19:53:49+00:00",
    "description": "Marketing Coordinator Contract: Maternity cover (9 months) Hours: Part Time. 10 -12 hours per week (average) to be worked at mutually agreed times, but over at least three days per week Location: Home-based in the Bristol Area Salary: £16.70 per hour. Free membership of Share Bristol. About Us: The Library of Things movement is growing around the world, but Share Bristol is proudly independent and rooted right here in our community. We want everyone in Bristol and South Gloucestershire to have …",
    "salary": "34,736",
@@ -20722,7 +20475,7 @@
    "company": "Plus One Recruitment",
    "location": "Banbury, Oxfordshire",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5924641847?se=_OGvftjH8RGBcOcq8JGNMQ&utm_medium=api&utm_source=2f99c3af&v=3BF0C446F549A532650FCE0DA274F78D2C3AC5E5",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5924641847?se=CGbEA9zH8RGK1v6FiLbUOA&utm_medium=api&utm_source=2f99c3af&v=3BF0C446F549A532650FCE0DA274F78D2C3AC5E5",
    "posted_at": "2026-10-12T19:59:44+00:00",
    "description": "Marketing Executive Hybrid | Full Time | Permanent About the Employer An established UK technology business providing IT infrastructure, data protection, disaster recovery and enterprise technology solutions to organisations across a range of sectors. Working closely with leading global technology vendors, the company combines specialist technical expertise with long-standing industry experience to help customers protect, manage and modernise business-critical IT environments. The Role An excit…",
    "salary": "34,868",
@@ -21204,7 +20957,7 @@
    "company": "Get-Recruited  Ltd",
    "location": "Farringdon, Central London",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5926186421?se=NJ_LfNjH8RGNapdKhZMzQQ&utm_medium=api&utm_source=2f99c3af&v=E78616AD7A660B7D7B4F4FFFE10A34926AF8D10E",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5926186421?se=8oJF_tvH8RGK1v6FiLbUOA&utm_medium=api&utm_source=2f99c3af&v=E78616AD7A660B7D7B4F4FFFE10A34926AF8D10E",
    "posted_at": "2026-10-13T20:06:45+00:00",
    "description": "DIGITAL MARKETING EXECUTIVE £30,500 London - Hybrid Get Recruited is supporting an established organisation to recruit a Digital Marketing Executive. This is an exciting opportunity to join a growing marketing and communications team, where you'll have room to contribute ideas and develop your skills. You'll join a friendly, supportive organisation with a collaborative culture and an approachable leadership team. With investment in the marketing function and a new director joining, it's a great…",
    "salary": "30,000",
@@ -21768,7 +21521,7 @@
    "company": "Zachary Daniels Recruitment",
    "location": "Lancashire, North West England",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5927548418?se=2NF-k9jH8RGBcOcq8JGNMQ&utm_medium=api&utm_source=2f99c3af&v=A6D5A74245AA84E5E15DDD086D2E19DB48BFA1E3",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5927548418?se=KBzLF9zH8RGFNsUPVwpCqA&utm_medium=api&utm_source=2f99c3af&v=A6D5A74245AA84E5E15DDD086D2E19DB48BFA1E3",
    "posted_at": "2026-10-14T14:04:54+00:00",
    "description": "Digital Marketing Data Analyst Location: Lancashire, Hybrid Salary: £50,000 - £60,000 Contract: Full-time, permanent Zachary Daniels Recruitment is partnering with a fast-growing ecommerce and consumer brand to recruit a Marketing Data Analyst. This is an opportunity to join an ambitious business at an exciting stage of its growth. Reporting directly to the CMO, you will become the analytical engine behind the marketing team, helping turn customer, campaign and commercial data into clear action…",
    "salary": "50,000 – 60,000",
@@ -22508,6 +22261,167 @@
    "first_seen": "2026-10-14T05:40:35+00:00"
   },
   {
+   "source": "Reed",
+   "source_id": "57440380",
+   "title": "Trainee Digital Marketing Executive",
+   "company": "ITOL Recruit",
+   "location": "United Kingdom",
+   "country": "GB",
+   "url": "https://www.reed.co.uk/jobs/trainee-digital-marketing-executive/57440380",
+   "posted_at": "2026-10-09T00:00:00+00:00",
+   "description": "Trainee Digital Marketer – No Experience Needed Future-proof your career in Digital Marketing – starting today. Looking for a career change? You may already be working but want a role with clearer progression and better long-term prospects. Or you might be between jobs and ready to move into a new career path. The ITOL Recruit Digital Marketing Job Programme is designed to help you move into an in-demand digital marketing role, even if you have ...",
+   "salary": "28,000 – 38,000",
+   "contract": "",
+   "channel": "aggregator",
+   "sponsorship": "agency",
+   "sponsor_register": "",
+   "sponsorship_evidence": "",
+   "sponsor_routes": [],
+   "sector": "Private Sector",
+   "domain": "Management & Business",
+   "role": "Marketing Executive",
+   "region": "",
+   "english": false,
+   "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
+   "salary_check": "",
+   "salary_annual": 0,
+   "salary_threshold": 0,
+   "size": "unknown",
+   "employer_site": "",
+   "id": "cf2de8806830",
+   "employer_tier": 3,
+   "match": 53,
+   "reasons": [
+    "+43 title contains the target role “Marketing Executive”",
+    "+4 1 CV skill(s) found in the advert (extract only)",
+    "+6 junior/graduate title"
+   ],
+   "skills_matched": [
+    "marketing"
+   ],
+   "evidence": "extract",
+   "tier": 3,
+   "family": "marketing_exec",
+   "family_label": "Marketing Executive / Analyst",
+   "track": "Business Analyst",
+   "cv_to_use": "business_analyst_sample.pdf",
+   "sponsorship_label": "Agency advert, end employer unknown",
+   "sponsorship_rank": 5,
+   "sponsorship_offered": false,
+   "sponsorability": "rare",
+   "sponsorability_note": "Usually below the Skilled Worker skill level, so even licensed sponsors seldom sponsor it. Treat as a role for the Graduate visa period, and ask first.",
+   "clearance": {
+    "level": "none",
+    "stance": "",
+    "label": "No clearance in the extract: check the advert",
+    "quote": "",
+    "blocks": false
+   },
+   "driving_licence": {
+    "need": "",
+    "quote": "",
+    "status": ""
+   },
+   "nationality": {
+    "restricted": false,
+    "quote": ""
+   },
+   "work_mode": "",
+   "visa_pay": {
+    "status": "partial",
+    "required": 33400,
+    "note": "Only the top of the range reaches the £33,400 new-entrant rate."
+   },
+   "flags": [],
+   "hidden_by_default": [
+    "no_sponsorship"
+   ],
+   "first_seen": "2026-10-14T05:40:35+00:00"
+  },
+  {
+   "source": "Adzuna",
+   "source_id": "5927583762",
+   "title": "Junior Sales & Marketing Executive",
+   "company": "River NW LTD",
+   "location": "South East London, London",
+   "country": "GB",
+   "url": "https://www.adzuna.co.uk/jobs/details/5927583762?utm_medium=api&utm_source=2f99c3af",
+   "posted_at": "2026-10-14T15:15:29+00:00",
+   "description": "Junior Sales & Marketing Role No Experience Needed! Looking for an exciting career instead of just another job? No experience? No problem. Full training provided. Full-Time: 9-5PM MONDAY TO FRIDAY Part-time: Any 3 days (minimum) per week between Monday-Saturday - Hours 9-5pm Kickstart your career journey with us. We are currently looking for ambitious, outgoing, and enthusiastic individuals to join our growing Sales & Marketing team based in South London, Vauxhall . If you're ready for a fresh …",
+   "salary": "30,000",
+   "contract": "part_time",
+   "channel": "aggregator",
+   "sponsorship": "unverified",
+   "sponsor_register": "",
+   "sponsorship_evidence": "",
+   "sponsor_routes": [],
+   "sector": "Private Sector",
+   "domain": "Management & Business",
+   "role": "Marketing Executive",
+   "region": "",
+   "english": false,
+   "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
+   "salary_check": "",
+   "salary_annual": 0,
+   "salary_threshold": 0,
+   "size": "unknown",
+   "employer_site": "",
+   "id": "b8c32fa79ed9",
+   "employer_tier": 3,
+   "match": 53,
+   "reasons": [
+    "+43 title contains the target role “Marketing Executive”",
+    "+4 1 CV skill(s) found in the advert (extract only)",
+    "+6 junior/graduate title"
+   ],
+   "skills_matched": [
+    "marketing"
+   ],
+   "evidence": "extract",
+   "tier": 3,
+   "family": "marketing_exec",
+   "family_label": "Marketing Executive / Analyst",
+   "track": "Business Analyst",
+   "cv_to_use": "business_analyst_sample.pdf",
+   "sponsorship_label": "Employer not on sponsor register",
+   "sponsorship_rank": 5,
+   "sponsorship_offered": false,
+   "sponsorability": "rare",
+   "sponsorability_note": "Usually below the Skilled Worker skill level, so even licensed sponsors seldom sponsor it. Treat as a role for the Graduate visa period, and ask first.",
+   "clearance": {
+    "level": "none",
+    "stance": "",
+    "label": "No clearance in the extract: check the advert",
+    "quote": "",
+    "blocks": false
+   },
+   "driving_licence": {
+    "need": "",
+    "quote": "",
+    "status": ""
+   },
+   "nationality": {
+    "restricted": false,
+    "quote": ""
+   },
+   "work_mode": "",
+   "visa_pay": {
+    "status": "below",
+    "required": 33400,
+    "note": "Pay tops out below the £33,400 Skilled Worker new-entrant rate: cannot be sponsored at this pay."
+   },
+   "flags": [],
+   "hidden_by_default": [
+    "no_sponsorship",
+    "pay_below_visa"
+   ],
+   "first_seen": "2026-10-14T14:31:08+00:00"
+  },
+  {
    "source": "Teaching Vacancies",
    "source_id": "https://teaching-vacancies.service.gov.uk/jobs/marketing-officer-7e5d89f3-aa30-4103-8e70-a83b509a9118",
    "title": "Marketing Officer",
@@ -22676,7 +22590,7 @@
    "company": "Get-Recruited  Ltd",
    "location": "Farringdon, Central London",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5917517847?se=NJ_LfNjH8RGNapdKhZMzQQ&utm_medium=api&utm_source=2f99c3af&v=9C8319B302F9B4A7DACCABE98E1A94C596F0AE2A",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5917517847?se=8oJF_tvH8RGK1v6FiLbUOA&utm_medium=api&utm_source=2f99c3af&v=9C8319B302F9B4A7DACCABE98E1A94C596F0AE2A",
    "posted_at": "2026-10-07T19:12:44+00:00",
    "description": "SOCIAL MEDIA EXECUTIVE £30,500 London - Hybrid Do you enjoy creating engaging content, planning social media activity and bringing fresh ideas to a marketing team? Get Recruited is supporting an established organisation to recruit a Social Media Executive. This is an exciting opportunity to join a growing marketing and communications team, where you'll have room to contribute ideas and develop your skills. You'll join a friendly, supportive organisation with a collaborative culture and an appro…",
    "salary": "30,000",
@@ -22919,7 +22833,7 @@
    "company": "Prime Appointments",
    "location": "Creeting St. Peter, Ipswich",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5926186417?se=CFCxqNjH8RGNapdKhZMzQQ&utm_medium=api&utm_source=2f99c3af&v=3BF0B461759A42ECF543391F664E878B348970BA",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5926186417?se=OByDMdzH8RGZxMi4d2RQEw&utm_medium=api&utm_source=2f99c3af&v=3BF0B461759A42ECF543391F664E878B348970BA",
    "posted_at": "2026-10-13T20:06:42+00:00",
    "description": "Location: Stowmarket, Suffolk Pay Rate: £38,000 per annum, pro rata Hours: Full-time, 40 hours per week, with flexible start times between 8:00am and 9:00am OR part-time, 3 days per week Contract: Fixed-term maternity cover, potentially until mid-November 2027 We are looking for a proactive Marketing Specialist to support the marketing activities of a growing manufacturer within the arboriculture machinery sector. Working as part of the Sales, Marketing and Aftersales team, you will help delive…",
    "salary": "37,980",
@@ -23330,7 +23244,7 @@
    "company": "IT Online Learning",
    "location": "Liverpool, Merseyside",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5918729762?se=nGHWl9jH8RGBcOcq8JGNMQ&utm_medium=api&utm_source=2f99c3af&v=9409F926A5E6FA7EE816F978521B3E58217AC883",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5918729762?se=HDC6G9zH8RGJi8wytEof2g&utm_medium=api&utm_source=2f99c3af&v=9409F926A5E6FA7EE816F978521B3E58217AC883",
    "posted_at": "2026-10-08T10:45:14+00:00",
    "description": "Digital Marketing Executive Placement Programme – No experience needed From £27,000 to £60,000 per annum Trainee Digital Marketing Executive – £27,000–£60,000 – Job Programme This is a self-funded programme that leads to employment, fees apply. Job Guarantee Complete the programme and get a job, or get your course fees back. Location: UK Wide (Remote Opportunities Available) Looking to start a career in Digital Marketing? We are offering a structured pathway into Digital Marketing, designed to …",
    "salary": "60,000",
@@ -23412,7 +23326,7 @@
    "company": "IT Online Learning",
    "location": "Edinburgh, Scotland",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5918729775?se=nGHWl9jH8RGBcOcq8JGNMQ&utm_medium=api&utm_source=2f99c3af&v=8326B9289B881C2F472BCC4423933569D2300987",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5918729775?se=HDC6G9zH8RGJi8wytEof2g&utm_medium=api&utm_source=2f99c3af&v=8326B9289B881C2F472BCC4423933569D2300987",
    "posted_at": "2026-10-08T10:45:14+00:00",
    "description": "Digital Marketing Executive Placement Programme – No experience needed From £27,000 to £60,000 per annum Trainee Digital Marketing Executive – £27,000–£60,000 – Job Programme This is a self-funded programme that leads to employment, fees apply. Job Guarantee Complete the programme and get a job, or get your course fees back. Location: UK Wide (Remote Opportunities Available) Looking to start a career in Digital Marketing? We are offering a structured pathway into Digital Marketing, designed to …",
    "salary": "60,000",
@@ -23494,7 +23408,7 @@
    "company": "IT Online Learning",
    "location": "Glasgow, Scotland",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5919271704?se=nGHWl9jH8RGBcOcq8JGNMQ&utm_medium=api&utm_source=2f99c3af&v=8129A3E33ABFE3795488F0B19BC09987CA043680",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5919271704?se=HDC6G9zH8RGJi8wytEof2g&utm_medium=api&utm_source=2f99c3af&v=8129A3E33ABFE3795488F0B19BC09987CA043680",
    "posted_at": "2026-10-08T17:08:10+00:00",
    "description": "Digital Marketing Executive Placement Programme – No experience needed From £27,000 to £60,000 per annum Trainee Digital Marketing Executive – £27,000–£60,000 – Job Programme This is a self-funded programme that leads to employment, fees apply. Job Guarantee Complete the programme and get a job, or get your course fees back. Location: UK Wide (Remote Opportunities Available) Looking to start a career in Digital Marketing? We are offering a structured pathway into Digital Marketing, designed to …",
    "salary": "60,000",
@@ -23576,7 +23490,7 @@
    "company": "IT Online Learning",
    "location": "Manchester, Greater Manchester",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5919271728?se=nGHWl9jH8RGBcOcq8JGNMQ&utm_medium=api&utm_source=2f99c3af&v=57DA857C2EF6AE61E5CB8661936C609102AA523C",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5919271728?se=HDC6G9zH8RGJi8wytEof2g&utm_medium=api&utm_source=2f99c3af&v=57DA857C2EF6AE61E5CB8661936C609102AA523C",
    "posted_at": "2026-10-08T17:08:11+00:00",
    "description": "Digital Marketing Executive Placement Programme – No experience needed From £27,000 to £60,000 per annum Trainee Digital Marketing Executive – £27,000–£60,000 – Job Programme This is a self-funded programme that leads to employment, fees apply. Job Guarantee Complete the programme and get a job, or get your course fees back. Location: UK Wide (Remote Opportunities Available) Looking to start a career in Digital Marketing? We are offering a structured pathway into Digital Marketing, designed to …",
    "salary": "60,000",
@@ -23658,7 +23572,7 @@
    "company": "IT Online Learning",
    "location": "North West London, London",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5919271710?se=nGHWl9jH8RGBcOcq8JGNMQ&utm_medium=api&utm_source=2f99c3af&v=93DC8616E72EBDA9E5EF3879E7AB2F0B41DAC68B",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5919271710?se=HDC6G9zH8RGJi8wytEof2g&utm_medium=api&utm_source=2f99c3af&v=93DC8616E72EBDA9E5EF3879E7AB2F0B41DAC68B",
    "posted_at": "2026-10-08T17:08:11+00:00",
    "description": "Digital Marketing Executive Placement Programme – No experience needed From £27,000 to £60,000 per annum Trainee Digital Marketing Executive – £27,000–£60,000 – Job Programme This is a self-funded programme that leads to employment, fees apply. Job Guarantee Complete the programme and get a job, or get your course fees back. Location: UK Wide (Remote Opportunities Available) Looking to start a career in Digital Marketing? We are offering a structured pathway into Digital Marketing, designed to …",
    "salary": "60,000",
@@ -23740,7 +23654,7 @@
    "company": "IT Online Learning",
    "location": "Birmingham, West Midlands",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5919271734?se=nGHWl9jH8RGBcOcq8JGNMQ&utm_medium=api&utm_source=2f99c3af&v=1AF24123AFC41CAF6B69C48A8947B33FD0795EAC",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5919271734?se=HDC6G9zH8RGJi8wytEof2g&utm_medium=api&utm_source=2f99c3af&v=1AF24123AFC41CAF6B69C48A8947B33FD0795EAC",
    "posted_at": "2026-10-08T17:08:11+00:00",
    "description": "Digital Marketing Executive Placement Programme – No experience needed From £27,000 to £60,000 per annum Trainee Digital Marketing Executive – £27,000–£60,000 – Job Programme This is a self-funded programme that leads to employment, fees apply. Job Guarantee Complete the programme and get a job, or get your course fees back. Location: UK Wide (Remote Opportunities Available) Looking to start a career in Digital Marketing? We are offering a structured pathway into Digital Marketing, designed to …",
    "salary": "60,000",
@@ -23822,7 +23736,7 @@
    "company": "IT Online Learning",
    "location": "Cardiff County, Wales",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5919271719?se=nGHWl9jH8RGBcOcq8JGNMQ&utm_medium=api&utm_source=2f99c3af&v=38AB0FA39437F313FFFDF166941C1ADA9F15A981",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5919271719?se=HDC6G9zH8RGJi8wytEof2g&utm_medium=api&utm_source=2f99c3af&v=38AB0FA39437F313FFFDF166941C1ADA9F15A981",
    "posted_at": "2026-10-08T17:08:11+00:00",
    "description": "Digital Marketing Executive Placement Programme – No experience needed From £27,000 to £60,000 per annum Trainee Digital Marketing Executive – £27,000–£60,000 – Job Programme This is a self-funded programme that leads to employment, fees apply. Job Guarantee Complete the programme and get a job, or get your course fees back. Location: UK Wide (Remote Opportunities Available) Looking to start a career in Digital Marketing? We are offering a structured pathway into Digital Marketing, designed to …",
    "salary": "60,000",
@@ -23904,7 +23818,7 @@
    "company": "IT Online Learning",
    "location": "UK",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5920415266?se=AIXFgNjH8RGRaISrBz_shw&utm_medium=api&utm_source=2f99c3af&v=BADAB20D7D96D432D696EFAE84F504686A15C5C6",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5920415266?se=CGbEA9zH8RGK1v6FiLbUOA&utm_medium=api&utm_source=2f99c3af&v=BADAB20D7D96D432D696EFAE84F504686A15C5C6",
    "posted_at": "2026-10-09T11:50:36+00:00",
    "description": "Digital Marketing Executive Placement Programme No experience needed From £27,000 to £60,000 per annum Trainee Digital Marketing Executive £27,000£60,000 Job Programme This is a self-funded programme that leads to employment, fees apply. Job Guarantee Complete the programme and get a job, or get your course fees back. Location: UK Wide (Remote Opportunities Available) Looking to start a career in Digi",
    "salary": "60,000",
@@ -23986,7 +23900,7 @@
    "company": "IT Online Learning",
    "location": "London, UK",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5921798307?se=AIXFgNjH8RGRaISrBz_shw&utm_medium=api&utm_source=2f99c3af&v=F40FD42842DAE8AEB2136052FBC3FC4CD8A8C41B",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5921798307?se=CGbEA9zH8RGK1v6FiLbUOA&utm_medium=api&utm_source=2f99c3af&v=F40FD42842DAE8AEB2136052FBC3FC4CD8A8C41B",
    "posted_at": "2026-10-10T07:47:31+00:00",
    "description": "Digital Marketing Executive Placement Programme – No experience needed From £27,000 to £60,000 per annum Trainee Digital Marketing Executive – £27,000–£60,000 – Job Programme This is a self-funded programme that leads to employment, fees apply. Job Guarantee Complete the programme and get a job, or get your course fees back. Location: UK Wide (Remote Opportunities Available) Looking to start a career in Digital Marketing? We are offering a structured pathway into Digital Marketing, designed to …",
    "salary": "60,000",
@@ -24646,7 +24560,7 @@
    "company": "Forward Role",
    "location": "Bromley Cross, Bolton",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5922502451?se=AIXFgNjH8RGRaISrBz_shw&utm_medium=api&utm_source=2f99c3af&v=6DABED8577FE350A87BAE89F0D5C84A21A9F19B0",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5922502451?se=CGbEA9zH8RGK1v6FiLbUOA&utm_medium=api&utm_source=2f99c3af&v=6DABED8577FE350A87BAE89F0D5C84A21A9F19B0",
    "posted_at": "2026-10-10T19:54:01+00:00",
    "description": "Senior Performance Marketing Executive Bolton (hybrid, 2 days in office) £35k The role Our client is an international ecommerce retailer looking to hire a brand new Senior Performance Marketing Executive to take ownership of their paid social channels. You'll drive high-quality traffic, conversions and revenue, mainly in the UK but also supporting growth in international markets in a long established, well known Retail brand. You'll run Paid Social day to day and work with the Head of Digital &…",
    "salary": "35,000",
@@ -25215,7 +25129,7 @@
    "location": "Stevenage",
    "country": "GB",
    "url": "https://ag.wd3.myworkdayjobs.com/Airbus/job/Stevenage/Environmental-Test-Engineer_JR10408723",
-   "posted_at": "2026-10-13T11:41:53.820247+00:00",
+   "posted_at": "2026-10-13T13:57:39.642330+00:00",
    "description": "Job Description: SECURITY CLEARANCE: Eligibility to gain UK SC Security Clearance TRAVEL REQUIRED: No travel LOCATION: Stevenage. This role is 100% shopfloor / office based TYPE: Full time WHAT'S IN IT FOR YOU Financial Reward: Competitive salary, annual profit share, contributory pension, share options, car leasing scheme, free onsite parking, tax-free technology scheme, discounted shopping and…",
    "salary": "",
    "contract": "Full time",
@@ -26935,7 +26849,7 @@
    "company": "Bis Henderson",
    "location": "Bestwood Village, Nottingham",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5921114206?se=JFHzhdjH8RGTSJ8F2n7gsw&utm_medium=api&utm_source=2f99c3af&v=A686FAC194449A18698D39E4AE5E17E17C21BF5A",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5921114206?se=oD4NCdzH8RGhzNBA4tDS2g&utm_medium=api&utm_source=2f99c3af&v=A686FAC194449A18698D39E4AE5E17E17C21BF5A",
    "posted_at": "2026-10-09T19:47:57+00:00",
    "description": "Interim UAT Test Analyst / Test Manager £300-£325 per day Home-based with occasional travel to sites 4-5 month contract We are seeking an experienced Interim UAT Test Analyst / Test Manager to support a major international supply chain and transportation transformation programme, implementing a new 4PL and Transport Management System (TMS) solution across Europe. The programme is entering a critical phase of its European rollout, covering the UK, France, Czech Republic and Netherlands. This pha…",
    "salary": "78,000 – 84,500",
@@ -27504,6 +27418,170 @@
   },
   {
    "source": "Reed",
+   "source_id": "57451889",
+   "title": "Trainee Social Media Manager",
+   "company": "ITOL Recruit",
+   "location": "GL12TG",
+   "country": "GB",
+   "url": "https://www.reed.co.uk/jobs/trainee-social-media-manager/57451889",
+   "posted_at": "2026-10-13T00:00:00+00:00",
+   "description": "Trainee Social Media Manager – No Experience Needed Future-proof your career in Digital Marketing – starting today. Looking for a career change? You may already be working but want a role with clearer progression and better long-term prospects. Or you might be between jobs and ready to move into a new career path. The ITOL Recruit Digital Marketing Job Programme is designed to help you move into an in-demand digital marketing role, even if you h...",
+   "salary": "28,000 – 38,000",
+   "contract": "",
+   "channel": "aggregator",
+   "sponsorship": "agency",
+   "sponsor_register": "",
+   "sponsorship_evidence": "",
+   "sponsor_routes": [],
+   "sector": "Private Sector",
+   "domain": "Management & Business",
+   "role": "Social Media & Content Coordinator",
+   "region": "",
+   "english": false,
+   "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
+   "salary_check": "",
+   "salary_annual": 0,
+   "salary_threshold": 0,
+   "size": "unknown",
+   "employer_site": "",
+   "id": "ef6a9dcbf03f",
+   "employer_tier": 3,
+   "match": 45,
+   "reasons": [
+    "+38 title is a Digital Marketing role",
+    "+4 1 CV skill(s) found in the advert (extract only)",
+    "+3 senior title"
+   ],
+   "skills_matched": [
+    "marketing"
+   ],
+   "evidence": "extract",
+   "tier": 3,
+   "family": "digital_marketing",
+   "family_label": "Digital Marketing",
+   "track": "Business Analyst",
+   "cv_to_use": "business_analyst_sample.pdf",
+   "sponsorship_label": "Agency advert, end employer unknown",
+   "sponsorship_rank": 5,
+   "sponsorship_offered": false,
+   "sponsorability": "rare",
+   "sponsorability_note": "Usually below the Skilled Worker skill level, so even licensed sponsors seldom sponsor it. Treat as a role for the Graduate visa period, and ask first.",
+   "clearance": {
+    "level": "none",
+    "stance": "",
+    "label": "No clearance in the extract: check the advert",
+    "quote": "",
+    "blocks": false
+   },
+   "driving_licence": {
+    "need": "",
+    "quote": "",
+    "status": ""
+   },
+   "nationality": {
+    "restricted": false,
+    "quote": ""
+   },
+   "work_mode": "",
+   "visa_pay": {
+    "status": "partial",
+    "required": 33400,
+    "note": "Only the top of the range reaches the £33,400 new-entrant rate."
+   },
+   "flags": [
+    "Senior level"
+   ],
+   "hidden_by_default": [
+    "no_sponsorship"
+   ],
+   "first_seen": "2026-10-14T05:40:35+00:00"
+  },
+  {
+   "source": "Reed",
+   "source_id": "57451882",
+   "title": "Trainee Social Media Manager",
+   "company": "ITOL Recruit",
+   "location": "HD11BG",
+   "country": "GB",
+   "url": "https://www.reed.co.uk/jobs/trainee-social-media-manager/57451882",
+   "posted_at": "2026-10-13T00:00:00+00:00",
+   "description": "Trainee Social Media Manager – No Experience Needed Future-proof your career in Digital Marketing – starting today. Looking for a career change? You may already be working but want a role with clearer progression and better long-term prospects. Or you might be between jobs and ready to move into a new career path. The ITOL Recruit Digital Marketing Job Programme is designed to help you move into an in-demand digital marketing role, even if you h...",
+   "salary": "28,000 – 38,000",
+   "contract": "",
+   "channel": "aggregator",
+   "sponsorship": "agency",
+   "sponsor_register": "",
+   "sponsorship_evidence": "",
+   "sponsor_routes": [],
+   "sector": "Private Sector",
+   "domain": "Management & Business",
+   "role": "Social Media & Content Coordinator",
+   "region": "",
+   "english": false,
+   "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
+   "salary_check": "",
+   "salary_annual": 0,
+   "salary_threshold": 0,
+   "size": "unknown",
+   "employer_site": "",
+   "id": "706cad83151a",
+   "employer_tier": 3,
+   "match": 45,
+   "reasons": [
+    "+38 title is a Digital Marketing role",
+    "+4 1 CV skill(s) found in the advert (extract only)",
+    "+3 senior title"
+   ],
+   "skills_matched": [
+    "marketing"
+   ],
+   "evidence": "extract",
+   "tier": 3,
+   "family": "digital_marketing",
+   "family_label": "Digital Marketing",
+   "track": "Business Analyst",
+   "cv_to_use": "business_analyst_sample.pdf",
+   "sponsorship_label": "Agency advert, end employer unknown",
+   "sponsorship_rank": 5,
+   "sponsorship_offered": false,
+   "sponsorability": "rare",
+   "sponsorability_note": "Usually below the Skilled Worker skill level, so even licensed sponsors seldom sponsor it. Treat as a role for the Graduate visa period, and ask first.",
+   "clearance": {
+    "level": "none",
+    "stance": "",
+    "label": "No clearance in the extract: check the advert",
+    "quote": "",
+    "blocks": false
+   },
+   "driving_licence": {
+    "need": "",
+    "quote": "",
+    "status": ""
+   },
+   "nationality": {
+    "restricted": false,
+    "quote": ""
+   },
+   "work_mode": "",
+   "visa_pay": {
+    "status": "partial",
+    "required": 33400,
+    "note": "Only the top of the range reaches the £33,400 new-entrant rate."
+   },
+   "flags": [
+    "Senior level"
+   ],
+   "hidden_by_default": [
+    "no_sponsorship"
+   ],
+   "first_seen": "2026-10-14T05:40:35+00:00"
+  },
+  {
+   "source": "Reed",
    "source_id": "57451885",
    "title": "Trainee Social Media Manager",
    "company": "ITOL Recruit",
@@ -27749,170 +27827,6 @@
    "first_seen": "2026-10-14T05:40:35+00:00"
   },
   {
-   "source": "Reed",
-   "source_id": "57451889",
-   "title": "Trainee Social Media Manager",
-   "company": "ITOL Recruit",
-   "location": "GL12TG",
-   "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/trainee-social-media-manager/57451889",
-   "posted_at": "2026-10-13T00:00:00+00:00",
-   "description": "Trainee Social Media Manager – No Experience Needed Future-proof your career in Digital Marketing – starting today. Looking for a career change? You may already be working but want a role with clearer progression and better long-term prospects. Or you might be between jobs and ready to move into a new career path. The ITOL Recruit Digital Marketing Job Programme is designed to help you move into an in-demand digital marketing role, even if you h...",
-   "salary": "28,000 – 38,000",
-   "contract": "",
-   "channel": "aggregator",
-   "sponsorship": "agency",
-   "sponsor_register": "",
-   "sponsorship_evidence": "",
-   "sponsor_routes": [],
-   "sector": "Private Sector",
-   "domain": "Management & Business",
-   "role": "Social Media & Content Coordinator",
-   "region": "",
-   "english": false,
-   "early_career": "",
-   "aviation": "",
-   "low_sponsorship": false,
-   "salary_check": "",
-   "salary_annual": 0,
-   "salary_threshold": 0,
-   "size": "unknown",
-   "employer_site": "",
-   "id": "ef6a9dcbf03f",
-   "employer_tier": 3,
-   "match": 45,
-   "reasons": [
-    "+38 title is a Digital Marketing role",
-    "+4 1 CV skill(s) found in the advert (extract only)",
-    "+3 senior title"
-   ],
-   "skills_matched": [
-    "marketing"
-   ],
-   "evidence": "extract",
-   "tier": 3,
-   "family": "digital_marketing",
-   "family_label": "Digital Marketing",
-   "track": "Business Analyst",
-   "cv_to_use": "business_analyst_sample.pdf",
-   "sponsorship_label": "Agency advert, end employer unknown",
-   "sponsorship_rank": 5,
-   "sponsorship_offered": false,
-   "sponsorability": "rare",
-   "sponsorability_note": "Usually below the Skilled Worker skill level, so even licensed sponsors seldom sponsor it. Treat as a role for the Graduate visa period, and ask first.",
-   "clearance": {
-    "level": "none",
-    "stance": "",
-    "label": "No clearance in the extract: check the advert",
-    "quote": "",
-    "blocks": false
-   },
-   "driving_licence": {
-    "need": "",
-    "quote": "",
-    "status": ""
-   },
-   "nationality": {
-    "restricted": false,
-    "quote": ""
-   },
-   "work_mode": "",
-   "visa_pay": {
-    "status": "partial",
-    "required": 33400,
-    "note": "Only the top of the range reaches the £33,400 new-entrant rate."
-   },
-   "flags": [
-    "Senior level"
-   ],
-   "hidden_by_default": [
-    "no_sponsorship"
-   ],
-   "first_seen": "2026-10-14T05:40:35+00:00"
-  },
-  {
-   "source": "Reed",
-   "source_id": "57451882",
-   "title": "Trainee Social Media Manager",
-   "company": "ITOL Recruit",
-   "location": "HD11BG",
-   "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/trainee-social-media-manager/57451882",
-   "posted_at": "2026-10-13T00:00:00+00:00",
-   "description": "Trainee Social Media Manager – No Experience Needed Future-proof your career in Digital Marketing – starting today. Looking for a career change? You may already be working but want a role with clearer progression and better long-term prospects. Or you might be between jobs and ready to move into a new career path. The ITOL Recruit Digital Marketing Job Programme is designed to help you move into an in-demand digital marketing role, even if you h...",
-   "salary": "28,000 – 38,000",
-   "contract": "",
-   "channel": "aggregator",
-   "sponsorship": "agency",
-   "sponsor_register": "",
-   "sponsorship_evidence": "",
-   "sponsor_routes": [],
-   "sector": "Private Sector",
-   "domain": "Management & Business",
-   "role": "Social Media & Content Coordinator",
-   "region": "",
-   "english": false,
-   "early_career": "",
-   "aviation": "",
-   "low_sponsorship": false,
-   "salary_check": "",
-   "salary_annual": 0,
-   "salary_threshold": 0,
-   "size": "unknown",
-   "employer_site": "",
-   "id": "706cad83151a",
-   "employer_tier": 3,
-   "match": 45,
-   "reasons": [
-    "+38 title is a Digital Marketing role",
-    "+4 1 CV skill(s) found in the advert (extract only)",
-    "+3 senior title"
-   ],
-   "skills_matched": [
-    "marketing"
-   ],
-   "evidence": "extract",
-   "tier": 3,
-   "family": "digital_marketing",
-   "family_label": "Digital Marketing",
-   "track": "Business Analyst",
-   "cv_to_use": "business_analyst_sample.pdf",
-   "sponsorship_label": "Agency advert, end employer unknown",
-   "sponsorship_rank": 5,
-   "sponsorship_offered": false,
-   "sponsorability": "rare",
-   "sponsorability_note": "Usually below the Skilled Worker skill level, so even licensed sponsors seldom sponsor it. Treat as a role for the Graduate visa period, and ask first.",
-   "clearance": {
-    "level": "none",
-    "stance": "",
-    "label": "No clearance in the extract: check the advert",
-    "quote": "",
-    "blocks": false
-   },
-   "driving_licence": {
-    "need": "",
-    "quote": "",
-    "status": ""
-   },
-   "nationality": {
-    "restricted": false,
-    "quote": ""
-   },
-   "work_mode": "",
-   "visa_pay": {
-    "status": "partial",
-    "required": 33400,
-    "note": "Only the top of the range reaches the £33,400 new-entrant rate."
-   },
-   "flags": [
-    "Senior level"
-   ],
-   "hidden_by_default": [
-    "no_sponsorship"
-   ],
-   "first_seen": "2026-10-14T05:40:35+00:00"
-  },
-  {
    "source": "Adzuna",
    "source_id": "5925569593",
    "title": "Senior Digital Marketing Manager - London",
@@ -28025,170 +27939,6 @@
    "size": "unknown",
    "employer_site": "",
    "id": "cf27edb43e04",
-   "employer_tier": 3,
-   "match": 45,
-   "reasons": [
-    "+38 title is a Digital Marketing role",
-    "+4 1 CV skill(s) found in the advert (extract only)",
-    "+3 senior title"
-   ],
-   "skills_matched": [
-    "marketing"
-   ],
-   "evidence": "extract",
-   "tier": 3,
-   "family": "digital_marketing",
-   "family_label": "Digital Marketing",
-   "track": "Business Analyst",
-   "cv_to_use": "business_analyst_sample.pdf",
-   "sponsorship_label": "Agency advert, end employer unknown",
-   "sponsorship_rank": 5,
-   "sponsorship_offered": false,
-   "sponsorability": "rare",
-   "sponsorability_note": "Usually below the Skilled Worker skill level, so even licensed sponsors seldom sponsor it. Treat as a role for the Graduate visa period, and ask first.",
-   "clearance": {
-    "level": "none",
-    "stance": "",
-    "label": "No clearance in the extract: check the advert",
-    "quote": "",
-    "blocks": false
-   },
-   "driving_licence": {
-    "need": "",
-    "quote": "",
-    "status": ""
-   },
-   "nationality": {
-    "restricted": false,
-    "quote": ""
-   },
-   "work_mode": "remote",
-   "visa_pay": {
-    "status": "partial",
-    "required": 33400,
-    "note": "Only the top of the range reaches the £33,400 new-entrant rate."
-   },
-   "flags": [
-    "Senior level"
-   ],
-   "hidden_by_default": [
-    "no_sponsorship"
-   ],
-   "first_seen": "2026-10-14T12:57:04+00:00"
-  },
-  {
-   "source": "Reed",
-   "source_id": "57456205",
-   "title": "Trainee Digital Marketing Manager | No experience needed (Ref: 6901)",
-   "company": "Qualify Nation Recruitment",
-   "location": "Brighton",
-   "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/trainee-digital-marketing-manager--no-experience-needed-ref-6901/57456205",
-   "posted_at": "2026-10-14T00:00:00+00:00",
-   "description": "DIGITAL MARKETING TRAINEESHIP (REMOTE) Become a Digital Marketing Professional and Build Real-World Experience Are you interested in digital marketing, online business, and helping organisations grow through effective marketing strategies? Do you want to gain practical experience while developing skills that employers are actively looking for? We are offering a Digital Marketing Traineeship designed to help aspiring digital marketers develop ind...",
-   "salary": "28,000 – 38,000",
-   "contract": "",
-   "channel": "aggregator",
-   "sponsorship": "agency",
-   "sponsor_register": "",
-   "sponsorship_evidence": "",
-   "sponsor_routes": [],
-   "sector": "Private Sector",
-   "domain": "Management & Business",
-   "role": "Social Media & Content Coordinator",
-   "region": "",
-   "english": false,
-   "early_career": "",
-   "aviation": "",
-   "low_sponsorship": false,
-   "salary_check": "",
-   "salary_annual": 0,
-   "salary_threshold": 0,
-   "size": "unknown",
-   "employer_site": "",
-   "id": "b19b6fe19a3c",
-   "employer_tier": 3,
-   "match": 45,
-   "reasons": [
-    "+38 title is a Digital Marketing role",
-    "+4 1 CV skill(s) found in the advert (extract only)",
-    "+3 senior title"
-   ],
-   "skills_matched": [
-    "marketing"
-   ],
-   "evidence": "extract",
-   "tier": 3,
-   "family": "digital_marketing",
-   "family_label": "Digital Marketing",
-   "track": "Business Analyst",
-   "cv_to_use": "business_analyst_sample.pdf",
-   "sponsorship_label": "Agency advert, end employer unknown",
-   "sponsorship_rank": 5,
-   "sponsorship_offered": false,
-   "sponsorability": "rare",
-   "sponsorability_note": "Usually below the Skilled Worker skill level, so even licensed sponsors seldom sponsor it. Treat as a role for the Graduate visa period, and ask first.",
-   "clearance": {
-    "level": "none",
-    "stance": "",
-    "label": "No clearance in the extract: check the advert",
-    "quote": "",
-    "blocks": false
-   },
-   "driving_licence": {
-    "need": "",
-    "quote": "",
-    "status": ""
-   },
-   "nationality": {
-    "restricted": false,
-    "quote": ""
-   },
-   "work_mode": "remote",
-   "visa_pay": {
-    "status": "partial",
-    "required": 33400,
-    "note": "Only the top of the range reaches the £33,400 new-entrant rate."
-   },
-   "flags": [
-    "Senior level"
-   ],
-   "hidden_by_default": [
-    "no_sponsorship"
-   ],
-   "first_seen": "2026-10-14T12:57:04+00:00"
-  },
-  {
-   "source": "Reed",
-   "source_id": "57456221",
-   "title": "Trainee Digital Marketing Manager | No experience needed (Ref: 6901)",
-   "company": "Qualify Nation Recruitment",
-   "location": "Sheffield",
-   "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/trainee-digital-marketing-manager--no-experience-needed-ref-6901/57456221",
-   "posted_at": "2026-10-14T00:00:00+00:00",
-   "description": "DIGITAL MARKETING TRAINEESHIP (REMOTE) Become a Digital Marketing Professional and Build Real-World Experience Are you interested in digital marketing, online business, and helping organisations grow through effective marketing strategies? Do you want to gain practical experience while developing skills that employers are actively looking for? We are offering a Digital Marketing Traineeship designed to help aspiring digital marketers develop ind...",
-   "salary": "28,000 – 38,000",
-   "contract": "",
-   "channel": "aggregator",
-   "sponsorship": "agency",
-   "sponsor_register": "",
-   "sponsorship_evidence": "",
-   "sponsor_routes": [],
-   "sector": "Private Sector",
-   "domain": "Management & Business",
-   "role": "Social Media & Content Coordinator",
-   "region": "",
-   "english": false,
-   "early_career": "",
-   "aviation": "",
-   "low_sponsorship": false,
-   "salary_check": "",
-   "salary_annual": 0,
-   "salary_threshold": 0,
-   "size": "unknown",
-   "employer_site": "",
-   "id": "6651915aaf8c",
    "employer_tier": 3,
    "match": 45,
    "reasons": [
@@ -28681,6 +28431,88 @@
    "size": "unknown",
    "employer_site": "",
    "id": "8cb8f8892934",
+   "employer_tier": 3,
+   "match": 45,
+   "reasons": [
+    "+38 title is a Digital Marketing role",
+    "+4 1 CV skill(s) found in the advert (extract only)",
+    "+3 senior title"
+   ],
+   "skills_matched": [
+    "marketing"
+   ],
+   "evidence": "extract",
+   "tier": 3,
+   "family": "digital_marketing",
+   "family_label": "Digital Marketing",
+   "track": "Business Analyst",
+   "cv_to_use": "business_analyst_sample.pdf",
+   "sponsorship_label": "Agency advert, end employer unknown",
+   "sponsorship_rank": 5,
+   "sponsorship_offered": false,
+   "sponsorability": "rare",
+   "sponsorability_note": "Usually below the Skilled Worker skill level, so even licensed sponsors seldom sponsor it. Treat as a role for the Graduate visa period, and ask first.",
+   "clearance": {
+    "level": "none",
+    "stance": "",
+    "label": "No clearance in the extract: check the advert",
+    "quote": "",
+    "blocks": false
+   },
+   "driving_licence": {
+    "need": "",
+    "quote": "",
+    "status": ""
+   },
+   "nationality": {
+    "restricted": false,
+    "quote": ""
+   },
+   "work_mode": "remote",
+   "visa_pay": {
+    "status": "partial",
+    "required": 33400,
+    "note": "Only the top of the range reaches the £33,400 new-entrant rate."
+   },
+   "flags": [
+    "Senior level"
+   ],
+   "hidden_by_default": [
+    "no_sponsorship"
+   ],
+   "first_seen": "2026-10-14T12:57:04+00:00"
+  },
+  {
+   "source": "Reed",
+   "source_id": "57456205",
+   "title": "Trainee Digital Marketing Manager | No experience needed (Ref: 6901)",
+   "company": "Qualify Nation Recruitment",
+   "location": "Brighton",
+   "country": "GB",
+   "url": "https://www.reed.co.uk/jobs/trainee-digital-marketing-manager--no-experience-needed-ref-6901/57456205",
+   "posted_at": "2026-10-14T00:00:00+00:00",
+   "description": "DIGITAL MARKETING TRAINEESHIP (REMOTE) Become a Digital Marketing Professional and Build Real-World Experience Are you interested in digital marketing, online business, and helping organisations grow through effective marketing strategies? Do you want to gain practical experience while developing skills that employers are actively looking for? We are offering a Digital Marketing Traineeship designed to help aspiring digital marketers develop ind...",
+   "salary": "28,000 – 38,000",
+   "contract": "",
+   "channel": "aggregator",
+   "sponsorship": "agency",
+   "sponsor_register": "",
+   "sponsorship_evidence": "",
+   "sponsor_routes": [],
+   "sector": "Private Sector",
+   "domain": "Management & Business",
+   "role": "Social Media & Content Coordinator",
+   "region": "",
+   "english": false,
+   "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
+   "salary_check": "",
+   "salary_annual": 0,
+   "salary_threshold": 0,
+   "size": "unknown",
+   "employer_site": "",
+   "id": "b19b6fe19a3c",
    "employer_tier": 3,
    "match": 45,
    "reasons": [
@@ -29419,6 +29251,88 @@
    "size": "unknown",
    "employer_site": "",
    "id": "a9c644eb7fe9",
+   "employer_tier": 3,
+   "match": 45,
+   "reasons": [
+    "+38 title is a Digital Marketing role",
+    "+4 1 CV skill(s) found in the advert (extract only)",
+    "+3 senior title"
+   ],
+   "skills_matched": [
+    "marketing"
+   ],
+   "evidence": "extract",
+   "tier": 3,
+   "family": "digital_marketing",
+   "family_label": "Digital Marketing",
+   "track": "Business Analyst",
+   "cv_to_use": "business_analyst_sample.pdf",
+   "sponsorship_label": "Agency advert, end employer unknown",
+   "sponsorship_rank": 5,
+   "sponsorship_offered": false,
+   "sponsorability": "rare",
+   "sponsorability_note": "Usually below the Skilled Worker skill level, so even licensed sponsors seldom sponsor it. Treat as a role for the Graduate visa period, and ask first.",
+   "clearance": {
+    "level": "none",
+    "stance": "",
+    "label": "No clearance in the extract: check the advert",
+    "quote": "",
+    "blocks": false
+   },
+   "driving_licence": {
+    "need": "",
+    "quote": "",
+    "status": ""
+   },
+   "nationality": {
+    "restricted": false,
+    "quote": ""
+   },
+   "work_mode": "remote",
+   "visa_pay": {
+    "status": "partial",
+    "required": 33400,
+    "note": "Only the top of the range reaches the £33,400 new-entrant rate."
+   },
+   "flags": [
+    "Senior level"
+   ],
+   "hidden_by_default": [
+    "no_sponsorship"
+   ],
+   "first_seen": "2026-10-14T12:57:04+00:00"
+  },
+  {
+   "source": "Reed",
+   "source_id": "57456221",
+   "title": "Trainee Digital Marketing Manager | No experience needed (Ref: 6901)",
+   "company": "Qualify Nation Recruitment",
+   "location": "Sheffield",
+   "country": "GB",
+   "url": "https://www.reed.co.uk/jobs/trainee-digital-marketing-manager--no-experience-needed-ref-6901/57456221",
+   "posted_at": "2026-10-14T00:00:00+00:00",
+   "description": "DIGITAL MARKETING TRAINEESHIP (REMOTE) Become a Digital Marketing Professional and Build Real-World Experience Are you interested in digital marketing, online business, and helping organisations grow through effective marketing strategies? Do you want to gain practical experience while developing skills that employers are actively looking for? We are offering a Digital Marketing Traineeship designed to help aspiring digital marketers develop ind...",
+   "salary": "28,000 – 38,000",
+   "contract": "",
+   "channel": "aggregator",
+   "sponsorship": "agency",
+   "sponsor_register": "",
+   "sponsorship_evidence": "",
+   "sponsor_routes": [],
+   "sector": "Private Sector",
+   "domain": "Management & Business",
+   "role": "Social Media & Content Coordinator",
+   "region": "",
+   "english": false,
+   "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
+   "salary_check": "",
+   "salary_annual": 0,
+   "salary_threshold": 0,
+   "size": "unknown",
+   "employer_site": "",
+   "id": "6651915aaf8c",
    "employer_tier": 3,
    "match": 45,
    "reasons": [
@@ -30365,7 +30279,7 @@
    "location": "Stafford",
    "country": "GB",
    "url": "https://gevernova.wd5.myworkdayjobs.com/Vernova_ExternalSite/job/Stafford/Manufacturing-Process-Excellence_R5054506-2",
-   "posted_at": "2026-10-09T12:02:39.616727+00:00",
+   "posted_at": "2026-10-09T14:20:07.150704+00:00",
    "description": "Job Description Summary Establish and continuously improve the standardized processes connecting GSI Operations and Manufacturing Units. Job Description Key responsibilities: •Establish standard work and governance. •Identify process gaps and improvement opportunities. •Coordinate cross-functional process alignment. •Drive continuous improvement / Lean initiatives. •Establish process compliance…",
    "salary": "",
    "contract": "Full time",
@@ -30527,6 +30441,86 @@
   },
   {
    "source": "NHS Jobs",
+   "source_id": "5660862",
+   "title": "Directorate Management Accountant",
+   "company": "Bedfordshire Hospitals NHS Foundation Trust",
+   "location": "Bedford, MK42 9DJ",
+   "country": "GB",
+   "url": "https://www.jobs.nhs.uk/candidate/jobadvert/C9418-26-1060",
+   "posted_at": "2026-10-14T14:32:05.025258+00:00",
+   "description": "Bedfordshire Hospitals NHS Foundation Trust Directorate Management Accountant The closing date is 21 October 2026 Apply for this job Job summary At Bedfordshire Hospitals NHS Foundation Trust we are passionate about creating an inclusive workplace and pride ourselves on being a supportive team. We are a level 3 accredited One NHS Finance employer. We value our diverse workforce and our finance staff are pivotal in shaping how we address the financial challenges we face going forward. An exciting",
+   "salary": "£39959.00 to £48117.00",
+   "contract": "Permanent",
+   "channel": "official",
+   "sponsorship": "possible",
+   "sponsor_register": "UK Home Office",
+   "sponsorship_evidence": "Certificate of Sponsorship Applications from job seekers who require current Skilled worker sponsorship to work in the UK are welcome and will be considered alongside all other applications.",
+   "sponsor_routes": [
+    "Skilled Worker"
+   ],
+   "sector": "NHS & Healthcare",
+   "domain": "Finance & Legal",
+   "role": "Finance & Accounting",
+   "region": "",
+   "english": false,
+   "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
+   "salary_check": "",
+   "salary_annual": 0,
+   "salary_threshold": 0,
+   "size": "large",
+   "employer_site": "",
+   "id": "dcc712a85ab7",
+   "employer_tier": 1,
+   "match": 50,
+   "reasons": [
+    "+32 Finance & Accounting: another route for this skill set",
+    "+8 1 CV skill(s) found in the advert",
+    "+10 level fits the CV"
+   ],
+   "skills_matched": [
+    "requirements"
+   ],
+   "evidence": "full",
+   "tier": 4,
+   "family": "finance_accounting",
+   "family_label": "Finance & Accounting",
+   "track": null,
+   "cv_to_use": "",
+   "sponsorship_label": "Sponsorship may be available",
+   "sponsorship_rank": 1,
+   "sponsorship_offered": true,
+   "sponsorability": "usual",
+   "sponsorability_note": "Degree-level role: normally eligible for Skilled Worker sponsorship.",
+   "clearance": {
+    "level": "dbs",
+    "stance": "required",
+    "label": "DBS check (standard, no clearance needed)",
+    "quote": "Disclosure and Barring Service Check This post is subject to the Rehabilitation of Offenders Act (Exceptions Order) 1975 and as such it will be necessary for a submission for Disclosure to be made to…",
+    "blocks": false
+   },
+   "driving_licence": {
+    "need": "",
+    "quote": "",
+    "status": ""
+   },
+   "nationality": {
+    "restricted": false,
+    "quote": ""
+   },
+   "work_mode": "",
+   "visa_pay": {
+    "status": "meets",
+    "required": 33400,
+    "note": "Pay meets the £33,400 Skilled Worker new-entrant rate."
+   },
+   "flags": [],
+   "hidden_by_default": [],
+   "first_seen": "2026-10-14T14:31:08+00:00"
+  },
+  {
+   "source": "NHS Jobs",
    "source_id": "5660747",
    "title": "Band 4 IT Service Centre Analyst - Service Desk",
    "company": "University Hospitals Birmingham NHS Foundation Trust",
@@ -30614,7 +30608,7 @@
    "company": "London Stock Exchange Group",
    "location": "London, UK",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5917219895?se=MlXgpNjH8RGRaISrBz_shw&utm_medium=api&utm_source=2f99c3af&v=1EB10745BAE5657363C9946DED90106888FBD6AF",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5917219895?se=UrqqKdzH8RGFNsUPVwpCqA&utm_medium=api&utm_source=2f99c3af&v=1EB10745BAE5657363C9946DED90106888FBD6AF",
    "posted_at": "2026-10-07T15:47:25+00:00",
    "description": "Business Process Analyst - Automation & Discovery DSM Digitalisation CoE, LSEG About the Role We are seeking a Business Process Analyst to join the Digitalisation Centre of Excellence within DSM at LSEG. This role sits at the heart of process discovery, automation opportunity exploration , and digital transformation , helping shape well-defined, data-driven use cases that feed into our engineering workstreams. You will analyse real-world operational processes, triangulating between documentatio…",
    "salary": "59,937",
@@ -31343,7 +31337,7 @@
    "company": "Calor Gas Limited",
    "location": "Warwick, Warwickshire",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5924223768?se=2JOmi9jH8RGAlfW_0MlPiQ&utm_medium=api&utm_source=2f99c3af&v=4E651545183015D73AB256754C2526B749C68A6C",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5924223768?se=-oVrDtzH8RGhzNBA4tDS2g&utm_medium=api&utm_source=2f99c3af&v=4E651545183015D73AB256754C2526B749C68A6C",
    "posted_at": "2026-10-12T13:32:44+00:00",
    "description": "Business Development Executive North East - Doncaster, Sheffield and Scunthorpe Permanent, Full-time Salary: up to £34,000 plus quarterly bonus of £2,000 if on target Are you a commercially driven sales professional who thrives on building strong customer relationships and delivering results? We're looking for a motivated and ambitious Business Development Executive to join our team and play a key role in growing and strengthening Calor's network of partners and retailers. This is an exciting o…",
    "salary": "36,776",
@@ -31424,7 +31418,7 @@
    "company": "Detillens",
    "location": "Glasgow, Scotland",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5924254616?se=BNODndjH8RGTSJ8F2n7gsw&utm_medium=api&utm_source=2f99c3af&v=D8EFF4BEA09A917E93E0CB84311BF7ADF0B49321",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5924254616?se=HPBNItzH8RGJi8wytEof2g&utm_medium=api&utm_source=2f99c3af&v=D8EFF4BEA09A917E93E0CB84311BF7ADF0B49321",
    "posted_at": "2026-10-12T13:47:05+00:00",
    "description": "Finance Analyst - Glasgow Hybrid working - 3 days in central based office. Our client is seeking detail-orientated and ambitious individuals with 2-3 years experience to join a growing team. Working within a fast-paced finance function, you'll support key governance, data quality, and control activities while contributing to process improvement initiatives and projects. The role offers exposure to senior stakeholders across multiple regions and provides a strong platform for long-term career de…",
    "salary": "36,991",
@@ -31504,7 +31498,7 @@
    "company": "Robert Walters",
    "location": "London, UK",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5924565336?se=2JOmi9jH8RGAlfW_0MlPiQ&utm_medium=api&utm_source=2f99c3af&v=8E741680CD4E533075118D7A09F1637582A6EB5A",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5924565336?se=-oVrDtzH8RGhzNBA4tDS2g&utm_medium=api&utm_source=2f99c3af&v=8E741680CD4E533075118D7A09F1637582A6EB5A",
    "posted_at": "2026-10-12T19:09:57+00:00",
    "description": "To drive revenue growth, increase market share and market awareness of our clients commercial title products through allocated Law firms, Banks, Funds and Receivers. To grow existing relationships and develop new relationships with key players in agreed business territories to build FTI's profile and become clients' preferred provider of commercial title insurance. Key Responsibilities: * Participate in developing and delivering Group strategic goals for commercial title insurance * Drive the i…",
    "salary": "50,000",
@@ -31585,7 +31579,7 @@
    "company": "Norton Rose Fulbright LLP",
    "location": "London, UK",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5925483601?se=2JOmi9jH8RGAlfW_0MlPiQ&utm_medium=api&utm_source=2f99c3af&v=B2B6A94C977C95B99158FA43E49368A90941CBB2",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5925483601?se=-oVrDtzH8RGhzNBA4tDS2g&utm_medium=api&utm_source=2f99c3af&v=B2B6A94C977C95B99158FA43E49368A90941CBB2",
    "posted_at": "2026-10-13T07:28:49+00:00",
    "description": "Practice Group / Department: Business Development - ESG - London Job Description Norton Rose Fulbright is a global law firm with more than 3,000 lawyers advising clients across locations in the United States, Europe, Canada, Latin America, Asia, Australia, Africa and the Middle East. We provide a full scope of legal services to the world’s preeminent corporations and financial institutions. Our vision is to be a world class business, profitable, ambitious, cooperative and considerate, supportin…",
    "salary": "37,440",
@@ -31667,7 +31661,7 @@
    "company": "Fortrade",
    "location": "UK",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5925608709?se=2JOmi9jH8RGAlfW_0MlPiQ&utm_medium=api&utm_source=2f99c3af&v=4D9D896E4979C07389F805210C47D4BD80B4AE85",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5925608709?se=-oVrDtzH8RGhzNBA4tDS2g&utm_medium=api&utm_source=2f99c3af&v=4D9D896E4979C07389F805210C47D4BD80B4AE85",
    "posted_at": "2026-10-13T11:48:47+00:00",
    "description": "Job Title: Business Development Executive - Financial Services Location: Watford, Hertfordshire Salary: £26,500 starting salary (£27,500 after probation) Performance Incentives, OTE £35,000-£38,000 Job Type: Permanent, Full time, Office Based Start date: Training starts Monday 19 October 2026 Build your career in business development and financial services Confident communicator? Commercially minded?",
    "salary": "26,185",
@@ -31829,7 +31823,7 @@
    "company": "Global 4 Communications Ltd",
    "location": "Kingsfold, Horsham",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5925765742?se=hkmpidjH8RGNapdKhZMzQQ&utm_medium=api&utm_source=2f99c3af&v=2013647BA9820E81FC732F65DD2885285D8009F7",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5925765742?se=MJKADNzH8RGhzNBA4tDS2g&utm_medium=api&utm_source=2f99c3af&v=2013647BA9820E81FC732F65DD2885285D8009F7",
    "posted_at": "2026-10-13T14:00:34+00:00",
    "description": "Ignite Your Career in Tech Sales! Business Development Executive Location: Horsham, West Sussex Salary: £28,000 Uncapped Commission (OTE £35,000) Hours: Monday – Friday, 8:30am – 5:30pm Are you ready to turn your ambition into uncapped earnings? At Global 4, we don’t just provide technology; we solve challenges. As a multi-award-winning Managed Services Provider with a near-perfect Trustpilot rating, we are expanding rapidly. We are looking for a Business Development Executive who is hungry f…",
    "salary": "28,000",
@@ -32647,7 +32641,7 @@
    "company": "Gartner",
    "location": "London, UK",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5927190300?se=hkmpidjH8RGNapdKhZMzQQ&utm_medium=api&utm_source=2f99c3af&v=0362B778789801AB46D04C6D0823A55D27B02F48",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5927190300?se=MJKADNzH8RGhzNBA4tDS2g&utm_medium=api&utm_source=2f99c3af&v=0362B778789801AB46D04C6D0823A55D27B02F48",
    "posted_at": "2026-10-14T09:48:54+00:00",
    "description": "About this role: Our Business Development teams play a critical role in expanding Gartner’s presence across the global market. Gartner Business Development Executives strategically acquire new clients by cultivating trust-based relationships with C-level executives to understand their mission critical priorities, then uncovering opportunities to deliver client-value through the lens of the industry in which they operate. Gartner Business Developers own and drive the full sales cycle, from ident…",
    "salary": "46,088",
@@ -32800,86 +32794,6 @@
    "flags": [],
    "hidden_by_default": [],
    "first_seen": "2026-10-14T12:57:04+00:00"
-  },
-  {
-   "source": "Adzuna",
-   "source_id": "5922939649",
-   "title": "Business Development Executive",
-   "company": "Inspired PLC",
-   "location": "UK",
-   "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/details/5922939649?utm_medium=api&utm_source=2f99c3af",
-   "posted_at": "2026-10-11T06:44:34+00:00",
-   "description": "Inspired is a market leading, technology-enabled provider of energy and sustainability solutions in the UK - supporting businesses to transition to net zero carbon and manage their response to climate change. Established in 2000, we became the first publicly quoted advisor following a successful AIM debut in 2011. We are now the UK’s number one destination for businesses seeking expert insight and advisory services to help them manage their energy costs, reduce their carbon emissions and prove …",
-   "salary": "33,515",
-   "contract": "part_time",
-   "channel": "aggregator",
-   "sponsorship": "licensed_sponsor",
-   "sponsor_register": "UK Home Office",
-   "sponsorship_evidence": "",
-   "sponsor_routes": [
-    "Skilled Worker"
-   ],
-   "sector": "Private Sector",
-   "domain": "Other",
-   "role": "Business Development",
-   "region": "",
-   "english": false,
-   "early_career": "",
-   "aviation": "",
-   "low_sponsorship": false,
-   "salary_check": "",
-   "salary_annual": 0,
-   "salary_threshold": 0,
-   "size": "unknown",
-   "employer_site": "",
-   "id": "8eab948eb71a",
-   "employer_tier": 3,
-   "match": 46,
-   "reasons": [
-    "+32 Business Development: another route for this skill set",
-    "+4 1 CV skill(s) found in the advert (extract only)",
-    "+10 level fits the CV"
-   ],
-   "skills_matched": [
-    "business development"
-   ],
-   "evidence": "extract",
-   "tier": 4,
-   "family": "business_development",
-   "family_label": "Business Development",
-   "track": null,
-   "cv_to_use": "",
-   "sponsorship_label": "Licensed sponsor (advert silent)",
-   "sponsorship_rank": 2,
-   "sponsorship_offered": true,
-   "sponsorability": "check",
-   "sponsorability_note": "Eligibility depends on the exact duties and occupation code. Ask the employer whether they can sponsor this role before applying.",
-   "clearance": {
-    "level": "none",
-    "stance": "",
-    "label": "No clearance in the extract: check the advert",
-    "quote": "",
-    "blocks": false
-   },
-   "driving_licence": {
-    "need": "",
-    "quote": "",
-    "status": ""
-   },
-   "nationality": {
-    "restricted": false,
-    "quote": ""
-   },
-   "work_mode": "",
-   "visa_pay": {
-    "status": "meets",
-    "required": 33400,
-    "note": "Pay meets the £33,400 Skilled Worker new-entrant rate."
-   },
-   "flags": [],
-   "hidden_by_default": [],
-   "first_seen": "2026-10-14T13:38:53+00:00"
   }
  ]
 }
