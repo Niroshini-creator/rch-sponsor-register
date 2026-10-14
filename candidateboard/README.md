@@ -30,6 +30,9 @@ python -m candidateboard build --slug jane-doe        # needs REED_API_KEY / ADZ
 and writes `candidates/profiles/<slug>.json`. The daily workflow then keeps the board current. **Review the profile**: tiers, roles and skills are plain
 data you can edit. Change `visa.expires`, `clearance.held`, `driving_licence` (true/false/null), `min_match`, `roles[].tier`, anything.
 
+## Roles the candidate adds
+The form has a **Roles you are looking for** box (type a title, press Enter or *Add role*; suggestions come from the role list in `roles.json`), and the results page has the same box (**Roles you want**), so a candidate can add or remove roles after seeing results and the matching runs again without re-uploading the CV. Roles they add are **first choice (Tier 1)**, searched first, on the CV whose skills fit that kind of role best; a title the role list does not know is still matched by its words. A role only appears if employers advertise it in the feed this week, and its match % shows how much of the CV fits. On the command line: `--role "Data Analyst" --role "Project Coordinator"`; in a profile they are `roles[]` entries with `"source": "added by candidate"`.
+
 ## Genuine employers first
 The page's **Where advertised** filter defaults to *Employer career sites, NHS, public sector, universities & schools*: adverts on an employer's own site or an official board (NHS Jobs, Teaching Vacancies, jobs.ac.uk, THE unijobs, Platsbanken, and the Civil Service / council search). Job boards (Reed, Adzuna, Arbeitnow) are one click away ("Also job boards, except Adzuna", "Everything"), and the page says how many more roles they hold. Job boards and recruiters that post under their own name (eFinancialCareers, Jobsite, Salt Search ...) are removed from the feed itself (`config/agencies.json`). A **Country** filter with counts is shown whenever the candidate chose more than one place.
 

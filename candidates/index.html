@@ -31,6 +31,14 @@
         <label>Driving licence<select id="licence"><option value="">Not saying</option><option value="yes">Yes</option><option value="no">No</option></select></label>
       </div>
       <fieldset style="margin-top:12px;border:1px solid var(--border);border-radius:8px;padding:8px 12px">
+        <legend class="small">Roles you are looking for (optional, add as many as you like)</legend>
+        <div class="bar"><label style="flex:1">Job title<input id="role-input" list="role-suggestions" placeholder="e.g. Data Analyst, SAP GRC Consultant, Project Coordinator"></label>
+          <button type="button" class="btn" id="role-add">Add role</button></div>
+        <datalist id="role-suggestions"></datalist>
+        <ul class="chips" id="role-chips"></ul>
+        <p class="small muted" style="margin:6px 0 0">We also suggest roles from your CV. The roles you add are searched first. A role only appears if employers advertise it this week.</p>
+      </fieldset>
+      <fieldset style="margin-top:12px;border:1px solid var(--border);border-radius:8px;padding:8px 12px">
         <legend class="small">Where would you work? Tick all that apply</legend>
         <label class="check"><input type="checkbox" name="region" value="GB" checked> United Kingdom</label>
         <label class="check"><input type="checkbox" name="region" value="IE"> Ireland</label>

@@ -46,6 +46,19 @@ function mountAdd(h, onProfile) {
   }
   $("cvs").append(cvRow());
   $("add-cv").onclick = () => $("cvs").append(cvRow());
+
+  // Roles the candidate wants: type a title and press Enter or Add; suggestions come from the role list.
+  const wanted = [];
+  const drawRoles = () => $("role-chips").replaceChildren(...wanted.map(t => h("li", { class: "chip info" }, t, " ",
+    h("button", { type: "button", class: "btn", style: "padding:0 6px;margin-left:4px", "aria-label": `Remove ${t}`, onclick: () => { wanted.splice(wanted.indexOf(t), 1); drawRoles(); } }, "×"))));
+  const addWanted = () => {
+    const merged = CandidateIntake.cleanTitles([...wanted, ...$("role-input").value.split(/[,\n;]/)]);
+    wanted.splice(0, wanted.length, ...merged);
+    $("role-input").value = ""; drawRoles();
+  };
+  $("role-add").onclick = addWanted;
+  $("role-input").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); addWanted(); } });
+  ready.then(() => $("role-suggestions").replaceChildren(...CandidateIntake.suggestions().map(t => h("option", { value: t })))).catch(() => {});
   $("roles-file").onchange = async e => {
     const f = e.target.files[0];
     if (!f) return;
@@ -58,6 +71,7 @@ function mountAdd(h, onProfile) {
     $("msg").textContent = "Reading…";
     try {
       await ready;
+      addWanted();                                  // a title typed but not yet added still counts
       const rows = [...$("cvs").children], cvs = [];
       for (const r of rows) {
         const track = r.querySelector(".track").value.trim(), file = r.querySelector(".file").files[0];
@@ -69,7 +83,7 @@ function mountAdd(h, onProfile) {
     if (!document.querySelector('input[name=region]:checked')) throw new Error("Tick at least one place you would work.");
       const profile = CandidateIntake.buildProfile(cvs, $("roles-text").value, {
         name: $("name").value.trim(), location: $("location").value.trim(), status: $("status").value.trim(), notes: $("notes").value.trim(),
-        regions: [...document.querySelectorAll('input[name=region]:checked')].map(el => el.value), englishOnly: $("english-only").checked,
+        regions: [...document.querySelectorAll('input[name=region]:checked')].map(el => el.value), englishOnly: $("english-only").checked, extraRoles: wanted,
       clearance: $("clearance").value, drivingLicence: licence === "" ? null : licence === "yes",
         visa: { type, label, expires: $("expires").value, sponsorship: $("sponsorship").value, new_entrant: $("new-entrant").checked },
       });
