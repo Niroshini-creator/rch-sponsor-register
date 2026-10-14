@@ -45,7 +45,7 @@ function monthName(expires) {
 async function listView() {
   $header.replaceChildren(h("div", {}, h("h1", {}, "Candidate Boards"),
     h("p", { class: "muted small" }, "Internal. Roles from the last 7 days, matched to each candidate's CV, visa and clearance.")),
-    h("a", { class: "btn", href: "add.html" }, "+ Add a candidate"));
+    h("a", { class: "btn", href: "#add" }, "+ Add a candidate"));
   const { candidates } = await getJSON("data/index.json");
   if (!candidates.length) { $app.replaceChildren(h("p", { class: "empty" }, "No candidates yet. Run python -m candidateboard intake.")); return; }
   $app.replaceChildren(h("div", { class: "grid2", style: "margin-top:14px" }, candidates.map(c =>
@@ -283,11 +283,25 @@ function exportCsv(list) {
   document.body.append(a); a.click(); a.remove();
 }
 
-(async function main() {
+// ------------------------------------------------------------------------------------------ add a candidate
+function addView() {
+  document.title = "Add a candidate";
+  $header.replaceChildren(h("div", {}, h("a", { class: "back", href: "./" }, "← All candidates"), h("h1", {}, "Add a candidate"),
+    h("p", { class: "muted small", style: "margin:4px 0 0" }, "Upload the CVs, answer the visa questions, and the tiers and roles are worked out here in your browser. The CV is read on this page and never uploaded anywhere.")));
+  $app.replaceChildren(document.getElementById("add-tpl").content.cloneNode(true));
+  mountAdd(h);
+}
+
+// One page, one link: /candidates/ is the list, #add the form, ?c=<slug> a board.
+async function route() {
   try {
     const slug = new URLSearchParams(location.search).get("c");
-    await (slug ? boardView(slug) : listView());
+    if (slug) await boardView(slug);
+    else if (location.hash === "#add") addView();
+    else await listView();
   } catch (err) {
     $app.replaceChildren(h("p", { class: "empty" }, `Could not load this page: ${err.message}`));
   }
-})();
+}
+window.addEventListener("hashchange", () => { if (!new URLSearchParams(location.search).get("c")) route(); });
+route();
