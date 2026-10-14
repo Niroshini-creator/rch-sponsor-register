@@ -12,7 +12,7 @@ licence, pay against the Skilled Worker minimum). Built the same way as the spon
 
 ## Add a candidate (about a minute)
 
-**On the web:** open `/candidates/add.html` (button *+ Add a candidate*). Upload each CV with a track name, add the suitable-roles list, answer the visa/clearance/licence questions and press *Scan CVs*. The scan runs **in your browser**: the CV is never uploaded. Correct any tier, then *Download profile* or *Copy JSON* and add it to the repo as `candidates/profiles/<slug>.json`; pushing it to `main` builds the board. The browser scan is a port of the Python one (`candidates/intake.js`, same `roles.json`), and `tests/test_intake_js.py` checks both give the same profile. PDFs must contain text (a scanned image is rejected).
+**On the web:** open `/candidates/` (the one link for everything: candidate list, boards, and the form behind the button *+ Add a candidate*; `add.html` redirects there). Upload each CV with a track name, add the suitable-roles list, answer the visa/clearance/licence questions and press *Scan CVs*. The scan runs **in your browser**: the CV is never uploaded. Correct any tier, then *Download profile* or *Copy JSON* and add it to the repo as `candidates/profiles/<slug>.json`; pushing it to `main` builds the board. The browser scan is a port of the Python one (`candidates/intake.js`, same `roles.json`), and `tests/test_intake_js.py` checks both give the same profile. PDFs must contain text (a scanned image is rejected).
 
 **Or on the command line:**
 
