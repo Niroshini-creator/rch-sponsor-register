@@ -203,7 +203,8 @@ To add an employer, open its careers page, look at the address of a job link, an
 | [EURAXESS](https://euraxess.ec.europa.eu/jobs/search) search + job pages | European research jobs (official) | none |
 | [Platsbanken JobSearch API](https://jobsearch.api.jobtechdev.se/) (Arbetsförmedlingen) | Every advert in Sweden incl. universities, regions, municipalities (official) | none |
 | [Teaching Vacancies API](https://teaching-vacancies.service.gov.uk/) (DfE) | State schools in England (official) | none |
-| RSS feeds in `config/sources.json` | any extra feed you add, e.g. a council's vacancies (official) | none |
+| RSS feeds in `config/sources.json` | council and other public-body vacancy feeds you add (official): `{"name", "url", "employer", "location", "register_name"}`. Many councils publish one on their jobs page; there is no national feed | none |
+| Civil Service departments and councils by name, on Reed ([`config/public_sector_employers.json`](config/public_sector_employers.json)) | about 60 departments, agencies, councils and combined authorities; only adverts carrying the body's own name are kept (job board) | `REED_API_KEY` |
 | [Adzuna API](https://developer.adzuna.com/) | UK (incl. a Scotland search), US, NL, PL, ES, DE, FR, BE, AT, CH, IT (no Irish site); one search per job role for the UK and US, airport operations and aeronautical searches across Europe (job board) | `ADZUNA_APP_ID`, `ADZUNA_APP_KEY` (free) |
 | [Reed API](https://www.reed.co.uk/developers/jobseeker) | UK, direct employers only; one search per job role (job board) | `REED_API_KEY` (free) |
 | [Arbeitnow API](https://www.arbeitnow.com/api) | Germany / EU, visa-sponsorship filter (job board) | none |
@@ -212,8 +213,15 @@ Adzuna's free tier allows about 25 calls a minute, so the connector pauses betwe
 and stops at `ADZUNA_MAX_CALLS` (default 260), running the most important searches first (the per-employer
 searches for the directory come last, up to `ADZUNA_EMPLOYER_PAGES` pages of 50 each).
 
-University boards and NHS Jobs read up to `ACADEMIC_MAX_ADVERTS` (default 150 per board) and `NHS_MAX_ADVERTS` (default 300)
+University boards and NHS Jobs read up to `ACADEMIC_MAX_ADVERTS` (default 400 per board) and `NHS_MAX_ADVERTS` (default 700)
 advert pages per run, pausing `ACADEMIC_PAUSE` seconds (default 0.3) between them.
+
+**Civil Service Jobs** (civilservicejobs.service.gov.uk) is deliberately not read: it has no public API or feed, sits behind a
+bot check, and no published terms allow automated access. Departments that also advertise on Reed are found by name (above).
+Civil Service posts are also subject to the [nationality rules](https://www.gov.uk/government/publications/nationality-rules).
+
+NHS Jobs and jobs.ac.uk are also searched for role types (analyst, governance, IT, project, marketing, SAP/GRC; see
+`PUBLIC_SECTOR_ROLE_QUERIES`), not only by sponsorship terms, so non-clinical and non-academic roles are found.
 
 Sources without keys are skipped rather than failing. Each run's per-source status is shown under
 *Data sources & last run status* on the page. The RSS feed URLs are examples, so check them for your

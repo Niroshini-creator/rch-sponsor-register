@@ -233,6 +233,45 @@ def _adzuna_live(days: int) -> Iterator[Job]:
                 break
 
 
+# --------------------------------------------------------------------------- public bodies by name (Reed)
+PUBLIC_SECTOR_FILE = Path(__file__).resolve().parent.parent / "config" / "public_sector_employers.json"
+
+
+def public_sector_employers(days: int, path: Path = PUBLIC_SECTOR_FILE) -> Iterator[Job]:
+    """Civil Service departments, councils and combined authorities, searched on Reed by name.
+
+    Civil Service Jobs has no public API or feed (and sits behind a bot check), and councils each run their own site,
+    so these bodies are found where they also advertise: Reed, direct employers only. Only adverts that carry the
+    organisation's own name are kept, and they are relabelled to its register name so the licence check can match.
+    """
+    key = os.environ.get("REED_API_KEY")
+    if not key:
+        raise SkipSource("REED_API_KEY not set")
+    rows = json.loads(path.read_text(encoding="utf-8")).get("employers", []) if path.exists() else []
+    cutoff = _cutoff(days)
+    for row in rows:
+        names = [row["name"], *row.get("aliases", [])]
+        owner = EmployerSearch(row["name"], row.get("register_name") or row["name"],
+                               tuple(dict.fromkeys(k for k in map(normalise_company, names) if k)))
+        for skip in (0, 100):
+            data = http.get_json("https://www.reed.co.uk/api/1.0/search", basic_auth=(key, ""),
+                                 params={"keywords": row["name"], "resultsToTake": 100, "resultsToSkip": skip,
+                                         "postedByDirectEmployer": "true"})
+            results = data.get("results", [])
+            for r in results:
+                posted = parse_date(r.get("date"))
+                if not posted or posted < cutoff:
+                    continue
+                job = Job(source="Reed", source_id=str(r.get("jobId")), title=r.get("jobTitle", ""),
+                          company=r.get("employerName", ""), location=r.get("locationName", ""), country="GB",
+                          url=r.get("jobUrl", ""), posted_at=posted, description=strip_html(r.get("jobDescription")),
+                          salary=_salary(r.get("minimumSalary"), r.get("maximumSalary")))
+                if owner.claim(job):
+                    yield job
+            if len(results) < 100:
+                break
+
+
 # --------------------------------------------------------------------------- Reed (UK)
 def reed(days: int) -> Iterator[Job]:
     key = os.environ.get("REED_API_KEY")
@@ -653,7 +692,10 @@ def euraxess(days: int) -> Iterator[Job]:
 
 # --------------------------------------------------------------------------- Generic RSS
 def rss_feeds(days: int, feeds: list[dict]) -> Iterator[Job]:
-    """Any RSS/Atom feed listed in config/sources.json (e.g. jobs.ac.uk, council job boards)."""
+    """Any RSS/Atom feed listed in config/sources.json (council and other public-body vacancy feeds).
+
+    A feed entry is {"name", "url", "employer", "location", "country", "register_name"}: `employer` is the organisation
+    every item belongs to (feeds rarely say), and `register_name` its legal name on the sponsor register if different."""
     if not feeds:
         raise SkipSource("no RSS feeds configured")
     cutoff = _cutoff(days)
@@ -679,7 +721,7 @@ def rss_feeds(days: int, feeds: list[dict]) -> Iterator[Job]:
             description = strip_html(f.get("description") or f.get("summary") or f.get("content"))
             yield Job(
                 source=feed.get("name", "RSS"), channel=feed.get("channel", "official"), source_id=f.get("guid") or f.get("id") or f.get("link", ""),
-                title=title, company=company, location=feed.get("location", ""),
+                title=title, company=company, location=feed.get("location", ""), register_name=feed.get("register_name", ""),
                 country=_guess_country(f"{title} {description[:300]}", default=feed.get("country", "GB")),
                 url=f.get("link", ""), posted_at=posted, description=description,
             )
@@ -815,6 +857,7 @@ SOURCES: dict[str, Callable[..., Iterator[Job]]] = {
     "adzuna": adzuna,
     "reed": reed,
     "nhs_jobs": lambda days: nhs_jobs(days, NHS_KEYWORDS + PUBLIC_SECTOR_ROLE_QUERIES),
+    "public_sector_employers": public_sector_employers,
     "teaching_vacancies": teaching_vacancies,
     "arbeitnow": arbeitnow,
     "jobtech_sweden": jobtech_sweden,
