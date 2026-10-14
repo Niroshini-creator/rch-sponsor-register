@@ -231,7 +231,7 @@ function render() {
       h("div", { class: "stat" }, h("b", {}, sponsorOffered), "advert offers sponsorship"),
       h("div", { class: "stat" }, h("b", {}, employers), "sponsor-licensed employers"),
       h("div", { class: "stat" }, h("b", {}, jobs.filter(j => j.hidden_by_default.includes("clearance")).length), "need clearance (hidden)")),
-    liveBanner(), sourceStatus(), tabs];
+    liveBanner(), live.mode === "self" ? rolesPanel() : null, sourceStatus(), tabs];
   if (state.tab === "employers") parts.push(employersView());
   else if (state.tab === "cv") parts.push(cvView());
   else parts.push(...jobsView());
@@ -241,6 +241,28 @@ function render() {
 const FEED_SOURCE_NAMES = { adzuna: "Adzuna", reed: "Reed", nhs_jobs: "NHS Jobs", teaching_vacancies: "Teaching Vacancies (schools)", jobs_ac_uk: "jobs.ac.uk (universities)",
   the_unijobs: "THE unijobs (universities)", career_sites: "Employer career sites", public_sector_employers: "Civil Service departments and councils (via Reed)",
   rss: "Council RSS feeds", arbeitnow: "Arbeitnow", jobtech_sweden: "Platsbanken (Sweden)", euraxess: "EURAXESS" };
+// The roles the candidate asked for: add or remove them here and the matching runs again, without re-uploading the CV.
+function saveProfile() {
+  const { also_consider, ...rest } = data.candidate;
+  const profile = { ...rest, also_consider: also_consider.map(f => f.key || f) };
+  window.__profile = profile;
+  try { sessionStorage.setItem("cb_profile", JSON.stringify(profile)); } catch (e) { /* private mode */ }
+}
+function rematch() { saveProfile(); state.tab = "1"; live.status = "pending"; render(); runLive(true); }
+function rolesPanel() {
+  const mine = data.candidate.roles.filter(r => r.source === "added by candidate");
+  const input = h("input", { list: "role-suggestions-results", placeholder: "Add a role, e.g. Data Analyst", style: "min-width:260px;flex:1" });
+  const add = () => { if (CandidateIntake.addRoles(data.candidate, input.value.split(/[,\n;]/)).length) rematch(); else input.value = ""; };
+  input.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); add(); } });
+  return h("div", { class: "panel small" }, h("b", {}, "Roles you want: "),
+    ...mine.map(r => h("span", { class: "chip info", style: "margin-right:6px" }, r.title, " ", h("button", { type: "button", class: "btn", style: "padding:0 6px", "aria-label": `Remove ${r.title}`,
+      onclick: () => { data.candidate.roles = data.candidate.roles.filter(x => x !== r); rematch(); } }, "×"))),
+    mine.length ? null : h("span", { class: "muted" }, "none yet. "),
+    h("div", { class: "bar", style: "margin-top:6px" }, input, h("button", { type: "button", class: "btn", onclick: add }, "Add role")),
+    h("datalist", { id: "role-suggestions-results" }, ...CandidateIntake.suggestions().map(t => h("option", { value: t }))),
+    h("p", { class: "muted", style: "margin:6px 0 0" }, "Roles you add are searched first and show under Tier 1. They only appear if employers advertise them this week, and the match % reflects how much of your CV fits."));
+}
+
 function sourceStatus() {
   const bad = Object.entries(data.sources).filter(([, s]) => s.status !== "ok");
   const feed = Object.entries(data.feedSources || {}).filter(([k]) => FEED_SOURCE_NAMES[k] && k !== "arbeitnow" && k !== "jobtech_sweden" && k !== "euraxess");

@@ -45,6 +45,19 @@ def expand_regions(keys: list[str] | None) -> tuple[list[str], list[str]]:
     return keys, list(dict.fromkeys(c for k in keys for c in cfg["regions"][k]["countries"]))
 
 
+MAX_EXTRA_ROLES, MAX_TITLE_CHARS = 30, 80
+
+
+def clean_titles(raw) -> list[str]:
+    """Job titles a candidate typed: whitespace collapsed, blanks and repeats dropped, capped in number and length."""
+    out: list[str] = []
+    for item in raw or []:
+        title = " ".join(str(item).split())[:MAX_TITLE_CHARS].strip(" ,;")
+        if title and title.lower() not in {t.lower() for t in out}:
+            out.append(title)
+    return out[:MAX_EXTRA_ROLES]
+
+
 def slugify(name: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
 
@@ -63,7 +76,7 @@ def _track_for_section(section: str, tracks: list[str]) -> str | None:
 def build_profile(cvs: dict[str, Path], roles_text: str = "", *, name: str = "", slug: str = "", location: str = "",
                   visa: dict | None = None, clearance: str = "none", driving_licence: bool | None = None,
                   current_status: str = "", notes: str = "", regions: list[str] | None = None,
-                  english_only: bool = True, today: date | None = None) -> dict:
+                  english_only: bool = True, extra_roles: list[str] | None = None, today: date | None = None) -> dict:
     tax = taxonomy.load()
     locations, countries = expand_regions(regions)
     scans = {track: cv.scan(cv.read_text(path), today) for track, path in cvs.items()}
@@ -90,7 +103,7 @@ def build_profile(cvs: dict[str, Path], roles_text: str = "", *, name: str = "",
 
     roles, seen = [], set()
 
-    def add(title: str, family: str | None, source: str, section: str = "") -> None:
+    def add(title: str, family: str | None, source: str, section: str = "", first_choice: bool = False) -> None:
         key = title.lower()
         if key in seen:
             return
@@ -102,8 +115,12 @@ def build_profile(cvs: dict[str, Path], roles_text: str = "", *, name: str = "",
             # The recruiter filed this under a CV that does not exist yet (e.g. "With Retail CV"), so it cannot be a
             # first-choice role: there is nothing to apply with until that CV is written.
             tier = max(tier, 3)
+        if first_choice:
+            tier = 1        # a role the candidate named themselves is always searched first
         roles.append({"title": title, "family": family, "tier": min(tier, 3), "track": track, "source": source})
 
+    for title in clean_titles(extra_roles):
+        add(title, tax.family_for_title(title), "added by candidate", first_choice=True)
     for item in cv.parse_role_list(roles_text) if roles_text else []:
         add(item["title"], tax.family_for_title(item["title"]), "recruiter list", item["section"])
     # Suggest roles for families the CV supports but the recruiter's list does not cover.

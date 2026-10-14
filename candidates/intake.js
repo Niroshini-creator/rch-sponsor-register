@@ -158,6 +158,34 @@
   }
   const slugify = name => name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 
+  const MAX_EXTRA_ROLES = 30, MAX_TITLE_CHARS = 80;
+  /** Job titles a candidate typed: whitespace collapsed, blanks and repeats dropped, capped in number and length. */
+  function cleanTitles(raw) {
+    const out = [];
+    for (const item of raw || []) {
+      const title = String(item).split(/\s+/).filter(Boolean).join(" ").slice(0, MAX_TITLE_CHARS).replace(/^[ ,;]+|[ ,;]+$/g, "");
+      if (title && !out.some(t => t.toLowerCase() === title.toLowerCase())) out.push(title);
+    }
+    return out.slice(0, MAX_EXTRA_ROLES);
+  }
+  /** Every job title the role list knows (family searches), for type-ahead suggestions. */
+  function suggestions() {
+    return [...new Set(Object.values(TAX.families).flatMap(f => f.searches))].sort(cmp);
+  }
+  /** Add roles the candidate wants to an existing profile (results page): first choice, on the best-fitting CV track. */
+  function addRoles(profile, titles) {
+    const have = new Set(profile.roles.map(r => r.title.toLowerCase())), added = [];
+    for (const title of cleanTitles(titles)) {
+      if (have.has(title.toLowerCase())) continue;
+      const family = familyForTitle(title);
+      const sameFamily = profile.roles.find(r => family && r.family === family);
+      const role = { title, family, tier: 1, track: sameFamily ? sameFamily.track : profile.tracks[0].name, source: "added by candidate" };
+      profile.roles.push(role); added.push(role); have.add(title.toLowerCase());
+    }
+    profile.roles.sort((a, b) => a.tier - b.tier || cmp(a.track, b.track) || cmp(a.title, b.title));
+    return added;
+  }
+
   function expandRegions(keys) {
     keys = [...new Set(keys && keys.length ? keys : REGIONS.default)];
     const unknown = keys.filter(k => !REGIONS.regions[k]);
@@ -181,15 +209,17 @@
       return { name: track, cv: filename, headline: s.headline, skills: skills.slice(0, SKILLS_PER_TRACK) };
     });
     const first = scans[0].s, roles = [], seen = new Set();
-    const add = (title, family, source, section) => {
+    const add = (title, family, source, section, firstChoice) => {
       if (seen.has(title.toLowerCase())) return;
       seen.add(title.toLowerCase());
       const named = section ? trackForSection(section, trackNames) : null;
       const track = named || (family in combined ? combined[family].track : trackNames[0]);
       let tier = family ? (tiers[family] ?? 3) : 3;
       if (section && !named) tier = Math.max(tier, 3);
+      if (firstChoice) tier = 1;          // a role the candidate named themselves is always searched first
       roles.push({ title, family, tier: Math.min(tier, 3), track, source });
     };
+    for (const title of cleanTitles(opts.extraRoles)) add(title, familyForTitle(title), "added by candidate", "", true);
     if (rolesText) for (const item of parseRoleList(rolesText)) add(item.title, familyForTitle(item.title), "recruiter list", item.section);
     const covered = new Set(roles.map(r => r.family));
     for (const [fam, tier] of Object.entries(tiers)) {
@@ -211,6 +241,6 @@
     };
   }
 
-  const api = { init, taxonomy: () => TAX, regions: () => REGIONS.regions, expandRegions, keywordRe, tokens, scan, tierFamilies, parseRoleList, familyForTitle, buildProfile, experienceMonths, slugify, labels: () => Object.fromEntries(Object.entries(TAX.families).map(([k, f]) => [k, { label: f.label, sponsor: f.sponsor }])) };
+  const api = { init, cleanTitles, suggestions, addRoles, taxonomy: () => TAX, regions: () => REGIONS.regions, expandRegions, keywordRe, tokens, scan, tierFamilies, parseRoleList, familyForTitle, buildProfile, experienceMonths, slugify, labels: () => Object.fromEntries(Object.entries(TAX.families).map(([k, f]) => [k, { label: f.label, sponsor: f.sponsor }])) };
   return api;
 });

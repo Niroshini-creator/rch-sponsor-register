@@ -149,6 +149,29 @@ class MatchTests(unittest.TestCase):
         self.assertEqual((ev["visa_pay"]["status"], ev["hidden_by_default"]), ("", []))
 
 
+class ExtraRoleTests(unittest.TestCase):
+    def test_titles_are_cleaned(self):
+        self.assertEqual(intake.clean_titles(["  Data   Analyst ", "data analyst", "", "Cloud Architect, ", None][:4]), ["Data Analyst", "Cloud Architect"])
+        self.assertEqual(len(intake.clean_titles([f"Role {i}" for i in range(50)])), intake.MAX_EXTRA_ROLES)
+        self.assertEqual(len(intake.clean_titles(["x" * 200])[0]), intake.MAX_TITLE_CHARS)
+
+    def test_candidate_roles_are_first_choice_and_matched(self):
+        with tempfile.TemporaryDirectory() as d:
+            d = Path(d)
+            (d / "sap.txt").write_text(SAP_CV)
+            (d / "ba.txt").write_text(BA_CV)
+            p = intake.build_profile({"SAP Security & GRC": d / "sap.txt", "Business Analyst": d / "ba.txt"}, ROLES, name="Jane Example",
+                                     extra_roles=["Data Analyst", "Cloud Security Architect", "marketing executive"], today=date(2026, 10, 14))
+        by = {r["title"]: r for r in p["roles"]}
+        self.assertEqual((by["Data Analyst"]["tier"], by["Data Analyst"]["source"], by["Data Analyst"]["family"]), (1, "added by candidate", "data_analyst"))
+        self.assertEqual((by["Cloud Security Architect"]["tier"], by["Cloud Security Architect"]["family"]), (1, None))
+        self.assertEqual(by["marketing executive"]["tier"], 1)               # would be tier 3 from the CV, but the candidate asked for it
+        self.assertEqual(sum(1 for r in p["roles"] if r["title"].lower() == "marketing executive"), 1)   # the recruiter list's copy is not added twice
+        ev = match.Matcher(p).evaluate(job("Cloud Security Architect", "x" * 700 + " security architecture"))
+        self.assertEqual((ev["tier"], ev["role"]), (1, "Cloud Security Architect"))
+        self.assertGreaterEqual(ev["match"], 60)
+
+
 class LocationTests(unittest.TestCase):
     def test_regions_expand_to_countries(self):
         self.assertEqual(intake.expand_regions(None), (["GB"], ["GB"]))
