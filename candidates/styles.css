@@ -61,3 +61,7 @@ table { width: 100%; border-collapse: collapse; font-size: .9rem; } th, td { tex
 .cand { display: block; text-decoration: none; color: inherit; }
 .cand:hover { border-color: var(--accent); }
 @media (max-width: 600px) { .card-top { flex-direction: column-reverse; } .match { text-align: left; display: flex; gap: 8px; align-items: baseline; } .match .meter { width: 80px; } }
+
+.btn.primary { background: var(--accent); color: var(--accent-text); border-color: var(--accent); font-weight: 600; text-decoration: none; display: inline-block; }
+.apply-row { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; margin: 10px 0 0; }
+.apply-row p { margin: 0; }

@@ -4,44 +4,41 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
-  <title>Candidate Boards</title>
+  <title>Find roles for your CV</title>
   <meta name="description" content="Internal recruiter boards: roles from the last 7 days matched to one candidate's CV, visa and clearance.">
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="site-header"><div class="wrap" id="header"><h1>Candidate Boards</h1></div></header>
+  <header class="site-header"><div class="wrap" id="header"><h1>Find roles for your CV</h1></div></header>
   <main class="wrap" id="app"><p class="muted">Loading…</p></main>
   <template id="add-tpl">
 <form id="form" class="panel" autocomplete="off">
-      <h2>1 · CVs</h2>
-      <p class="small muted">One row per CV (PDF or text). Name the track after the CV: "SAP Security &amp; GRC", "Business Analyst". The role list below is matched to a CV by this name.</p>
+      <h2>1 · Your CV</h2>
+      <p class="small muted">Upload your CV (PDF or text). It is read here, in your browser, and is not uploaded or stored anywhere.</p>
       <div id="cvs"></div>
-      <button type="button" class="btn" id="add-cv">+ Another CV</button>
+      <button type="button" class="btn" id="add-cv">+ Add a second CV (optional)</button>
 
-      <h2 style="margin-top:18px">2 · Suitable roles (optional)</h2>
-      <p class="small muted">Your list of roles to target: upload a PDF/text file or paste it. Bullets are role titles; other lines are section headings (use the CV name, e.g. "Business Analyst CV").</p>
-      <div class="bar"><label>Upload list<input type="file" id="roles-file" accept=".pdf,.txt,.md"></label></div>
-      <label class="field"><textarea id="roles-text" rows="6" style="width:100%;font:inherit" placeholder="SAP Security &amp; GRC CV&#10;• SAP Security Consultant&#10;• SAP GRC Consultant"></textarea></label>
-
-      <h2 style="margin-top:18px">3 · Candidate</h2>
+      <h2 style="margin-top:18px">2 · About you</h2>
       <div class="bar">
-        <label>Name (blank = from CV)<input id="name"></label>
-        <label>Location<input id="location" placeholder="Coventry"></label>
+        <label>Name (optional)<input id="name"></label>
+        <label>Where you live<input id="location" placeholder="e.g. Coventry"></label>
         <label>Visa<select id="visa"><option value="graduate|Graduate visa (PSW)">Graduate visa (PSW)</option><option value="skilled_worker|Skilled Worker visa">Skilled Worker visa</option><option value="global_business_mobility|Global Business Mobility visa">Global Business Mobility</option><option value="dependant|Dependant / partner visa">Dependant / partner</option><option value="other|Other">Other</option></select></label>
         <label>Visa valid until<input type="month" id="expires"></label>
-        <label>Sponsorship<select id="sponsorship"><option value="preferred">Can work now, wants a sponsor</option><option value="required">Needs a sponsor to work</option><option value="not_needed">No sponsor needed</option></select></label>
-        <label class="check"><input type="checkbox" id="new-entrant"> New-entrant salary rate</label>
-        <label>Security clearance held<select id="clearance"><option value="none">None</option><option value="basic">Basic (BPSS)</option><option value="sc">SC</option><option value="dv">DV</option></select></label>
-        <label>Driving licence<select id="licence"><option value="">Not confirmed</option><option value="yes">Yes</option><option value="no">No</option></select></label>
+        <label>Sponsorship<select id="sponsorship"><option value="preferred">I can work now, I want a sponsor</option><option value="required">I need a sponsor to work</option><option value="not_needed">I need no sponsor</option></select></label>
+        <label class="check"><input type="checkbox" id="new-entrant"> I am a new entrant (recent graduate / switching from a Graduate visa)</label>
+        <label>Security clearance you hold<select id="clearance"><option value="none">None</option><option value="basic">Basic (BPSS)</option><option value="sc">SC</option><option value="dv">DV</option></select></label>
+        <label>Driving licence<select id="licence"><option value="">Not saying</option><option value="yes">Yes</option><option value="no">No</option></select></label>
       </div>
-      <div class="bar" style="margin-top:8px">
-        <label style="flex:1">Current situation<input id="status" placeholder="e.g. part-time plus freelance"></label>
-        <label style="flex:1">Notes<input id="notes"></label>
-      </div>
-      <p><button class="btn" type="submit" style="background:var(--accent);color:var(--accent-text)">Scan CVs</button> <span id="msg" class="small muted"></span></p>
+      <details style="margin-top:10px"><summary class="small">Optional: roles you want to target, and notes</summary>
+        <p class="small muted">Paste or upload a list of job titles you want (bullets are titles; other lines are headings, ideally named after your CV, e.g. "Business Analyst CV").</p>
+        <div class="bar"><label>Upload list<input type="file" id="roles-file" accept=".pdf,.txt,.md"></label></div>
+        <label class="field"><textarea id="roles-text" rows="5" style="width:100%;font:inherit" placeholder="Business Analyst CV&#10;• Business Analyst&#10;• Requirements Analyst"></textarea></label>
+        <div class="bar"><label style="flex:1">Current situation<input id="status" placeholder="e.g. part-time plus freelance"></label><label style="flex:1">Notes<input id="notes"></label></div>
+      </details>
+      <p><button class="btn primary" type="submit">Find vacancies</button> <span id="msg" class="small muted"></span></p>
     </form>
-    <div id="result"></div>
+    <p class="small muted">Vacancies come from the last 7 days across NHS Jobs, universities, schools, employer career sites and job boards. You apply on the employer's own site. <a href="#boards">Recruiter boards</a></p>
   </template>
   <script src="intake.js"></script>
   <script src="match.js"></script>
