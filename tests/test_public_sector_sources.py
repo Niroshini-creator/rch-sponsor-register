@@ -37,10 +37,29 @@ class PublicSectorEmployerTests(unittest.TestCase):
                                reed_result(3, "Coventry City Council", date=datetime(2020, 1, 1, tzinfo=timezone.utc))]}
         with mock.patch.dict("os.environ", {"REED_API_KEY": "k"}), mock.patch.object(sources.http, "get_json", return_value=payload) as get:
             jobs = list(sources.public_sector_employers(7))
-        self.assertEqual([(j.source_id, j.company, j.register_name, j.country) for j in jobs], [("1", "Coventry City Council", "Coventry City Council", "GB")])
+        self.assertEqual([(j.source_id, j.company, j.register_name, j.country, j.channel) for j in jobs], [("1", "Coventry City Council", "Coventry City Council", "GB", "official")])
         asked = {c.kwargs["params"]["keywords"] for c in get.call_args_list}
         self.assertIn("Home Office", asked)
         self.assertTrue(all(c.kwargs["params"]["postedByDirectEmployer"] == "true" for c in get.call_args_list))
+
+
+class JobBoardExclusionTests(unittest.TestCase):
+    def test_job_boards_and_recruiters_posing_as_employers_are_dropped(self):
+        from jobfeed.agencies import AgencyFilter
+        index = sponsors.SponsorIndex()
+        for name in ("eFinancialCareers", "Salt Search", "Barclays Bank UK PLC"):
+            index.add(sponsors.SponsorEntry(name, "UK Home Office", routes={"Skilled Worker"}))
+        now = datetime.now(timezone.utc)
+
+        def job(company, sid):
+            return Job(source="Reed", source_id=sid, title="Business Analyst", company=company, location="London" + sid, country="GB",
+                       url=f"https://x/{sid}", posted_at=now, description="Analyse things.")
+        stats = {}
+        out = pipeline.enrich([job("eFinancialCareers", "1"), job("Salt Search", "2"), job("Barclays Bank UK PLC", "3")], index,
+                              TierRules.load(CONFIG / "company_tiers.json"), contacts.ContactBook({}), 7,
+                              AgencyFilter.load(CONFIG / "agencies.json"), stats)
+        self.assertEqual([j.company for j in out], ["Barclays Bank UK PLC"])
+        self.assertEqual(stats["agency_removed"], 2)
 
 
 class CouncilRssTests(unittest.TestCase):

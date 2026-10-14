@@ -267,7 +267,7 @@ def public_sector_employers(days: int, path: Path = PUBLIC_SECTOR_FILE) -> Itera
                 job = Job(source="Reed", source_id=str(r.get("jobId")), title=r.get("jobTitle", ""),
                           company=r.get("employerName", ""), location=r.get("locationName", ""), country="GB",
                           url=r.get("jobUrl", ""), posted_at=posted, description=strip_html(r.get("jobDescription")),
-                          salary=_salary(r.get("minimumSalary"), r.get("maximumSalary")))
+                          salary=_salary(r.get("minimumSalary"), r.get("maximumSalary")), channel="official")
                 if owner.claim(job):
                     yield job
             if len(results) < 100:

@@ -30,6 +30,9 @@ python -m candidateboard build --slug jane-doe        # needs REED_API_KEY / ADZ
 and writes `candidates/profiles/<slug>.json`. The daily workflow then keeps the board current. **Review the profile**: tiers, roles and skills are plain
 data you can edit. Change `visa.expires`, `clearance.held`, `driving_licence` (true/false/null), `min_match`, `roles[].tier`, anything.
 
+## Genuine employers first
+The page's **Where advertised** filter defaults to *Employer career sites, NHS, public sector, universities & schools*: adverts on an employer's own site or an official board (NHS Jobs, Teaching Vacancies, jobs.ac.uk, THE unijobs, Platsbanken, and the Civil Service / council search). Job boards (Reed, Adzuna, Arbeitnow) are one click away ("Also job boards, except Adzuna", "Everything"), and the page says how many more roles they hold. Job boards and recruiters that post under their own name (eFinancialCareers, Jobsite, Salt Search ...) are removed from the feed itself (`config/agencies.json`). A **Country** filter with counts is shown whenever the candidate chose more than one place.
+
 ## Where the candidate would work
 The form asks which places to search: **United Kingdom, Ireland, Europe (EU/EEA and Switzerland), Australia, Middle East** (UAE, Saudi Arabia, Qatar, Kuwait, Bahrain, Oman); the regions and their countries are in `regions.json`. On the command line: `--regions GB,IE,EU,AU,ME`. The profile records `locations` and the expanded `countries`.
 
