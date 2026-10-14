@@ -28,7 +28,8 @@ def cmd_intake(a) -> int:
         cvs[track.strip()] = Path(path)
     roles_text = cv.read_text(Path(a.roles_file)) if a.roles_file else ""
     visa = {"type": a.visa, "label": a.visa_label or a.visa, "expires": a.visa_expires,
-            "sponsorship": a.sponsorship, "new_entrant": a.new_entrant}
+            "sponsorship": a.sponsorship, "new_entrant": a.new_entrant,
+            "work_rights": [w.strip() for w in a.work_rights.split(",") if w.strip()]}
     profile = intake.build_profile(cvs, roles_text, name=a.name, slug=a.slug, location=a.location, visa=visa,
                                    clearance=a.clearance, driving_licence=_yes_no(a.driving_licence),
                                    current_status=a.status, notes=a.notes, regions=[r.strip().upper() for r in a.regions.split(",") if r.strip()], english_only=not a.any_language, extra_roles=a.role)
@@ -72,6 +73,7 @@ def main(argv: list[str] | None = None) -> int:
     i.add_argument("--visa-expires", default="", help="YYYY-MM or YYYY-MM-DD")
     i.add_argument("--sponsorship", choices=["required", "preferred", "not_needed"], default="preferred",
                    help="preferred = can work now but wants a sponsor before the visa ends")
+    i.add_argument("--work-rights", default="", help="comma list of work rights that need no sponsor: us_opt (USA), ie_stamp_1g (Ireland)")
     i.add_argument("--new-entrant", action="store_true", help="eligible for the Skilled Worker new-entrant salary rate")
     i.add_argument("--clearance", choices=["none", "basic", "sc", "dv"], default="none")
     i.add_argument("--driving-licence", choices=["yes", "no", "unknown"], default="unknown")

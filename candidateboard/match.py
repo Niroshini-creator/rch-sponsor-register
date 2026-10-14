@@ -22,6 +22,9 @@ SKILL_MAX, SKILL_EXTRACT_MAX, SKILLS_FOR_FULL = 40, 22, 5
 EXTRACT_CHARS = 600           # shorter adverts are extracts (the shared feed keeps ~400 characters)
 
 # sponsorship status -> (label shown, sort rank: lower is better, offered?)
+RIGHTS = {"us_opt": "US", "ie_stamp_1g": "IE"}      # visa.work_rights key -> country where it lets the holder work without a sponsor
+RIGHT_LABELS = {("US", "graduate_route"): "No sponsorship, open to OPT holders", ("US", "not_sponsored"): "No sponsorship offered: check the advert accepts OPT",
+                ("IE", "stamp_1g"): "No sponsorship needed: open to Stamp 1G holders"}
 SPONSORSHIP = {
     "confirmed": ("Sponsorship offered", 0, True),
     "possible": ("Sponsorship may be available", 1, True),
@@ -49,6 +52,8 @@ class Matcher:
         visa = profile.get("visa") or {}
         self.needs_sponsorship = visa.get("sponsorship", "required") != "not_needed"
         self.new_entrant = bool(visa.get("new_entrant"))
+        # Work rights that need no sponsor in one country: US OPT / STEM OPT, Irish Stamp 1G (Graduate visa is the sponsorship answer for GB).
+        self.rights = {RIGHTS[k] for k in (visa.get("work_rights") or []) if k in RIGHTS}
         self.english_only = profile.get("english_only", True)
         self.tracks = {t["name"]: [(s, taxonomy.keyword_re(s)) for s in t.get("skills", [])] for t in profile["tracks"]}
         self.cv_for = {t["name"]: t.get("cv") or t["name"] for t in profile["tracks"]}
@@ -105,8 +110,12 @@ class Matcher:
         return 10, "+10 level fits the CV", ""
 
     # ------------------------------------------------------------------ visa pay
+    def needs_for(self, job: dict) -> bool:
+        """Whether this candidate needs the employer to sponsor them for this job (not if they hold work rights in its country)."""
+        return self.needs_sponsorship and job.get("country") not in self.rights
+
     def visa_pay(self, job: dict) -> dict:
-        if not self.needs_sponsorship:
+        if not self.needs_for(job):
             return {"status": "", "note": "", "required": 0}
         j = Job(source="", source_id="", title=job.get("title", ""), company="", location="", country=job.get("country", "GB"),
                 url="", posted_at=datetime.now(timezone.utc), domain=job.get("domain", ""), sector=job.get("sector", ""))
@@ -147,6 +156,9 @@ class Matcher:
 
         status = job.get("sponsorship", "unverified")
         label, rank, offered = SPONSORSHIP.get(status, SPONSORSHIP["unverified"])
+        right_label = RIGHT_LABELS.get((job.get("country"), status)) if job.get("country") in self.rights else None
+        if right_label:                            # holds US OPT / Irish Stamp 1G: a role that needs no sponsor is a fit
+            label, rank, offered = right_label, 3, True
         clear = checks.clearance(text, self.held)
         if extract and clear["level"] == "none":
             clear["label"] = "No clearance in the extract: check the advert"
@@ -171,11 +183,12 @@ class Matcher:
         if nationality["restricted"]:
             flags.append("Reserved for the country's own nationals")
             hidden.append("nationals_only")
-        if no_route and self.needs_sponsorship:
+        needs = self.needs_for(job)
+        if no_route and needs:
             hidden.append("no_skilled_worker_route")
         if clear["blocks"]:
             hidden.append("clearance")
-        if self.needs_sponsorship and not offered:
+        if needs and not offered:
             hidden.append("no_sponsorship")
         if pay["status"] == "below":
             hidden.append("pay_below_visa")

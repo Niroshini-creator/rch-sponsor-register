@@ -52,6 +52,10 @@ function mountAdd(h, onProfile) {
     } catch (err) { $("msg").textContent = err.message; }
   };
 
+  // Holding OPT or Stamp 1G means the candidate wants that country: tick it so its roles are searched.
+  const tick = (box, region) => $(box).addEventListener("change", e => { if (e.target.checked) document.querySelector(`input[name=region][value=${region}]`).checked = true; });
+  tick("right-opt", "US"); tick("right-1g", "IE");
+
   $("form").onsubmit = async e => {
     e.preventDefault();
     $("msg").textContent = "Reading…";
@@ -71,7 +75,8 @@ function mountAdd(h, onProfile) {
         name: $("name").value.trim(), location: $("location").value.trim(), status: $("status").value.trim(), notes: $("notes").value.trim(),
         regions: [...document.querySelectorAll('input[name=region]:checked')].map(el => el.value), englishOnly: $("english-only").checked, extraRoles: wanted,
       clearance: $("clearance").value, drivingLicence: licence === "" ? null : licence === "yes",
-        visa: { type, label, expires: $("expires").value, sponsorship: $("sponsorship").value, new_entrant: $("new-entrant").checked },
+        visa: { type, label, expires: $("expires").value, sponsorship: $("sponsorship").value, new_entrant: $("new-entrant").checked,
+          work_rights: [$("right-opt").checked ? "us_opt" : "", $("right-1g").checked ? "ie_stamp_1g" : ""].filter(Boolean) },
       });
       $("msg").textContent = "";
       if (!profile.roles.length && !profile.also_consider.length) throw new Error("Could not find skills or job titles in this CV. Check it is a text-based PDF, or paste a list of the roles you want under Optional.");

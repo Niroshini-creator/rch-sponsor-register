@@ -109,6 +109,9 @@
     employer_visa: ["Employer provides visa", 2, true], graduate_route: ["Not sponsoring, open to Graduate visa holders", 4, false],
     stamp_1g: ["No sponsorship evidence (Ireland: open to Stamp 1G holders only)", 5, false], unverified: ["Employer not on sponsor register", 5, false], agency: ["Agency advert, end employer unknown", 5, false], not_sponsored: ["Sponsorship not offered", 6, false],
   };
+  const RIGHTS = { us_opt: "US", ie_stamp_1g: "IE" };   // visa.work_rights key -> country where it lets the holder work without a sponsor
+  const RIGHT_LABELS = { "US/graduate_route": "No sponsorship, open to OPT holders", "US/not_sponsored": "No sponsorship offered: check the advert accepts OPT",
+    "IE/stamp_1g": "No sponsorship needed: open to Stamp 1G holders" };
   const VERY_SENIOR = /\b(director|head of|vice president|vp|avp|svp|chief|principal|partner)\b/i, SENIOR = /\b(senior|lead|manager|staff|sr\.?)\b/i;
   const JUNIOR = /\b(junior|graduate|trainee|entry[- ]level|associate)\b/i, ASSISTANT = /\b(assistant|intern(ship)?|apprentice(ship)?|placement)\b/i;
   const ENGLISH_COUNTRIES = new Set(["GB", "IE", "US", "MT", "AU"]);   // = jobfeed.classify.ENGLISH_SPEAKING_COUNTRIES
@@ -118,8 +121,9 @@
   function Matcher(profile) {
     const TAX = I.taxonomy();
     const years = Number(profile.experience_years || 0), held = (profile.clearance || {}).held || "none", licence = profile.driving_licence ?? null;
-    const visa = profile.visa || {}, needs = visa.sponsorship !== "not_needed", newEntrant = Boolean(visa.new_entrant);
-    const englishOnly = profile.english_only ?? true;
+    const visa = profile.visa || {}, needsSponsor = visa.sponsorship !== "not_needed", newEntrant = Boolean(visa.new_entrant);
+    const englishOnly = profile.english_only ?? true, rights = new Set((visa.work_rights || []).filter(k => RIGHTS[k]).map(k => RIGHTS[k]));
+    const needsFor = job => needsSponsor && !rights.has(job.country);
     const tracks = {}, cvFor = {}, every = new Map();
     for (const t of profile.tracks) {
       tracks[t.name] = (t.skills || []).map(s => [s, I.keywordRe(s)]);
@@ -157,7 +161,7 @@
       return [10, "+10 level fits the CV", ""];
     }
     function visaPay(job) {
-      if (!needs) return { status: "", note: "", required: 0 };
+      if (!needsFor(job)) return { status: "", note: "", required: 0 };
       const country = job.country || "GB", limits = thresholds({ title: job.title || "", country, domain: job.domain || "", sector: job.sector || "" });
       if (!limits) return { status: "", note: "", required: 0 };
       const [full, lowest] = limits, need = newEntrant ? lowest : full, cur = CURRENCY[country] || "";
@@ -178,7 +182,10 @@
       const [levelPts, levelWhy, levelFlag] = level(title);
       const total = pyRound(titlePts + skillPts + levelPts);
       const reasons = [`+${pyRound(titlePts)} ${info.why}`, `+${pyRound(skillPts)} ${hits.length} CV skill(s) found in the advert${extract ? " (extract only)" : ""}`, levelWhy];
-      const status = job.sponsorship || "unverified", [label, rank, offered] = SPONSORSHIP[status] || SPONSORSHIP.unverified;
+      const status = job.sponsorship || "unverified", needs = needsFor(job);
+      let [label, rank, offered] = SPONSORSHIP[status] || SPONSORSHIP.unverified;
+      const rightLabel = rights.has(job.country) ? RIGHT_LABELS[`${job.country}/${status}`] : null;
+      if (rightLabel) [label, rank, offered] = [rightLabel, 3, true];
       const clear = clearance(text, held);
       if (extract && clear.level === "none") clear.label = "No clearance in the extract: check the advert";
       const lic = drivingLicence(text, licence), nationality = nationalityRestriction(text), pay = visaPay(job), family = info.family ? TAX.families[info.family] : null;

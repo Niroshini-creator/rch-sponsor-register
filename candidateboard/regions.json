@@ -1,11 +1,77 @@
 {
   "_comment": "Where a candidate is willing to work. Each key expands to ISO country codes; a profile's `locations` lists the keys and `countries` the expanded codes. Read by both the Python intake and the browser scan (candidates/intake.js).",
-  "default": ["GB"],
+  "default": [
+    "GB"
+  ],
   "regions": {
-    "GB": {"label": "United Kingdom", "countries": ["GB"]},
-    "IE": {"label": "Ireland", "countries": ["IE"]},
-    "EU": {"label": "Europe (EU/EEA and Switzerland)", "countries": ["DE", "NL", "FR", "BE", "AT", "CH", "ES", "IT", "PL", "PT", "SE", "DK", "FI", "NO", "CZ", "LU", "EE", "GR", "RO", "HU", "LT", "LV", "SK", "SI", "HR", "BG", "CY", "MT", "IS"]},
-    "AU": {"label": "Australia", "countries": ["AU"]},
-    "ME": {"label": "Middle East (UAE, Saudi Arabia, Qatar, Kuwait, Bahrain, Oman)", "countries": ["AE", "SA", "QA", "KW", "BH", "OM"]}
+    "GB": {
+      "label": "United Kingdom",
+      "countries": [
+        "GB"
+      ]
+    },
+    "IE": {
+      "label": "Ireland",
+      "countries": [
+        "IE"
+      ]
+    },
+    "EU": {
+      "label": "Europe (EU/EEA and Switzerland)",
+      "countries": [
+        "DE",
+        "NL",
+        "FR",
+        "BE",
+        "AT",
+        "CH",
+        "ES",
+        "IT",
+        "PL",
+        "PT",
+        "SE",
+        "DK",
+        "FI",
+        "NO",
+        "CZ",
+        "LU",
+        "EE",
+        "GR",
+        "RO",
+        "HU",
+        "LT",
+        "LV",
+        "SK",
+        "SI",
+        "HR",
+        "BG",
+        "CY",
+        "MT",
+        "IS"
+      ]
+    },
+    "US": {
+      "label": "United States",
+      "countries": [
+        "US"
+      ]
+    },
+    "AU": {
+      "label": "Australia",
+      "countries": [
+        "AU"
+      ]
+    },
+    "ME": {
+      "label": "Middle East (UAE, Saudi Arabia, Qatar, Kuwait, Bahrain, Oman)",
+      "countries": [
+        "AE",
+        "SA",
+        "QA",
+        "KW",
+        "BH",
+        "OM"
+      ]
+    }
   }
 }
