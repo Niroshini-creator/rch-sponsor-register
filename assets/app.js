@@ -24,7 +24,7 @@ const COUNTRY_NAMES = new Intl.DisplayNames(["en"], { type: "region" });
 const REGION_OPTIONS = {
   "GB-SCT": { label: "Scotland (UK)", flag: "GB", test: (j) => j.country === "GB" && j.region === "Scotland" },
   "AE-DXB": { label: "Dubai (UAE)", flag: "AE", test: (j) => j.country === "AE" && j.region === "Dubai" },
-  EU: { label: "Europe (excl. UK)", flag: "EU", test: (j) => !["GB", "US", "AE"].includes(j.country) },
+  EU: { label: "Europe (excl. UK)", flag: "EU", test: (j) => !["GB", "US", "AE", "AU", "SA", "QA", "KW", "BH", "OM"].includes(j.country) },
 };
 const DEFAULT_FEATURED = ["GB", "GB-SCT", "IE", "US", "NL", "LU", "SE", "FI", "PL", "ES", "AE", "AE-DXB"];
 const PUBLIC_SECTORS = new Set(["Public Sector & Government", "NHS & Healthcare", "Charity & Non-profit"]);

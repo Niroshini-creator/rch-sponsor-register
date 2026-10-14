@@ -24,8 +24,8 @@ log = logging.getLogger("jobfeed")
 ROOT = Path(__file__).resolve().parent.parent
 CONFIG = ROOT / "config"
 COUNTRIES = careers.TARGET_COUNTRIES | {"LI"}
-# Countries where the employer sponsors every foreign hire's work visa by law (UAE residence visas).
-EMPLOYER_VISA_COUNTRIES = {"AE"}
+# Countries where the employer sponsors every foreign hire's work visa (Gulf residence and work visas).
+EMPLOYER_VISA_COUNTRIES = careers.GULF_STATES
 # Shown first in the country filter, even before they have jobs.
 FEATURED_COUNTRIES = ["GB", "GB-SCT", "IE", "US", "NL", "LU", "SE", "FI", "PL", "ES", "AE", "AE-DXB"]
 REGISTERS = [("UK Home Office", sponsors.load_uk_register), ("NL IND", sponsors.load_nl_register),

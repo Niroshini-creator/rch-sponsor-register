@@ -30,6 +30,16 @@
         <label>Security clearance you hold<select id="clearance"><option value="none">None</option><option value="basic">Basic (BPSS)</option><option value="sc">SC</option><option value="dv">DV</option></select></label>
         <label>Driving licence<select id="licence"><option value="">Not saying</option><option value="yes">Yes</option><option value="no">No</option></select></label>
       </div>
+      <fieldset style="margin-top:12px;border:1px solid var(--border);border-radius:8px;padding:8px 12px">
+        <legend class="small">Where would you work? Tick all that apply</legend>
+        <label class="check"><input type="checkbox" name="region" value="GB" checked> United Kingdom</label>
+        <label class="check"><input type="checkbox" name="region" value="IE"> Ireland</label>
+        <label class="check"><input type="checkbox" name="region" value="EU"> Europe (EU/EEA, Switzerland)</label>
+        <label class="check"><input type="checkbox" name="region" value="AU"> Australia</label>
+        <label class="check"><input type="checkbox" id="region-me" name="region" value="ME"> Middle East (UAE, Saudi Arabia, Qatar, Kuwait, Bahrain, Oman)</label>
+        <label class="check"><input type="checkbox" id="english-only" checked> Only roles that can be done in English (recommended outside the UK, Ireland and Australia)</label>
+        <p class="small muted" style="margin:6px 0 0">Outside the UK and Ireland, roles are shown if the advert offers sponsorship, the employer is on that country's sponsor list, or the country's employers sponsor by default (the Gulf states). Coverage is widest in the UK and thinner elsewhere.</p>
+      </fieldset>
       <details style="margin-top:10px"><summary class="small">Optional: roles you want to target, and notes</summary>
         <p class="small muted">Paste or upload a list of job titles you want (bullets are titles; other lines are headings, ideally named after your CV, e.g. "Business Analyst CV").</p>
         <div class="bar"><label>Upload list<input type="file" id="roles-file" accept=".pdf,.txt,.md"></label></div>

@@ -149,6 +149,61 @@ class MatchTests(unittest.TestCase):
         self.assertEqual((ev["visa_pay"]["status"], ev["hidden_by_default"]), ("", []))
 
 
+class LocationTests(unittest.TestCase):
+    def test_regions_expand_to_countries(self):
+        self.assertEqual(intake.expand_regions(None), (["GB"], ["GB"]))
+        keys, countries = intake.expand_regions(["GB", "IE", "ME", "GB"])
+        self.assertEqual((keys, countries[:3], len(countries)), (["GB", "IE", "ME"], ["GB", "IE", "AE"], 8))
+        with self.assertRaises(ValueError):
+            intake.expand_regions(["MARS"])
+
+    def test_profile_records_locations_and_english_preference(self):
+        p = profile()
+        self.assertEqual((p["locations"], p["countries"], p["english_only"]), (["GB"], ["GB"], True))
+
+    def test_non_english_adverts_are_hidden_outside_english_speaking_countries(self):
+        m = match.Matcher(profile())
+        text = "x" * 700 + " requirements stakeholder uat"
+        de_no = m.evaluate(job("Business Analyst", text, country="DE", english=False, sponsorship="confirmed"))
+        de_yes = m.evaluate(job("Business Analyst", text, country="DE", english=True, sponsorship="confirmed"))
+        gb_no = m.evaluate(job("Business Analyst", text, country="GB", english=False, sponsorship="confirmed"))
+        self.assertIn("language", de_no["hidden_by_default"])
+        self.assertIn("Advert is not in English or asks for another language", de_no["flags"])
+        self.assertNotIn("language", de_yes["hidden_by_default"])
+        self.assertNotIn("language", gb_no["hidden_by_default"])       # the UK is English-speaking whatever the flag says
+        p = profile(english_only=False)
+        self.assertNotIn("language", match.Matcher(p).evaluate(job("Business Analyst", text, country="DE", english=False, sponsorship="confirmed"))["hidden_by_default"])
+
+
+class NationalityTests(unittest.TestCase):
+    def test_nationals_only_posts_are_detected_narrowly(self):
+        yes = ["Influencer Marketing Officer (UAE National)", "Emirati only role", "This post is open to Saudi nationals only.",
+               "Only open to UAE nationals", "UAE nationals required", "Citizens only"]
+        no = ["Our Emiratisation programme supports growth", "Open to UAE nationals and expatriates", "Based in Dubai, UAE", "Business Analyst, national bank"]
+        for text in yes:
+            self.assertTrue(checks.nationality_restriction(text)["restricted"], text)
+        for text in no:
+            self.assertFalse(checks.nationality_restriction(text)["restricted"], text)
+
+    def test_matcher_hides_them(self):
+        ev = match.Matcher(profile()).evaluate(job("Marketing Executive (UAE National)", country="AE", sponsorship="employer_visa", english=True))
+        self.assertIn("nationals_only", ev["hidden_by_default"])
+        self.assertIn("Reserved for the country's own nationals", ev["flags"])
+
+
+class OverseasLabelTests(unittest.TestCase):
+    def test_uk_only_route_rule_and_irish_label(self):
+        m = match.Matcher(profile())
+        text = "x" * 700 + " requirements stakeholder uat"
+        uk = m.evaluate(job("Business Analyst", text, sponsor_routes=["Temporary Worker"]))
+        ie = m.evaluate(job("Business Analyst", text, country="IE", sponsor_routes=["Employment permits issued"]))
+        nl = m.evaluate(job("Business Analyst", text, country="NL", sponsor_routes=["Highly skilled migrant"]))
+        self.assertIn("no_skilled_worker_route", uk["hidden_by_default"])
+        self.assertEqual((ie["hidden_by_default"], nl["hidden_by_default"]), ([], []))
+        stamp = m.evaluate(job("Business Analyst", text, country="IE", sponsorship="stamp_1g"))
+        self.assertTrue(stamp["sponsorship_label"].startswith("No sponsorship evidence (Ireland"))
+
+
 class PipelineTests(unittest.TestCase):
     def test_classify_sponsorship(self):
         from jobfeed.models import Job

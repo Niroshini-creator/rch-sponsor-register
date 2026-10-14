@@ -57,6 +57,10 @@
   const HYBRID = /\bhybrid\b|\b\d\s*days? (?:a|per|in the) (?:week|office)\b/i;
   const workMode = (text, location) => { const b = `${location || ""} ${text}`; return HYBRID.test(b) ? "hybrid" : REMOTE.test(b) ? "remote" : ""; };
 
+  const NATIONALS = "uae|emirati|saudi|qatari|kuwaiti|omani|bahraini";
+  const NATIONALS_ONLY = new RegExp(`\\(\\s*(?:${NATIONALS})(?:\\s+nationals?)?\\s*\\)|\\b(?:${NATIONALS})\\s+(?:nationals?|citizens?)\\s+(?:only|required)\\b|\\b(?:${NATIONALS})\\s+only\\b|\\bonly\\s+(?:open|available)\\s+to\\s+(?:${NATIONALS})|\\b(?:nationals?|citizens?)\\s+only\\b`, "i");
+  function nationalityRestriction(text) { const m = NATIONALS_ONLY.exec(text); return { restricted: Boolean(m), quote: m ? sentence(text, m.index) : "" }; }
+
   // ------------------------------------------------------------------ salary.py
   const UK_GENERAL = 41700, UK_REDUCED = 33400, UK_PAY_SCALE = 25000, IE_GENERAL = 36605, IE_CARE = 32691, HOURS = 37.5 * 52;
   const OTHER_CUR = { GB: /[$€]|\b(eur|usd)\b/i, IE: /[$£]|\b(gbp|usd)\b/i };
@@ -103,10 +107,11 @@
   const SPONSORSHIP = {
     confirmed: ["Sponsorship offered", 0, true], possible: ["Sponsorship may be available", 1, true], licensed_sponsor: ["Licensed sponsor (advert silent)", 2, true],
     employer_visa: ["Employer provides visa", 2, true], graduate_route: ["Not sponsoring, open to Graduate visa holders", 4, false],
-    unverified: ["Employer not on sponsor register", 5, false], agency: ["Agency advert, end employer unknown", 5, false], not_sponsored: ["Sponsorship not offered", 6, false],
+    stamp_1g: ["No sponsorship evidence (Ireland: open to Stamp 1G holders only)", 5, false], unverified: ["Employer not on sponsor register", 5, false], agency: ["Agency advert, end employer unknown", 5, false], not_sponsored: ["Sponsorship not offered", 6, false],
   };
   const VERY_SENIOR = /\b(director|head of|vice president|vp|avp|svp|chief|principal|partner)\b/i, SENIOR = /\b(senior|lead|manager|staff|sr\.?)\b/i;
   const JUNIOR = /\b(junior|graduate|trainee|entry[- ]level|associate)\b/i, ASSISTANT = /\b(assistant|intern(ship)?|apprentice(ship)?|placement)\b/i;
+  const ENGLISH_COUNTRIES = new Set(["GB", "IE", "US", "MT", "AU"]);   // = jobfeed.classify.ENGLISH_SPEAKING_COUNTRIES
   const escRe = s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
   /** profile: the "candidate" object of a board file (or a profile.json). */
@@ -114,6 +119,7 @@
     const TAX = I.taxonomy();
     const years = Number(profile.experience_years || 0), held = (profile.clearance || {}).held || "none", licence = profile.driving_licence ?? null;
     const visa = profile.visa || {}, needs = visa.sponsorship !== "not_needed", newEntrant = Boolean(visa.new_entrant);
+    const englishOnly = profile.english_only ?? true;
     const tracks = {}, cvFor = {}, every = new Map();
     for (const t of profile.tracks) {
       tracks[t.name] = (t.skills || []).map(s => [s, I.keywordRe(s)]);
@@ -175,11 +181,19 @@
       const status = job.sponsorship || "unverified", [label, rank, offered] = SPONSORSHIP[status] || SPONSORSHIP.unverified;
       const clear = clearance(text, held);
       if (extract && clear.level === "none") clear.label = "No clearance in the extract: check the advert";
-      const lic = drivingLicence(text, licence), pay = visaPay(job), family = info.family ? TAX.families[info.family] : null;
+      const lic = drivingLicence(text, licence), nationality = nationalityRestriction(text), pay = visaPay(job), family = info.family ? TAX.families[info.family] : null;
       const flags = levelFlag ? [levelFlag] : [], routes = job.sponsor_routes || [];
-      const noRoute = routes.length > 0 && status === "licensed_sponsor" && !routes.some(r => r.toLowerCase().includes("skilled worker"));
+      const noRoute = job.country === "GB" && routes.length > 0 && status === "licensed_sponsor" && !routes.some(r => r.toLowerCase().includes("skilled worker"));
       if (noRoute) flags.push("Sponsor licence does not list the Skilled Worker route");
       const hidden = [];
+      if (englishOnly && !ENGLISH_COUNTRIES.has(job.country) && job.english === false) {
+        flags.push("Advert is not in English or asks for another language");
+        hidden.push("language");
+      }
+      if (nationality.restricted) {
+        flags.push("Reserved for the country's own nationals");
+        hidden.push("nationals_only");
+      }
       if (noRoute && needs) hidden.push("no_skilled_worker_route");
       if (clear.blocks) hidden.push("clearance");
       if (needs && !offered) hidden.push("no_sponsorship");
@@ -190,7 +204,7 @@
         tier: info.tier, role: info.role, family: info.family, family_label: family ? family.label : "", track: info.track,
         cv_to_use: info.track ? cvFor[info.track] || "" : "", sponsorship: status, sponsorship_label: label, sponsorship_rank: rank, sponsorship_offered: offered,
         sponsorability: family ? family.sponsor : "check", sponsorability_note: family ? TAX.sponsorNotes[family.sponsor] || "" : "",
-        clearance: clear, driving_licence: lic, work_mode: workMode(text, job.location), visa_pay: pay, flags, hidden_by_default: hidden,
+        clearance: clear, driving_licence: lic, nationality, work_mode: workMode(text, job.location), visa_pay: pay, flags, hidden_by_default: hidden,
       };
     }
     return { evaluate, profile };

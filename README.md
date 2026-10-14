@@ -216,6 +216,11 @@ searches for the directory come last, up to `ADZUNA_EMPLOYER_PAGES` pages of 50 
 University boards and NHS Jobs read up to `ACADEMIC_MAX_ADVERTS` (default 400 per board) and `NHS_MAX_ADVERTS` (default 700)
 advert pages per run, pausing `ACADEMIC_PAUSE` seconds (default 0.3) between them.
 
+**Australia and the Gulf states.** Australia is searched on Adzuna (`au`: "visa sponsorship" plus one search per job role); with no public
+sponsor register there, only adverts that say they sponsor are kept. Saudi Arabia, Qatar, Kuwait, Bahrain and Oman join the UAE as countries
+where employers sponsor the work visa of every foreign hire, so their adverts are kept when a source (an employer career site in
+`config/employers.json`, THE unijobs) carries them; no source is dedicated to them yet.
+
 **Civil Service Jobs** (civilservicejobs.service.gov.uk) is deliberately not read: it has no public API or feed, sits behind a
 bot check, and no published terms allow automated access. Departments that also advertise on Reed are found by name (above).
 Civil Service posts are also subject to the [nationality rules](https://www.gov.uk/government/publications/nationality-rules).

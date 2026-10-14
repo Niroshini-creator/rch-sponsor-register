@@ -29,7 +29,7 @@ log = logging.getLogger("jobfeed")
 # Adzuna country codes covered, mapped to ISO 3166 codes.
 ADZUNA_COUNTRIES = {
     "gb": "GB", "us": "US", "nl": "NL", "pl": "PL", "es": "ES", "de": "DE", "fr": "FR",
-    "be": "BE", "at": "AT", "ch": "CH", "it": "IT",
+    "be": "BE", "at": "AT", "ch": "CH", "it": "IT", "au": "AU",
 }
 
 # Extra keyword searches so the feed covers every domain, not only tech.
@@ -74,7 +74,7 @@ EUROPE_AVIATION_QUERIES = ["airport operations", "aerospace engineer", "aeronaut
 # Early-career searches for UK Graduate visa (PSW) and US OPT holders.
 EARLY_CAREER_QUERIES = {"gb": ["graduate visa", "graduate scheme sponsorship"],
                         "us": ["opt", "h1b sponsorship", "new grad visa sponsorship"]}
-ADZUNA_MAX_CALLS = int(os.environ.get("ADZUNA_MAX_CALLS", "276"))  # 260 + the SAP / GRC searches (<= 16 calls)
+ADZUNA_MAX_CALLS = int(os.environ.get("ADZUNA_MAX_CALLS", "294"))  # 260 + SAP / GRC searches (<= 16) + Australia role searches (<= 16) + 2
 ADZUNA_PAUSE = float(os.environ.get("ADZUNA_PAUSE", "2.5"))  # free tier allows ~25 calls a minute
 
 
@@ -150,6 +150,8 @@ def _adzuna_searches() -> Iterator[tuple[str, dict, int] | tuple[str, dict, int,
             yield code, {"what_and": words}, 2
         for role in ROLE_QUERIES:
             yield code, {"what_and": f"sponsorship {role}"}, 2
+    for role in ROLE_QUERIES:   # Australia has no public sponsor register: only adverts that offer sponsorship count
+        yield "au", {"what_and": f"sponsorship {role}"}, 1
     for query in DOMAIN_QUERIES[1:]:
         yield "gb", {"what_and": query}, 2
     for code in ("nl", "pl", "es"):
@@ -806,6 +808,13 @@ _COUNTRY_WORDS = {
     "breda": "NL", "arnhem": "NL", "almere": "NL", "enschede": "NL", "schiphol": "NL", "veldhoven": "NL",
     "nederland": "NL", "esch-sur-alzette": "LU", "belval": "LU", "kirchberg": "LU",
     "inverness": "GB", "stirling": "GB", "st andrews": "GB", "paisley": "GB", "livingston": "GB",
+    # Saudi Arabia, Qatar, Kuwait, Bahrain, Oman
+    "saudi arabia": "SA", "riyadh": "SA", "jeddah": "SA", "dammam": "SA", "thuwal": "SA", "kaust": "SA", "neom": "SA",
+    "qatar": "QA", "doha": "QA", "kuwait": "KW", "kuwait city": "KW", "bahrain": "BH", "manama": "BH",
+    "oman": "OM", "muscat": "OM",
+    # Australia
+    "brisbane": "AU", "adelaide": "AU", "canberra": "AU", "gold coast": "AU", "new south wales": "AU", "victoria, australia": "AU",
+    "queensland": "AU",
     # United Arab Emirates
     "dubai": "AE", "abu dhabi": "AE", "sharjah": "AE", "ajman": "AE", "uae": "AE", "united arab emirates": "AE",
     "difc": "AE", "jebel ali": "AE",

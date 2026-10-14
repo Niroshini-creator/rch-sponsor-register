@@ -9,7 +9,7 @@
   const GENERIC = ["word", "excel", "support", "customer", "sales", "reporting", "coordination", "sap", "plan", "content", "records", "documentation", "administration", "tickets?", "sla"];
   const SKILLS_PER_TRACK = 60, SUGGEST_MIN_STRENGTH = 30;
   const MONTHS = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
-  let TAX = null;
+  let TAX = null, REGIONS = { default: ["GB"], regions: { GB: { label: "United Kingdom", countries: ["GB"] } } };
 
   const tokens = text => new Set((text.toLowerCase().match(/[a-z0-9+#]+/g) || []).filter(w => !STOP.has(w) && w.length > 1));
   const inter = (a, b) => [...a].filter(x => b.has(x)).length;
@@ -21,7 +21,8 @@
     return (Math.abs(s % 1) === 0.5 ? 2 * Math.round(s / 2) : r) / 10;
   }
 
-  function init(roles) {
+  function init(roles, regions) {
+    if (regions) REGIONS = regions;
     const families = {};
     for (const [key, f] of Object.entries(roles.families)) {
       families[key] = { key, label: f.label, titles: f.titles.map(p => new RegExp(p, "i")),
@@ -157,9 +158,17 @@
   }
   const slugify = name => name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 
+  function expandRegions(keys) {
+    keys = [...new Set(keys && keys.length ? keys : REGIONS.default)];
+    const unknown = keys.filter(k => !REGIONS.regions[k]);
+    if (unknown.length) throw new Error(`unknown location(s) ${unknown}`);
+    return [keys, [...new Set(keys.flatMap(k => REGIONS.regions[k].countries))]];
+  }
+
   /** cvs: [{track, filename, text}]. opts mirror candidateboard.intake.build_profile. */
   function buildProfile(cvs, rolesText, opts) {
     opts = opts || {};
+    const [locations, countries] = expandRegions(opts.regions);
     const scans = cvs.map(c => ({ ...c, s: scan(c.text, opts.today) }));
     const combined = {};
     for (const { track, s } of scans) for (const [fam, ev] of Object.entries(s.families)) if (!(fam in combined) || ev.strength > combined[fam].strength) combined[fam] = { ...ev, track };
@@ -191,7 +200,7 @@
     const have = new Set(roles.map(r => r.family));
     return {
       slug: opts.slug || slugify(opts.name || first.name), name: opts.name || first.name, headline: first.headline,
-      base_location: opts.location || "", country: "GB", countries: ["GB"], current_status: opts.status || "",
+      base_location: opts.location || "", country: countries[0], locations, countries, english_only: opts.englishOnly ?? true, current_status: opts.status || "",
       experience_years: pyRound1(months / 12), education: first.education,
       visa: opts.visa || { type: "", label: "", expires: "", sponsorship: "required", new_entrant: false },
       clearance: { held: opts.clearance || "none" }, driving_licence: opts.drivingLicence ?? null,
@@ -202,6 +211,6 @@
     };
   }
 
-  const api = { init, taxonomy: () => TAX, keywordRe, tokens, scan, tierFamilies, parseRoleList, familyForTitle, buildProfile, experienceMonths, slugify, labels: () => Object.fromEntries(Object.entries(TAX.families).map(([k, f]) => [k, { label: f.label, sponsor: f.sponsor }])) };
+  const api = { init, taxonomy: () => TAX, regions: () => REGIONS.regions, expandRegions, keywordRe, tokens, scan, tierFamilies, parseRoleList, familyForTitle, buildProfile, experienceMonths, slugify, labels: () => Object.fromEntries(Object.entries(TAX.families).map(([k, f]) => [k, { label: f.label, sponsor: f.sponsor }])) };
   return api;
 });

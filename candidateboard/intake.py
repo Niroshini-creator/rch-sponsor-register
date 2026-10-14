@@ -13,6 +13,7 @@ from pathlib import Path
 
 from . import cv, taxonomy
 
+REGIONS_FILE = Path(__file__).resolve().parent / "regions.json"
 SKILLS_PER_TRACK = 60
 SUGGEST_MIN_STRENGTH = 30     # only suggest titles for families the CV clearly supports
 
@@ -28,6 +29,20 @@ def generic_terms(tax: taxonomy.Taxonomy) -> set[str]:
         for term, _ in fam.keywords:
             counts[term] = counts.get(term, 0) + 1
     return GENERIC_SKILLS | {t for t, n in counts.items() if n >= 3}
+
+
+def load_regions(path: Path = REGIONS_FILE) -> dict:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def expand_regions(keys: list[str] | None) -> tuple[list[str], list[str]]:
+    """(region keys, ISO country codes) for the places a candidate would work; unknown keys are an error."""
+    cfg = load_regions()
+    keys = list(dict.fromkeys(keys or cfg["default"]))
+    unknown = [k for k in keys if k not in cfg["regions"]]
+    if unknown:
+        raise ValueError(f"unknown location(s) {unknown}; choose from {sorted(cfg['regions'])}")
+    return keys, list(dict.fromkeys(c for k in keys for c in cfg["regions"][k]["countries"]))
 
 
 def slugify(name: str) -> str:
@@ -47,8 +62,10 @@ def _track_for_section(section: str, tracks: list[str]) -> str | None:
 
 def build_profile(cvs: dict[str, Path], roles_text: str = "", *, name: str = "", slug: str = "", location: str = "",
                   visa: dict | None = None, clearance: str = "none", driving_licence: bool | None = None,
-                  current_status: str = "", notes: str = "", today: date | None = None) -> dict:
+                  current_status: str = "", notes: str = "", regions: list[str] | None = None,
+                  english_only: bool = True, today: date | None = None) -> dict:
     tax = taxonomy.load()
+    locations, countries = expand_regions(regions)
     scans = {track: cv.scan(cv.read_text(path), today) for track, path in cvs.items()}
 
     # One strength per family across all CVs, remembering which CV shows it best.
@@ -103,8 +120,10 @@ def build_profile(cvs: dict[str, Path], roles_text: str = "", *, name: str = "",
         "name": name or first["name"],
         "headline": first["headline"],
         "base_location": location,
-        "country": "GB",
-        "countries": ["GB"],
+        "country": countries[0],
+        "locations": locations,
+        "countries": countries,
+        "english_only": english_only,
         "current_status": current_status,
         "experience_years": round(months / 12, 1),
         "education": first["education"],
