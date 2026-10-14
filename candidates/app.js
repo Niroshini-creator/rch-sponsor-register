@@ -60,7 +60,10 @@ async function listView() {
 
 // ------------------------------------------------------------------------------------------ one candidate
 const TABS = [["1", "Tier 1 · Core"], ["2", "Tier 2 · Close"], ["3", "Tier 3 · Stretch"], ["4", "Other roles"], ["employers", "Employers"], ["cv", "CV scan"]];
-const state = { tab: "1", q: "", spons: "offered", min: 0, days: 7, sort: "match", showBlocked: false, sector: "", etier: "" };
+const state = { tab: "1", q: "", spons: "offered", min: 0, days: 7, sort: "match", showBlocked: false, sector: "", etier: "", source: "noadzuna" };
+// Adzuna adverts open through an Adzuna redirect page that many people cannot reach, so they are hidden by default.
+const SOURCE_FILTERS = [["noadzuna", "Everything except Adzuna"], ["direct", "Employer, NHS, university & school sites only"], ["all", "All, including Adzuna"]];
+const sourceOk = (j, mode = state.source) => mode === "all" || (mode === "direct" ? j.channel !== "aggregator" : j.source !== "Adzuna");
 let data = null;
 const live = { status: "pending", feedTime: "", added: 0, error: "", baseJobs: [] };
 const LIVE_RECHECK_MS = 30 * 60 * 1000;
@@ -152,7 +155,7 @@ async function boardView(slug) {
   data = await getJSON(`data/${encodeURIComponent(slug)}.json`);
   document.title = `${data.candidate.name}: candidate board`;
   live.mode = "board"; live.baseJobs = data.jobs;
-  Object.assign(state, { tab: "1", spons: "offered" });
+  Object.assign(state, { tab: "1", spons: "offered", source: "noadzuna" });
   $header.replaceChildren(candidateHeader(data.candidate, h("a", { class: "back", href: "./#boards" }, "← Recruiter boards"),
     h("p", { class: "small muted" }, `Updated ${ago(data.generated_at)} · roles posted in the last ${data.window_days} days`)));
   startLive();
@@ -165,7 +168,7 @@ function selfView(profile) {
   data = { candidate: c, jobs: [], sources: {}, window_days: profile.window_days || 7, generated_at: "" };
   document.title = "Your matching vacancies";
   live.mode = "self"; live.baseJobs = []; live.status = "pending"; live.firstPaint = true;
-  Object.assign(state, { tab: "1", q: "", min: 0, sector: "", etier: "", spons: profile.visa?.sponsorship === "not_needed" ? "all" : "offered" });
+  Object.assign(state, { tab: "1", q: "", min: 0, sector: "", etier: "", source: "noadzuna", spons: profile.visa?.sponsorship === "not_needed" ? "all" : "offered" });
   $header.replaceChildren(candidateHeader(c, h("a", { class: "back", href: "./", onclick: () => { window.__profile = null; try { sessionStorage.removeItem("cb_profile"); } catch (e) { /* private mode */ } } }, "← Change CV or details"),
     h("p", { class: "small muted" }, "Your CV was read in this browser only. Press Apply on a role to go to the employer's own advert.")));
   startLive();
@@ -178,12 +181,16 @@ function visible(j, tab = state.tab) {
   if (state.q && !`${j.title} ${j.company} ${j.location} ${j.role} ${j.sector}`.toLowerCase().includes(state.q.toLowerCase())) return false;
   if (state.sector && j.sector !== state.sector) return false;
   if (state.etier && String(j.employer_tier) !== state.etier) return false;
+  if (!sourceOk(j)) return false;
   if (state.spons === "offered" && !j.sponsorship_offered) return false;
   if (state.spons === "not" && j.sponsorship_offered) return false;
   const blockers = j.hidden_by_default.filter(r => r !== "no_sponsorship");
   if (!state.showBlocked && blockers.length) return false;
   return true;
 }
+
+// Would this job show if only the source filter were lifted? (Used to say how many roles Adzuna-only filtering hides.)
+function withSource(j, mode) { const keep = state.source; state.source = mode; const ok = visible(j); state.source = keep; return ok; }
 
 function sortJobs(list) {
   const by = { match: (a, b) => b.match - a.match || a.sponsorship_rank - b.sponsorship_rank,
@@ -195,9 +202,9 @@ function sortJobs(list) {
 
 function render() {
   const jobs = data.jobs;
-  const counts = Object.fromEntries(["1", "2", "3", "4"].map(t => [t, jobs.filter(j => String(j.tier) === t && j.sponsorship_offered && !j.hidden_by_default.length).length]));
+  const counts = Object.fromEntries(["1", "2", "3", "4"].map(t => [t, jobs.filter(j => String(j.tier) === t && j.sponsorship_offered && !j.hidden_by_default.length && sourceOk(j)).length]));
   const sponsorOffered = jobs.filter(j => j.sponsorship === "confirmed" || j.sponsorship === "possible").length;
-  const employers = new Set(jobs.filter(j => j.sponsorship_offered).map(j => j.company)).size;
+  const employers = new Set(jobs.filter(j => j.sponsorship_offered && sourceOk(j)).map(j => j.company)).size;
   const tabs = h("div", { class: "tabs", role: "tablist" }, TABS.map(([key, label]) =>
     h("button", { class: "tab", role: "tab", "aria-selected": String(state.tab === key), onclick: () => { state.tab = key; render(); } },
       label, counts[key] != null ? h("span", { class: "n" }, counts[key]) : null)));
@@ -234,12 +241,15 @@ function jobsView() {
     h("label", {}, "Min match", sel("min", [[0, "Any"], [50, "50%+"], [60, "60%+"], [70, "70%+"]], state.min, v => state.min = Number(v))),
     h("label", {}, "Sector", sel("sector", [["", "All"], ...sectors.map(s => [s, s])], state.sector, v => state.sector = v)),
     h("label", {}, "Employer tier", sel("etier", [["", "All"], ["1", "Tier 1"], ["2", "Tier 2"], ["3", "Tier 3"]], state.etier, v => state.etier = v)),
+    h("label", {}, "Where advertised", sel("source", SOURCE_FILTERS, state.source, v => state.source = v)),
     h("label", {}, "Sort", sel("sort", [["match", "Best match"], ["sponsor", "Sponsorship first"], ["newest", "Newest"], ["pay", "Highest pay"]], state.sort, v => state.sort = v)),
     h("label", { class: "check" }, h("input", { type: "checkbox", ...(state.showBlocked ? { checked: true } : {}), onchange: e => { state.showBlocked = e.target.checked; render(); } }), "Show roles needing clearance, below visa pay, or without a Skilled Worker licence"),
     h("button", { class: "btn", onclick: () => exportCsv(sortJobs(data.jobs.filter(j => visible(j)))) }, "Export CSV"));
   const list = sortJobs(data.jobs.filter(j => visible(j)));
   const note = state.tab === "4" ? h("p", { class: "small muted" }, "Other roles at employers that can sponsor, using the same skills on a different route. Many of these (admin, IT support) are below the Skilled Worker skill level, so ask the employer first.") : null;
-  return [bar, note, h("p", { class: "small muted" }, `${plural(list.length, "role")} shown`),
+  const hiddenByAdzuna = state.source === "all" ? 0 : data.jobs.filter(j => !sourceOk(j) && withSource(j, "all")).length;
+  return [bar, note, h("p", { class: "small muted" }, `${plural(list.length, "role")} shown`,
+      hiddenByAdzuna ? ` · ${hiddenByAdzuna} more only on Adzuna (choose “All, including Adzuna” to see them)` : ""),
     list.length ? h("ul", { class: "cards" }, list.slice(0, 250).map(card)) : h("p", { class: "empty" }, "No roles match these filters.")];
 }
 
@@ -265,6 +275,7 @@ function card(j) {
         h("div", { class: "meter" }, h("i", { style: `width:${j.match}%` })))),
     h("ul", { class: "badges" }, badges.filter(Boolean).map(b => h("li", {}, b))),
     h("div", { class: "apply-row" }, h("a", { class: "btn primary", href: j.url, target: "_blank", rel: "noopener noreferrer" }, "Apply →"),
+      j.employer_site && j.employer_site !== j.url ? h("a", { class: "btn", href: j.employer_site, target: "_blank", rel: "noopener noreferrer", title: "The employer's own careers site, if the Apply link does not open" }, "Employer careers page") : null,
       h("p", { class: "small" }, h("b", {}, j.cv_to_use ? `Send: ${j.track} CV` : "Send: best-fitting CV"), ` · target role: ${j.role}${j.family_label ? ` (${j.family_label})` : ""}`)),
     h("details", { class: "why" }, h("summary", {}, "Why this score and these labels"),
       h("ul", {}, j.reasons.map(r => h("li", {}, r)),
@@ -280,7 +291,7 @@ function card(j) {
 
 function employersView() {
   const by = new Map();
-  for (const j of data.jobs.filter(j => j.sponsorship_offered)) {
+  for (const j of data.jobs.filter(j => j.sponsorship_offered && sourceOk(j))) {
     const e = by.get(j.company) || { company: j.company, jobs: [], routes: j.sponsor_routes || [], reg: j.sponsor_register };
     e.jobs.push(j); by.set(j.company, e);
   }
