@@ -48,5 +48,21 @@ class SapGrcSearchTests(unittest.TestCase):
         self.assertGreaterEqual(ev["match"], 80)
 
 
+class PublicSectorSearchTests(unittest.TestCase):
+    def test_main_feed_searches_nhs_and_universities_for_role_types_as_well_as_sponsorship(self):
+        for key, name, base in (("nhs_jobs", "nhs_jobs", sources.NHS_KEYWORDS), ("jobs_ac_uk", "jobs_ac_uk", sources.JOBS_AC_UK_QUERIES)):
+            with mock.patch.object(sources, name, return_value=iter(())) as fn:
+                list(sources.SOURCES[key](7))
+            asked = fn.call_args.args[1]
+            self.assertEqual(tuple(asked[:len(base)]), tuple(base))                    # the sponsorship searches still run first
+            self.assertTrue({"business analyst", "sap", "grc", "information governance"} <= set(asked), key)
+
+    def test_candidate_searches_keep_their_own_keywords(self):
+        from candidateboard import sources as cs
+        with mock.patch.object(cs.shared, "nhs_jobs", return_value=iter(())) as fn:
+            list(cs.nhs(7, ["sap grc"]))
+        self.assertEqual(fn.call_args.kwargs["keywords"], ("sap grc",))
+
+
 if __name__ == "__main__":
     unittest.main()

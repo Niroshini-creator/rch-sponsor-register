@@ -274,7 +274,7 @@ def reed(days: int) -> Iterator[Job]:
 
 
 # --------------------------------------------------------------------------- NHS Jobs
-NHS_MAX_ADVERTS = int(os.environ.get("NHS_MAX_ADVERTS", "300"))
+NHS_MAX_ADVERTS = int(os.environ.get("NHS_MAX_ADVERTS", "700"))  # 300 for the sponsorship terms + the role searches
 NHS_WORKERS = int(os.environ.get("NHS_WORKERS", "4"))
 _SCRIPT_RE = re.compile(r"(?is)<(script|style|noscript)[^>]*>.*?</\1>")
 
@@ -442,7 +442,7 @@ def jobtech_sweden(days: int) -> Iterator[Job]:
 
 
 # --------------------------------------------------------------------------- University & research boards
-ACADEMIC_MAX_ADVERTS = int(os.environ.get("ACADEMIC_MAX_ADVERTS", "150"))
+ACADEMIC_MAX_ADVERTS = int(os.environ.get("ACADEMIC_MAX_ADVERTS", "400"))  # 150 for the sponsorship terms + the role searches
 ACADEMIC_PAUSE = float(os.environ.get("ACADEMIC_PAUSE", "0.3"))
 _LD_JSON_RE = re.compile(r'(?is)<script[^>]+application/ld\+json[^>]*>(.*?)</script>')
 
@@ -801,14 +801,24 @@ def _guess_country(text: str, default: str) -> str:
     return _COUNTRY_WORDS[match.group(1).lower()] if match else default
 
 
+# NHS Jobs and jobs.ac.uk are searched by the sponsorship terms above, which returns mostly clinical and academic posts.
+# These add the analyst, governance, IT, project and business roles that public-sector employers also advertise; the
+# register check in enrich() still keeps only employers that can sponsor.
+PUBLIC_SECTOR_ROLE_QUERIES = (
+    "business analyst", "systems analyst", "data analyst", "information analyst", "business intelligence",
+    "sap", "grc", "access management", "information governance", "governance and compliance", "risk and compliance",
+    "it support", "service desk", "application support", "systems administrator", "digital",
+    "project coordinator", "project officer", "pmo", "digital marketing", "marketing officer", "business development",
+)
+
 SOURCES: dict[str, Callable[..., Iterator[Job]]] = {
     "adzuna": adzuna,
     "reed": reed,
-    "nhs_jobs": nhs_jobs,
+    "nhs_jobs": lambda days: nhs_jobs(days, NHS_KEYWORDS + PUBLIC_SECTOR_ROLE_QUERIES),
     "teaching_vacancies": teaching_vacancies,
     "arbeitnow": arbeitnow,
     "jobtech_sweden": jobtech_sweden,
-    "jobs_ac_uk": jobs_ac_uk,
+    "jobs_ac_uk": lambda days: jobs_ac_uk(days, JOBS_AC_UK_QUERIES + PUBLIC_SECTOR_ROLE_QUERIES),
     "the_unijobs": the_unijobs,
     "euraxess": euraxess,
 }
