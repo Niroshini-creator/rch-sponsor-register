@@ -5,6 +5,7 @@
   "adzuna": { "enabled": true, "env": ["ADZUNA_APP_ID", "ADZUNA_APP_KEY"], "signup": "https://developer.adzuna.com/" },
   "reed": { "enabled": true, "env": ["REED_API_KEY"], "signup": "https://www.reed.co.uk/developers/jobseeker" },
   "nhs_jobs": { "enabled": true },
+  "public_sector_employers": { "enabled": true, "_note": "Civil Service departments and councils searched by name on Reed (config/public_sector_employers.json). Civil Service Jobs itself has no public feed and is not scraped." },
   "teaching_vacancies": { "enabled": true },
   "arbeitnow": { "enabled": true },
   "jobtech_sweden": { "enabled": true, "_note": "Platsbanken (Swedish Public Employment Service) open API: no key needed. Adverts include the employer's named contacts." },
@@ -13,7 +14,7 @@
   "euraxess": { "enabled": true, "_note": "EURAXESS (European Commission) research job search." },
   "rss": {
     "enabled": true,
-    "_note": "Add any RSS/Atom job feed here, e.g. a council or university vacancy feed. The jobs.ac.uk and EURAXESS RSS addresses used before were withdrawn (404) and are now read by their own connectors.",
+    "_note": "Add any RSS/Atom job feed here, e.g. a council or university vacancy feed, as {\"name\": \"Hull City Council\", \"url\": \"<feed url>\", \"employer\": \"Hull City Council\", \"location\": \"Hull\"}. Many councils publish one on their jobs page (look for an RSS or Atom link); there is no national feed. The jobs.ac.uk and EURAXESS RSS addresses used before were withdrawn (404) and are now read by their own connectors.",
     "feeds": []
   }
 }

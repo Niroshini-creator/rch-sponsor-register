@@ -1,0 +1,237 @@
+{
+ "_comment": "Public bodies searched by name on Reed (direct employers only), keeping only adverts that carry the organisation's own name. Civil Service Jobs has no public feed or API and is not scraped; councils with their own RSS vacancy feed go in config/sources.json (rss.feeds). Add rows freely: name, optional aliases (other names adverts use) and register_name (legal name on the sponsor register, if different).",
+ "employers": [
+  {
+   "name": "Home Office",
+   "group": "Civil Service departments and agencies"
+  },
+  {
+   "name": "Department for Work and Pensions",
+   "group": "Civil Service departments and agencies"
+  },
+  {
+   "name": "HM Revenue and Customs",
+   "group": "Civil Service departments and agencies"
+  },
+  {
+   "name": "Ministry of Defence",
+   "group": "Civil Service departments and agencies"
+  },
+  {
+   "name": "Ministry of Justice",
+   "group": "Civil Service departments and agencies"
+  },
+  {
+   "name": "Cabinet Office",
+   "group": "Civil Service departments and agencies"
+  },
+  {
+   "name": "Department for Education",
+   "group": "Civil Service departments and agencies"
+  },
+  {
+   "name": "Department for Transport",
+   "group": "Civil Service departments and agencies"
+  },
+  {
+   "name": "Department of Health and Social Care",
+   "group": "Civil Service departments and agencies"
+  },
+  {
+   "name": "Foreign, Commonwealth and Development Office",
+   "group": "Civil Service departments and agencies"
+  },
+  {
+   "name": "HM Treasury",
+   "group": "Civil Service departments and agencies"
+  },
+  {
+   "name": "Department for Environment, Food and Rural Affairs",
+   "group": "Civil Service departments and agencies"
+  },
+  {
+   "name": "Department for Business and Trade",
+   "group": "Civil Service departments and agencies"
+  },
+  {
+   "name": "Department for Science, Innovation and Technology",
+   "group": "Civil Service departments and agencies"
+  },
+  {
+   "name": "Department for Levelling Up, Housing and Communities",
+   "group": "Civil Service departments and agencies"
+  },
+  {
+   "name": "Department for Culture, Media and Sport",
+   "group": "Civil Service departments and agencies"
+  },
+  {
+   "name": "Office for National Statistics",
+   "group": "Civil Service departments and agencies"
+  },
+  {
+   "name": "Driver and Vehicle Licensing Agency",
+   "group": "Civil Service departments and agencies"
+  },
+  {
+   "name": "HM Land Registry",
+   "group": "Civil Service departments and agencies"
+  },
+  {
+   "name": "Companies House",
+   "group": "Civil Service departments and agencies"
+  },
+  {
+   "name": "Valuation Office Agency",
+   "group": "Civil Service departments and agencies"
+  },
+  {
+   "name": "Crown Commercial Service",
+   "group": "Civil Service departments and agencies"
+  },
+  {
+   "name": "Government Property Agency",
+   "group": "Civil Service departments and agencies"
+  },
+  {
+   "name": "Environment Agency",
+   "group": "Civil Service departments and agencies"
+  },
+  {
+   "name": "Met Office",
+   "group": "Civil Service departments and agencies"
+  },
+  {
+   "name": "UK Health Security Agency",
+   "group": "Civil Service departments and agencies"
+  },
+  {
+   "name": "Health and Safety Executive",
+   "group": "Civil Service departments and agencies"
+  },
+  {
+   "name": "Driver and Vehicle Standards Agency",
+   "group": "Civil Service departments and agencies"
+  },
+  {
+   "name": "HM Courts and Tribunals Service",
+   "group": "Civil Service departments and agencies"
+  },
+  {
+   "name": "Birmingham City Council",
+   "group": "Councils and combined authorities"
+  },
+  {
+   "name": "Coventry City Council",
+   "group": "Councils and combined authorities"
+  },
+  {
+   "name": "Solihull Metropolitan Borough Council",
+   "group": "Councils and combined authorities"
+  },
+  {
+   "name": "Wolverhampton City Council",
+   "group": "Councils and combined authorities"
+  },
+  {
+   "name": "Dudley Metropolitan Borough Council",
+   "group": "Councils and combined authorities"
+  },
+  {
+   "name": "Sandwell Metropolitan Borough Council",
+   "group": "Councils and combined authorities"
+  },
+  {
+   "name": "Walsall Council",
+   "group": "Councils and combined authorities"
+  },
+  {
+   "name": "Warwickshire County Council",
+   "group": "Councils and combined authorities"
+  },
+  {
+   "name": "West Midlands Combined Authority",
+   "group": "Councils and combined authorities"
+  },
+  {
+   "name": "Leeds City Council",
+   "group": "Councils and combined authorities"
+  },
+  {
+   "name": "Manchester City Council",
+   "group": "Councils and combined authorities"
+  },
+  {
+   "name": "Sheffield City Council",
+   "group": "Councils and combined authorities"
+  },
+  {
+   "name": "Bristol City Council",
+   "group": "Councils and combined authorities"
+  },
+  {
+   "name": "Liverpool City Council",
+   "group": "Councils and combined authorities"
+  },
+  {
+   "name": "Newcastle City Council",
+   "group": "Councils and combined authorities"
+  },
+  {
+   "name": "Nottingham City Council",
+   "group": "Councils and combined authorities"
+  },
+  {
+   "name": "Leicester City Council",
+   "group": "Councils and combined authorities"
+  },
+  {
+   "name": "Kent County Council",
+   "group": "Councils and combined authorities"
+  },
+  {
+   "name": "Hampshire County Council",
+   "group": "Councils and combined authorities"
+  },
+  {
+   "name": "Surrey County Council",
+   "group": "Councils and combined authorities"
+  },
+  {
+   "name": "Essex County Council",
+   "group": "Councils and combined authorities"
+  },
+  {
+   "name": "Lancashire County Council",
+   "group": "Councils and combined authorities"
+  },
+  {
+   "name": "Greater London Authority",
+   "group": "Councils and combined authorities"
+  },
+  {
+   "name": "London Borough of Camden",
+   "group": "Councils and combined authorities"
+  },
+  {
+   "name": "London Borough of Hackney",
+   "group": "Councils and combined authorities"
+  },
+  {
+   "name": "London Borough of Tower Hamlets",
+   "group": "Councils and combined authorities"
+  },
+  {
+   "name": "London Borough of Southwark",
+   "group": "Councils and combined authorities"
+  },
+  {
+   "name": "London Borough of Lambeth",
+   "group": "Councils and combined authorities"
+  },
+  {
+   "name": "Transport for London",
+   "group": "Councils and combined authorities"
+  }
+ ]
+}
