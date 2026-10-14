@@ -1,0 +1,201 @@
+{
+ "slug": "sample-candidate",
+ "name": "Sample Candidate (fictional)",
+ "headline": "SAP Security & GRC Consultant | Access Control (ARM/ARA/EAM) | SoD & Compliance",
+ "base_location": "Coventry",
+ "country": "GB",
+ "countries": [
+  "GB"
+ ],
+ "current_status": "",
+ "experience_years": 3.7,
+ "education": "Master's (MBA)",
+ "visa": {
+  "type": "graduate",
+  "label": "Graduate visa (PSW)",
+  "expires": "2027-11",
+  "sponsorship": "preferred",
+  "new_entrant": true
+ },
+ "clearance": {
+  "held": "none"
+ },
+ "driving_licence": null,
+ "window_days": 7,
+ "min_match": 40,
+ "tracks": [
+  {
+   "name": "SAP Security & GRC",
+   "cv": "sap_security_&_grc_sample.pdf",
+   "headline": "SAP Security & GRC Consultant | Access Control (ARM/ARA/EAM) | SoD & Compliance",
+   "skills": [
+    "sap security",
+    "sap grc",
+    "grc access control",
+    "emergency access",
+    "firefighter",
+    "segregation of duties",
+    "sod",
+    "profile generator",
+    "agr_",
+    "role design",
+    "itgc",
+    "audit",
+    "compliance",
+    "evidence",
+    "access reviews?",
+    "grc",
+    "access control"
+   ]
+  },
+  {
+   "name": "Business Analyst",
+   "cv": "business_analyst_sample.pdf",
+   "headline": "Business Analyst | IT Governance & Compliance Background",
+   "skills": [
+    "requirements gathering",
+    "requirements",
+    "stakeholder",
+    "business process",
+    "process mapping",
+    "user stories",
+    "uat",
+    "workshops?",
+    "compliance",
+    "governance",
+    "marketing",
+    "campaigns?",
+    "market research",
+    "business development",
+    "proposals?",
+    "sales forecasts?",
+    "test scenarios?",
+    "competitor"
+   ]
+  }
+ ],
+ "roles": [
+  {
+   "title": "IT Compliance Analyst",
+   "family": "it_risk_compliance",
+   "tier": 1,
+   "track": "Business Analyst",
+   "source": "suggested from CV"
+  },
+  {
+   "title": "IT Risk Analyst",
+   "family": "it_risk_compliance",
+   "tier": 1,
+   "track": "Business Analyst",
+   "source": "suggested from CV"
+  },
+  {
+   "title": "Junior Business Analyst",
+   "family": "business_analyst",
+   "tier": 1,
+   "track": "Business Analyst",
+   "source": "recruiter list"
+  },
+  {
+   "title": "SAP Security Consultant",
+   "family": "sap_security_grc",
+   "tier": 1,
+   "track": "SAP Security & GRC",
+   "source": "recruiter list"
+  },
+  {
+   "title": "Segregation of Duties Analyst",
+   "family": "sap_security_grc",
+   "tier": 1,
+   "track": "SAP Security & GRC",
+   "source": "recruiter list"
+  },
+  {
+   "title": "Marketing Coordinator",
+   "family": "marketing_exec",
+   "tier": 3,
+   "track": "Business Analyst",
+   "source": "recruiter list"
+  },
+  {
+   "title": "Marketing Executive",
+   "family": "marketing_exec",
+   "tier": 3,
+   "track": "Business Analyst",
+   "source": "recruiter list"
+  },
+  {
+   "title": "Social Media & Content Coordinator",
+   "family": "digital_marketing",
+   "tier": 3,
+   "track": "Business Analyst",
+   "source": "recruiter list"
+  },
+  {
+   "title": "UAT Analyst",
+   "family": "uat_testing",
+   "tier": 3,
+   "track": "Business Analyst",
+   "source": "recruiter list"
+  },
+  {
+   "title": "UAT Coordinator",
+   "family": "uat_testing",
+   "tier": 3,
+   "track": "Business Analyst",
+   "source": "recruiter list"
+  }
+ ],
+ "also_consider": [
+  "application_support",
+  "business_development",
+  "change_documentation",
+  "cyber_security",
+  "data_analyst",
+  "digital_marketing",
+  "finance_accounting",
+  "iam_access",
+  "it_support",
+  "market_research",
+  "process_improvement",
+  "project_coordination",
+  "sales_support",
+  "sap_functional",
+  "sap_technical"
+ ],
+ "family_evidence": {
+  "sap_security_grc": {
+   "strength": 100,
+   "tier": 1
+  },
+  "business_analyst": {
+   "strength": 86,
+   "tier": 1
+  },
+  "it_risk_compliance": {
+   "strength": 74,
+   "tier": 1
+  },
+  "iam_access": {
+   "strength": 21,
+   "tier": 2
+  },
+  "marketing_exec": {
+   "strength": 21,
+   "tier": 3
+  },
+  "business_development": {
+   "strength": 21,
+   "tier": 3
+  },
+  "uat_testing": {
+   "strength": 14,
+   "tier": 3
+  },
+  "market_research": {
+   "strength": 14,
+   "tier": 3
+  }
+ },
+ "notes": "Fictional demo built from sample CV text. Replace by running python -m candidateboard intake."
+}

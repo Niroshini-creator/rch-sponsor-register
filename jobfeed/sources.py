@@ -281,15 +281,18 @@ def _advert_text(url: str) -> str:
     return strip_html(_SCRIPT_RE.sub(" ", main.group(0) if main else page))
 
 
-def nhs_jobs(days: int) -> Iterator[Job]:
-    """NHS Jobs public XML search (England & Wales NHS employers).
+NHS_KEYWORDS = ("sponsorship", "skilled worker", "visa")
+
+
+def nhs_jobs(days: int, keywords: tuple[str, ...] = NHS_KEYWORDS) -> Iterator[Job]:
+    """NHS Jobs public XML search (England & Wales NHS employers). `keywords` defaults to the board's sponsorship terms.
 
     The search feed only carries a 150-character snippet, so each recent advert's page is read for
     the full text: the sponsorship statement and the hiring contact live there.
     """
     cutoff = _cutoff(days)
     found: dict[str, tuple[dict, list[str], datetime]] = {}
-    for keyword in ("sponsorship", "skilled worker", "visa"):
+    for keyword in keywords:
         for page in range(1, 41):
             raw = http.get("https://www.jobs.nhs.uk/api/v1/search_xml",
                            params={"keyword": keyword, "page": page, "sort": "publicationDateDesc"})
@@ -468,7 +471,10 @@ def _day_month(text: str, now: datetime) -> datetime | None:
     return d.replace(year=now.year - 1) if d > now + timedelta(days=1) else d
 
 
-def jobs_ac_uk(days: int) -> Iterator[Job]:
+JOBS_AC_UK_QUERIES = ("visa sponsorship", "skilled worker", "certificate of sponsorship", "sponsorship", "visa", "Ireland", "Dublin")
+
+
+def jobs_ac_uk(days: int, queries: tuple[str, ...] = JOBS_AC_UK_QUERIES) -> Iterator[Job]:
     """jobs.ac.uk, where UK (and many overseas) universities and research institutes advertise.
 
     The search is read newest first; each advert's schema.org JobPosting gives the full text,
@@ -478,8 +484,7 @@ def jobs_ac_uk(days: int) -> Iterator[Job]:
     links: dict[str, datetime] = {}
     # Sponsorship wording finds UK roles; Irish roles are searched by place, since Stamp 1G graduates need no
     # permit (the site's location filter is not applied to search URLs, so the place goes in the keywords).
-    searches = [{"keywords": q} for q in ("visa sponsorship", "skilled worker", "certificate of sponsorship",
-                                          "sponsorship", "visa", "Ireland", "Dublin")]
+    searches = [{"keywords": q} for q in queries]
     for search in searches:
         for start in range(1, 401, 25):
             page = http.get_text("https://www.jobs.ac.uk/search/",

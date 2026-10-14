@@ -284,3 +284,7 @@ tests/                       offline unit tests (no network needed)
   any that fail are named under *Data sources* on the board.
 * Classification uses keyword rules, so some jobs will be mislabelled. Correct them by editing the rules in
   `jobfeed/classify.py` and `config/company_tiers.json`.
+
+## Candidate boards
+
+`/candidates/` shows roles matched to one candidate's CV, visa and clearance (match %, sponsorship, clearance and pay labels, tiers). See [candidateboard/README.md](candidateboard/README.md).
