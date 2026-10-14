@@ -1,0 +1,1040 @@
+{
+  "_comment": "Role families used to read a CV, tier the roles worth targeting, and recognise a job's type. For each family: label; titles (regexes matched against a job or CV title); keywords (skills/tools matched against CV and advert text); searches (job-board queries); adjacent (families a person in this one can move to); sponsor ('usual' = normally degree-level, can be sponsored; 'check' = depends on the exact duties; 'rare' = usually below the Skilled Worker skill level, so even licensed sponsors seldom sponsor it). Edit freely: both the CV scan and the matching read this file.",
+  "families": {
+    "sap_security_grc": {
+      "label": "SAP Security & GRC",
+      "titles": [
+        "\\bsap\\b.*\\b(security|grc|access|authori[sz]ations?|iam|identity)\\b",
+        "\\bgrc\\b.*\\b(consultant|analyst|support|specialist)",
+        "\\bsegregation of duties\\b|\\bsod\\b.*analyst",
+        "\\baccess (control|management) (analyst|consultant)",
+        "\\bsap\\b.*\\b(identity (and|&) access|access management)\\b"
+      ],
+      "keywords": [
+        "sap security",
+        "sap grc",
+        "grc access control",
+        "access risk analysis",
+        "access request management",
+        "emergency access",
+        "firefighter",
+        "segregation of duties",
+        "sod",
+        "profile generator",
+        "authori[sz]ations?",
+        "agr_",
+        "role design",
+        "pfcg",
+        "solution manager",
+        "solman",
+        "servicenow",
+        "su01",
+        "su24"
+      ],
+      "searches": [
+        "SAP Security Consultant",
+        "SAP GRC Consultant",
+        "SAP Security Analyst",
+        "SAP Authorisations Analyst",
+        "SAP Access Control",
+        "SAP GRC Access Control",
+        "Segregation of Duties Analyst",
+        "SAP IAM Analyst"
+      ],
+      "adjacent": [
+        "iam_access",
+        "it_risk_compliance",
+        "sap_technical",
+        "cyber_security"
+      ],
+      "sponsor": "usual"
+    },
+    "iam_access": {
+      "label": "IAM & Access Governance",
+      "titles": [
+        "\\b(iam|identity (and|&) access|access governance|access management|identity governance)\\b",
+        "\\bidentity analyst\\b",
+        "\\bprivileged access\\b|\\bpam analyst\\b"
+      ],
+      "keywords": [
+        "access governance",
+        "access reviews?",
+        "user access",
+        "identity and access",
+        "iam",
+        "privileged access",
+        "joiners movers leavers",
+        "rbac",
+        "role based access",
+        "recertification",
+        "sailpoint",
+        "okta",
+        "active directory",
+        "entra",
+        "segregation of duties",
+        "access control"
+      ],
+      "searches": [
+        "IAM Analyst",
+        "Identity and Access Management Analyst",
+        "Access Governance Analyst",
+        "User Access Management Analyst",
+        "IT Access Governance"
+      ],
+      "adjacent": [
+        "it_risk_compliance",
+        "cyber_security",
+        "sap_security_grc",
+        "it_support"
+      ],
+      "sponsor": "usual"
+    },
+    "it_risk_compliance": {
+      "label": "IT Risk, Controls & Compliance",
+      "titles": [
+        "\\b(it|technology|information) (risk|compliance|controls?|audit|governance)\\b",
+        "\\b(compliance|controls?|risk|audit) (analyst|officer|assistant|associate)\\b",
+        "\\bgovernance (analyst|officer|(and|&) compliance)",
+        "\\bsecurity (and|&) compliance\\b",
+        "\\bitgc\\b|\\bsox\\b.*analyst"
+      ],
+      "keywords": [
+        "itgc",
+        "it general controls",
+        "audit",
+        "compliance",
+        "sox",
+        "internal controls?",
+        "risk assessment",
+        "control testing",
+        "iso 27001",
+        "evidence",
+        "remediation",
+        "access reviews?",
+        "governance",
+        "grc",
+        "audit-ready",
+        "policy"
+      ],
+      "searches": [
+        "IT Compliance Analyst",
+        "IT Risk Analyst",
+        "IT Controls Analyst",
+        "IT Audit Analyst",
+        "Technology Risk and Controls Analyst",
+        "Governance and Compliance Analyst",
+        "Information Security Compliance"
+      ],
+      "adjacent": [
+        "cyber_security",
+        "iam_access",
+        "business_analyst",
+        "sap_security_grc"
+      ],
+      "sponsor": "usual"
+    },
+    "cyber_security": {
+      "label": "Cyber Security",
+      "titles": [
+        "\\bcyber\\b",
+        "\\binformation security\\b",
+        "(?<!sap )\\bsecurity (analyst|engineer|consultant|officer)\\b",
+        "\\bsoc analyst\\b"
+      ],
+      "keywords": [
+        "cyber",
+        "information security",
+        "siem",
+        "vulnerability",
+        "penetration",
+        "incident response",
+        "iso 27001",
+        "nist",
+        "threat",
+        "soc",
+        "firewall",
+        "splunk"
+      ],
+      "searches": [
+        "Cyber Security Analyst",
+        "Information Security Analyst",
+        "Security Analyst"
+      ],
+      "adjacent": [
+        "it_risk_compliance",
+        "iam_access"
+      ],
+      "sponsor": "usual"
+    },
+    "sap_functional": {
+      "label": "SAP Functional / Finance / Supply Chain",
+      "titles": [
+        "\\bsap\\b(?!.*\\b(security|grc|access|authori[sz]ations?|iam|identity|basis|abap|btp|fiori)\\b).*\\b(fico|finance|mm|sd|pp|wm|ewm|hcm|successfactors|functional|analyst|consultant|business|process|master data|support)\\b",
+        "\\bs/?4 ?hana\\b.*(consultant|analyst)"
+      ],
+      "keywords": [
+        "sap",
+        "s/4hana",
+        "fico",
+        "sap mm",
+        "sap sd",
+        "master data",
+        "sap ecc",
+        "business process",
+        "end user",
+        "functional specification",
+        "blueprint",
+        "go-live",
+        "cutover",
+        "hypercare"
+      ],
+      "searches": [
+        "SAP Business Analyst",
+        "SAP Functional Consultant",
+        "SAP Analyst",
+        "SAP Support Analyst",
+        "SAP Master Data Analyst"
+      ],
+      "adjacent": [
+        "business_analyst",
+        "sap_security_grc",
+        "application_support"
+      ],
+      "sponsor": "usual"
+    },
+    "sap_technical": {
+      "label": "SAP Technical / Basis / BTP",
+      "titles": [
+        "\\bsap\\b.*\\b(basis|abap|btp|fiori|developer|technical|integration|cpi)\\b",
+        "\\bs/?4 ?hana\\b.*developer"
+      ],
+      "keywords": [
+        "abap",
+        "basis",
+        "btp",
+        "fiori",
+        "sap pi",
+        "cpi",
+        "odata",
+        "transport",
+        "charm",
+        "solman",
+        "solution manager"
+      ],
+      "searches": [
+        "SAP Basis Consultant",
+        "SAP Technical Consultant",
+        "SAP BTP"
+      ],
+      "adjacent": [
+        "sap_security_grc",
+        "software_dev"
+      ],
+      "sponsor": "usual"
+    },
+    "business_analyst": {
+      "label": "Business Analyst",
+      "titles": [
+        "\\bbusiness (systems? )?analyst\\b",
+        "\\b(it|technical|functional|systems?|requirements?)\\s+(business\\s+)?analyst\\b",
+        "\\bbusiness analysis\\b",
+        "\\banalyst\\b.*\\b(business requirements|requirements gathering)\\b"
+      ],
+      "keywords": [
+        "requirements gathering",
+        "requirements",
+        "elicitation",
+        "stakeholder",
+        "business process",
+        "process mapping",
+        "bpmn",
+        "user stories",
+        "acceptance criteria",
+        "uat",
+        "gap analysis",
+        "workshops?",
+        "jira",
+        "confluence",
+        "agile",
+        "scrum",
+        "functional specification",
+        "documentation",
+        "change management",
+        "as-is",
+        "to-be",
+        "visio"
+      ],
+      "searches": [
+        "Business Analyst",
+        "IT Business Analyst",
+        "Junior Business Analyst",
+        "Business Systems Analyst",
+        "Requirements Analyst",
+        "Technical Business Analyst",
+        "Functional Analyst"
+      ],
+      "adjacent": [
+        "process_improvement",
+        "uat_testing",
+        "change_documentation",
+        "project_coordination",
+        "data_analyst",
+        "it_risk_compliance"
+      ],
+      "sponsor": "usual"
+    },
+    "process_improvement": {
+      "label": "Process / Continuous Improvement Analyst",
+      "titles": [
+        "\\bprocess (improvement|excellence|analyst|owner|manager)\\b",
+        "\\b(continuous|business) improvement\\b",
+        "\\boperational excellence\\b",
+        "\\blean\\b.*(analyst|practitioner)",
+        "\\bbusiness process\\b"
+      ],
+      "keywords": [
+        "process improvement",
+        "process mapping",
+        "lean",
+        "six sigma",
+        "continuous improvement",
+        "workflow",
+        "streamlin",
+        "as-is",
+        "to-be",
+        "kpi",
+        "operating model",
+        "efficiency"
+      ],
+      "searches": [
+        "Process Analyst",
+        "Process Improvement Analyst",
+        "Continuous Improvement Analyst",
+        "Business Improvement Analyst"
+      ],
+      "adjacent": [
+        "business_analyst",
+        "project_coordination",
+        "change_documentation"
+      ],
+      "sponsor": "usual"
+    },
+    "uat_testing": {
+      "label": "UAT / Test Analyst",
+      "titles": [
+        "\\buat\\b",
+        "\\b(test|testing|qa|quality assurance) (analyst|coordinator|lead)\\b",
+        "\\bsoftware tester\\b",
+        "\\btest (manager|engineer)\\b"
+      ],
+      "keywords": [
+        "uat",
+        "user acceptance",
+        "test scenarios?",
+        "test cases?",
+        "test plan",
+        "defect",
+        "regression",
+        "go-live",
+        "test coordination",
+        "qa",
+        "testing"
+      ],
+      "searches": [
+        "UAT Analyst",
+        "UAT Coordinator",
+        "Test Analyst",
+        "Business Testing Analyst"
+      ],
+      "adjacent": [
+        "business_analyst",
+        "change_documentation",
+        "application_support"
+      ],
+      "sponsor": "check"
+    },
+    "change_documentation": {
+      "label": "Change, Release & Documentation",
+      "titles": [
+        "\\bchange (analyst|coordinator|manager|and release)\\b",
+        "\\brelease (coordinator|analyst|manager)\\b",
+        "\\b(technical|functional|business) (writer|documentation)\\b",
+        "\\bdocumentation analyst\\b",
+        "\\bchange (and|&) documentation\\b"
+      ],
+      "keywords": [
+        "change management",
+        "change requests?",
+        "release management",
+        "documentation",
+        "charm",
+        "transport",
+        "change control",
+        "cab",
+        "itil",
+        "servicenow",
+        "technical writing"
+      ],
+      "searches": [
+        "Change Analyst",
+        "Change Coordinator",
+        "Release Coordinator",
+        "Documentation Analyst",
+        "Change and Release Analyst"
+      ],
+      "adjacent": [
+        "business_analyst",
+        "project_coordination",
+        "application_support"
+      ],
+      "sponsor": "check"
+    },
+    "project_coordination": {
+      "label": "Project / PMO Coordinator",
+      "titles": [
+        "\\bproject (coordinator|administrator|officer|analyst|manager|support)\\b",
+        "\\bpmo\\b|\\bprogramme (coordinator|analyst|support)\\b",
+        "\\bdelivery (coordinator|analyst)\\b",
+        "\\bscrum master\\b"
+      ],
+      "keywords": [
+        "project management",
+        "pmo",
+        "stakeholder",
+        "raid",
+        "reporting",
+        "plan",
+        "timeline",
+        "budget",
+        "prince2",
+        "agile",
+        "scrum",
+        "coordination",
+        "status reports?"
+      ],
+      "searches": [
+        "Project Coordinator",
+        "PMO Analyst",
+        "Project Analyst",
+        "Programme Coordinator"
+      ],
+      "adjacent": [
+        "business_analyst",
+        "change_documentation",
+        "process_improvement"
+      ],
+      "sponsor": "check"
+    },
+    "data_analyst": {
+      "label": "Data / Reporting Analyst",
+      "titles": [
+        "\\bdata analyst\\b",
+        "\\b(reporting|bi|insight|insights|management information|mi|performance|analytics?|operations?) analyst\\b",
+        "\\bbusiness intelligence\\b"
+      ],
+      "keywords": [
+        "sql",
+        "power bi",
+        "tableau",
+        "excel",
+        "dashboards?",
+        "python",
+        "reporting",
+        "kpi",
+        "data analysis",
+        "etl",
+        "pivot",
+        "vba",
+        "looker",
+        "insights?"
+      ],
+      "searches": [
+        "Data Analyst",
+        "Reporting Analyst",
+        "Insight Analyst",
+        "Management Information Analyst",
+        "BI Analyst"
+      ],
+      "adjacent": [
+        "business_analyst",
+        "market_research",
+        "process_improvement"
+      ],
+      "sponsor": "usual"
+    },
+    "software_dev": {
+      "label": "Software Developer",
+      "titles": [
+        "\\b(software|backend|front-?end|full[- ]?stack|web|java|python|\\.net|c#|javascript|react|node) (developer|engineer)\\b",
+        "\\bsoftware engineer\\b"
+      ],
+      "keywords": [
+        "java",
+        "python",
+        "javascript",
+        "typescript",
+        "react",
+        "node",
+        "c#",
+        "\\.net",
+        "api",
+        "git",
+        "microservices",
+        "sql"
+      ],
+      "searches": [
+        "Software Developer",
+        "Software Engineer"
+      ],
+      "adjacent": [
+        "devops_cloud",
+        "data_analyst"
+      ],
+      "sponsor": "usual"
+    },
+    "devops_cloud": {
+      "label": "DevOps & Cloud",
+      "titles": [
+        "\\bdevops\\b",
+        "\\b(cloud|platform|site reliability|infrastructure) engineer\\b",
+        "\\bsre\\b"
+      ],
+      "keywords": [
+        "aws",
+        "azure",
+        "gcp",
+        "kubernetes",
+        "docker",
+        "terraform",
+        "ci/cd",
+        "jenkins",
+        "linux",
+        "ansible"
+      ],
+      "searches": [
+        "DevOps Engineer",
+        "Cloud Engineer"
+      ],
+      "adjacent": [
+        "software_dev",
+        "it_support"
+      ],
+      "sponsor": "usual"
+    },
+    "application_support": {
+      "label": "Application / Systems Support",
+      "titles": [
+        "\\bapplications? support\\b",
+        "\\b(systems?|production|technical|l[23]|business systems?) (support|analyst)\\b",
+        "\\bservice (management|delivery) (analyst|coordinator)\\b",
+        "\\bincident (analyst|manager|coordinator)\\b",
+        "\\bservicenow (analyst|administrator|developer)\\b"
+      ],
+      "keywords": [
+        "incident",
+        "problem management",
+        "service desk",
+        "servicenow",
+        "itil",
+        "sla",
+        "tickets?",
+        "l2",
+        "l3",
+        "root cause",
+        "knowledge base",
+        "monitoring",
+        "support"
+      ],
+      "searches": [
+        "Application Support Analyst",
+        "Systems Support Analyst",
+        "ServiceNow Analyst",
+        "Service Delivery Analyst",
+        "Business Systems Support"
+      ],
+      "adjacent": [
+        "it_support",
+        "business_analyst",
+        "change_documentation"
+      ],
+      "sponsor": "check"
+    },
+    "it_support": {
+      "label": "IT Support / Service Desk",
+      "titles": [
+        "\\bit (support|service desk|helpdesk|technician|analyst|administrator)\\b",
+        "\\b(service|help) ?desk\\b",
+        "\\bdesktop support\\b",
+        "\\b(technical|desktop|helpdesk|it) support (analyst|technician|engineer|specialist)\\b",
+        "\\bsystems administrator\\b"
+      ],
+      "keywords": [
+        "service desk",
+        "helpdesk",
+        "troubleshooting",
+        "active directory",
+        "ticket",
+        "servicenow",
+        "windows",
+        "microsoft 365",
+        "office 365",
+        "incident",
+        "user accounts?",
+        "password reset",
+        "hardware"
+      ],
+      "searches": [
+        "IT Support Analyst",
+        "Service Desk Analyst",
+        "IT Support Engineer",
+        "IT Administrator"
+      ],
+      "adjacent": [
+        "application_support",
+        "iam_access",
+        "admin_office"
+      ],
+      "sponsor": "rare"
+    },
+    "digital_marketing": {
+      "label": "Digital Marketing",
+      "titles": [
+        "\\bdigital marketing\\b",
+        "\\b(seo|ppc|paid media|performance marketing|content marketing|growth marketing|email marketing)\\b",
+        "\\bsocial media\\b.*(executive|coordinator|manager|specialist)",
+        "\\bcontent (coordinator|executive|specialist)\\b"
+      ],
+      "keywords": [
+        "digital marketing",
+        "seo",
+        "ppc",
+        "google analytics",
+        "ga4",
+        "google ads",
+        "meta ads",
+        "social media",
+        "campaigns?",
+        "email marketing",
+        "mailchimp",
+        "hubspot",
+        "content",
+        "engagement data",
+        "conversion"
+      ],
+      "searches": [
+        "Digital Marketing Executive",
+        "Digital Marketing Coordinator",
+        "Campaign Executive",
+        "Social Media Coordinator",
+        "Content Coordinator"
+      ],
+      "adjacent": [
+        "marketing_exec",
+        "ecommerce",
+        "market_research"
+      ],
+      "sponsor": "rare"
+    },
+    "marketing_exec": {
+      "label": "Marketing Executive / Analyst",
+      "titles": [
+        "\\bmarketing (executive|coordinator|assistant|analyst|officer|associate|specialist)\\b",
+        "\\bcampaign (executive|coordinator|manager|analyst)\\b",
+        "\\bbrand (executive|coordinator|assistant)\\b"
+      ],
+      "keywords": [
+        "marketing",
+        "campaigns?",
+        "brand",
+        "positioning",
+        "customer targeting",
+        "market research",
+        "segmentation",
+        "go-to-market",
+        "crm",
+        "customer engagement",
+        "promotion"
+      ],
+      "searches": [
+        "Marketing Executive",
+        "Marketing Analyst",
+        "Marketing Coordinator",
+        "Campaign Coordinator"
+      ],
+      "adjacent": [
+        "digital_marketing",
+        "market_research",
+        "business_development",
+        "ecommerce"
+      ],
+      "sponsor": "rare"
+    },
+    "ecommerce": {
+      "label": "E-commerce",
+      "titles": [
+        "\\be-?commerce\\b",
+        "\\bonline (trading|merchandis\\w+|retail)\\b",
+        "\\bmarketplace (executive|analyst|coordinator)\\b",
+        "\\btrading (assistant|coordinator|analyst)\\b"
+      ],
+      "keywords": [
+        "e-?commerce",
+        "shopify",
+        "amazon seller",
+        "marketplace",
+        "product listings?",
+        "online store",
+        "merchandising",
+        "conversion",
+        "webshop",
+        "retail"
+      ],
+      "searches": [
+        "E-commerce Assistant",
+        "E-commerce Coordinator",
+        "E-commerce Executive",
+        "Online Trading Assistant"
+      ],
+      "adjacent": [
+        "digital_marketing",
+        "retail_ops",
+        "sales_support"
+      ],
+      "sponsor": "rare"
+    },
+    "market_research": {
+      "label": "Market Research & Insight",
+      "titles": [
+        "\\bmarket research\\b",
+        "\\b(customer|consumer|commercial|market|competitor) (insights?|intelligence)\\b",
+        "\\binsights? (analyst|executive|manager|coordinator)\\b",
+        "\\bresearch (analyst|executive)\\b"
+      ],
+      "keywords": [
+        "market research",
+        "competitor",
+        "competitive analysis",
+        "customer insight",
+        "survey",
+        "forecast",
+        "segmentation",
+        "market sizing",
+        "trend",
+        "research report",
+        "consumer"
+      ],
+      "searches": [
+        "Market Research Analyst",
+        "Market Research Executive",
+        "Insights Analyst",
+        "Customer Insight Analyst",
+        "Competitor Analyst"
+      ],
+      "adjacent": [
+        "business_development",
+        "data_analyst",
+        "marketing_exec",
+        "commercial_analyst"
+      ],
+      "sponsor": "check"
+    },
+    "business_development": {
+      "label": "Business Development",
+      "titles": [
+        "\\bbusiness development\\b",
+        "\\b(partnerships?|growth) (executive|coordinator|analyst|manager)\\b",
+        "\\bbid (writer|coordinator|executive|analyst)\\b",
+        "\\btender (writer|coordinator)\\b"
+      ],
+      "keywords": [
+        "business development",
+        "proposals?",
+        "partnerships?",
+        "lead generation",
+        "pipeline",
+        "new customer segments",
+        "outreach",
+        "bid",
+        "tender",
+        "client acquisition",
+        "sales forecasts?",
+        "crm"
+      ],
+      "searches": [
+        "Business Development Executive",
+        "Business Development Analyst",
+        "Business Development Coordinator",
+        "Bid Coordinator"
+      ],
+      "adjacent": [
+        "market_research",
+        "sales_support",
+        "commercial_analyst",
+        "marketing_exec"
+      ],
+      "sponsor": "check"
+    },
+    "sales_support": {
+      "label": "Sales Support / Sales Operations",
+      "titles": [
+        "\\bsales (support|operations|ops|administrator|coordinator|analyst|executive)\\b",
+        "\\baccount (coordinator|executive|assistant)\\b",
+        "\\bcommercial (support|coordinator|executive|assistant)\\b",
+        "\\bsales and marketing\\b"
+      ],
+      "keywords": [
+        "sales",
+        "forecast",
+        "crm",
+        "salesforce",
+        "quotes?",
+        "orders?",
+        "pipeline",
+        "account management",
+        "customer",
+        "targets",
+        "commercial"
+      ],
+      "searches": [
+        "Sales Support Analyst",
+        "Sales Operations Analyst",
+        "Sales Support Coordinator",
+        "Commercial Support"
+      ],
+      "adjacent": [
+        "business_development",
+        "commercial_analyst",
+        "customer_service"
+      ],
+      "sponsor": "rare"
+    },
+    "commercial_analyst": {
+      "label": "Commercial / Pricing Analyst",
+      "titles": [
+        "\\bcommercial analyst\\b",
+        "\\bpricing analyst\\b",
+        "\\bcommercial (finance|insight)\\b",
+        "\\brevenue (analyst|assurance)\\b",
+        "\\bfp&a\\b|\\bfinancial analyst\\b"
+      ],
+      "keywords": [
+        "commercial",
+        "pricing",
+        "margin",
+        "forecast",
+        "budget",
+        "revenue",
+        "financial analysis",
+        "excel",
+        "cost",
+        "profitab"
+      ],
+      "searches": [
+        "Commercial Analyst",
+        "Pricing Analyst",
+        "Financial Analyst"
+      ],
+      "adjacent": [
+        "market_research",
+        "sales_support",
+        "data_analyst",
+        "finance_accounting"
+      ],
+      "sponsor": "usual"
+    },
+    "retail_ops": {
+      "label": "Retail Operations & Management",
+      "titles": [
+        "\\bretail\\b",
+        "\\bstore (manager|supervisor|assistant|leader)\\b",
+        "\\bshop (manager|supervisor)\\b",
+        "\\bdepartment manager\\b",
+        "\\bvisual merchandis\\w+\\b"
+      ],
+      "keywords": [
+        "retail",
+        "store",
+        "stock",
+        "merchandising",
+        "customer service",
+        "till",
+        "footfall",
+        "sales floor",
+        "inventory"
+      ],
+      "searches": [
+        "Assistant Store Manager",
+        "Retail Manager",
+        "Retail Operations Analyst",
+        "Retail Area Support"
+      ],
+      "adjacent": [
+        "customer_service",
+        "ecommerce",
+        "sales_support"
+      ],
+      "sponsor": "rare"
+    },
+    "customer_service": {
+      "label": "Customer Service",
+      "titles": [
+        "\\bcustomer (service|support|success|experience|care|advisor|adviser)\\b",
+        "\\bcontact cent(re|er)\\b",
+        "\\bclient (services?|support)\\b"
+      ],
+      "keywords": [
+        "customer service",
+        "customer support",
+        "complaints?",
+        "queries",
+        "csat",
+        "nps",
+        "call",
+        "chat",
+        "crm"
+      ],
+      "searches": [
+        "Customer Service Advisor",
+        "Customer Support Executive",
+        "Customer Success Associate"
+      ],
+      "adjacent": [
+        "sales_support",
+        "retail_ops",
+        "admin_office"
+      ],
+      "sponsor": "rare"
+    },
+    "admin_office": {
+      "label": "Administration & Office",
+      "titles": [
+        "\\b(administrator|administrative|admin)\\b( (assistant|officer|coordinator|support))?",
+        "\\boffice (administrator|manager|coordinator|assistant)\\b",
+        "\\bpersonal assistant\\b|\\bpa to\\b",
+        "\\bbusiness support (officer|administrator|assistant)\\b",
+        "\\bdata (entry|administrator)\\b",
+        "\\bgovernance (administrator|officer|support)\\b"
+      ],
+      "keywords": [
+        "administration",
+        "diary",
+        "minutes",
+        "filing",
+        "records",
+        "scheduling",
+        "data entry",
+        "word",
+        "excel",
+        "reception",
+        "correspondence",
+        "documentation"
+      ],
+      "searches": [
+        "Business Support Administrator",
+        "Office Administrator",
+        "Governance Administrator",
+        "Compliance Administrator"
+      ],
+      "adjacent": [
+        "it_support",
+        "customer_service",
+        "project_coordination"
+      ],
+      "sponsor": "rare"
+    },
+    "hr_recruitment": {
+      "label": "HR & Recruitment",
+      "titles": [
+        "\\b(hr|human resources|people) (advisor|adviser|administrator|coordinator|assistant|analyst|partner|officer)\\b",
+        "\\brecruit\\w* (coordinator|administrator|officer|partner|specialist)\\b",
+        "\\btalent acquisition\\b"
+      ],
+      "keywords": [
+        "recruitment",
+        "onboarding",
+        "hris",
+        "workday",
+        "payroll",
+        "employee relations",
+        "talent",
+        "hr"
+      ],
+      "searches": [
+        "HR Administrator",
+        "HR Advisor",
+        "Recruitment Coordinator",
+        "HR Analyst"
+      ],
+      "adjacent": [
+        "admin_office"
+      ],
+      "sponsor": "check"
+    },
+    "finance_accounting": {
+      "label": "Finance & Accounting",
+      "titles": [
+        "\\b(accountant|accounts (assistant|payable|receivable)|finance (analyst|assistant|officer|business partner)|bookkeeper|audit (associate|assistant|senior)|financial controller)\\b"
+      ],
+      "keywords": [
+        "accounting",
+        "ledger",
+        "reconciliation",
+        "month[- ]end",
+        "accounts payable",
+        "accounts receivable",
+        "audit",
+        "sage",
+        "xero",
+        "acca",
+        "cima",
+        "budget",
+        "vat"
+      ],
+      "searches": [
+        "Finance Analyst",
+        "Accountant",
+        "Audit Associate"
+      ],
+      "adjacent": [
+        "commercial_analyst",
+        "it_risk_compliance"
+      ],
+      "sponsor": "usual"
+    },
+    "procurement_supply_chain": {
+      "label": "Procurement & Supply Chain",
+      "titles": [
+        "\\b(procurement|purchasing|buyer|sourcing|supply chain|logistics|demand planner|supply planner|inventory)\\b.*(analyst|coordinator|officer|assistant|executive|specialist|planner|buyer)?"
+      ],
+      "keywords": [
+        "procurement",
+        "purchasing",
+        "supplier",
+        "sourcing",
+        "supply chain",
+        "logistics",
+        "inventory",
+        "demand planning",
+        "purchase orders?",
+        "sap mm",
+        "vendor"
+      ],
+      "searches": [
+        "Procurement Analyst",
+        "Supply Chain Analyst",
+        "Procurement Coordinator"
+      ],
+      "adjacent": [
+        "sap_functional",
+        "commercial_analyst",
+        "admin_office"
+      ],
+      "sponsor": "check"
+    }
+  },
+  "sponsor_notes": {
+    "usual": "Degree-level role: normally eligible for Skilled Worker sponsorship.",
+    "check": "Eligibility depends on the exact duties and occupation code. Ask the employer whether they can sponsor this role before applying.",
+    "rare": "Usually below the Skilled Worker skill level, so even licensed sponsors seldom sponsor it. Treat as a role for the Graduate visa period, and ask first."
+  }
+}

@@ -1,0 +1,81 @@
+name: Refresh candidate boards
+
+# One board per profile in candidates/profiles/. Separate from refresh-jobs.yml: its own schedule, concurrency group and
+# output (candidates/data/). It reads the main board's feed and never writes to it.
+on:
+  schedule:
+    - cron: "23 7 * * *"   # daily, 07:23 UTC (after the main board's 05 UTC daily copy)
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: "Build only this candidate (profile file name without .json); blank = all"
+        default: ""
+      days:
+        description: "Maximum job age in days"
+        default: "7"
+  push:
+    branches: [main]
+    paths: ["candidateboard/**", "candidates/profiles/**", ".github/workflows/refresh-candidates.yml"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-candidates
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m unittest tests.test_candidateboard -v
+
+  refresh:
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Use the freshest shared feed
+        # The main board publishes every two hours to the "feed" branch; main only keeps a daily copy.
+        run: |
+          if git fetch -q origin feed && git show origin/feed:data/jobs.json > "${RUNNER_TEMP}/feed.json"; then
+            echo "Using the feed branch"
+          else
+            cp data/jobs.json "${RUNNER_TEMP}/feed.json"; echo "Using main's copy"
+          fi
+      - name: Build boards
+        env:
+          ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
+          ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
+          REED_API_KEY: ${{ secrets.REED_API_KEY }}
+        run: |
+          SLUG="${{ github.event.inputs.slug }}"
+          python -m candidateboard build ${SLUG:+--slug "$SLUG"} --days "${{ github.event.inputs.days || '7' }}" --feed "${RUNNER_TEMP}/feed.json"
+          cp -r candidates/data "${RUNNER_TEMP}/candidate-data"
+      - name: Commit updated boards
+        run: |
+          if git diff --quiet -- candidates/data; then
+            echo "No changes"; exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Put this run's boards on top of the latest main as whole files (a rebase would merge two boards line by line).
+          for attempt in 1 2 3; do
+            git fetch origin "${GITHUB_REF_NAME}"
+            git reset --hard "origin/${GITHUB_REF_NAME}"
+            cp -r "${RUNNER_TEMP}/candidate-data/." candidates/data/
+            git add candidates/data
+            git diff --cached --quiet && exit 0
+            git commit -m "Refresh candidate boards"
+            git push origin "HEAD:${GITHUB_REF_NAME}" && exit 0
+            sleep $((attempt * 5))
+          done
+          exit 1

@@ -1,0 +1,19 @@
+{
+ "candidates": [
+  {
+   "slug": "sample-candidate",
+   "name": "Sample Candidate (fictional)",
+   "headline": "SAP Security & GRC Consultant | Access Control (ARM/ARA/EAM) | SoD & Compliance",
+   "visa": "Graduate visa (PSW)",
+   "visa_expires": "2027-11",
+   "published": 51,
+   "by_tier": {
+    "1": 26,
+    "2": 0,
+    "3": 20,
+    "4": 5
+   },
+   "generated_at": "2026-10-14T05:25:02+00:00"
+  }
+ ]
+}

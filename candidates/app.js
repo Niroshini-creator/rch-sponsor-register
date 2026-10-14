@@ -1,0 +1,240 @@
+"use strict";
+/* Candidate board viewer. /candidates/ lists candidates; /candidates/?c=<slug> shows one candidate's matched roles.
+ * Everything is read from data/<slug>.json (built by `python -m candidateboard build`); nothing is sent anywhere. */
+
+const $app = document.getElementById("app");
+const $header = document.getElementById("header");
+
+function h(tag, attrs, ...kids) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (v === false || v == null) continue;
+    if (k === "class") el.className = v;
+    else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
+    else el.setAttribute(k, v === true ? "" : v);
+  }
+  for (const kid of kids.flat()) if (kid != null && kid !== false) el.append(kid.nodeType ? kid : document.createTextNode(kid));
+  return el;
+}
+const badge = (text, kind, title) => h("span", { class: `badge ${kind || ""}`, title }, text);
+const money = s => (s && /^\d/.test(s) ? `£${s}` : s || "");
+const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
+
+async function getJSON(url) {
+  const r = await fetch(url, { cache: "no-cache" });
+  if (!r.ok) throw new Error(`${url}: HTTP ${r.status}`);
+  return r.json();
+}
+function ago(iso) {
+  const d = (Date.now() - new Date(iso).getTime()) / 864e5;
+  if (d < 1) return "today";
+  return d < 2 ? "yesterday" : `${Math.floor(d)} days ago`;
+}
+function monthsLeft(expires) {
+  if (!expires) return null;
+  const [y, m] = expires.split("-").map(Number);
+  const now = new Date();
+  return (y - now.getFullYear()) * 12 + (m - 1 - now.getMonth());   // counted from the start of the month: the cautious reading
+}
+function monthName(expires) {
+  const [y, m] = expires.split("-").map(Number);
+  return new Date(y, m - 1, 1).toLocaleString("en-GB", { month: "short", year: "numeric" });
+}
+
+// ------------------------------------------------------------------------------------------ candidate list
+async function listView() {
+  $header.replaceChildren(h("div", {}, h("h1", {}, "Candidate Boards"),
+    h("p", { class: "muted small" }, "Internal. Roles from the last 7 days, matched to each candidate's CV, visa and clearance.")));
+  const { candidates } = await getJSON("data/index.json");
+  if (!candidates.length) { $app.replaceChildren(h("p", { class: "empty" }, "No candidates yet. Run python -m candidateboard intake.")); return; }
+  $app.replaceChildren(h("div", { class: "grid2", style: "margin-top:14px" }, candidates.map(c =>
+    h("a", { class: "panel cand", href: `?c=${encodeURIComponent(c.slug)}` },
+      h("h2", {}, c.name), h("p", { class: "muted small" }, c.headline),
+      h("ul", { class: "chips" }, h("li", { class: "chip" }, c.visa || "Visa not set"),
+        c.visa_expires ? h("li", { class: "chip warn" }, `until ${monthName(c.visa_expires)}`) : null,
+        h("li", { class: "chip ok" }, `${c.published} roles`)),
+      h("p", { class: "small muted" }, `Tier 1: ${c.by_tier?.[1] ?? 0} · Tier 2: ${c.by_tier?.[2] ?? 0} · Tier 3: ${c.by_tier?.[3] ?? 0} · Other: ${c.by_tier?.[4] ?? 0}`,
+        c.generated_at ? ` · updated ${ago(c.generated_at)}` : " · not built yet")))));
+}
+
+// ------------------------------------------------------------------------------------------ one candidate
+const TABS = [["1", "Tier 1 · Core"], ["2", "Tier 2 · Close"], ["3", "Tier 3 · Stretch"], ["4", "Other roles"], ["employers", "Employers"], ["cv", "CV scan"]];
+const state = { tab: "1", q: "", spons: "offered", min: 0, days: 7, sort: "match", showBlocked: false, sector: "", etier: "" };
+let data = null;
+
+async function boardView(slug) {
+  data = await getJSON(`data/${encodeURIComponent(slug)}.json`);
+  const c = data.candidate;
+  document.title = `${c.name}: candidate board`;
+  const left = monthsLeft(c.visa?.expires);
+  $header.replaceChildren(
+    h("div", {}, h("a", { class: "back", href: "./" }, "← All candidates"), h("h1", {}, c.name),
+      h("p", { class: "muted", style: "margin:2px 0 0" }, c.headline),
+      h("ul", { class: "chips" },
+        h("li", { class: `chip ${left != null && left < 6 ? "bad" : "warn"}` },
+          `${c.visa?.label || "Visa not set"}${c.visa?.expires ? ` · until ${monthName(c.visa.expires)}${left != null ? ` (${left} months left)` : ""}` : ""}`),
+        h("li", { class: "chip" }, ({ required: "Needs sponsorship", preferred: "Wants sponsorship before the visa ends", not_needed: "No sponsorship needed" })[c.visa?.sponsorship] || ""),
+        h("li", { class: "chip ok" }, c.clearance?.held === "none" ? "No security clearance" : `Holds ${String(c.clearance?.held).toUpperCase()} clearance`),
+        h("li", { class: "chip" }, c.driving_licence == null ? "Driving licence: not confirmed" : c.driving_licence ? "Holds a driving licence" : "No driving licence"),
+        c.base_location ? h("li", { class: "chip" }, c.base_location) : null,
+        c.experience_years ? h("li", { class: "chip" }, `${c.experience_years} yrs experience`) : null,
+        c.education ? h("li", { class: "chip" }, c.education) : null),
+      c.current_status ? h("p", { class: "small muted", style: "margin:6px 0 0" }, `Now: ${c.current_status}`) : null),
+    h("p", { class: "small muted" }, `Updated ${ago(data.generated_at)} · roles posted in the last ${data.window_days} days`));
+  render();
+}
+
+function visible(j) {
+  if (j.tier !== Number(state.tab)) return false;
+  if (j.match < state.min) return false;
+  if ((Date.now() - new Date(j.posted_at)) / 864e5 > state.days) return false;
+  if (state.q && !`${j.title} ${j.company} ${j.location} ${j.role} ${j.sector}`.toLowerCase().includes(state.q.toLowerCase())) return false;
+  if (state.sector && j.sector !== state.sector) return false;
+  if (state.etier && String(j.employer_tier) !== state.etier) return false;
+  if (state.spons === "offered" && !j.sponsorship_offered) return false;
+  if (state.spons === "not" && j.sponsorship_offered) return false;
+  const blockers = j.hidden_by_default.filter(r => r !== "no_sponsorship");
+  if (!state.showBlocked && blockers.length) return false;
+  return true;
+}
+
+function sortJobs(list) {
+  const by = { match: (a, b) => b.match - a.match || a.sponsorship_rank - b.sponsorship_rank,
+    newest: (a, b) => new Date(b.posted_at) - new Date(a.posted_at),
+    sponsor: (a, b) => a.sponsorship_rank - b.sponsorship_rank || b.match - a.match,
+    pay: (a, b) => (b.salary_annual || 0) - (a.salary_annual || 0) }[state.sort];
+  return list.slice().sort(by);
+}
+
+function render() {
+  const jobs = data.jobs;
+  const counts = Object.fromEntries(["1", "2", "3", "4"].map(t => [t, jobs.filter(j => String(j.tier) === t && j.sponsorship_offered && !j.hidden_by_default.length).length]));
+  const sponsorOffered = jobs.filter(j => j.sponsorship === "confirmed" || j.sponsorship === "possible").length;
+  const employers = new Set(jobs.filter(j => j.sponsorship_offered).map(j => j.company)).size;
+  const tabs = h("div", { class: "tabs", role: "tablist" }, TABS.map(([key, label]) =>
+    h("button", { class: "tab", role: "tab", "aria-selected": String(state.tab === key), onclick: () => { state.tab = key; render(); } },
+      label, counts[key] != null ? h("span", { class: "n" }, counts[key]) : null)));
+  const parts = [
+    h("div", { class: "stats" },
+      h("div", { class: "stat" }, h("b", {}, counts[1] + counts[2] + counts[3]), "ready to send (tiers 1–3)"),
+      h("div", { class: "stat" }, h("b", {}, sponsorOffered), "advert offers sponsorship"),
+      h("div", { class: "stat" }, h("b", {}, employers), "sponsor-licensed employers"),
+      h("div", { class: "stat" }, h("b", {}, jobs.filter(j => j.hidden_by_default.includes("clearance")).length), "need clearance (hidden)")),
+    sourceStatus(), tabs];
+  if (state.tab === "employers") parts.push(employersView());
+  else if (state.tab === "cv") parts.push(cvView());
+  else parts.push(...jobsView());
+  $app.replaceChildren(...parts.flat().filter(Boolean));
+}
+
+function sourceStatus() {
+  const bad = Object.entries(data.sources).filter(([, s]) => s.status !== "ok");
+  if (!bad.length) return h("span");
+  return h("details", { class: "panel small" }, h("summary", {}, `Data sources: ${bad.length} not read this run`),
+    h("ul", {}, bad.map(([n, s]) => h("li", {}, `${n}: ${s.status} ${s.reason || s.error || ""}`))),
+    h("p", { class: "muted" }, "Roles from sources that were not read are missing, so the board is a floor, not the whole market."));
+}
+
+function jobsView() {
+  const inTab = data.jobs.filter(j => String(j.tier) === state.tab);
+  const sectors = [...new Set(inTab.map(j => j.sector).filter(Boolean))].sort();
+  const sel = (name, opts, cur, fn) => h("select", { name, onchange: e => { fn(e.target.value); render(); } },
+    opts.map(([v, l]) => h("option", { value: v, ...(String(v) === String(cur) ? { selected: true } : {}) }, l)));
+  const bar = h("div", { class: "panel bar" },
+    h("label", {}, "Search (press Enter)", h("input", { type: "search", value: state.q, placeholder: "Role, employer, city…", onchange: e => { state.q = e.target.value; render(); } })),
+    h("label", {}, "Sponsorship", sel("spons", [["offered", "Offered / licensed sponsor"], ["all", "All"], ["not", "Not offered"]], state.spons, v => state.spons = v)),
+    h("label", {}, "Posted within", sel("days", [[7, "7 days"], [3, "3 days"], [1, "24 hours"]], state.days, v => state.days = Number(v))),
+    h("label", {}, "Min match", sel("min", [[0, "Any"], [50, "50%+"], [60, "60%+"], [70, "70%+"]], state.min, v => state.min = Number(v))),
+    h("label", {}, "Sector", sel("sector", [["", "All"], ...sectors.map(s => [s, s])], state.sector, v => state.sector = v)),
+    h("label", {}, "Employer tier", sel("etier", [["", "All"], ["1", "Tier 1"], ["2", "Tier 2"], ["3", "Tier 3"]], state.etier, v => state.etier = v)),
+    h("label", {}, "Sort", sel("sort", [["match", "Best match"], ["sponsor", "Sponsorship first"], ["newest", "Newest"], ["pay", "Highest pay"]], state.sort, v => state.sort = v)),
+    h("label", { class: "check" }, h("input", { type: "checkbox", ...(state.showBlocked ? { checked: true } : {}), onchange: e => { state.showBlocked = e.target.checked; render(); } }), "Show roles needing clearance, below visa pay, or without a Skilled Worker licence"),
+    h("button", { class: "btn", onclick: () => exportCsv(sortJobs(data.jobs.filter(visible))) }, "Export CSV"));
+  const list = sortJobs(data.jobs.filter(visible));
+  const note = state.tab === "4" ? h("p", { class: "small muted" }, "Other roles at employers that can sponsor, using the same skills on a different route. Many of these (admin, IT support) are below the Skilled Worker skill level, so ask the employer first.") : null;
+  return [bar, note, h("p", { class: "small muted" }, `${plural(list.length, "role")} shown`),
+    list.length ? h("ul", { class: "cards" }, list.slice(0, 250).map(card)) : h("p", { class: "empty" }, "No roles match these filters.")];
+}
+
+function card(j) {
+  const sp = j.sponsorship_offered ? (j.sponsorship === "licensed_sponsor" ? "info" : "ok") : "bad";
+  const cl = j.clearance, lic = j.driving_licence, pay = j.visa_pay;
+  const badges = [
+    badge(j.sponsorship_label, sp),
+    badge(cl.level === "none" ? cl.label : cl.label, cl.blocks ? "bad" : cl.level === "none" ? "" : "ok", cl.quote),
+    lic.need ? badge(`Driving licence ${lic.need}${lic.status === "unknown" ? " (candidate: not confirmed)" : lic.status === "missing" ? ": candidate has none" : ""}`, lic.status === "missing" && lic.need === "required" ? "bad" : "warn", lic.quote) : null,
+    pay.status ? badge({ meets: "Pay meets visa minimum", partial: "Pay partly meets visa minimum", below: "Pay below visa minimum", unstated: "Pay not stated" }[pay.status], pay.status === "below" ? "bad" : pay.status === "unstated" ? "" : "ok", pay.note) : null,
+    j.sponsorability === "rare" ? badge("Sponsorship unlikely at this level", "warn", j.sponsorability_note) : j.sponsorability === "check" ? badge("Ask if role can be sponsored", "", j.sponsorability_note) : null,
+    j.work_mode ? badge(j.work_mode === "remote" ? "Remote" : "Hybrid") : null,
+    j.sector ? badge(j.sector) : null, j.employer_tier ? badge(`Employer tier ${j.employer_tier}`) : null,
+    badge(j.source + (j.channel === "career_site" ? " · employer site" : "")),
+    ...j.flags.map(f => badge(f, "warn"))];
+  return h("li", { class: `card ${j.hidden_by_default.length ? "dim" : ""}`, "data-tier": j.tier },
+    h("div", { class: "card-top" },
+      h("div", {}, h("h3", {}, h("a", { href: j.url, target: "_blank", rel: "noopener" }, j.title)),
+        h("p", { class: "meta" }, [j.company, j.location, money(j.salary), `posted ${ago(j.posted_at)}`].filter(Boolean).join(" · "))),
+      h("div", { class: "match", title: "Fit with the candidate's CV: title 50 · skills 40 · level 10" }, h("b", {}, `${j.match}%`), "match",
+        h("div", { class: "meter" }, h("i", { style: `width:${j.match}%` })))),
+    h("ul", { class: "badges" }, badges.filter(Boolean).map(b => h("li", {}, b))),
+    h("p", { class: "apply" }, h("b", {}, j.cv_to_use ? `Send: ${j.track} CV` : "Send: best-fitting CV"), ` · target role: ${j.role}${j.family_label ? ` (${j.family_label})` : ""}`),
+    h("details", { class: "why" }, h("summary", {}, "Why this score and these labels"),
+      h("ul", {}, j.reasons.map(r => h("li", {}, r)),
+        j.skills_matched.length ? h("li", {}, `CV skills in the advert: ${j.skills_matched.join(", ")}`) : null,
+        j.evidence === "extract" ? h("li", { class: "muted" }, "Based on the advert extract the feed keeps. Open the advert to confirm duties, clearance and sponsorship before sending.") : null,
+        j.sponsorship_evidence ? h("li", {}, "Sponsorship: ", h("span", { class: "quote" }, `“${j.sponsorship_evidence}”`)) : null,
+        j.sponsor_routes?.length ? h("li", {}, `${j.sponsor_register || "Register"} routes: ${j.sponsor_routes.join(", ")}`) : null,
+        cl.quote ? h("li", {}, "Clearance: ", h("span", { class: "quote" }, `“${cl.quote}”`)) : null,
+        pay.note ? h("li", {}, pay.note) : null,
+        j.sponsorability_note ? h("li", {}, j.sponsorability_note) : null,
+        j.hidden_by_default.length ? h("li", {}, `Hidden by default: ${j.hidden_by_default.join(", ").replaceAll("_", " ")}`) : null)));
+}
+
+function employersView() {
+  const by = new Map();
+  for (const j of data.jobs.filter(j => j.sponsorship_offered)) {
+    const e = by.get(j.company) || { company: j.company, jobs: [], routes: j.sponsor_routes || [], reg: j.sponsor_register };
+    e.jobs.push(j); by.set(j.company, e);
+  }
+  const rows = [...by.values()].sort((a, b) => b.jobs.length - a.jobs.length || b.jobs[0].match - a.jobs[0].match);
+  return h("div", { class: "panel" }, h("h2", {}, `${rows.length} employers that can sponsor, with roles for this candidate`),
+    h("p", { class: "small muted" }, "Employers with an advert that offers sponsorship, or on the Home Office register of licensed sponsors. Tier 4 shows their other roles worth a look."),
+    h("table", {}, h("thead", {}, h("tr", {}, ["Employer", "Roles", "Best fit", "Licence routes"].map(t => h("th", {}, t)))),
+      h("tbody", {}, rows.slice(0, 200).map(e => h("tr", {},
+        h("td", {}, e.company), h("td", {}, e.jobs.sort((a, b) => b.match - a.match).slice(0, 4).map(j => h("div", {}, h("a", { href: j.url, target: "_blank", rel: "noopener" }, j.title), h("span", { class: "muted small" }, ` · tier ${j.tier} · ${j.match}%`))), e.jobs.length > 4 ? h("div", { class: "muted small" }, `+${e.jobs.length - 4} more`) : null),
+        h("td", {}, `${Math.max(...e.jobs.map(j => j.match))}%`),
+        h("td", { class: "small" }, (e.routes || []).join(", ") || (e.reg || "Advert offers sponsorship")))))));
+}
+
+function cvView() {
+  const c = data.candidate;
+  const tierNames = { 1: "Tier 1 · Core roles (apply first)", 2: "Tier 2 · Close to the CV", 3: "Tier 3 · Stretch / new direction" };
+  const byTier = t => c.roles.filter(r => r.tier === t);
+  return h("div", {},
+    h("div", { class: "grid2" }, [1, 2, 3].map(t => h("div", { class: "panel" }, h("h2", {}, tierNames[t]),
+      byTier(t).length ? h("ul", { class: "small" }, byTier(t).map(r => h("li", {}, r.title, h("span", { class: "muted" }, ` · ${r.track} CV${r.source !== "recruiter list" ? " · suggested from CV" : ""}`)))) : h("p", { class: "muted small" }, "None")))),
+    h("div", { class: "panel" }, h("h2", {}, "Other roles worth a look"),
+      h("p", { class: "small muted" }, "Families the CV also supports. Shown at employers that can sponsor (tab “Other roles”)."),
+      h("ul", { class: "chips" }, c.also_consider.map(f => h("li", { class: `chip ${f.sponsorability === "rare" ? "warn" : ""}`, title: f.sponsorability === "rare" ? "Usually below the Skilled Worker skill level" : "" }, f.label)))),
+    h("div", { class: "panel" }, h("h2", {}, "CVs scanned and skills used for matching"),
+      c.tracks.map(t => h("div", {}, h("h3", {}, `${t.name} CV`, h("span", { class: "muted small" }, ` · ${t.cv || ""}`)),
+        h("ul", { class: "chips" }, t.skills.map(s => h("li", { class: "chip" }, s.replace(/\[sz\]/g, "s").replace(/[\\?]/g, "")))))),
+      c.notes ? h("p", { class: "small muted" }, c.notes) : null));
+}
+
+function exportCsv(list) {
+  const cols = ["tier", "match", "title", "company", "location", "salary", "posted_at", "sponsorship_label", "clearance", "visa_pay", "role", "track", "source", "url"];
+  const cell = v => `"${String(v ?? "").replaceAll('"', '""')}"`;
+  const val = (j, k) => k === "clearance" ? j.clearance.label : k === "visa_pay" ? j.visa_pay.status : k === "salary" ? money(j.salary) : j[k];
+  const csv = [cols.join(","), ...list.map(j => cols.map(k => cell(val(j, k))).join(","))].join("\n");
+  const a = h("a", { href: URL.createObjectURL(new Blob([csv], { type: "text/csv" })), download: `${data.candidate.slug}-roles.csv` });
+  document.body.append(a); a.click(); a.remove();
+}
+
+(async function main() {
+  try {
+    const slug = new URLSearchParams(location.search).get("c");
+    await (slug ? boardView(slug) : listView());
+  } catch (err) {
+    $app.replaceChildren(h("p", { class: "empty" }, `Could not load this page: ${err.message}`));
+  }
+})();
