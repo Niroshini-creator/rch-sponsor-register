@@ -62,11 +62,60 @@ async function listView() {
 const TABS = [["1", "Tier 1 · Core"], ["2", "Tier 2 · Close"], ["3", "Tier 3 · Stretch"], ["4", "Other roles"], ["employers", "Employers"], ["cv", "CV scan"]];
 const state = { tab: "1", q: "", spons: "offered", min: 0, days: 7, sort: "match", showBlocked: false, sector: "", etier: "" };
 let data = null;
+const live = { status: "pending", feedTime: "", added: 0, error: "", baseJobs: [] };
+const LIVE_RECHECK_MS = 30 * 60 * 1000;
+
+// ------------------------------------------------------------------------------------------ live matching
+// The built board is rebuilt daily; the shared feed is rebuilt every two hours. Score that feed here, in the browser, with
+// the same engine (match.js), and add the roles the daily build does not have yet.
+function feedUrls() {
+  const urls = [];
+  if (location.hostname.endsWith(".github.io")) {
+    const owner = location.hostname.split(".")[0], repo = location.pathname.split("/")[1];
+    if (owner && repo) urls.push(`https://raw.githubusercontent.com/${owner}/${repo}/feed/data/jobs.json`);
+  }
+  return [...urls, "../data/jobs.json"];
+}
+async function loadFeed() {
+  let lastErr;
+  for (const url of feedUrls()) {
+    try { return await getJSON(url); } catch (err) { lastErr = err; }
+  }
+  throw lastErr;
+}
+async function runLive(force) {
+  try {
+    if (!window.CandidateMatch) throw new Error("matcher not loaded");
+    const roles = await getJSON("../candidateboard/roles.json");
+    CandidateIntake.init(roles);
+    const feed = await loadFeed();
+    if (!force && live.feedTime === feed.generated_at && live.status === "ok") return;
+    const fresh = CandidateMatch.liveJobs(feed.jobs, data.candidate, { days: data.window_days });
+    const ids = new Set(live.baseJobs.map(j => j.id)), keys = new Set(live.baseJobs.map(CandidateMatch.dedupeKey));
+    const added = fresh.filter(j => !ids.has(j.id) && !keys.has(CandidateMatch.dedupeKey(j)));
+    data.jobs = [...live.baseJobs, ...added];
+    Object.assign(live, { status: "ok", feedTime: feed.generated_at, added: added.length, error: "" });
+  } catch (err) {
+    data.jobs = live.baseJobs;
+    Object.assign(live, { status: "error", error: err.message, added: 0 });
+  }
+  data.sources["Live feed"] = live.status === "ok" ? { status: "ok", count: live.added } : { status: "error", error: live.error };
+  render();
+}
+function liveBanner() {
+  const text = { pending: "Checking the live feed…",
+    ok: `Live matching: feed from ${ago(live.feedTime)}, scored in your browser. ${live.added} role${live.added === 1 ? "" : "s"} added since the daily build (marked Live).`,
+    error: `Live feed unavailable (${live.error}). Showing the daily build from ${ago(data.generated_at)}.` }[live.status];
+  return h("div", { class: "panel small bar", style: "margin:10px 0 0;align-items:center" },
+    h("span", { class: `badge ${live.status === "ok" ? "ok" : live.status === "error" ? "warn" : ""}` }, live.status === "ok" ? "Live" : live.status === "error" ? "Offline" : "…"), text,
+    h("button", { class: "btn", type: "button", onclick: () => { live.status = "pending"; render(); runLive(true); } }, "Refresh now"));
+}
 
 async function boardView(slug) {
   data = await getJSON(`data/${encodeURIComponent(slug)}.json`);
   const c = data.candidate;
   document.title = `${c.name}: candidate board`;
+  live.baseJobs = data.jobs;
   const left = monthsLeft(c.visa?.expires);
   $header.replaceChildren(
     h("div", {}, h("a", { class: "back", href: "./" }, "← All candidates"), h("h1", {}, c.name),
@@ -83,6 +132,8 @@ async function boardView(slug) {
       c.current_status ? h("p", { class: "small muted", style: "margin:6px 0 0" }, `Now: ${c.current_status}`) : null),
     h("p", { class: "small muted" }, `Updated ${ago(data.generated_at)} · roles posted in the last ${data.window_days} days`));
   render();
+  runLive(false);
+  setInterval(() => runLive(false), LIVE_RECHECK_MS);
 }
 
 function visible(j) {
@@ -121,7 +172,7 @@ function render() {
       h("div", { class: "stat" }, h("b", {}, sponsorOffered), "advert offers sponsorship"),
       h("div", { class: "stat" }, h("b", {}, employers), "sponsor-licensed employers"),
       h("div", { class: "stat" }, h("b", {}, jobs.filter(j => j.hidden_by_default.includes("clearance")).length), "need clearance (hidden)")),
-    sourceStatus(), tabs];
+    liveBanner(), sourceStatus(), tabs];
   if (state.tab === "employers") parts.push(employersView());
   else if (state.tab === "cv") parts.push(cvView());
   else parts.push(...jobsView());
@@ -169,6 +220,7 @@ function card(j) {
     j.work_mode ? badge(j.work_mode === "remote" ? "Remote" : "Hybrid") : null,
     j.sector ? badge(j.sector) : null, j.employer_tier ? badge(`Employer tier ${j.employer_tier}`) : null,
     badge(j.source + (j.channel === "career_site" ? " · employer site" : "")),
+    j.live ? badge("Live", "info", "Found by matching the latest feed in your browser; not in the daily build yet") : null,
     ...j.flags.map(f => badge(f, "warn"))];
   return h("li", { class: `card ${j.hidden_by_default.length ? "dim" : ""}`, "data-tier": j.tier },
     h("div", { class: "card-top" },

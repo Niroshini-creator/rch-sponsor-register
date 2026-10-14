@@ -35,6 +35,14 @@ data you can edit. Change `visa.expires`, `clearance.held`, `driving_licence` (t
   Families the CV supports but with no listed roles become **Other roles** (e.g. IT support, admin), shown only at employers that can sponsor.
 * **Experience** from dated roles (overlaps counted once) is used to flag senior titles.
 
+## Live matching on the board page
+The daily build is up to a day old, but the shared feed is rebuilt every two hours. When a board opens, the page fetches that feed
+(the `feed` branch, else `data/jobs.json`), scores it **in the browser** with `candidates/match.js` and adds any role the daily build
+does not have, marked **Live**. It rechecks every 30 minutes and has a *Refresh now* button. If the feed cannot be fetched the banner
+says so and the daily build is shown unchanged. Live matching scores the shared feed only: roles found by the candidate-specific Reed/Adzuna/NHS/jobs.ac.uk
+searches (and full-advert reads) arrive with the daily build. `match.js` is a port of `match.py` + `checks.py` + the pay rules;
+`tests/test_match_js.py` runs both on the real feed under several candidate variants and requires identical results.
+
 ## Where roles come from
 | Source | Covers |
 |---|---|
@@ -56,4 +64,4 @@ as the feed's ~400-character extract cap skills at 22, so they top out near 80%;
 ## Files
 `roles.json` role families (edit to add roles) · `cv.py` CV scan · `intake.py` profile builder · `match.py` scoring and labels · `checks.py` clearance / licence ·
 `pipeline.py` fetch, label, dedupe, write · `candidates/` the viewer. Workflow: `.github/workflows/refresh-candidates.yml` (daily 07:23 UTC, on profile changes, or on demand).
-Tests: `python -m unittest discover -s tests -p "test_candidateboard.py"`.
+Tests: `python -m unittest discover -s tests -p "test_candidateboard.py"` (plus `test_intake_js.py` and `test_match_js.py`, which need Node).

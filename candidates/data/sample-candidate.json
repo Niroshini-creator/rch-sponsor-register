@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-14T05:25:02+00:00",
+ "generated_at": "2026-10-14T05:38:12+00:00",
  "window_days": 7,
  "rules_version": "1d05e714a128",
  "candidate": {
@@ -22,6 +22,9 @@
   },
   "driving_licence": null,
   "min_match": 40,
+  "countries": [
+   "GB"
+  ],
   "tracks": [
    {
     "name": "SAP Security & GRC",

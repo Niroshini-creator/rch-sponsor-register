@@ -242,7 +242,7 @@ def merge_previous(fresh: list[dict], path: Path, days: int, now: datetime, vers
 def candidate_summary(profile: dict) -> dict:
     tax = taxonomy.load()
     keep = ("slug", "name", "headline", "base_location", "current_status", "experience_years", "education", "visa",
-            "clearance", "driving_licence", "min_match", "tracks", "roles", "notes")
+            "clearance", "driving_licence", "min_match", "countries", "tracks", "roles", "notes")
     summary = {k: profile.get(k) for k in keep}
     summary["tracks"] = [{"name": t["name"], "cv": t.get("cv"), "headline": t.get("headline"), "skills": t.get("skills", [])}
                          for t in profile["tracks"]]
