@@ -43,11 +43,11 @@ function monthName(expires) {
 
 // ------------------------------------------------------------------------------------------ candidate list
 async function listView() {
-  $header.replaceChildren(h("div", {}, h("h1", {}, "Candidate Boards"),
-    h("p", { class: "muted small" }, "Internal. Roles from the last 7 days, matched to each candidate's CV, visa and clearance.")),
-    h("a", { class: "btn", href: "#add" }, "+ Add a candidate"));
+  document.title = "Recruiter boards";
+  $header.replaceChildren(h("div", {}, h("a", { class: "back", href: "./" }, "← Find roles for a CV"), h("h1", {}, "Recruiter boards"),
+    h("p", { class: "muted small" }, "Saved candidates: roles from the last 7 days matched to each one's CV, visa and clearance.")));
   const { candidates } = await getJSON("data/index.json");
-  if (!candidates.length) { $app.replaceChildren(h("p", { class: "empty" }, "No candidates yet. Run python -m candidateboard intake.")); return; }
+  if (!candidates.length) { $app.replaceChildren(h("p", { class: "empty" }, "No saved boards yet.")); return; }
   $app.replaceChildren(h("div", { class: "grid2", style: "margin-top:14px" }, candidates.map(c =>
     h("a", { class: "panel cand", href: `?c=${encodeURIComponent(c.slug)}` },
       h("h2", {}, c.name), h("p", { class: "muted small" }, c.headline),
@@ -100,9 +100,22 @@ async function runLive(force) {
     Object.assign(live, { status: "error", error: err.message, added: 0 });
   }
   data.sources["Live feed"] = live.status === "ok" ? { status: "ok", count: live.added } : { status: "error", error: live.error };
+  if (live.mode === "self" && live.firstPaint && live.status === "ok") {
+    live.firstPaint = false;
+    const first = ["1", "2", "3", "4"].find(t => data.jobs.some(j => String(j.tier) === t && visible({ ...j }, t)));
+    if (first) state.tab = first;
+  }
   render();
 }
 function liveBanner() {
+  if (live.mode === "self") {
+    const text = { pending: "Matching your CV against this week's vacancies…",
+      ok: `${data.jobs.length} vacancies matched from the live feed (updated ${ago(live.feedTime)}). Press Apply to go to the employer's advert. Only roles with a Skilled Worker route or sponsorship are shown by default; change “Sponsorship” below to see more.`,
+      error: `Could not load the vacancies (${live.error}). Check your connection and press Refresh.` }[live.status];
+    return h("div", { class: "panel small bar", style: "margin:10px 0 0;align-items:center" },
+      h("span", { class: `badge ${live.status === "ok" ? "ok" : live.status === "error" ? "warn" : ""}` }, live.status === "ok" ? "Live" : live.status === "error" ? "Offline" : "…"), text,
+      h("button", { class: "btn", type: "button", onclick: () => { live.status = "pending"; render(); runLive(true); } }, "Refresh now"));
+  }
   const text = { pending: "Checking the live feed…",
     ok: `Live matching: feed from ${ago(live.feedTime)}, scored in your browser. ${live.added} role${live.added === 1 ? "" : "s"} added since the daily build (marked Live).`,
     error: `Live feed unavailable (${live.error}). Showing the daily build from ${ago(data.generated_at)}.` }[live.status];
@@ -111,33 +124,55 @@ function liveBanner() {
     h("button", { class: "btn", type: "button", onclick: () => { live.status = "pending"; render(); runLive(true); } }, "Refresh now"));
 }
 
-async function boardView(slug) {
-  data = await getJSON(`data/${encodeURIComponent(slug)}.json`);
-  const c = data.candidate;
-  document.title = `${c.name}: candidate board`;
-  live.baseJobs = data.jobs;
+function candidateHeader(c, back, sub) {
   const left = monthsLeft(c.visa?.expires);
-  $header.replaceChildren(
-    h("div", {}, h("a", { class: "back", href: "./" }, "← All candidates"), h("h1", {}, c.name),
-      h("p", { class: "muted", style: "margin:2px 0 0" }, c.headline),
-      h("ul", { class: "chips" },
-        h("li", { class: `chip ${left != null && left < 6 ? "bad" : "warn"}` },
-          `${c.visa?.label || "Visa not set"}${c.visa?.expires ? ` · until ${monthName(c.visa.expires)}${left != null ? ` (${left} months left)` : ""}` : ""}`),
-        h("li", { class: "chip" }, ({ required: "Needs sponsorship", preferred: "Wants sponsorship before the visa ends", not_needed: "No sponsorship needed" })[c.visa?.sponsorship] || ""),
-        h("li", { class: "chip ok" }, c.clearance?.held === "none" ? "No security clearance" : `Holds ${String(c.clearance?.held).toUpperCase()} clearance`),
-        h("li", { class: "chip" }, c.driving_licence == null ? "Driving licence: not confirmed" : c.driving_licence ? "Holds a driving licence" : "No driving licence"),
-        c.base_location ? h("li", { class: "chip" }, c.base_location) : null,
-        c.experience_years ? h("li", { class: "chip" }, `${c.experience_years} yrs experience`) : null,
-        c.education ? h("li", { class: "chip" }, c.education) : null),
-      c.current_status ? h("p", { class: "small muted", style: "margin:6px 0 0" }, `Now: ${c.current_status}`) : null),
-    h("p", { class: "small muted" }, `Updated ${ago(data.generated_at)} · roles posted in the last ${data.window_days} days`));
+  return h("div", {}, back, h("h1", {}, c.name || "Your matches"),
+    c.headline ? h("p", { class: "muted", style: "margin:2px 0 0" }, c.headline) : null,
+    h("ul", { class: "chips" },
+      h("li", { class: `chip ${left != null && left < 6 ? "bad" : "warn"}` },
+        `${c.visa?.label || "Visa not set"}${c.visa?.expires ? ` · until ${monthName(c.visa.expires)}${left != null ? ` (${left} months left)` : ""}` : ""}`),
+      h("li", { class: "chip" }, ({ required: "Needs sponsorship", preferred: "Wants sponsorship before the visa ends", not_needed: "No sponsorship needed" })[c.visa?.sponsorship] || ""),
+      h("li", { class: "chip ok" }, c.clearance?.held === "none" ? "No security clearance" : `Holds ${String(c.clearance?.held).toUpperCase()} clearance`),
+      h("li", { class: "chip" }, c.driving_licence == null ? "Driving licence: not confirmed" : c.driving_licence ? "Holds a driving licence" : "No driving licence"),
+      c.base_location ? h("li", { class: "chip" }, c.base_location) : null,
+      c.experience_years ? h("li", { class: "chip" }, `${c.experience_years} yrs experience`) : null,
+      c.education ? h("li", { class: "chip" }, c.education) : null),
+    c.current_status ? h("p", { class: "small muted", style: "margin:6px 0 0" }, `Now: ${c.current_status}`) : null, sub);
+}
+let liveTimer = null;
+function startLive() {
+  clearInterval(liveTimer);
   render();
   runLive(false);
-  setInterval(() => runLive(false), LIVE_RECHECK_MS);
+  liveTimer = setInterval(() => runLive(false), LIVE_RECHECK_MS);
 }
 
-function visible(j) {
-  if (j.tier !== Number(state.tab)) return false;
+// A recruiter's saved board: built daily, with live matching adding anything newer.
+async function boardView(slug) {
+  data = await getJSON(`data/${encodeURIComponent(slug)}.json`);
+  document.title = `${data.candidate.name}: candidate board`;
+  live.mode = "board"; live.baseJobs = data.jobs;
+  Object.assign(state, { tab: "1", spons: "offered" });
+  $header.replaceChildren(candidateHeader(data.candidate, h("a", { class: "back", href: "./#boards" }, "← Recruiter boards"),
+    h("p", { class: "small muted" }, `Updated ${ago(data.generated_at)} · roles posted in the last ${data.window_days} days`)));
+  startLive();
+}
+
+// A candidate's own results: the CV was scanned in this browser, and vacancies are matched live against the shared feed.
+function selfView(profile) {
+  const labels = CandidateIntake.labels();
+  const c = { ...profile, also_consider: profile.also_consider.map(k => ({ key: k, label: labels[k].label, sponsorability: labels[k].sponsor })) };
+  data = { candidate: c, jobs: [], sources: {}, window_days: profile.window_days || 7, generated_at: "" };
+  document.title = "Your matching vacancies";
+  live.mode = "self"; live.baseJobs = []; live.status = "pending"; live.firstPaint = true;
+  Object.assign(state, { tab: "1", q: "", min: 0, sector: "", etier: "", spons: profile.visa?.sponsorship === "not_needed" ? "all" : "offered" });
+  $header.replaceChildren(candidateHeader(c, h("a", { class: "back", href: "./", onclick: () => { window.__profile = null; try { sessionStorage.removeItem("cb_profile"); } catch (e) { /* private mode */ } } }, "← Change CV or details"),
+    h("p", { class: "small muted" }, "Your CV was read in this browser only. Press Apply on a role to go to the employer's own advert.")));
+  startLive();
+}
+
+function visible(j, tab = state.tab) {
+  if (j.tier !== Number(tab)) return false;
   if (j.match < state.min) return false;
   if ((Date.now() - new Date(j.posted_at)) / 864e5 > state.days) return false;
   if (state.q && !`${j.title} ${j.company} ${j.location} ${j.role} ${j.sector}`.toLowerCase().includes(state.q.toLowerCase())) return false;
@@ -201,8 +236,8 @@ function jobsView() {
     h("label", {}, "Employer tier", sel("etier", [["", "All"], ["1", "Tier 1"], ["2", "Tier 2"], ["3", "Tier 3"]], state.etier, v => state.etier = v)),
     h("label", {}, "Sort", sel("sort", [["match", "Best match"], ["sponsor", "Sponsorship first"], ["newest", "Newest"], ["pay", "Highest pay"]], state.sort, v => state.sort = v)),
     h("label", { class: "check" }, h("input", { type: "checkbox", ...(state.showBlocked ? { checked: true } : {}), onchange: e => { state.showBlocked = e.target.checked; render(); } }), "Show roles needing clearance, below visa pay, or without a Skilled Worker licence"),
-    h("button", { class: "btn", onclick: () => exportCsv(sortJobs(data.jobs.filter(visible))) }, "Export CSV"));
-  const list = sortJobs(data.jobs.filter(visible));
+    h("button", { class: "btn", onclick: () => exportCsv(sortJobs(data.jobs.filter(j => visible(j)))) }, "Export CSV"));
+  const list = sortJobs(data.jobs.filter(j => visible(j)));
   const note = state.tab === "4" ? h("p", { class: "small muted" }, "Other roles at employers that can sponsor, using the same skills on a different route. Many of these (admin, IT support) are below the Skilled Worker skill level, so ask the employer first.") : null;
   return [bar, note, h("p", { class: "small muted" }, `${plural(list.length, "role")} shown`),
     list.length ? h("ul", { class: "cards" }, list.slice(0, 250).map(card)) : h("p", { class: "empty" }, "No roles match these filters.")];
@@ -229,7 +264,8 @@ function card(j) {
       h("div", { class: "match", title: "Fit with the candidate's CV: title 50 · skills 40 · level 10" }, h("b", {}, `${j.match}%`), "match",
         h("div", { class: "meter" }, h("i", { style: `width:${j.match}%` })))),
     h("ul", { class: "badges" }, badges.filter(Boolean).map(b => h("li", {}, b))),
-    h("p", { class: "apply" }, h("b", {}, j.cv_to_use ? `Send: ${j.track} CV` : "Send: best-fitting CV"), ` · target role: ${j.role}${j.family_label ? ` (${j.family_label})` : ""}`),
+    h("div", { class: "apply-row" }, h("a", { class: "btn primary", href: j.url, target: "_blank", rel: "noopener noreferrer" }, "Apply →"),
+      h("p", { class: "small" }, h("b", {}, j.cv_to_use ? `Send: ${j.track} CV` : "Send: best-fitting CV"), ` · target role: ${j.role}${j.family_label ? ` (${j.family_label})` : ""}`)),
     h("details", { class: "why" }, h("summary", {}, "Why this score and these labels"),
       h("ul", {}, j.reasons.map(r => h("li", {}, r)),
         j.skills_matched.length ? h("li", {}, `CV skills in the advert: ${j.skills_matched.join(", ")}`) : null,
@@ -271,7 +307,15 @@ function cvView() {
     h("div", { class: "panel" }, h("h2", {}, "CVs scanned and skills used for matching"),
       c.tracks.map(t => h("div", {}, h("h3", {}, `${t.name} CV`, h("span", { class: "muted small" }, ` · ${t.cv || ""}`)),
         h("ul", { class: "chips" }, t.skills.map(s => h("li", { class: "chip" }, s.replace(/\[sz\]/g, "s").replace(/[\\?]/g, "")))))),
-      c.notes ? h("p", { class: "small muted" }, c.notes) : null));
+      c.notes ? h("p", { class: "small muted" }, c.notes) : null,
+      h("p", { class: "small muted" }, "Recruiters: ", h("button", { class: "btn", type: "button", onclick: downloadProfile }, "Download profile (JSON)"),
+        " to save this candidate as a recruiter board (candidates/profiles/<name>.json).")));
+}
+function downloadProfile() {
+  const { also_consider, ...rest } = data.candidate;
+  const profile = { ...rest, also_consider: also_consider.map(f => f.key || f) };
+  const a = h("a", { href: URL.createObjectURL(new Blob([JSON.stringify(profile, null, 1) + "\n"], { type: "application/json" })), download: `${profile.slug || "candidate"}.json` });
+  document.body.append(a); a.click(); a.remove();
 }
 
 function exportCsv(list) {
@@ -283,22 +327,33 @@ function exportCsv(list) {
   document.body.append(a); a.click(); a.remove();
 }
 
-// ------------------------------------------------------------------------------------------ add a candidate
-function addView() {
-  document.title = "Add a candidate";
-  $header.replaceChildren(h("div", {}, h("a", { class: "back", href: "./" }, "← All candidates"), h("h1", {}, "Add a candidate"),
-    h("p", { class: "muted small", style: "margin:4px 0 0" }, "Upload the CVs, answer the visa questions, and the tiers and roles are worked out here in your browser. The CV is read on this page and never uploaded anywhere.")));
+// ------------------------------------------------------------------------------------------ routing
+// One link: /candidates/ is the form, #results the candidate's matches, #boards the recruiter list, ?c=<slug> a saved board.
+function formView() {
+  document.title = "Find roles for your CV";
+  $header.replaceChildren(h("div", {}, h("h1", {}, "Find roles for your CV"),
+    h("p", { class: "muted small", style: "margin:4px 0 0" }, "Upload your CV, answer a few questions, and see vacancies from the last 7 days that fit you, with a link to apply. Your CV stays in your browser.")));
   $app.replaceChildren(document.getElementById("add-tpl").content.cloneNode(true));
-  mountAdd(h);
+  clearInterval(liveTimer);
+  mountAdd(h, profile => {
+    try { sessionStorage.setItem("cb_profile", JSON.stringify(profile)); } catch (e) { /* private mode: results still show once */ }
+    window.__profile = profile;
+    location.hash = "#results";
+  });
 }
+async function ensureTaxonomy() { CandidateIntake.init(await getJSON("../candidateboard/roles.json")); }
 
-// One page, one link: /candidates/ is the list, #add the form, ?c=<slug> a board.
 async function route() {
   try {
     const slug = new URLSearchParams(location.search).get("c");
-    if (slug) await boardView(slug);
-    else if (location.hash === "#add") addView();
-    else await listView();
+    if (slug) { await ensureTaxonomy(); await boardView(slug); }
+    else if (location.hash === "#boards") { clearInterval(liveTimer); await listView(); }
+    else if (location.hash === "#results") {
+      let profile = window.__profile;
+      try { profile = profile || JSON.parse(sessionStorage.getItem("cb_profile")); } catch (e) { profile = null; }
+      if (!profile) { location.hash = ""; return; }
+      await ensureTaxonomy(); selfView(profile);
+    } else formView();
   } catch (err) {
     $app.replaceChildren(h("p", { class: "empty" }, `Could not load this page: ${err.message}`));
   }

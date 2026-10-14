@@ -12,7 +12,9 @@ licence, pay against the Skilled Worker minimum). Built the same way as the spon
 
 ## Add a candidate (about a minute)
 
-**On the web:** open `/candidates/` (the one link for everything: candidate list, boards, and the form behind the button *+ Add a candidate*; `add.html` redirects there). Upload each CV with a track name, add the suitable-roles list, answer the visa/clearance/licence questions and press *Scan CVs*. The scan runs **in your browser**: the CV is never uploaded. Correct any tier, then *Download profile* or *Copy JSON* and add it to the repo as `candidates/profiles/<slug>.json`; pushing it to `main` builds the board. The browser scan is a port of the Python one (`candidates/intake.js`, same `roles.json`), and `tests/test_intake_js.py` checks both give the same profile. PDFs must contain text (a scanned image is rejected).
+**Candidates (self-serve):** send them `/candidates/`. They upload a CV, answer the visa/clearance/licence questions and press *Find vacancies*. The CV is scanned **in their browser** (never uploaded), the profile is matched live against the shared feed, and they see Tier 1/2/3 vacancies, each with an **Apply** button to the employer's own advert. Nothing is saved on the server; a reload within the same browser session keeps the results.
+
+**Recruiters:** `/candidates/#boards` lists saved candidate boards. From a candidate's results, the *CV scan* tab has *Download profile (JSON)*; commit it as `candidates/profiles/<slug>.json` to turn it into a saved board that also includes the candidate-specific Reed/Adzuna/NHS/jobs.ac.uk searches (built daily). The browser scan is a port of the Python one (`candidates/intake.js`, same `roles.json`), and `tests/test_intake_js.py` checks both give the same profile. PDFs must contain text (a scanned image is rejected).
 
 **Or on the command line:**
 
@@ -35,11 +37,11 @@ data you can edit. Change `visa.expires`, `clearance.held`, `driving_licence` (t
   Families the CV supports but with no listed roles become **Other roles** (e.g. IT support, admin), shown only at employers that can sponsor.
 * **Experience** from dated roles (overlaps counted once) is used to flag senior titles.
 
-## Live matching on the board page
+## Live matching (what a self-serve candidate sees)
 The daily build is up to a day old, but the shared feed is rebuilt every two hours. When a board opens, the page fetches that feed
 (the `feed` branch, else `data/jobs.json`), scores it **in the browser** with `candidates/match.js` and adds any role the daily build
 does not have, marked **Live**. It rechecks every 30 minutes and has a *Refresh now* button. If the feed cannot be fetched the banner
-says so and the daily build is shown unchanged. Live matching scores the shared feed only: roles found by the candidate-specific Reed/Adzuna/NHS/jobs.ac.uk
+says so and the daily build is shown unchanged. Self-serve results are live matching only, so they cover the shared feed only: roles found by the candidate-specific Reed/Adzuna/NHS/jobs.ac.uk
 searches (and full-advert reads) arrive with the daily build. `match.js` is a port of `match.py` + `checks.py` + the pay rules;
 `tests/test_match_js.py` runs both on the real feed under several candidate variants and requires identical results.
 
