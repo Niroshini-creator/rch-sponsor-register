@@ -30,6 +30,14 @@ python -m candidateboard build --slug jane-doe        # needs REED_API_KEY / ADZ
 and writes `candidates/profiles/<slug>.json`. The daily workflow then keeps the board current. **Review the profile**: tiers, roles and skills are plain
 data you can edit. Change `visa.expires`, `clearance.held`, `driving_licence` (true/false/null), `min_match`, `roles[].tier`, anything.
 
+## Where the candidate would work
+The form asks which places to search: **United Kingdom, Ireland, Europe (EU/EEA and Switzerland), Australia, Middle East** (UAE, Saudi Arabia, Qatar, Kuwait, Bahrain, Oman); the regions and their countries are in `regions.json`. On the command line: `--regions GB,IE,EU,AU,ME`. The profile records `locations` and the expanded `countries`.
+
+* **English only (on by default, `english_only`)**: outside the English-speaking countries (UK, Ireland, US, Malta, Australia), an advert that is not in English or asks for another language is hidden (shown with "Show roles ... in another language"). The feed decides this per advert (`english`).
+* **Reserved posts**: adverts reserved for a country's own nationals ("(UAE National)", "Saudi nationals only", "citizens only") are hidden; "Emiratisation programme" or "open to UAE nationals and expats" are not.
+* **Sponsorship abroad**: shown if the advert offers it, the employer is on that country's sponsor list (NL IND, Irish permits, US H-1B), or the country's employers sponsor by default (Gulf states). Australia has no public sponsor list, so only adverts that say they sponsor appear. **Pay against the visa minimum is checked for the UK and Ireland only**; other countries show "not checked".
+* **Coverage is widest in the UK.** The feed is thin for Europe outside the registers above, and Australia (Adzuna) and the Gulf states beyond the UAE have few sources. The board's candidate-specific Reed / Adzuna / NHS / jobs.ac.uk searches are UK-only.
+
 ## What the scan decides
 * **Tracks**: one per CV, with the skills found in it (generic ones like "excel" are dropped).
 * **Tiers** (by how strongly the CV evidences a role family, see `roles.json`): **1** core (CV headline and job titles),

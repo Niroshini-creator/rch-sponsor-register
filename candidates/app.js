@@ -17,7 +17,10 @@ function h(tag, attrs, ...kids) {
   return el;
 }
 const badge = (text, kind, title) => h("span", { class: `badge ${kind || ""}`, title }, text);
-const money = s => (s && /^\d/.test(s) ? `£${s}` : s || "");
+const money = (s, country = "GB") => (s && /^\d/.test(s) ? `${{ GB: "£", IE: "€" }[country] || ""}${s}` : s || "");
+const COUNTRY_NAMES = new Intl.DisplayNames(["en"], { type: "region" });
+const countryName = code => { try { return COUNTRY_NAMES.of(code); } catch { return code; } };
+const ENGLISH_COUNTRIES = ["GB", "IE", "US", "MT", "AU"];
 const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
 async function getJSON(url) {
@@ -60,7 +63,7 @@ async function listView() {
 
 // ------------------------------------------------------------------------------------------ one candidate
 const TABS = [["1", "Tier 1 · Core"], ["2", "Tier 2 · Close"], ["3", "Tier 3 · Stretch"], ["4", "Other roles"], ["employers", "Employers"], ["cv", "CV scan"]];
-const state = { tab: "1", q: "", spons: "offered", min: 0, days: 7, sort: "match", showBlocked: false, sector: "", etier: "", source: "noadzuna" };
+const state = { tab: "1", q: "", spons: "offered", min: 0, days: 7, sort: "match", showBlocked: false, sector: "", etier: "", source: "noadzuna", country: "" };
 // Adzuna adverts open through an Adzuna redirect page that many people cannot reach, so they are hidden by default.
 const SOURCE_FILTERS = [["noadzuna", "Everything except Adzuna"], ["direct", "Employer, NHS, university & school sites only"], ["all", "All, including Adzuna"]];
 const sourceOk = (j, mode = state.source) => mode === "all" || (mode === "direct" ? j.channel !== "aggregator" : j.source !== "Adzuna");
@@ -139,6 +142,9 @@ function candidateHeader(c, back, sub) {
       h("li", { class: "chip ok" }, c.clearance?.held === "none" ? "No security clearance" : `Holds ${String(c.clearance?.held).toUpperCase()} clearance`),
       h("li", { class: "chip" }, c.driving_licence == null ? "Driving licence: not confirmed" : c.driving_licence ? "Holds a driving licence" : "No driving licence"),
       c.base_location ? h("li", { class: "chip" }, c.base_location) : null,
+      (c.locations || []).length && !(c.locations.length === 1 && c.locations[0] === "GB")
+        ? h("li", { class: "chip info" }, `Looking in: ${c.locations.map(k => (CandidateIntake.regions()[k] || {}).label || k).join(", ")}`) : null,
+      c.english_only === false ? null : (c.locations || []).some(k => k !== "GB" && k !== "IE" && k !== "AU") ? h("li", { class: "chip" }, "English-language roles only") : null,
       c.experience_years ? h("li", { class: "chip" }, `${c.experience_years} yrs experience`) : null,
       c.education ? h("li", { class: "chip" }, c.education) : null),
     c.current_status ? h("p", { class: "small muted", style: "margin:6px 0 0" }, `Now: ${c.current_status}`) : null, sub);
@@ -156,7 +162,7 @@ async function boardView(slug) {
   data = await getJSON(`data/${encodeURIComponent(slug)}.json`);
   document.title = `${data.candidate.name}: candidate board`;
   live.mode = "board"; live.baseJobs = data.jobs;
-  Object.assign(state, { tab: "1", spons: "offered", source: "noadzuna" });
+  Object.assign(state, { tab: "1", spons: "offered", source: "noadzuna", country: "" });
   $header.replaceChildren(candidateHeader(data.candidate, h("a", { class: "back", href: "./#boards" }, "← Recruiter boards"),
     h("p", { class: "small muted" }, `Updated ${ago(data.generated_at)} · roles posted in the last ${data.window_days} days`)));
   startLive();
@@ -169,7 +175,7 @@ function selfView(profile) {
   data = { candidate: c, jobs: [], sources: {}, window_days: profile.window_days || 7, generated_at: "" };
   document.title = "Your matching vacancies";
   live.mode = "self"; live.baseJobs = []; live.status = "pending"; live.firstPaint = true;
-  Object.assign(state, { tab: "1", q: "", min: 0, sector: "", etier: "", source: "noadzuna", spons: profile.visa?.sponsorship === "not_needed" ? "all" : "offered" });
+  Object.assign(state, { tab: "1", q: "", min: 0, sector: "", etier: "", source: "noadzuna", country: "", spons: profile.visa?.sponsorship === "not_needed" ? "all" : "offered" });
   $header.replaceChildren(candidateHeader(c, h("a", { class: "back", href: "./", onclick: () => { window.__profile = null; try { sessionStorage.removeItem("cb_profile"); } catch (e) { /* private mode */ } } }, "← Change CV or details"),
     h("p", { class: "small muted" }, "Your CV was read in this browser only. Press Apply on a role to go to the employer's own advert.")));
   startLive();
@@ -183,6 +189,7 @@ function visible(j, tab = state.tab) {
   if (state.sector && j.sector !== state.sector) return false;
   if (state.etier && String(j.employer_tier) !== state.etier) return false;
   if (!sourceOk(j)) return false;
+  if (state.country && j.country !== state.country) return false;
   if (state.spons === "offered" && !j.sponsorship_offered) return false;
   if (state.spons === "not" && j.sponsorship_offered) return false;
   const blockers = j.hidden_by_default.filter(r => r !== "no_sponsorship");
@@ -240,6 +247,9 @@ function sourceStatus() {
 function jobsView() {
   const inTab = data.jobs.filter(j => String(j.tier) === state.tab);
   const sectors = [...new Set(inTab.map(j => j.sector).filter(Boolean))].sort();
+  const tally = {};
+  for (const j of inTab) tally[j.country] = (tally[j.country] || 0) + 1;
+  const countries = Object.entries(tally).sort((a, b) => b[1] - a[1]);
   const sel = (name, opts, cur, fn) => h("select", { name, onchange: e => { fn(e.target.value); render(); } },
     opts.map(([v, l]) => h("option", { value: v, ...(String(v) === String(cur) ? { selected: true } : {}) }, l)));
   const bar = h("div", { class: "panel bar" },
@@ -249,9 +259,10 @@ function jobsView() {
     h("label", {}, "Min match", sel("min", [[0, "Any"], [50, "50%+"], [60, "60%+"], [70, "70%+"]], state.min, v => state.min = Number(v))),
     h("label", {}, "Sector", sel("sector", [["", "All"], ...sectors.map(s => [s, s])], state.sector, v => state.sector = v)),
     h("label", {}, "Employer tier", sel("etier", [["", "All"], ["1", "Tier 1"], ["2", "Tier 2"], ["3", "Tier 3"]], state.etier, v => state.etier = v)),
+    countries.length > 1 ? h("label", {}, "Country", sel("country", [["", "All countries"], ...countries.map(([c, n]) => [c, `${countryName(c)} (${n})`])], state.country, v => state.country = v)) : null,
     h("label", {}, "Where advertised", sel("source", SOURCE_FILTERS, state.source, v => state.source = v)),
     h("label", {}, "Sort", sel("sort", [["match", "Best match"], ["sponsor", "Sponsorship first"], ["newest", "Newest"], ["pay", "Highest pay"]], state.sort, v => state.sort = v)),
-    h("label", { class: "check" }, h("input", { type: "checkbox", ...(state.showBlocked ? { checked: true } : {}), onchange: e => { state.showBlocked = e.target.checked; render(); } }), "Show roles needing clearance, below visa pay, or without a Skilled Worker licence"),
+    h("label", { class: "check" }, h("input", { type: "checkbox", ...(state.showBlocked ? { checked: true } : {}), onchange: e => { state.showBlocked = e.target.checked; render(); } }), "Show roles needing clearance, below visa pay, in another language, reserved for nationals, or without a Skilled Worker licence"),
     h("button", { class: "btn", onclick: () => exportCsv(sortJobs(data.jobs.filter(j => visible(j)))) }, "Export CSV"));
   const list = sortJobs(data.jobs.filter(j => visible(j)));
   const note = state.tab === "4" ? h("p", { class: "small muted" }, "Other roles at employers that can sponsor, using the same skills on a different route. Many of these (admin, IT support) are below the Skilled Worker skill level, so ask the employer first.") : null;
@@ -271,6 +282,8 @@ function card(j) {
     pay.status ? badge({ meets: "Pay meets visa minimum", partial: "Pay partly meets visa minimum", below: "Pay below visa minimum", unstated: "Pay not stated" }[pay.status], pay.status === "below" ? "bad" : pay.status === "unstated" ? "" : "ok", pay.note) : null,
     j.sponsorability === "rare" ? badge("Sponsorship unlikely at this level", "warn", j.sponsorability_note) : j.sponsorability === "check" ? badge("Ask if role can be sponsored", "", j.sponsorability_note) : null,
     j.work_mode ? badge(j.work_mode === "remote" ? "Remote" : "Hybrid") : null,
+    !ENGLISH_COUNTRIES.includes(j.country) ? badge(j.english === false ? "Needs another language" : "English-language role", j.english === false ? "bad" : "ok") : null,
+    !["GB", "IE"].includes(j.country) && pay.status === "" && data.candidate.visa?.sponsorship !== "not_needed" ? badge("Pay vs visa minimum not checked here", "", "Salary thresholds are only checked for the UK and Ireland") : null,
     j.sector ? badge(j.sector) : null, j.employer_tier ? badge(`Employer tier ${j.employer_tier}`) : null,
     badge(j.source + (j.channel === "career_site" ? " · employer site" : "")),
     j.live ? badge("Live", "info", "Found by matching the latest feed in your browser; not in the daily build yet") : null,
@@ -278,7 +291,7 @@ function card(j) {
   return h("li", { class: `card ${j.hidden_by_default.length ? "dim" : ""}`, "data-tier": j.tier },
     h("div", { class: "card-top" },
       h("div", {}, h("h3", {}, h("a", { href: j.url, target: "_blank", rel: "noopener" }, j.title)),
-        h("p", { class: "meta" }, [j.company, j.location, money(j.salary), `posted ${ago(j.posted_at)}`].filter(Boolean).join(" · "))),
+        h("p", { class: "meta" }, [j.company, j.location, j.country !== "GB" ? countryName(j.country) : "", money(j.salary, j.country), `posted ${ago(j.posted_at)}`].filter(Boolean).join(" · "))),
       h("div", { class: "match", title: "Fit with the candidate's CV: title 50 · skills 40 · level 10" }, h("b", {}, `${j.match}%`), "match",
         h("div", { class: "meter" }, h("i", { style: `width:${j.match}%` })))),
     h("ul", { class: "badges" }, badges.filter(Boolean).map(b => h("li", {}, b))),
@@ -360,7 +373,7 @@ function formView() {
     location.hash = "#results";
   });
 }
-async function ensureTaxonomy() { CandidateIntake.init(await getJSON("../candidateboard/roles.json")); }
+async function ensureTaxonomy() { CandidateIntake.init(await getJSON("../candidateboard/roles.json"), await getJSON("../candidateboard/regions.json")); }
 
 async function route() {
   try {

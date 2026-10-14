@@ -36,8 +36,10 @@ log = logging.getLogger("jobfeed")
 
 EUROPE_AND_UK = {"GB", "IE", "DE", "NL", "FR", "BE", "AT", "CH", "ES", "IT", "PL", "PT", "SE", "DK", "FI", "NO",
                  "CZ", "LU", "EE", "GR", "RO", "HU", "LT", "LV", "SK", "SI", "HR", "BG", "CY", "MT", "IS"}
-# Countries the board covers: the UK and Europe, plus the United States and the United Arab Emirates.
-TARGET_COUNTRIES = EUROPE_AND_UK | {"US", "AE"}
+# Gulf states, where the employer sponsors the residence and work visa of every foreign hire.
+GULF_STATES = {"AE", "SA", "QA", "KW", "BH", "OM"}
+# Countries the board covers: the UK and Europe, the United States, the Gulf states and Australia.
+TARGET_COUNTRIES = EUROPE_AND_UK | {"US", "AU"} | GULF_STATES
 
 EmployerFeed = Callable[[dict, datetime], Iterator[Job]]
 
@@ -336,6 +338,7 @@ _COUNTRY_NAMES = {
     "hungary": "HU", "lithuania": "LT", "latvia": "LV", "united states": "US", "usa": "US", "canada": "CA",
     "india": "IN", "singapore": "SG", "australia": "AU", "united arab emirates": "AE", "uae": "AE",
     "united states of america": "US", "the netherlands": "NL", "holland": "NL",
+    "saudi arabia": "SA", "ksa": "SA", "qatar": "QA", "kuwait": "KW", "bahrain": "BH", "oman": "OM",
 }
 
 

@@ -475,19 +475,31 @@ class AcademicSourceTests(unittest.TestCase):
             <description>£31,236 – £34,610 per annum: UNIVERSITY COLLEGE BIRMINGHAM: We seek a tutor ... Birmingham, United Kingdom</description>
             <link>https://www.timeshighereducation.com/unijobs/listing/415823/academic-skills-tutor/?TrackID=8</link>
             <pubDate>{stamp}</pubDate></item>
-            <item><title>UNIVERSITY OF SYDNEY: Research Fellow</title>
-            <description>UNIVERSITY OF SYDNEY: Research... Camperdown, Australia</description>
+            <item><title>UNIVERSITY OF TORONTO: Research Fellow</title>
+            <description>UNIVERSITY OF TORONTO: Research... Toronto, Canada</description>
             <link>https://www.timeshighereducation.com/unijobs/listing/416122/research-fellow/?TrackID=8</link>
             <pubDate>{stamp}</pubDate></item></channel></rss>""".encode()
         with mock.patch.object(sources.http, "get", return_value=rss), \
              mock.patch.object(sources.http, "get_text", return_value="<main>Visa sponsorship available.</main>") as page, \
              mock.patch.object(sources, "ACADEMIC_PAUSE", 0):
             jobs = list(sources.the_unijobs(7))
-        self.assertEqual(len(jobs), 1)  # Australia is outside the board's countries: no advert request
+        self.assertEqual(len(jobs), 1)  # Canada is outside the board's countries: no advert request
         self.assertEqual((jobs[0].company, jobs[0].title, jobs[0].country, jobs[0].salary),
                          ("University College Birmingham", "Academic Skills Tutor", "GB", "£31,236 – £34,610 per annum"))
         self.assertEqual(jobs[0].description, "Visa sponsorship available.")
         page.assert_called_once()
+
+    def test_the_unijobs_keeps_australian_and_gulf_universities(self):
+        stamp = NOW.strftime("%a, %d %b %Y %H:%M:%S +0000")
+        rss = f"""<rss><channel>
+            <item><title>UNIVERSITY OF SYDNEY: Research Fellow</title><description>Camperdown, Australia</description>
+            <link>https://www.timeshighereducation.com/unijobs/listing/1/a/</link><pubDate>{stamp}</pubDate></item>
+            <item><title>KAUST: Lecturer</title><description>Thuwal, Saudi Arabia</description>
+            <link>https://www.timeshighereducation.com/unijobs/listing/2/b/</link><pubDate>{stamp}</pubDate></item></channel></rss>""".encode()
+        with mock.patch.object(sources.http, "get", return_value=rss), \
+             mock.patch.object(sources.http, "get_text", return_value="<main>Role.</main>"), mock.patch.object(sources, "ACADEMIC_PAUSE", 0):
+            jobs = list(sources.the_unijobs(7))
+        self.assertEqual(sorted(j.country for j in jobs), ["AU", "SA"])
 
     def test_euraxess(self):
         posted = NOW.strftime("%-d %B %Y")

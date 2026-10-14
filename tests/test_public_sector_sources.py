@@ -6,6 +6,7 @@ from unittest import mock
 
 from jobfeed import contacts, pipeline, sources, sponsors
 from jobfeed.classify import TierRules
+from jobfeed.models import Job
 
 CONFIG = Path(__file__).resolve().parent.parent / "config"
 NOW = datetime.now(timezone.utc)
@@ -66,6 +67,33 @@ class CouncilRssTests(unittest.TestCase):
         with mock.patch.object(sources.http, "get", side_effect=fake):
             jobs = list(sources.rss_feeds(7, [{"name": "Bad", "url": "https://bad/rss"}, {"name": "Good", "url": "https://good/rss", "employer": "Good Council"}]))
         self.assertEqual([j.company for j in jobs], ["Good Council"])
+
+
+class OverseasCoverageTests(unittest.TestCase):
+    def test_australia_and_gulf_states_are_board_countries(self):
+        from jobfeed import careers, classify
+        self.assertTrue({"AU", "AE", "SA", "QA", "KW", "BH", "OM"} <= pipeline.COUNTRIES)
+        self.assertEqual(pipeline.EMPLOYER_VISA_COUNTRIES, careers.GULF_STATES)
+        self.assertIn("AU", classify.ENGLISH_SPEAKING_COUNTRIES)
+        self.assertEqual((sources._guess_country("Riyadh", "GB"), sources._guess_country("Doha, Qatar", "GB"), sources._guess_country("Brisbane", "GB")),
+                         ("SA", "QA", "AU"))
+        self.assertEqual((careers._iso("Saudi Arabia"), careers._iso("Oman"), careers._iso("Australia")), ("SA", "OM", "AU"))
+
+    def test_adzuna_searches_australia(self):
+        searches = [(code, q) for code, q, *_ in sources._adzuna_searches()]
+        self.assertIn(("au", {"what_phrase": "visa sponsorship"}), searches)
+        self.assertEqual(sum(1 for c, _ in searches if c == "au"), 1 + len(sources.ROLE_QUERIES))
+        self.assertEqual(sources.ADZUNA_COUNTRIES["au"], "AU")
+
+    def test_gulf_job_is_kept_as_employer_visa_and_australian_job_needs_a_sponsorship_statement(self):
+        now = datetime.now(timezone.utc)
+
+        def job(country, sid, text=""):
+            return Job(source="Reed", source_id=sid, title="Business Analyst", company="Acme Co", location={"SA": "Riyadh", "AU": "Sydney"}[country] + sid, country=country, url=f"https://x/{sid}",
+                       posted_at=now, description=text, channel="career_site")
+        out = pipeline.enrich([job("SA", "1"), job("AU", "2"), job("AU", "3", "Visa sponsorship is available.")], sponsors.SponsorIndex(),
+                              TierRules.load(CONFIG / "company_tiers.json"), contacts.ContactBook({}), 7)
+        self.assertEqual(sorted((j.country, j.sponsorship) for j in out), [("AU", "confirmed"), ("SA", "employer_visa")])
 
 
 if __name__ == "__main__":

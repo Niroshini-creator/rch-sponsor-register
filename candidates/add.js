@@ -32,8 +32,9 @@ function mountAdd(h, onProfile) {
   }
 
   // ------------------------------------------------------------------ role families (the same file the Python scan reads)
-  const ready = fetch("../candidateboard/roles.json", { cache: "no-cache" }).then(r => { if (!r.ok) throw new Error(`roles.json: HTTP ${r.status}`); return r.json(); })
-    .then(roles => CandidateIntake.init(roles));
+  const getJson = url => fetch(url, { cache: "no-cache" }).then(r => { if (!r.ok) throw new Error(`${url}: HTTP ${r.status}`); return r.json(); });
+  const ready = Promise.all([getJson("../candidateboard/roles.json"), getJson("../candidateboard/regions.json")])
+    .then(([roles, regions]) => CandidateIntake.init(roles, regions));
 
   // ------------------------------------------------------------------ form
   function cvRow(track = "") {
@@ -65,9 +66,11 @@ function mountAdd(h, onProfile) {
       if (new Set(cvs.map(c => c.track)).size !== cvs.length) throw new Error("Give each CV a different name.");
       const [type, label] = $("visa").value.split("|");
       const licence = $("licence").value;
+    if (!document.querySelector('input[name=region]:checked')) throw new Error("Tick at least one place you would work.");
       const profile = CandidateIntake.buildProfile(cvs, $("roles-text").value, {
         name: $("name").value.trim(), location: $("location").value.trim(), status: $("status").value.trim(), notes: $("notes").value.trim(),
-        clearance: $("clearance").value, drivingLicence: licence === "" ? null : licence === "yes",
+        regions: [...document.querySelectorAll('input[name=region]:checked')].map(el => el.value), englishOnly: $("english-only").checked,
+      clearance: $("clearance").value, drivingLicence: licence === "" ? null : licence === "yes",
         visa: { type, label, expires: $("expires").value, sponsorship: $("sponsorship").value, new_entrant: $("new-entrant").checked },
       });
       $("msg").textContent = "";

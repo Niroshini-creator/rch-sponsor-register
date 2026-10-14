@@ -11,6 +11,7 @@ import re
 from datetime import datetime, timezone
 
 from jobfeed import salary
+from jobfeed.classify import ENGLISH_SPEAKING_COUNTRIES
 from jobfeed.models import Job
 
 from . import checks, taxonomy
@@ -27,6 +28,7 @@ SPONSORSHIP = {
     "licensed_sponsor": ("Licensed sponsor (advert silent)", 2, True),
     "employer_visa": ("Employer provides visa", 2, True),
     "graduate_route": ("Not sponsoring, open to Graduate visa holders", 4, False),
+    "stamp_1g": ("No sponsorship evidence (Ireland: open to Stamp 1G holders only)", 5, False),
     "unverified": ("Employer not on sponsor register", 5, False),
     "agency": ("Agency advert, end employer unknown", 5, False),
     "not_sponsored": ("Sponsorship not offered", 6, False),
@@ -47,6 +49,7 @@ class Matcher:
         visa = profile.get("visa") or {}
         self.needs_sponsorship = visa.get("sponsorship", "required") != "not_needed"
         self.new_entrant = bool(visa.get("new_entrant"))
+        self.english_only = profile.get("english_only", True)
         self.tracks = {t["name"]: [(s, taxonomy.keyword_re(s)) for s in t.get("skills", [])] for t in profile["tracks"]}
         self.cv_for = {t["name"]: t.get("cv") or t["name"] for t in profile["tracks"]}
         every = {}
@@ -148,16 +151,26 @@ class Matcher:
         if extract and clear["level"] == "none":
             clear["label"] = "No clearance in the extract: check the advert"
         licence = checks.driving_licence(text, self.licence)
+        nationality = checks.nationality_restriction(text)
         pay = self.visa_pay(job)
         family = self.tax.families.get(info["family"]) if info["family"] else None
         sponsor_note = self.tax.sponsor_notes.get(family.sponsor, "") if family else ""
 
         flags = [f for f in (level_flag,) if f]
         routes = job.get("sponsor_routes") or []
-        no_route = bool(routes) and status == "licensed_sponsor" and not any("skilled worker" in r.lower() for r in routes)
+        # Route names are the UK register's; other countries' registers name theirs differently.
+        no_route = (job.get("country") == "GB" and bool(routes) and status == "licensed_sponsor"
+                    and not any("skilled worker" in r.lower() for r in routes))
         if no_route:
             flags.append("Sponsor licence does not list the Skilled Worker route")
         hidden = []
+        # Outside the English-speaking countries, an advert in another language or asking for one is no use to this candidate.
+        if self.english_only and job.get("country") not in ENGLISH_SPEAKING_COUNTRIES and job.get("english") is False:
+            flags.append("Advert is not in English or asks for another language")
+            hidden.append("language")
+        if nationality["restricted"]:
+            flags.append("Reserved for the country's own nationals")
+            hidden.append("nationals_only")
         if no_route and self.needs_sponsorship:
             hidden.append("no_skilled_worker_route")
         if clear["blocks"]:
@@ -174,6 +187,6 @@ class Matcher:
             "track": info["track"], "cv_to_use": self.cv_for.get(info["track"], "") if info["track"] else "",
             "sponsorship": status, "sponsorship_label": label, "sponsorship_rank": rank, "sponsorship_offered": offered,
             "sponsorability": family.sponsor if family else "check", "sponsorability_note": sponsor_note,
-            "clearance": clear, "driving_licence": licence, "work_mode": checks.work_mode(text, job.get("location", "")),
+            "clearance": clear, "driving_licence": licence, "nationality": nationality, "work_mode": checks.work_mode(text, job.get("location", "")),
             "visa_pay": pay, "flags": flags, "hidden_by_default": hidden,
         }

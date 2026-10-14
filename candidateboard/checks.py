@@ -87,3 +87,20 @@ def work_mode(text: str, location: str = "") -> str:
     if _REMOTE_RE.search(blob):
         return "remote"
     return ""
+
+
+# Posts reserved for a country's own nationals, common in the Gulf ("Influencer Marketing Officer (UAE National)").
+# Deliberately narrow: "Emiratisation programme" or "open to UAE nationals and expats" do not match.
+_NATIONALS = "uae|emirati|saudi|qatari|kuwaiti|omani|bahraini"
+_NATIONALS_ONLY_RE = re.compile(
+    rf"\(\s*(?:{_NATIONALS})(?:\s+nationals?)?\s*\)"
+    rf"|\b(?:{_NATIONALS})\s+(?:nationals?|citizens?)\s+(?:only|required)\b"
+    rf"|\b(?:{_NATIONALS})\s+only\b"
+    rf"|\bonly\s+(?:open|available)\s+to\s+(?:{_NATIONALS})"
+    r"|\b(?:nationals?|citizens?)\s+only\b", re.I)
+
+
+def nationality_restriction(text: str) -> dict:
+    """{"restricted": bool, "quote"}: the advert is reserved for nationals of the country, so a foreign candidate cannot take it."""
+    m = _NATIONALS_ONLY_RE.search(text)
+    return {"restricted": bool(m), "quote": _sentence(text, m.start()) if m else ""}

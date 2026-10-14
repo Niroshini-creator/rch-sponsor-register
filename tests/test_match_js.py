@@ -28,13 +28,14 @@ def variants():
     b = copy.deepcopy(base); b["driving_licence"] = False; b["clearance"] = {"held": "sc"}; b["experience_years"] = 9
     c = copy.deepcopy(base); c["driving_licence"] = True; c["visa"] = {"type": "citizen", "sponsorship": "not_needed"}
     d = copy.deepcopy(base); d["visa"]["new_entrant"] = False; d["experience_years"] = 2
-    return [a, b, c, d]
+    e = copy.deepcopy(base); e["english_only"] = False
+    return [a, b, c, d, e]
 
 
 @unittest.skipUnless(shutil.which("node") and FEED.exists() and PROFILE.exists(), "needs node, the shared feed and the sample profile")
 class MatchParityTests(unittest.TestCase):
     def test_same_scores_and_labels_on_the_real_feed(self):
-        jobs = [j for j in json.loads(FEED.read_text())["jobs"] if j.get("country") == "GB"]
+        jobs = json.loads(FEED.read_text())["jobs"]          # every country: the language rule only applies outside the English-speaking ones
         profiles = variants()
         py = [[match.Matcher(p).evaluate(j) for j in jobs] for p in profiles]
         with tempfile.TemporaryDirectory() as d:
@@ -49,6 +50,8 @@ class MatchParityTests(unittest.TestCase):
                 self.assertEqual(json.loads(json.dumps(x)), y, f"profile {pi}: {job['title']} @ {job['company']}")
                 scored += x is not None
         self.assertGreater(scored, 100)       # the comparison covered real matches, not just rejections
+        language = [(pi, j["title"]) for pi, rows in enumerate(py) for j, ev in zip(jobs, rows) if ev and "language" in ev["hidden_by_default"]]
+        self.assertTrue(any(pi != 4 for pi, _ in language) and not any(pi == 4 for pi, _ in language))   # the rule fires, and not when switched off
 
 
 if __name__ == "__main__":
