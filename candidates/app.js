@@ -44,7 +44,8 @@ function monthName(expires) {
 // ------------------------------------------------------------------------------------------ candidate list
 async function listView() {
   $header.replaceChildren(h("div", {}, h("h1", {}, "Candidate Boards"),
-    h("p", { class: "muted small" }, "Internal. Roles from the last 7 days, matched to each candidate's CV, visa and clearance.")));
+    h("p", { class: "muted small" }, "Internal. Roles from the last 7 days, matched to each candidate's CV, visa and clearance.")),
+    h("a", { class: "btn", href: "add.html" }, "+ Add a candidate"));
   const { candidates } = await getJSON("data/index.json");
   if (!candidates.length) { $app.replaceChildren(h("p", { class: "empty" }, "No candidates yet. Run python -m candidateboard intake.")); return; }
   $app.replaceChildren(h("div", { class: "grid2", style: "margin-top:14px" }, candidates.map(c =>

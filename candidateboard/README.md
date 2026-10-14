@@ -12,6 +12,10 @@ licence, pay against the Skilled Worker minimum). Built the same way as the spon
 
 ## Add a candidate (about a minute)
 
+**On the web:** open `/candidates/add.html` (button *+ Add a candidate*). Upload each CV with a track name, add the suitable-roles list, answer the visa/clearance/licence questions and press *Scan CVs*. The scan runs **in your browser**: the CV is never uploaded. Correct any tier, then *Download profile* or *Copy JSON* and add it to the repo as `candidates/profiles/<slug>.json`; pushing it to `main` builds the board. The browser scan is a port of the Python one (`candidates/intake.js`, same `roles.json`), and `tests/test_intake_js.py` checks both give the same profile. PDFs must contain text (a scanned image is rejected).
+
+**Or on the command line:**
+
 ```
 python -m candidateboard intake --slug jane-doe --name "Jane Doe" --location Coventry \
   --cv "SAP Security & GRC=sap_cv.pdf" --cv "Business Analyst=ba_cv.pdf" \
@@ -21,8 +25,7 @@ python -m candidateboard intake --slug jane-doe --name "Jane Doe" --location Cov
 python -m candidateboard build --slug jane-doe        # needs REED_API_KEY / ADZUNA_* for live searches; --offline scores the shared feed only
 ```
 `intake` reads each CV (PDF needs `pdftotext`), the recruiter's suitable-roles list (bullets = titles, other lines = sections),
-and writes `candidates/profiles/<slug>.json`. A static site cannot run a scan when a file is uploaded, so the scan is this command
-(or ask Claude to run it); the daily workflow then keeps the board current. **Review the profile**: tiers, roles and skills are plain
+and writes `candidates/profiles/<slug>.json`. The daily workflow then keeps the board current. **Review the profile**: tiers, roles and skills are plain
 data you can edit. Change `visa.expires`, `clearance.held`, `driving_licence` (true/false/null), `min_match`, `roles[].tier`, anything.
 
 ## What the scan decides
@@ -53,4 +56,4 @@ as the feed's ~400-character extract cap skills at 22, so they top out near 80%;
 ## Files
 `roles.json` role families (edit to add roles) · `cv.py` CV scan · `intake.py` profile builder · `match.py` scoring and labels · `checks.py` clearance / licence ·
 `pipeline.py` fetch, label, dedupe, write · `candidates/` the viewer. Workflow: `.github/workflows/refresh-candidates.yml` (daily 07:23 UTC, on profile changes, or on demand).
-Tests: `python -m unittest tests.test_candidateboard`.
+Tests: `python -m unittest discover -s tests -p "test_candidateboard.py"`.
