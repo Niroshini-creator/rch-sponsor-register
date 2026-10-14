@@ -92,3 +92,7 @@ Tests: `python -m unittest discover -s tests -p "test_candidateboard.py"` (plus 
 ## Attaching a document of suitable positions
 
 On the upload form (and on the results page) a candidate can attach a PDF, Word (.docx) or text file listing the roles they want. It is read in the browser (`candidates/docread.js`; the old binary `.doc` is not supported, save as .docx or PDF). Bullet or numbered lines are titles, other lines are headings (a heading named after a CV picks that CV); a list with no bullets is read line by line, and "A / B" or comma lists are split. The Python parser (`cv.parse_role_list`) and the browser one stay identical (`tests/test_docread_js.py`). CVs can also be attached as .docx.
+
+## USA, OPT and Irish Stamp 1G
+
+`regions.json` has a United States region. A profile's `visa.work_rights` (`us_opt`, `ie_stamp_1g`; CLI `--work-rights`) means the candidate needs no sponsor in that country: roles there that offer none (the advert says no sponsorship but welcomes OPT, or in Ireland the employer is not known to sponsor) stay visible and are labelled "open to OPT holders" / "open to Stamp 1G holders" instead of being hidden as "no sponsorship". Rights apply only in their own country; the UK still hides no-sponsorship roles for a candidate who needs a sponsor. Both matchers implement it (parity tested).

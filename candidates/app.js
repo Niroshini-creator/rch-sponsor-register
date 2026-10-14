@@ -141,6 +141,7 @@ function candidateHeader(c, back, sub) {
       h("li", { class: `chip ${left != null && left < 6 ? "bad" : "warn"}` },
         `${c.visa?.label || "Visa not set"}${c.visa?.expires ? ` · until ${monthName(c.visa.expires)}${left != null ? ` (${left} months left)` : ""}` : ""}`),
       h("li", { class: "chip" }, ({ required: "Needs sponsorship", preferred: "Wants sponsorship before the visa ends", not_needed: "No sponsorship needed" })[c.visa?.sponsorship] || ""),
+      ...(c.visa?.work_rights || []).map(k => h("li", { class: "chip ok" }, ({ us_opt: "US OPT: no sponsor needed in the USA", ie_stamp_1g: "Stamp 1G: no permit needed in Ireland" })[k] || k)),
       h("li", { class: "chip ok" }, c.clearance?.held === "none" ? "No security clearance" : `Holds ${String(c.clearance?.held).toUpperCase()} clearance`),
       h("li", { class: "chip" }, c.driving_licence == null ? "Driving licence: not confirmed" : c.driving_licence ? "Holds a driving licence" : "No driving licence"),
       c.base_location ? h("li", { class: "chip" }, c.base_location) : null,

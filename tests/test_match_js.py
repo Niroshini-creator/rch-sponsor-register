@@ -29,13 +29,25 @@ def variants():
     c = copy.deepcopy(base); c["driving_licence"] = True; c["visa"] = {"type": "citizen", "sponsorship": "not_needed"}
     d = copy.deepcopy(base); d["visa"]["new_entrant"] = False; d["experience_years"] = 2
     e = copy.deepcopy(base); e["english_only"] = False
-    return [a, b, c, d, e]
+    f = copy.deepcopy(base); f["visa"]["work_rights"] = ["us_opt", "ie_stamp_1g"]
+    return [a, b, c, d, e, f]
+
+
+def rights_jobs(jobs):
+    """Copies of a real advert as US / Irish roles with the sponsorship labels OPT and Stamp 1G holders care about."""
+    out = []
+    for country, status in (("US", "graduate_route"), ("US", "not_sponsored"), ("US", "confirmed"), ("IE", "stamp_1g"), ("IE", "confirmed"), ("GB", "not_sponsored")):
+        j = copy.deepcopy(next(x for x in jobs if x.get("title")))
+        j.update(country=country, sponsorship=status, location="Test")
+        out.append(j)
+    return out
 
 
 @unittest.skipUnless(shutil.which("node") and FEED.exists() and PROFILE.exists(), "needs node, the shared feed and the sample profile")
 class MatchParityTests(unittest.TestCase):
     def test_same_scores_and_labels_on_the_real_feed(self):
         jobs = json.loads(FEED.read_text())["jobs"]          # every country: the language rule only applies outside the English-speaking ones
+        jobs = jobs + rights_jobs(jobs)
         profiles = variants()
         py = [[match.Matcher(p).evaluate(j) for j in jobs] for p in profiles]
         with tempfile.TemporaryDirectory() as d:
@@ -56,3 +68,30 @@ class MatchParityTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class WorkRightsTests(unittest.TestCase):
+    def setUp(self):
+        base = json.loads(PROFILE.read_text())
+        self.job = {"title": base["roles"][0]["title"], "company": "X", "description": "", "location": "Test", "country": "US",
+                    "sponsorship": "graduate_route", "url": "u"}
+        self.base = base
+
+    def run_for(self, rights, country, status):
+        p = copy.deepcopy(self.base); p["visa"]["sponsorship"] = "required"; p["visa"]["work_rights"] = rights
+        return match.Matcher(p).evaluate({**self.job, "country": country, "sponsorship": status})
+
+    def test_opt_and_stamp_1g_holders_keep_roles_that_need_no_sponsor(self):
+        r = self.run_for(["us_opt"], "US", "graduate_route")
+        self.assertTrue(r["sponsorship_offered"])
+        self.assertNotIn("no_sponsorship", r["hidden_by_default"])
+        self.assertIn("OPT", r["sponsorship_label"])
+        r = self.run_for(["ie_stamp_1g"], "IE", "stamp_1g")
+        self.assertNotIn("no_sponsorship", r["hidden_by_default"])
+        self.assertIn("Stamp 1G", r["sponsorship_label"])
+
+    def test_rights_only_apply_in_their_own_country(self):
+        self.assertIn("no_sponsorship", self.run_for(["us_opt"], "IE", "stamp_1g")["hidden_by_default"])
+        self.assertIn("no_sponsorship", self.run_for(["ie_stamp_1g"], "US", "graduate_route")["hidden_by_default"])
+        self.assertIn("no_sponsorship", self.run_for([], "US", "graduate_route")["hidden_by_default"])
+        self.assertIn("no_sponsorship", self.run_for(["us_opt"], "GB", "not_sponsored")["hidden_by_default"])
