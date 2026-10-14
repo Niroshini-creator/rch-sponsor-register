@@ -92,6 +92,7 @@ async function runLive(force) {
     const roles = await getJSON("../candidateboard/roles.json");
     CandidateIntake.init(roles);
     const feed = await loadFeed();
+    data.feedSources = feed.sources || {};
     if (!force && live.feedTime === feed.generated_at && live.status === "ok") return;
     const fresh = CandidateMatch.liveJobs(feed.jobs, data.candidate, { days: data.window_days });
     const ids = new Set(live.baseJobs.map(j => j.id)), keys = new Set(live.baseJobs.map(CandidateMatch.dedupeKey));
@@ -221,12 +222,19 @@ function render() {
   $app.replaceChildren(...parts.flat().filter(Boolean));
 }
 
+const FEED_SOURCE_NAMES = { adzuna: "Adzuna", reed: "Reed", nhs_jobs: "NHS Jobs", teaching_vacancies: "Teaching Vacancies (schools)", jobs_ac_uk: "jobs.ac.uk (universities)",
+  the_unijobs: "THE unijobs (universities)", career_sites: "Employer career sites", public_sector_employers: "Civil Service departments and councils (via Reed)",
+  rss: "Council RSS feeds", arbeitnow: "Arbeitnow", jobtech_sweden: "Platsbanken (Sweden)", euraxess: "EURAXESS" };
 function sourceStatus() {
   const bad = Object.entries(data.sources).filter(([, s]) => s.status !== "ok");
-  if (!bad.length) return h("span");
-  return h("details", { class: "panel small" }, h("summary", {}, `Data sources: ${bad.length} not read this run`),
-    h("ul", {}, bad.map(([n, s]) => h("li", {}, `${n}: ${s.status} ${s.reason || s.error || ""}`))),
-    h("p", { class: "muted" }, "Roles from sources that were not read are missing, so the board is a floor, not the whole market."));
+  const feed = Object.entries(data.feedSources || {}).filter(([k]) => FEED_SOURCE_NAMES[k] && k !== "arbeitnow" && k !== "jobtech_sweden" && k !== "euraxess");
+  if (!bad.length && !feed.length) return h("span");
+  const note = s => (s.status === "ok" ? `${s.count ?? 0} adverts read` : `${s.status}${s.reason || s.error ? `: ${s.reason || s.error}` : ""}`);
+  return h("details", { class: "panel small" }, h("summary", {}, bad.length ? `Data sources: ${bad.length} not read this run` : "Where these vacancies come from"),
+    bad.length ? h("ul", {}, bad.map(([n, s]) => h("li", {}, `${n}: ${s.status} ${s.reason || s.error || ""}`))) : null,
+    feed.length ? h("table", {}, h("thead", {}, h("tr", {}, ["Shared feed source", "Last feed run"].map(t => h("th", {}, t)))),
+      h("tbody", {}, feed.map(([k, st]) => h("tr", {}, h("td", {}, FEED_SOURCE_NAMES[k]), h("td", { class: st.status === "ok" ? "" : "muted" }, note(st)))))) : null,
+    h("p", { class: "muted" }, "Roles from sources that were not read are missing, so the list is a floor, not the whole market. “Skipped” usually means an API key is not set."));
 }
 
 function jobsView() {
