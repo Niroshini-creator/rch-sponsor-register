@@ -130,16 +130,49 @@ def tier_families(families: dict, tax: taxonomy.Taxonomy | None = None) -> dict[
     return tiers
 
 
-_BULLET_RE = re.compile(r"^\s*[●•▪◦*\-–]\s*(.+)$")
+_BULLET_RE = re.compile(r"^\s*(?:[●•▪◦*\-–]|\d{1,2}[.)])\s*(.+)$")
+MAX_LOOSE_WORDS, MAX_LOOSE_CHARS = 8, 70
+
+
+def _expand(raw: str) -> list[str]:
+    """One list item -> its role titles: (notes) dropped; "A / B" is two roles; "Marketing Executive / Coordinator" too."""
+    title = " ".join(re.sub(r"\([^)]*\)", "", raw).replace(chr(0x200b), "").split()).strip(" -—–")
+    parts = [p.strip() for p in re.split(r"\s+/\s+", title) if p.strip()]
+    out = []
+    for i, part in enumerate(parts):
+        if i and len(part.split()) == 1 and len(parts[0].split()) >= 2:
+            part = " ".join(parts[0].split()[:-1] + [part])
+        out.append(part)
+    return out
+
+
+def _loose_roles(text: str) -> list[dict]:
+    """A list with no bullets or numbers: each short line is a title; a comma-separated line of short items is several."""
+    roles = []
+    for line in text.splitlines():
+        line = " ".join(line.replace(chr(0x200b), "").split())
+        if not line or "@" in line or "http" in line.lower():
+            continue
+        if re.search(r"[;,]", line):
+            pieces = [x.strip() for x in re.split(r"[;,]", line) if x.strip()]
+            if not all(len(x.split()) <= 5 for x in pieces):
+                continue                                  # a sentence with commas, not a list of titles
+        else:
+            pieces = [line]
+        for piece in pieces:
+            piece = piece.rstrip(".").strip()
+            if not piece or len(piece) > MAX_LOOSE_CHARS or not 1 <= len(piece.split()) <= MAX_LOOSE_WORDS:
+                continue
+            if not re.search(r"[A-Za-z]", piece) or piece.endswith(":"):
+                continue
+            roles.extend({"title": title, "section": ""} for title in _expand(piece))
+    return roles
 
 
 def parse_role_list(text: str) -> list[dict]:
-    """Recruiter's suitable-roles list: bullet lines are role titles, other lines are section headings.
-
-    "Process Analyst / Process Improvement Analyst" becomes two roles; "Marketing Executive / Coordinator"
-    becomes "Marketing Executive" and "Marketing Coordinator"; (bracketed notes) are dropped.
-    """
-    roles, section = [], ""
+    """A list of suitable roles: bullet or numbered lines are role titles, other lines are section headings.
+    A list with no bullets at all is read line by line (see `_loose_roles`)."""
+    roles, section, bulleted = [], "", False
     for line in text.splitlines():
         if not line.strip():
             continue
@@ -147,10 +180,7 @@ def parse_role_list(text: str) -> list[dict]:
         if not m:
             section = line.strip().strip("●•").strip()
             continue
-        title = " ".join(re.sub(r"\([^)]*\)", "", m.group(1)).replace(chr(0x200b), "").split()).strip(" -—–")
-        parts = [p.strip() for p in re.split(r"\s+/\s+", title) if p.strip()]
-        for i, part in enumerate(parts):
-            if i and len(part.split()) == 1 and len(parts[0].split()) >= 2:
-                part = " ".join(parts[0].split()[:-1] + [part])
-            roles.append({"title": part, "section": section})
-    return roles
+        bulleted = True
+        for title in _expand(m.group(1)):
+            roles.append({"title": title, "section": section})
+    return roles if bulleted else _loose_roles(text)

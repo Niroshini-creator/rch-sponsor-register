@@ -250,15 +250,27 @@ function saveProfile() {
 }
 function rematch() { saveProfile(); state.tab = "1"; live.status = "pending"; render(); runLive(true); }
 function rolesPanel() {
-  const mine = data.candidate.roles.filter(r => r.source === "added by candidate");
+  const mine = data.candidate.roles.filter(r => r.source === "added by candidate" || r.source === "attached document");
   const input = h("input", { list: "role-suggestions-results", placeholder: "Add a role, e.g. Data Analyst", style: "min-width:260px;flex:1" });
   const add = () => { if (CandidateIntake.addRoles(data.candidate, input.value.split(/[,\n;]/)).length) rematch(); else input.value = ""; };
   input.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); add(); } });
+  const attachMsg = h("p", { class: "muted", id: "attach-msg", style: "margin:4px 0 0" });
+  const attach = async e => {
+    const f = e.target.files[0];
+    if (!f) return;
+    attachMsg.textContent = "Reading…";
+    try {
+      const added = CandidateIntake.addPositions(data.candidate, await DocRead.fileText(f));
+      if (added.length) rematch(); else attachMsg.textContent = `No new positions found in ${f.name}.`;
+    } catch (err) { attachMsg.textContent = err.message; }
+  };
   return h("div", { class: "panel small" }, h("b", {}, "Roles you want: "),
     ...mine.map(r => h("span", { class: "chip info", style: "margin-right:6px" }, r.title, " ", h("button", { type: "button", class: "btn", style: "padding:0 6px", "aria-label": `Remove ${r.title}`,
       onclick: () => { data.candidate.roles = data.candidate.roles.filter(x => x !== r); rematch(); } }, "×"))),
     mine.length ? null : h("span", { class: "muted" }, "none yet. "),
-    h("div", { class: "bar", style: "margin-top:6px" }, input, h("button", { type: "button", class: "btn", onclick: add }, "Add role")),
+    h("div", { class: "bar", style: "margin-top:6px" }, input, h("button", { type: "button", class: "btn", onclick: add }, "Add role"),
+      h("label", {}, "or attach a document of positions", h("input", { type: "file", id: "attach-positions", accept: ".pdf,.docx,.txt,.md", onchange: attach }))),
+    attachMsg,
     h("datalist", { id: "role-suggestions-results" }, ...CandidateIntake.suggestions().map(t => h("option", { value: t }))),
     h("p", { class: "muted", style: "margin:6px 0 0" }, "Roles you add are searched first and show under Tier 1. They only appear if employers advertise them this week, and the match % reflects how much of your CV fits."));
 }
