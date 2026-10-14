@@ -48,16 +48,23 @@
         <label class="check"><input type="checkbox" id="english-only" checked> Only roles that can be done in English (recommended outside the UK, Ireland and Australia)</label>
         <p class="small muted" style="margin:6px 0 0">Outside the UK and Ireland, roles are shown if the advert offers sponsorship, the employer is on that country's sponsor list, or the country's employers sponsor by default (the Gulf states). Coverage is widest in the UK and thinner elsewhere.</p>
       </fieldset>
-      <details style="margin-top:10px"><summary class="small">Optional: roles you want to target, and notes</summary>
-        <p class="small muted">Paste or upload a list of job titles you want (bullets are titles; other lines are headings, ideally named after your CV, e.g. "Business Analyst CV").</p>
-        <div class="bar"><label>Upload list<input type="file" id="roles-file" accept=".pdf,.txt,.md"></label></div>
-        <label class="field"><textarea id="roles-text" rows="5" style="width:100%;font:inherit" placeholder="Business Analyst CV&#10;• Business Analyst&#10;• Requirements Analyst"></textarea></label>
+      <fieldset style="margin-top:12px;border:1px solid var(--border);border-radius:8px;padding:8px 12px">
+        <legend class="small">Attach a document of suitable positions (optional)</legend>
+        <p class="small muted" style="margin:0 0 6px">A PDF, Word (.docx) or text file listing the job titles you want. Bullets are titles; other lines are headings, ideally named after your CV (e.g. "Business Analyst CV"). It is read in your browser and not uploaded.</p>
+        <div class="bar"><label>Attach document<input type="file" id="roles-file" accept=".pdf,.docx,.txt,.md"></label></div>
+        <div id="roles-preview" class="small" style="margin:6px 0"></div>
+        <details><summary class="small">or paste or edit the list</summary>
+          <label class="field"><textarea id="roles-text" rows="5" style="width:100%;font:inherit" placeholder="Business Analyst CV&#10;• Business Analyst&#10;• Requirements Analyst"></textarea></label>
+        </details>
+      </fieldset>
+      <details style="margin-top:10px"><summary class="small">Optional: notes</summary>
         <div class="bar"><label style="flex:1">Current situation<input id="status" placeholder="e.g. part-time plus freelance"></label><label style="flex:1">Notes<input id="notes"></label></div>
       </details>
       <p><button class="btn primary" type="submit">Find vacancies</button> <span id="msg" class="small muted"></span></p>
     </form>
     <p class="small muted">Vacancies come from the last 7 days across NHS Jobs, universities, schools, employer career sites and job boards. You apply on the employer's own site. <a href="#boards">Recruiter boards</a></p>
   </template>
+  <script src="docread.js"></script>
   <script src="intake.js"></script>
   <script src="match.js"></script>
   <script src="careerlinks.js"></script>

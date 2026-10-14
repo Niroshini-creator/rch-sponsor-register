@@ -3,33 +3,7 @@
  * tiers, then offers the profile.json to commit. Nothing is uploaded. Mounted by app.js into the #add-tpl form; the finished profile goes to onProfile(). */
 function mountAdd(h, onProfile) {
   const $ = id => document.getElementById(id);
-  // ------------------------------------------------------------------ reading files
-  let pdfLib = null;
-  function loadPdfJs() {
-    if (window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
-    return pdfLib || (pdfLib = new Promise((resolve, reject) => {
-      const el = document.createElement("script");
-      el.src = "../matcher/vendor/pdfjs/pdf.min.js";
-      el.onload = () => { window.pdfjsLib.GlobalWorkerOptions.workerSrc = "../matcher/vendor/pdfjs/pdf.worker.min.js"; resolve(window.pdfjsLib); };
-      el.onerror = () => reject(new Error("The PDF reader could not be loaded"));
-      document.head.appendChild(el);
-    }));
-  }
-  async function pdfText(bytes) {
-    const doc = await (await loadPdfJs()).getDocument({ data: bytes }).promise;
-    const pages = [];
-    for (let i = 1; i <= Math.min(doc.numPages, 20); i++) {
-      const content = await (await doc.getPage(i)).getTextContent();
-      pages.push(content.items.filter(it => typeof it.str === "string").map(it => it.str + (it.hasEOL ? "\n" : " ")).join(""));
-    }
-    return pages.join("\n").replace(/[ \t]+/g, " ").replace(/ ?\n ?/g, "\n").trim();
-  }
-  async function fileText(file) {
-    const bytes = new Uint8Array(await file.arrayBuffer());
-    const text = /\.pdf$/i.test(file.name) ? await pdfText(bytes) : new TextDecoder().decode(bytes);
-    if (text.length < 30) throw new Error(`${file.name}: no readable text (a scanned PDF is only pictures). Upload a text-based PDF or paste the text into a .txt file.`);
-    return text;
-  }
+  const fileText = DocRead.fileText;
 
   // ------------------------------------------------------------------ role families (the same file the Python scan reads)
   const getJson = url => fetch(url, { cache: "no-cache" }).then(r => { if (!r.ok) throw new Error(`${url}: HTTP ${r.status}`); return r.json(); });
@@ -40,7 +14,7 @@ function mountAdd(h, onProfile) {
   function cvRow(track = "") {
     const row = h("div", { class: "bar", style: "margin-bottom:8px" },
       h("label", {}, "Name this CV", h("input", { class: "track", value: track, placeholder: "optional, e.g. Business Analyst" })),
-      h("label", {}, "CV file", h("input", { class: "file", type: "file", accept: ".pdf,.txt,.md", required: true })),
+      h("label", {}, "CV file", h("input", { class: "file", type: "file", accept: ".pdf,.docx,.txt,.md", required: true })),
       h("button", { type: "button", class: "btn", onclick: () => { if ($("cvs").children.length > 1) row.remove(); } }, "Remove"));
     return row;
   }
@@ -59,11 +33,23 @@ function mountAdd(h, onProfile) {
   $("role-add").onclick = addWanted;
   $("role-input").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); addWanted(); } });
   ready.then(() => $("role-suggestions").replaceChildren(...CandidateIntake.suggestions().map(t => h("option", { value: t })))).catch(() => {});
+  // Attach a document of suitable positions (PDF, Word or text): read here, shown as a preview, and editable in the box below.
+  const preview = () => {
+    const list = CandidateIntake.parseRoleList($("roles-text").value), by = new Map();
+    for (const r of list) by.set(r.section || "", [...(by.get(r.section || "") || []), r.title]);
+    $("roles-preview").replaceChildren(...(list.length ? [h("b", {}, `${list.length} position${list.length === 1 ? "" : "s"} found`),
+      ...[...by].map(([sec, titles]) => h("div", {}, sec ? h("span", { class: "muted" }, sec + ": ") : null, titles.join(" · ")))] : []));
+  };
+  $("roles-text").addEventListener("input", preview);
   $("roles-file").onchange = async e => {
     const f = e.target.files[0];
     if (!f) return;
-    try { $("roles-text").value = /\.pdf$/i.test(f.name) ? await pdfText(new Uint8Array(await f.arrayBuffer())) : await f.text(); }
-    catch (err) { $("msg").textContent = err.message; }
+    $("msg").textContent = "Reading…";
+    try {
+      await ready;
+      $("roles-text").value = await fileText(f); preview();
+      $("msg").textContent = CandidateIntake.parseRoleList($("roles-text").value).length ? "" : `Read ${f.name} but found no job titles in it. Check the text below.`;
+    } catch (err) { $("msg").textContent = err.message; }
   };
 
   $("form").onsubmit = async e => {

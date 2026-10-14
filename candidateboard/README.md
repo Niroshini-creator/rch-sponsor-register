@@ -88,3 +88,7 @@ as the feed's ~400-character extract cap skills at 22, so they top out near 80%;
 `roles.json` role families (edit to add roles) · `cv.py` CV scan · `intake.py` profile builder · `match.py` scoring and labels · `checks.py` clearance / licence ·
 `pipeline.py` fetch, label, dedupe, write · `candidates/` the viewer. Workflow: `.github/workflows/refresh-candidates.yml` (daily 07:23 UTC, on profile changes, or on demand).
 Tests: `python -m unittest discover -s tests -p "test_candidateboard.py"` (plus `test_intake_js.py` and `test_match_js.py`, which need Node).
+
+## Attaching a document of suitable positions
+
+On the upload form (and on the results page) a candidate can attach a PDF, Word (.docx) or text file listing the roles they want. It is read in the browser (`candidates/docread.js`; the old binary `.doc` is not supported, save as .docx or PDF). Bullet or numbered lines are titles, other lines are headings (a heading named after a CV picks that CV); a list with no bullets is read line by line, and "A / B" or comma lists are split. The Python parser (`cv.parse_role_list`) and the browser one stay identical (`tests/test_docread_js.py`). CVs can also be attached as .docx.

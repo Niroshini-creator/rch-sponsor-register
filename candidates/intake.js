@@ -125,20 +125,66 @@
     return tiers;
   }
 
-  function parseRoleList(text) {
-    const roles = []; let section = "";
-    for (const line of text.split(/\r?\n/)) {
-      if (!line.trim()) continue;
-      const m = /^\s*[●•▪◦*\-–]\s*(.+)$/.exec(line);
-      if (!m) { section = line.trim().replace(/^[●•]+|[●•]+$/g, "").trim(); continue; }
-      const title = m[1].replace(/\([^)]*\)/g, "").split("​").join("").split(/\s+/).filter(Boolean).join(" ").replace(/^[\s—–-]+|[\s—–-]+$/g, "");
-      const parts = title.split(/\s+\/\s+/).map(p => p.trim()).filter(Boolean);
-      parts.forEach((part, i) => {
-        if (i && part.split(/\s+/).length === 1 && parts[0].split(/\s+/).length >= 2) part = [...parts[0].split(/\s+/).slice(0, -1), part].join(" ");
-        roles.push({ title: part, section });
-      });
+  const MAX_LOOSE_WORDS = 8, MAX_LOOSE_CHARS = 70;
+  /** One list item -> its role titles: (notes) dropped; "A / B" is two roles; "Marketing Executive / Coordinator" too. */
+  function expandTitle(raw) {
+    const title = raw.replace(/\([^)]*\)/g, "").split("\u200b").join("").split(/\s+/).filter(Boolean).join(" ").replace(/^[\s—–-]+|[\s—–-]+$/g, "");
+    const parts = title.split(/\s+\/\s+/).map(p => p.trim()).filter(Boolean), out = [];
+    parts.forEach((part, i) => {
+      if (i && part.split(/\s+/).length === 1 && parts[0].split(/\s+/).length >= 2) part = [...parts[0].split(/\s+/).slice(0, -1), part].join(" ");
+      out.push(part);
+    });
+    return out;
+  }
+  /** A list with no bullets or numbers: each short line is a title; a comma-separated line of short items is several. */
+  function looseRoles(text) {
+    const roles = [];
+    for (const raw of text.split(/\r?\n/)) {
+      const line = raw.split("\u200b").join("").split(/\s+/).filter(Boolean).join(" ");
+      if (!line || line.includes("@") || line.toLowerCase().includes("http")) continue;
+      let pieces;
+      if (/[;,]/.test(line)) {
+        pieces = line.split(/[;,]/).map(x => x.trim()).filter(Boolean);
+        if (!pieces.every(x => x.split(/\s+/).length <= 5)) continue;        // a sentence with commas, not a list of titles
+      } else pieces = [line];
+      for (let piece of pieces) {
+        piece = piece.replace(/\.+$/, "").trim();
+        if (!piece || piece.length > MAX_LOOSE_CHARS || piece.split(/\s+/).length > MAX_LOOSE_WORDS) continue;
+        if (!/[A-Za-z]/.test(piece) || piece.endsWith(":")) continue;
+        for (const title of expandTitle(piece)) roles.push({ title, section: "" });
+      }
     }
     return roles;
+  }
+  /** A list of suitable roles: bullet or numbered lines are titles, other lines are section headings; with no bullets, line by line. */
+  function parseRoleList(text) {
+    const roles = []; let section = "", bulleted = false;
+    for (const line of text.split(/\r?\n/)) {
+      if (!line.trim()) continue;
+      const m = /^\s*(?:[●•▪◦*\-–]|\d{1,2}[.)])\s*(.+)$/.exec(line);
+      if (!m) { section = line.trim().replace(/^[●•]+|[●•]+$/g, "").trim(); continue; }
+      bulleted = true;
+      for (const title of expandTitle(m[1])) roles.push({ title, section });
+    }
+    return bulleted ? roles : looseRoles(text);
+  }
+
+  /** Add the positions in a document (the text of an attached PDF / Word / text file) to an existing profile (results page).
+   *  Tier comes from how well the CV evidences that kind of role; a section named after a CV picks that CV. Returns the roles added. */
+  function addPositions(profile, text) {
+    const have = new Set(profile.roles.map(r => r.title.toLowerCase())), trackNames = profile.tracks.map(t => t.name), added = [];
+    for (const item of parseRoleList(text)) {
+      const title = cleanTitles([item.title])[0];
+      if (!title || have.has(title.toLowerCase())) continue;
+      const family = familyForTitle(title), named = item.section ? trackForSection(item.section, trackNames) : null;
+      const sameFamily = profile.roles.find(r => family && r.family === family);
+      let tier = family ? ((profile.family_evidence || {})[family]?.tier ?? 3) : 3;
+      if (item.section && !named) tier = Math.max(tier, 3);
+      const role = { title, family, tier: Math.min(tier, 3), track: named || (sameFamily ? sameFamily.track : trackNames[0]), source: "attached document" };
+      profile.roles.push(role); added.push(role); have.add(title.toLowerCase());
+    }
+    profile.roles.sort((a, b) => a.tier - b.tier || cmp(a.track, b.track) || cmp(a.title, b.title));
+    return added;
   }
 
   // ------------------------------------------------------------------ profile
@@ -241,6 +287,6 @@
     };
   }
 
-  const api = { init, cleanTitles, suggestions, addRoles, taxonomy: () => TAX, regions: () => REGIONS.regions, expandRegions, keywordRe, tokens, scan, tierFamilies, parseRoleList, familyForTitle, buildProfile, experienceMonths, slugify, labels: () => Object.fromEntries(Object.entries(TAX.families).map(([k, f]) => [k, { label: f.label, sponsor: f.sponsor }])) };
+  const api = { init, addPositions, cleanTitles, suggestions, addRoles, taxonomy: () => TAX, regions: () => REGIONS.regions, expandRegions, keywordRe, tokens, scan, tierFamilies, parseRoleList, familyForTitle, buildProfile, experienceMonths, slugify, labels: () => Object.fromEntries(Object.entries(TAX.families).map(([k, f]) => [k, { label: f.label, sponsor: f.sponsor }])) };
   return api;
 });
