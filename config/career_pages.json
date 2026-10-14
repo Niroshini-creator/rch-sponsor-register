@@ -1,0 +1,303 @@
+{
+ "_comment": "Careers home pages of large employers, used when a vacancy is only found through a job board (Adzuna links do not open everywhere): the page shows the employer's careers site next to it and says what to search for. These are home pages, not the specific job. Rows: name, url, optional aliases (other names adverts use). Employers read directly in config/employers.json get their board address automatically, so only add here the ones that are not.",
+ "companies": [
+  {
+   "name": "Accenture",
+   "url": "https://www.accenture.com/gb-en/careers"
+  },
+  {
+   "name": "Adobe",
+   "url": "https://careers.adobe.com/"
+  },
+  {
+   "name": "Amazon",
+   "url": "https://www.amazon.jobs/en-gb/",
+   "aliases": [
+    "Amazon UK Services",
+    "Amazon Web Services",
+    "Amazon Development Centre"
+   ]
+  },
+  {
+   "name": "Apple",
+   "url": "https://jobs.apple.com/en-gb"
+  },
+  {
+   "name": "AstraZeneca",
+   "url": "https://careers.astrazeneca.com/"
+  },
+  {
+   "name": "AtkinsRéalis",
+   "url": "https://careers.atkinsrealis.com/",
+   "aliases": [
+    "Atkins Realis",
+    "Atkins"
+   ]
+  },
+  {
+   "name": "BAE Systems",
+   "url": "https://www.baesystems.com/en/careers"
+  },
+  {
+   "name": "Bank of England",
+   "url": "https://www.bankofengland.co.uk/careers",
+   "aliases": [
+    "The Bank of England"
+   ]
+  },
+  {
+   "name": "Barclays",
+   "url": "https://search.jobs.barclays/"
+  },
+  {
+   "name": "BP",
+   "url": "https://www.bp.com/en/global/corporate/careers.html"
+  },
+  {
+   "name": "BT Group",
+   "url": "https://www.bt.com/careers",
+   "aliases": [
+    "British Telecommunications",
+    "BT"
+   ]
+  },
+  {
+   "name": "Capgemini",
+   "url": "https://www.capgemini.com/gb-en/careers/"
+  },
+  {
+   "name": "Cisco",
+   "url": "https://jobs.cisco.com/"
+  },
+  {
+   "name": "Citi",
+   "url": "https://jobs.citi.com/",
+   "aliases": [
+    "Citigroup",
+    "Citibank"
+   ]
+  },
+  {
+   "name": "Cognizant",
+   "url": "https://careers.cognizant.com/"
+  },
+  {
+   "name": "Comcast",
+   "url": "https://jobs.comcast.com/"
+  },
+  {
+   "name": "Dell Technologies",
+   "url": "https://jobs.dell.com/",
+   "aliases": [
+    "Dell"
+   ]
+  },
+  {
+   "name": "Deloitte",
+   "url": "https://www.deloitte.com/uk/en/careers.html"
+  },
+  {
+   "name": "Deutsche Bank",
+   "url": "https://careers.db.com/"
+  },
+  {
+   "name": "eBay",
+   "url": "https://jobs.ebayinc.com/"
+  },
+  {
+   "name": "EY",
+   "url": "https://careers.ey.com/",
+   "aliases": [
+    "Ernst & Young"
+   ]
+  },
+  {
+   "name": "Goldman Sachs",
+   "url": "https://www.goldmansachs.com/careers/"
+  },
+  {
+   "name": "Google",
+   "url": "https://www.google.com/about/careers/applications/"
+  },
+  {
+   "name": "GSK",
+   "url": "https://www.gsk.com/en-gb/careers/",
+   "aliases": [
+    "GlaxoSmithKline"
+   ]
+  },
+  {
+   "name": "HCLTech",
+   "url": "https://www.hcltech.com/careers",
+   "aliases": [
+    "HCL Technologies"
+   ]
+  },
+  {
+   "name": "HP",
+   "url": "https://jobs.hp.com/",
+   "aliases": [
+    "HP Inc"
+   ]
+  },
+  {
+   "name": "HSBC",
+   "url": "https://www.hsbc.com/careers"
+  },
+  {
+   "name": "IBM",
+   "url": "https://www.ibm.com/careers"
+  },
+  {
+   "name": "Infosys",
+   "url": "https://www.infosys.com/careers/"
+  },
+  {
+   "name": "Intel",
+   "url": "https://jobs.intel.com/"
+  },
+  {
+   "name": "J.P. Morgan",
+   "url": "https://www.jpmorganchase.com/careers",
+   "aliases": [
+    "JPMorgan Chase",
+    "JP Morgan"
+   ]
+  },
+  {
+   "name": "Jacobs",
+   "url": "https://careers.jacobs.com/"
+  },
+  {
+   "name": "Kainos",
+   "url": "https://www.kainos.com/careers"
+  },
+  {
+   "name": "KPMG",
+   "url": "https://www.kpmgcareers.co.uk/"
+  },
+  {
+   "name": "Lloyds Banking Group",
+   "url": "https://www.lloydsbankinggroup.com/careers.html"
+  },
+  {
+   "name": "Mastercard",
+   "url": "https://careers.mastercard.com/"
+  },
+  {
+   "name": "Meta",
+   "url": "https://www.metacareers.com/"
+  },
+  {
+   "name": "Microsoft",
+   "url": "https://careers.microsoft.com/"
+  },
+  {
+   "name": "NATS",
+   "url": "https://www.nats.aero/careers/"
+  },
+  {
+   "name": "NatWest Group",
+   "url": "https://jobs.natwestgroup.com/"
+  },
+  {
+   "name": "Optum",
+   "url": "https://www.optum.com/en/careers.html"
+  },
+  {
+   "name": "Oracle",
+   "url": "https://www.oracle.com/careers/"
+  },
+  {
+   "name": "Philips",
+   "url": "https://www.careers.philips.com/"
+  },
+  {
+   "name": "PwC",
+   "url": "https://www.pwc.co.uk/careers.html",
+   "aliases": [
+    "PricewaterhouseCoopers"
+   ]
+  },
+  {
+   "name": "Rolls-Royce",
+   "url": "https://careers.rolls-royce.com/",
+   "aliases": [
+    "Rolls Royce"
+   ]
+  },
+  {
+   "name": "Salesforce",
+   "url": "https://careers.salesforce.com/"
+  },
+  {
+   "name": "Santander",
+   "url": "https://www.santander.com/en/careers"
+  },
+  {
+   "name": "SAP",
+   "url": "https://jobs.sap.com/"
+  },
+  {
+   "name": "Shell",
+   "url": "https://www.shell.com/careers.html"
+  },
+  {
+   "name": "Siemens",
+   "url": "https://www.siemens.com/uk/en/company/jobs.html"
+  },
+  {
+   "name": "Sky",
+   "url": "https://careers.sky.com/"
+  },
+  {
+   "name": "Standard Chartered",
+   "url": "https://www.sc.com/en/careers/"
+  },
+  {
+   "name": "Tata Consultancy Services",
+   "url": "https://www.tcs.com/careers",
+   "aliases": [
+    "TCS"
+   ]
+  },
+  {
+   "name": "UnitedHealth Group",
+   "url": "https://careers.unitedhealthgroup.com/",
+   "aliases": [
+    "UnitedHealthcare"
+   ]
+  },
+  {
+   "name": "Unilever",
+   "url": "https://careers.unilever.com/"
+  },
+  {
+   "name": "Veolia",
+   "url": "https://careers.veolia.com/"
+  },
+  {
+   "name": "Vertiv",
+   "url": "https://www.vertiv.com/en-us/about/careers/"
+  },
+  {
+   "name": "Vodafone",
+   "url": "https://careers.vodafone.com/"
+  },
+  {
+   "name": "Wipro",
+   "url": "https://careers.wipro.com/"
+  },
+  {
+   "name": "Agincare",
+   "url": "https://www.agincare.com/careers"
+  },
+  {
+   "name": "Asda",
+   "url": "https://www.asda.jobs/",
+   "aliases": [
+    "Asda Stores"
+   ]
+  }
+ ]
+}
