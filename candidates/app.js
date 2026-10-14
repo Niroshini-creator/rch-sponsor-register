@@ -96,6 +96,7 @@ async function runLive(force) {
     const roles = await getJSON("../candidateboard/roles.json");
     CandidateIntake.init(roles);
     const feed = await loadFeed();
+    await loadCareerLinks();
     data.feedSources = feed.sources || {};
     if (!force && live.feedTime === feed.generated_at && live.status === "ok") return;
     const fresh = CandidateMatch.liveJobs(feed.jobs, data.candidate, { days: data.window_days });
@@ -151,6 +152,13 @@ function candidateHeader(c, back, sub) {
     c.current_status ? h("p", { class: "small muted", style: "margin:6px 0 0" }, `Now: ${c.current_status}`) : null, sub);
 }
 let liveTimer = null;
+let careerSite = () => "";           // company -> its careers site, from config/career_pages.json and config/employers.json
+async function loadCareerLinks() {
+  try {
+    const [pages, employers] = await Promise.all([getJSON("../config/career_pages.json"), getJSON("../config/employers.json")]);
+    careerSite = CandidateCareers.build(pages, employers);
+  } catch (err) { /* the buttons simply fall back to the advert link */ }
+}
 function startLive() {
   clearInterval(liveTimer);
   render();
@@ -237,11 +245,13 @@ function sourceStatus() {
   const bad = Object.entries(data.sources).filter(([, s]) => s.status !== "ok");
   const feed = Object.entries(data.feedSources || {}).filter(([k]) => FEED_SOURCE_NAMES[k] && k !== "arbeitnow" && k !== "jobtech_sweden" && k !== "euraxess");
   if (!bad.length && !feed.length) return h("span");
-  const note = s => (s.status === "ok" ? `${s.count ?? 0} adverts read` : `${s.status}${s.reason || s.error ? `: ${s.reason || s.error}` : ""}`);
+  const note = s => (s.status === "ok" || s.status === "partial" ? `${s.count ?? 0} adverts read${s.employers_ok != null ? ` from ${s.employers_ok} employers` : ""}` : `${s.status}${s.reason || s.error ? `: ${s.reason || s.error}` : ""}`);
+  const failedSites = (data.feedSources?.career_sites?.employers_failed) || [];
   return h("details", { class: "panel small" }, h("summary", {}, bad.length ? `Data sources: ${bad.length} not read this run` : "Where these vacancies come from"),
     bad.length ? h("ul", {}, bad.map(([n, s]) => h("li", {}, `${n}: ${s.status} ${s.reason || s.error || ""}`))) : null,
     feed.length ? h("table", {}, h("thead", {}, h("tr", {}, ["Shared feed source", "Last feed run"].map(t => h("th", {}, t)))),
       h("tbody", {}, feed.map(([k, st]) => h("tr", {}, h("td", {}, FEED_SOURCE_NAMES[k]), h("td", { class: st.status === "ok" ? "" : "muted" }, note(st)))))) : null,
+    failedSites.length ? h("p", { class: "small" }, h("b", {}, `Career sites that could not be read (${failedSites.length}): `), failedSites.join("; ")) : null,
     h("p", { class: "muted" }, "Roles from sources that were not read are missing, so the list is a floor, not the whole market. “Skipped” usually means an API key is not set."));
 }
 
@@ -277,6 +287,22 @@ function jobsView() {
     list.length ? h("ul", { class: "cards" }, list.slice(0, 250).map(card)) : h("p", { class: "empty" }, state.country ? `No roles in ${countryName(state.country)} match these filters right now. Roles abroad are fewer: try “Where advertised” or “Sponsorship”, and see “Where these vacancies come from” for what the feed covers.` : "No roles match these filters.")];
 }
 
+// Adzuna links open through an Adzuna page that does not load everywhere (for example in India), so for those adverts the
+// employer's own careers site leads and the Adzuna link is the fallback. Elsewhere the advert link leads.
+function applyRow(j) {
+  const site = j.employer_site || careerSite(j.company);
+  const viaAdzuna = j.source === "Adzuna";
+  const link = (href, text, primary, title) => h("a", { class: `btn${primary ? " primary" : ""}`, href, target: "_blank", rel: "noopener noreferrer", title }, text);
+  const detail = h("p", { class: "small" }, h("b", {}, j.cv_to_use ? `Send: ${j.track} CV` : "Send: best-fitting CV"), ` · target role: ${j.role}${j.family_label ? ` (${j.family_label})` : ""}`);
+  if (viaAdzuna && site) {
+    return h("div", {}, h("div", { class: "apply-row" }, link(site, "Employer careers site →", true, "The employer's own careers site"),
+      link(j.url, "Advert on Adzuna", false, "Adzuna's page for this advert; it does not open everywhere"), detail),
+      h("p", { class: "small muted", style: "margin:4px 0 0" }, `On the careers site, search for “${j.title}”${j.location ? ` in ${j.location}` : ""}.`));
+  }
+  return h("div", { class: "apply-row" }, link(j.url, viaAdzuna ? "Apply on Adzuna →" : "Apply →", true),
+    site && site !== j.url ? link(site, "Employer careers page", false, "The employer's own careers site, if the Apply link does not open") : null, detail);
+}
+
 function card(j) {
   const sp = j.sponsorship_offered ? (j.sponsorship === "licensed_sponsor" ? "info" : "ok") : "bad";
   const cl = j.clearance, lic = j.driving_licence, pay = j.visa_pay;
@@ -300,9 +326,7 @@ function card(j) {
       h("div", { class: "match", title: "Fit with the candidate's CV: title 50 · skills 40 · level 10" }, h("b", {}, `${j.match}%`), "match",
         h("div", { class: "meter" }, h("i", { style: `width:${j.match}%` })))),
     h("ul", { class: "badges" }, badges.filter(Boolean).map(b => h("li", {}, b))),
-    h("div", { class: "apply-row" }, h("a", { class: "btn primary", href: j.url, target: "_blank", rel: "noopener noreferrer" }, "Apply →"),
-      j.employer_site && j.employer_site !== j.url ? h("a", { class: "btn", href: j.employer_site, target: "_blank", rel: "noopener noreferrer", title: "The employer's own careers site, if the Apply link does not open" }, "Employer careers page") : null,
-      h("p", { class: "small" }, h("b", {}, j.cv_to_use ? `Send: ${j.track} CV` : "Send: best-fitting CV"), ` · target role: ${j.role}${j.family_label ? ` (${j.family_label})` : ""}`)),
+    applyRow(j),
     h("details", { class: "why" }, h("summary", {}, "Why this score and these labels"),
       h("ul", {}, j.reasons.map(r => h("li", {}, r)),
         j.skills_matched.length ? h("li", {}, `CV skills in the advert: ${j.skills_matched.join(", ")}`) : null,
@@ -356,9 +380,9 @@ function downloadProfile() {
 }
 
 function exportCsv(list) {
-  const cols = ["tier", "match", "title", "company", "location", "salary", "posted_at", "sponsorship_label", "clearance", "visa_pay", "role", "track", "source", "url"];
+  const cols = ["tier", "match", "title", "company", "location", "salary", "posted_at", "sponsorship_label", "clearance", "visa_pay", "role", "track", "source", "url", "careers_site"];
   const cell = v => `"${String(v ?? "").replaceAll('"', '""')}"`;
-  const val = (j, k) => k === "clearance" ? j.clearance.label : k === "visa_pay" ? j.visa_pay.status : k === "salary" ? money(j.salary) : j[k];
+  const val = (j, k) => k === "clearance" ? j.clearance.label : k === "visa_pay" ? j.visa_pay.status : k === "salary" ? money(j.salary) : k === "careers_site" ? (j.employer_site || careerSite(j.company)) : j[k];
   const csv = [cols.join(","), ...list.map(j => cols.map(k => cell(val(j, k))).join(","))].join("\n");
   const a = h("a", { href: URL.createObjectURL(new Blob([csv], { type: "text/csv" })), download: `${data.candidate.slug}-roles.csv` });
   document.body.append(a); a.click(); a.remove();

@@ -33,6 +33,13 @@ data you can edit. Change `visa.expires`, `clearance.held`, `driving_licence` (t
 ## Genuine employers first
 The page's **Where advertised** filter defaults to *Employer career sites, NHS, public sector, universities & schools*: adverts on an employer's own site or an official board (NHS Jobs, Teaching Vacancies, jobs.ac.uk, THE unijobs, Platsbanken, and the Civil Service / council search). Job boards (Reed, Adzuna, Arbeitnow) are one click away ("Also job boards, except Adzuna", "Everything"), and the page says how many more roles they hold. Job boards and recruiters that post under their own name (eFinancialCareers, Jobsite, Salt Search ...) are removed from the feed itself (`config/agencies.json`). A **Country** filter with counts is shown whenever the candidate chose more than one place.
 
+## Careers-site links (Adzuna does not open everywhere)
+Adzuna adverts open through an Adzuna page that some places (for example India) cannot load. For those roles the card leads with **Employer careers site →** and says what to search for there ("search for “Business Analyst” in London"); the Adzuna link stays beside it. The address comes from the feed's own `employer_site`, then `candidates/careerlinks.js`: `config/career_pages.json` (home pages of about 60 large employers, curated, with aliases) and the board address of every employer in `config/employers.json`; any NHS body falls back to NHS Jobs and any university to jobs.ac.uk. These are home pages, not the specific job. Add a company by editing `config/career_pages.json`.
+
+**Adding an employer the feed reads directly** (so its real adverts, with real links, appear): paste any live job link from its career site:
+`python -m jobfeed.addemployer "Comcast" "https://comcast.wd5.myworkdayjobs.com/en-US/Comcast_Careers/job/..." --country US`
+It recognises Workday, Greenhouse, Lever, Ashby, SmartRecruiters, Workable, Recruitee and Oracle Recruiting from the link alone (no network needed) and adds one line to `config/employers.json`. Employers on their own platform (Amazon, Google, Microsoft, TCS ...) cannot be read this way. A board that cannot be read is listed under "Where these vacancies come from" instead of stopping the feed. Entries marked `"verify": true` are best guesses to check after the next feed run.
+
 ## Where the candidate would work
 The form asks which places to search: **United Kingdom, Ireland, Europe (EU/EEA and Switzerland), Australia, Middle East** (UAE, Saudi Arabia, Qatar, Kuwait, Bahrain, Oman); the regions and their countries are in `regions.json`. On the command line: `--regions GB,IE,EU,AU,ME`. The profile records `locations` and the expanded `countries`.
 
