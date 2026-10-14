@@ -51,6 +51,12 @@ ROLE_QUERIES = [
     "logistics", "data scientist", "devops", "software developer", "engineer", "accountant", "hr",
     "digital marketing", "aviation", "project manager", "mechanical engineer",
 ]
+# SAP security, GRC and access-governance roles. Searched without the word "sponsorship": these adverts come mostly from
+# licensed sponsors that never mention it, and enrich() keeps only employers on the sponsor register (or that say so).
+SAP_GRC_QUERIES = [
+    "sap security", "sap grc", "sap authorisations", "sap authorizations", "grc access control",
+    "segregation of duties", "sap access management", "access governance",
+]
 # Aviation, airline, airport and aerospace searches (see classify.AVIATION_FAMILIES).
 AVIATION_QUERIES = [
     "flight operations", "airline operations", "airport operations", "operations control airline",
@@ -68,7 +74,7 @@ EUROPE_AVIATION_QUERIES = ["airport operations", "aerospace engineer", "aeronaut
 # Early-career searches for UK Graduate visa (PSW) and US OPT holders.
 EARLY_CAREER_QUERIES = {"gb": ["graduate visa", "graduate scheme sponsorship"],
                         "us": ["opt", "h1b sponsorship", "new grad visa sponsorship"]}
-ADZUNA_MAX_CALLS = int(os.environ.get("ADZUNA_MAX_CALLS", "260"))
+ADZUNA_MAX_CALLS = int(os.environ.get("ADZUNA_MAX_CALLS", "276"))  # 260 + the SAP / GRC searches (<= 16 calls)
 ADZUNA_PAUSE = float(os.environ.get("ADZUNA_PAUSE", "2.5"))  # free tier allows ~25 calls a minute
 
 
@@ -128,6 +134,8 @@ def _adzuna_searches() -> Iterator[tuple[str, dict, int] | tuple[str, dict, int,
     for code in ADZUNA_COUNTRIES:
         yield code, {"what_phrase": "visa sponsorship"}, 5 if code in ("gb", "us") else 2
     yield "gb", {"what_phrase": "visa sponsorship", "where": "Scotland"}, 3
+    for words in SAP_GRC_QUERIES:
+        yield "gb", {"what_and": words}, 2
     for words in AVIATION_QUERIES:
         yield "gb", {"what_and": words}, 1
     for code in ("de", "nl", "fr", "be", "at", "ch", "it", "es", "pl"):
@@ -233,6 +241,7 @@ def reed(days: int) -> Iterator[Job]:
     cutoff = _cutoff(days)
     queries = [(q, 500) for q in DOMAIN_QUERIES]
     queries += [(f"sponsorship {role}", 200) for role in ROLE_QUERIES]
+    queries += [(q, 200) for q in SAP_GRC_QUERIES]
     queries += [(q, 200) for q in EARLY_CAREER_QUERIES["gb"]]
     queries += [(q, 100) for q in AVIATION_QUERIES]
     queries += [(q, 100) for q in MECHANICAL_QUERIES]
