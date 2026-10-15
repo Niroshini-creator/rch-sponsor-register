@@ -26,8 +26,9 @@ CONFIG = ROOT / "config"
 COUNTRIES = careers.TARGET_COUNTRIES | {"LI"}
 # Countries where the employer sponsors every foreign hire's work visa (Gulf residence and work visas).
 EMPLOYER_VISA_COUNTRIES = careers.GULF_STATES
+LOCAL_COUNTRIES = careers.LOCAL_COUNTRIES
 # Shown first in the country filter, even before they have jobs.
-FEATURED_COUNTRIES = ["GB", "GB-SCT", "IE", "US", "NL", "LU", "SE", "FI", "PL", "ES", "AE", "AE-DXB"]
+FEATURED_COUNTRIES = ["GB", "GB-SCT", "IE", "US", "IN", "NL", "LU", "SE", "FI", "PL", "ES", "AE", "AE-DXB"]
 REGISTERS = [("UK Home Office", sponsors.load_uk_register), ("NL IND", sponsors.load_nl_register),
              ("US H-1B", sponsors.load_us_h1b), ("IE employment permits", sponsors.load_ie_permits)]
 CHANNELS = ["career_site", "official", "aggregator"]
@@ -103,7 +104,10 @@ def enrich(jobs: Iterable[Job], index: sponsors.SponsorIndex, tiers: TierRules,
                 entry is None or sponsors.REGISTER_COUNTRY.get(entry.register) != job.country):
             entry = (index.lookup_prefix(job.register_name or job.company, job.country)
                      or (job.register_name and index.lookup_prefix(job.company, job.country)) or entry)
-        if job.country == "IE":
+        if job.country in LOCAL_COUNTRIES:
+            # India: the role is in the candidate's home country, so sponsorship is not a question.
+            job.sponsorship = "local"
+        elif job.country == "IE":
             # Ireland: Stamp 1G graduates can take any job without a permit; keep every role the advert
             # doesn't close to them ("Stamp 4 required", "EU citizens only").
             if stamp1g_status(job) == "excluded":
@@ -151,7 +155,7 @@ def enrich(jobs: Iterable[Job], index: sponsors.SponsorIndex, tiers: TierRules,
         job.role = classify_role(job)
         job.aviation = classify_aviation(job)
         job.low_sponsorship = is_low_sponsorship(job)
-        if job.sponsorship not in ("graduate_route", "stamp_1g", "not_sponsored"):
+        if job.sponsorship not in ("graduate_route", "stamp_1g", "not_sponsored", "local"):
             # Graduate visa / Stamp 1G holders need no sponsorship, so no salary minimum applies to them.
             job.salary_check, job.salary_annual, job.salary_threshold = salary_check(job)
         job.region = classify_region(job)

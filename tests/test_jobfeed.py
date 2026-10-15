@@ -161,9 +161,11 @@ class EnrichTests(unittest.TestCase):
             make_job(source_id="us-silent", country="US", title="Chemist", description="Great role"),
             make_job(source_id="dubai", country="AE", location="Dubai", title="Accountant", description="Great role"),
             make_job(source_id="canada", country="CA", title="Chemist", description="Visa sponsorship available"),
+            make_job(source_id="india", country="IN", location="Pune", title="Data Analyst", description="Great role"),
         ]
         out = {j.source_id: j for j in self.run_enrich(jobs)}
-        self.assertEqual(set(out), {"neg", "licensed", "confirmed", "us", "dubai"})
+        self.assertEqual(set(out), {"neg", "licensed", "confirmed", "us", "dubai", "india"})
+        self.assertEqual(out["india"].sponsorship, "local")        # India: the role is in the candidate's home country
         self.assertEqual((out["neg"].sponsorship, out["neg"].sponsorship_evidence),
                          ("not_sponsored", "We cannot offer sponsorship"))
         self.assertEqual((out["dubai"].sponsorship, out["dubai"].region, out["dubai"].role),

@@ -17,10 +17,10 @@ function h(tag, attrs, ...kids) {
   return el;
 }
 const badge = (text, kind, title) => h("span", { class: `badge ${kind || ""}`, title }, text);
-const money = (s, country = "GB") => (s && /^\d/.test(s) ? `${{ GB: "£", IE: "€" }[country] || ""}${s}` : s || "");
+const money = (s, country = "GB") => (s && /^\d/.test(s) ? `${{ GB: "£", IE: "€", IN: "₹" }[country] || ""}${s}` : s || "");
 const COUNTRY_NAMES = new Intl.DisplayNames(["en"], { type: "region" });
 const countryName = code => { try { return COUNTRY_NAMES.of(code); } catch { return code; } };
-const ENGLISH_COUNTRIES = ["GB", "IE", "US", "MT", "AU"];
+const ENGLISH_COUNTRIES = ["GB", "IE", "US", "MT", "AU", "IN"];
 const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
 async function getJSON(url) {
@@ -147,7 +147,7 @@ function candidateHeader(c, back, sub) {
       c.base_location ? h("li", { class: "chip" }, c.base_location) : null,
       (c.locations || []).length && !(c.locations.length === 1 && c.locations[0] === "GB")
         ? h("li", { class: "chip info" }, `Looking in: ${c.locations.map(k => (CandidateIntake.regions()[k] || {}).label || k).join(", ")}`) : null,
-      c.english_only === false ? null : (c.locations || []).some(k => k !== "GB" && k !== "IE" && k !== "AU") ? h("li", { class: "chip" }, "English-language roles only") : null,
+      c.english_only === false ? null : (c.locations || []).some(k => k !== "GB" && k !== "IE" && k !== "AU" && k !== "IN") ? h("li", { class: "chip" }, "English-language roles only") : null,
       c.experience_years ? h("li", { class: "chip" }, `${c.experience_years} yrs experience`) : null,
       c.education ? h("li", { class: "chip" }, c.education) : null),
     c.current_status ? h("p", { class: "small muted", style: "margin:6px 0 0" }, `Now: ${c.current_status}`) : null, sub);
@@ -312,7 +312,7 @@ function jobsView() {
     showCountry ? h("label", {}, "Country", sel("country", [["", "All countries"], ...countries.map(([c, n]) => [c, `${countryName(c)} (${n})`])], state.country, v => state.country = v)) : null,
     h("label", {}, "Where advertised", sel("source", SOURCE_FILTERS, state.source, v => state.source = v)),
     h("label", {}, "Sort", sel("sort", [["match", "Best match"], ["sponsor", "Sponsorship first"], ["newest", "Newest"], ["pay", "Highest pay"]], state.sort, v => state.sort = v)),
-    h("label", { class: "check" }, h("input", { type: "checkbox", ...(state.showBlocked ? { checked: true } : {}), onchange: e => { state.showBlocked = e.target.checked; render(); } }), "Show roles needing clearance, below visa pay, in another language, reserved for nationals, or without a Skilled Worker licence"),
+    h("label", { class: "check" }, h("input", { type: "checkbox", ...(state.showBlocked ? { checked: true } : {}), onchange: e => { state.showBlocked = e.target.checked; render(); } }), "Show roles needing clearance, below visa pay or your India minimum, in another language, reserved for nationals, or without a Skilled Worker licence"),
     h("button", { class: "btn", onclick: () => exportCsv(sortJobs(data.jobs.filter(j => visible(j)))) }, "Export CSV"));
   const list = sortJobs(data.jobs.filter(j => visible(j)));
   const note = state.tab === "4" ? h("p", { class: "small muted" }, "Other roles at employers that can sponsor, using the same skills on a different route. Many of these (admin, IT support) are below the Skilled Worker skill level, so ask the employer first.") : null;
@@ -345,7 +345,8 @@ function card(j) {
     badge(j.sponsorship_label, sp),
     badge(cl.level === "none" ? cl.label : cl.label, cl.blocks ? "bad" : cl.level === "none" ? "" : "ok", cl.quote),
     lic.need ? badge(`Driving licence ${lic.need}${lic.status === "unknown" ? " (candidate: not confirmed)" : lic.status === "missing" ? ": candidate has none" : ""}`, lic.status === "missing" && lic.need === "required" ? "bad" : "warn", lic.quote) : null,
-    pay.status ? badge({ meets: "Pay meets visa minimum", partial: "Pay partly meets visa minimum", below: "Pay below visa minimum", unstated: "Pay not stated" }[pay.status], pay.status === "below" ? "bad" : pay.status === "unstated" ? "" : "ok", pay.note) : null,
+    pay.status ? badge((j.country === "IN" ? { meets: "Pay meets your minimum", partial: "Pay partly meets your minimum", below: "Pay below your minimum", unstated: "Pay not stated" }
+      : { meets: "Pay meets visa minimum", partial: "Pay partly meets visa minimum", below: "Pay below visa minimum", unstated: "Pay not stated" })[pay.status], pay.status === "below" ? "bad" : pay.status === "unstated" ? "" : "ok", pay.note) : null,
     j.sponsorability === "rare" ? badge("Sponsorship unlikely at this level", "warn", j.sponsorability_note) : j.sponsorability === "check" ? badge("Ask if role can be sponsored", "", j.sponsorability_note) : null,
     j.work_mode ? badge(j.work_mode === "remote" ? "Remote" : "Hybrid") : null,
     !ENGLISH_COUNTRIES.includes(j.country) ? badge(j.english === false ? "Needs another language" : "English-language role", j.english === false ? "bad" : "ok") : null,

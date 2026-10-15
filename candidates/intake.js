@@ -280,7 +280,7 @@
       experience_years: pyRound1(months / 12), education: first.education,
       visa: opts.visa || { type: "", label: "", expires: "", sponsorship: "required", new_entrant: false },
       clearance: { held: opts.clearance || "none" }, driving_licence: opts.drivingLicence ?? null,
-      window_days: 7, min_match: 40, tracks, roles,
+      window_days: 7, min_match: 40, india_min_lpa: opts.indiaMinLpa ?? 8, tracks, roles,
       also_consider: Object.keys(tiers).filter(k => tiers[k] === 4 || !have.has(k)).sort(cmp),
       family_evidence: Object.fromEntries(Object.entries(combined).sort((a, b) => b[1].strength - a[1].strength).filter(([, v]) => v.strength >= 12).map(([k, v]) => [k, { strength: v.strength, tier: tiers[k] ?? null }])),
       notes: opts.notes || "",

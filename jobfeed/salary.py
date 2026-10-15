@@ -28,7 +28,7 @@ IE_CARE = 32_691
 
 HOURS_PER_YEAR = 37.5 * 52
 
-_CURRENCY = {"GB": "£", "IE": "€"}
+_CURRENCY = {"GB": "£", "IE": "€", "IN": "₹"}
 _OTHER_CURRENCY_RE = {"GB": re.compile(r"[$€]|\b(eur|usd)\b", re.I), "IE": re.compile(r"[$£]|\b(gbp|usd)\b", re.I)}
 _NUMBER_RE = re.compile(r"(\d[\d,]*(?:\.\d+)?)\s*(k\b)?", re.I)
 _HOURLY_RE = re.compile(r"\b(per|an|a|each)\s+hour\b|\bhourly\b|\bp/?h\b|/\s*h(ou)?r\b", re.I)
@@ -85,6 +85,26 @@ def annual_range(salary: str, country: str) -> tuple[float, float] | None:
     if rates and len(rates) == len(numbers):
         return min(rates) * HOURS_PER_YEAR, max(rates) * HOURS_PER_YEAR
     return None
+
+
+_LAKH_RE = re.compile(r"\b(lpa|lakhs?|lacs?|l\.?p\.?a)\b|\d\s*(l|lpa)\b", re.I)
+
+
+def inr_range(salary: str) -> tuple[float, float] | None:
+    """Indian pay as a yearly (low, high) in rupees, or None when it can't be read.
+
+    Reads "8 LPA", "12-18 lakhs", "₹ 9,50,000" and plain yearly amounts of 1,00,000 or more (Adzuna India's format).
+    Monthly figures and crore are left unread rather than guessed."""
+    if not salary or re.search(r"\b(crore|cr|per month|monthly|pm|per hour|hourly)\b", salary, re.I):
+        return None
+    numbers = [float(n.replace(",", "")) for n in re.findall(r"\d[\d,]*(?:\.\d+)?", salary) if n.replace(",", "").replace(".", "").isdigit()]
+    if not numbers:
+        return None
+    if _LAKH_RE.search(salary):
+        lakhs = [n * 100_000 for n in numbers if n < 1000]
+        return (min(lakhs), max(lakhs)) if lakhs else None
+    years = [n for n in numbers if n >= 100_000]
+    return (min(years), max(years)) if years else None
 
 
 def thresholds(job: Job) -> tuple[int, int] | None:

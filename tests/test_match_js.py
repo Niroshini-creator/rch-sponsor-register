@@ -95,3 +95,43 @@ class WorkRightsTests(unittest.TestCase):
         self.assertIn("no_sponsorship", self.run_for(["ie_stamp_1g"], "US", "graduate_route")["hidden_by_default"])
         self.assertIn("no_sponsorship", self.run_for([], "US", "graduate_route")["hidden_by_default"])
         self.assertIn("no_sponsorship", self.run_for(["us_opt"], "GB", "not_sponsored")["hidden_by_default"])
+
+
+class IndiaTests(unittest.TestCase):
+    CASES = [("12-18 lakhs", 8, "meets"), ("6 LPA", 8, "below"), ("6 - 10 LPA", 8, "partial"), ("1,200,000 – 1,800,000", 8, "meets"),
+             ("₹ 9,50,000", 8, "meets"), ("45,000 per month", 8, "unstated"), ("", 8, "unstated"), ("10 LPA", 12, "below")]
+
+    def setUp(self):
+        self.base = json.loads(PROFILE.read_text())
+
+    def evaluate(self, salary, lpa):
+        p = copy.deepcopy(self.base); p["india_min_lpa"] = lpa; p["visa"]["sponsorship"] = "required"
+        job = {"title": p["roles"][0]["title"], "company": "X", "description": "", "location": "Pune", "country": "IN",
+               "sponsorship": "local", "salary": salary, "url": "u"}
+        return p, job, match.Matcher(p).evaluate(job)
+
+    def test_india_roles_need_no_visa_and_respect_the_minimum_pay(self):
+        for salary, lpa, status in self.CASES:
+            _, _, r = self.evaluate(salary, lpa)
+            self.assertEqual(r["visa_pay"]["status"], status, salary)
+            self.assertTrue(r["sponsorship_offered"])
+            self.assertNotIn("no_sponsorship", r["hidden_by_default"])
+            self.assertEqual("pay_below_minimum" in r["hidden_by_default"], status == "below", salary)
+            self.assertNotIn("language", r["hidden_by_default"])
+
+    def test_browser_matcher_agrees(self):
+        if not shutil.which("node"):
+            self.skipTest("node needed")
+        profiles, jobs = [], []
+        for salary, lpa, _ in self.CASES:
+            p, job, _ = self.evaluate(salary, lpa)
+            profiles.append(p); jobs.append(job)
+        with tempfile.TemporaryDirectory() as d:
+            d = Path(d)
+            (d / "jobs.json").write_text(json.dumps(jobs))
+            (d / "profiles.json").write_text(json.dumps(profiles))
+            runner = RUNNER.replace("return jobs.map(j => m.evaluate(j))", "return jobs.map(j => m.evaluate(j))")
+            subprocess.run(["node", "-e", runner, str(d)], check=True, env={"ROOT": str(ROOT), "PATH": "/usr/bin:/bin:/usr/local/bin"})
+            js = json.loads((d / "js.json").read_text())
+        for i, (p, job) in enumerate(zip(profiles, jobs)):
+            self.assertEqual(js[i][i], json.loads(json.dumps(match.Matcher(p).evaluate(job))), self.CASES[i][0])

@@ -39,7 +39,9 @@ EUROPE_AND_UK = {"GB", "IE", "DE", "NL", "FR", "BE", "AT", "CH", "ES", "IT", "PL
 # Gulf states, where the employer sponsors the residence and work visa of every foreign hire.
 GULF_STATES = {"AE", "SA", "QA", "KW", "BH", "OM"}
 # Countries the board covers: the UK and Europe, the United States, the Gulf states and Australia.
-TARGET_COUNTRIES = EUROPE_AND_UK | {"US", "AU"} | GULF_STATES
+# Countries where the candidate is a local: no work visa is needed (India, for Indian nationals).
+LOCAL_COUNTRIES = {"IN"}
+TARGET_COUNTRIES = EUROPE_AND_UK | {"US", "AU"} | GULF_STATES | LOCAL_COUNTRIES
 
 EmployerFeed = Callable[[dict, datetime], Iterator[Job]]
 

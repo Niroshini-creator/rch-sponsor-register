@@ -22,6 +22,7 @@ SKILL_MAX, SKILL_EXTRACT_MAX, SKILLS_FOR_FULL = 40, 22, 5
 EXTRACT_CHARS = 600           # shorter adverts are extracts (the shared feed keeps ~400 characters)
 
 # sponsorship status -> (label shown, sort rank: lower is better, offered?)
+LOCAL = {"IN"}      # countries where the candidate is a local and needs no visa
 RIGHTS = {"us_opt": "US", "ie_stamp_1g": "IE"}      # visa.work_rights key -> country where it lets the holder work without a sponsor
 RIGHT_LABELS = {("US", "graduate_route"): "No sponsorship, open to OPT holders", ("US", "not_sponsored"): "No sponsorship offered: check the advert accepts OPT",
                 ("IE", "stamp_1g"): "No sponsorship needed: open to Stamp 1G holders"}
@@ -31,6 +32,7 @@ SPONSORSHIP = {
     "licensed_sponsor": ("Licensed sponsor (advert silent)", 2, True),
     "employer_visa": ("Employer provides visa", 2, True),
     "graduate_route": ("Not sponsoring, open to Graduate visa holders", 4, False),
+    "local": ("India role: no visa needed", 2, True),
     "stamp_1g": ("No sponsorship evidence (Ireland: open to Stamp 1G holders only)", 5, False),
     "unverified": ("Employer not on sponsor register", 5, False),
     "agency": ("Agency advert, end employer unknown", 5, False),
@@ -112,9 +114,24 @@ class Matcher:
     # ------------------------------------------------------------------ visa pay
     def needs_for(self, job: dict) -> bool:
         """Whether this candidate needs the employer to sponsor them for this job (not if they hold work rights in its country)."""
-        return self.needs_sponsorship and job.get("country") not in self.rights
+        return self.needs_sponsorship and job.get("country") not in self.rights and job.get("country") not in LOCAL
+
+    def india_pay(self, job: dict) -> dict:
+        """Pay against the candidate's minimum (lakhs per annum) for a role in India."""
+        need = float(self.profile.get("india_min_lpa", 8)) * 100_000
+        rng = salary.inr_range(job.get("salary", ""))
+        if not rng:
+            return {"status": "unstated", "required": need, "note": f"Pay not stated. You asked for ₹{need / 100_000:g} LPA or more."}
+        low, high = rng
+        if low >= need:
+            return {"status": "meets", "required": need, "note": f"Pay meets your ₹{need / 100_000:g} LPA minimum."}
+        if high >= need:
+            return {"status": "partial", "required": need, "note": f"Only the top of the range reaches your ₹{need / 100_000:g} LPA minimum."}
+        return {"status": "below", "required": need, "note": f"Pay tops out below your ₹{need / 100_000:g} LPA minimum."}
 
     def visa_pay(self, job: dict) -> dict:
+        if job.get("country") in LOCAL:
+            return self.india_pay(job)
         if not self.needs_for(job):
             return {"status": "", "note": "", "required": 0}
         j = Job(source="", source_id="", title=job.get("title", ""), company="", location="", country=job.get("country", "GB"),
@@ -191,7 +208,7 @@ class Matcher:
         if needs and not offered:
             hidden.append("no_sponsorship")
         if pay["status"] == "below":
-            hidden.append("pay_below_visa")
+            hidden.append("pay_below_minimum" if job.get("country") in LOCAL else "pay_below_visa")
         if licence["status"] == "missing" and licence["need"] == "required":
             hidden.append("licence")
         return {

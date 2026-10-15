@@ -99,6 +99,14 @@
     if (job.country === "IE") return IE_CARE_RE.test(job.title) ? [IE_CARE, IE_CARE] : [IE_GENERAL, IE_GENERAL];
     return null;
   }
+  /** Indian pay as a yearly [low, high] in rupees (= jobfeed.salary.inr_range), or null. */
+  function inrRange(text) {
+    if (!text || /\b(crore|cr|per month|monthly|pm|per hour|hourly)\b/i.test(text)) return null;
+    const nums = (text.match(/\d[\d,]*(?:\.\d+)?/g) || []).map(n => parseFloat(n.replace(/,/g, ""))).filter(n => !Number.isNaN(n));
+    if (!nums.length) return null;
+    const pick = /\b(lpa|lakhs?|lacs?|l\.?p\.?a)\b|\d\s*(l|lpa)\b/i.test(text) ? nums.filter(n => n < 1000).map(n => n * 100000) : nums.filter(n => n >= 100000);
+    return pick.length ? [Math.min(...pick), Math.max(...pick)] : null;
+  }
   const comma = n => Math.round(n).toLocaleString("en-US");
 
   // ------------------------------------------------------------------ match.py
@@ -107,6 +115,7 @@
   const SPONSORSHIP = {
     confirmed: ["Sponsorship offered", 0, true], possible: ["Sponsorship may be available", 1, true], licensed_sponsor: ["Licensed sponsor (advert silent)", 2, true],
     employer_visa: ["Employer provides visa", 2, true], graduate_route: ["Not sponsoring, open to Graduate visa holders", 4, false],
+    local: ["India role: no visa needed", 2, true],
     stamp_1g: ["No sponsorship evidence (Ireland: open to Stamp 1G holders only)", 5, false], unverified: ["Employer not on sponsor register", 5, false], agency: ["Agency advert, end employer unknown", 5, false], not_sponsored: ["Sponsorship not offered", 6, false],
   };
   const RIGHTS = { us_opt: "US", ie_stamp_1g: "IE" };   // visa.work_rights key -> country where it lets the holder work without a sponsor
@@ -114,7 +123,7 @@
     "IE/stamp_1g": "No sponsorship needed: open to Stamp 1G holders" };
   const VERY_SENIOR = /\b(director|head of|vice president|vp|avp|svp|chief|principal|partner)\b/i, SENIOR = /\b(senior|lead|manager|staff|sr\.?)\b/i;
   const JUNIOR = /\b(junior|graduate|trainee|entry[- ]level|associate)\b/i, ASSISTANT = /\b(assistant|intern(ship)?|apprentice(ship)?|placement)\b/i;
-  const ENGLISH_COUNTRIES = new Set(["GB", "IE", "US", "MT", "AU"]);   // = jobfeed.classify.ENGLISH_SPEAKING_COUNTRIES
+  const ENGLISH_COUNTRIES = new Set(["GB", "IE", "US", "MT", "AU", "IN"]);   // = jobfeed.classify.ENGLISH_SPEAKING_COUNTRIES
   const escRe = s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
   /** profile: the "candidate" object of a board file (or a profile.json). */
@@ -123,7 +132,7 @@
     const years = Number(profile.experience_years || 0), held = (profile.clearance || {}).held || "none", licence = profile.driving_licence ?? null;
     const visa = profile.visa || {}, needsSponsor = visa.sponsorship !== "not_needed", newEntrant = Boolean(visa.new_entrant);
     const englishOnly = profile.english_only ?? true, rights = new Set((visa.work_rights || []).filter(k => RIGHTS[k]).map(k => RIGHTS[k]));
-    const needsFor = job => needsSponsor && !rights.has(job.country);
+    const needsFor = job => needsSponsor && !rights.has(job.country) && job.country !== "IN";
     const tracks = {}, cvFor = {}, every = new Map();
     for (const t of profile.tracks) {
       tracks[t.name] = (t.skills || []).map(s => [s, I.keywordRe(s)]);
@@ -160,7 +169,15 @@
       if (JUNIOR.test(title)) return [6, "+6 junior/graduate title", ""];
       return [10, "+10 level fits the CV", ""];
     }
+    function indiaPay(job) {
+      const need = Number(profile.india_min_lpa ?? 8) * 100000, lpa = `₹${need / 100000} LPA`, rng = inrRange(job.salary || "");
+      if (!rng) return { status: "unstated", required: need, note: `Pay not stated. You asked for ${lpa} or more.` };
+      if (rng[0] >= need) return { status: "meets", required: need, note: `Pay meets your ${lpa} minimum.` };
+      if (rng[1] >= need) return { status: "partial", required: need, note: `Only the top of the range reaches your ${lpa} minimum.` };
+      return { status: "below", required: need, note: `Pay tops out below your ${lpa} minimum.` };
+    }
     function visaPay(job) {
+      if (job.country === "IN") return indiaPay(job);
       if (!needsFor(job)) return { status: "", note: "", required: 0 };
       const country = job.country || "GB", limits = thresholds({ title: job.title || "", country, domain: job.domain || "", sector: job.sector || "" });
       if (!limits) return { status: "", note: "", required: 0 };
@@ -204,7 +221,7 @@
       if (noRoute && needs) hidden.push("no_skilled_worker_route");
       if (clear.blocks) hidden.push("clearance");
       if (needs && !offered) hidden.push("no_sponsorship");
-      if (pay.status === "below") hidden.push("pay_below_visa");
+      if (pay.status === "below") hidden.push(job.country === "IN" ? "pay_below_minimum" : "pay_below_visa");
       if (lic.status === "missing" && lic.need === "required") hidden.push("licence");
       return {
         match: Math.max(0, Math.min(100, total)), reasons, skills_matched: hits.slice(0, 12), evidence: extract ? "extract" : "full",
