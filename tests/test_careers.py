@@ -213,8 +213,8 @@ class TeamtailorTests(unittest.TestCase):
         listing = {"items": [{"requisitionList": [
             {"Id": "5672", "Title": "Airport Duty Manager", "PostedDate": today, "PrimaryLocation": "London, United Kingdom",
              "PrimaryLocationCountry": "GB", "WorkplaceType": ""},
-            {"Id": "5670", "Title": "Engineer", "PostedDate": today, "PrimaryLocation": "Pune, India",
-             "PrimaryLocationCountry": "IN"},
+            {"Id": "5670", "Title": "Engineer", "PostedDate": today, "PrimaryLocation": "Tokyo, Japan",
+             "PrimaryLocationCountry": "JP"},
             {"Id": "5001", "Title": "Old role", "PostedDate": old, "PrimaryLocationCountry": "GB"}]}]}
         detail = {"items": [{"ExternalDescriptionStr": "<p>Run the terminal.</p>", "ExternalContactName": "Sam Lee",
                              "ExternalContactEmail": "sam.lee@heathrow.com"}]}
@@ -224,7 +224,7 @@ class TeamtailorTests(unittest.TestCase):
             jobs = list(careers.oracle(emp, CUTOFF))
         self.assertIn("finder=findReqs;siteNumber=CX_3001,limit=25,offset=0", get.call_args_list[0].args[0])
         self.assertIn("finder=ById;Id=%225672%22,siteNumber=CX_3001", get.call_args_list[1].args[0])
-        self.assertEqual(len(jobs), 1)  # India skipped; the listing stops at the first old role
+        self.assertEqual(len(jobs), 1)  # Japan skipped; the listing stops at the first old role
         job = jobs[0]
         self.assertEqual((job.country, job.description, job.url),
                          ("GB", "Run the terminal.",

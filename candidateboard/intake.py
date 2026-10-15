@@ -76,7 +76,7 @@ def _track_for_section(section: str, tracks: list[str]) -> str | None:
 def build_profile(cvs: dict[str, Path], roles_text: str = "", *, name: str = "", slug: str = "", location: str = "",
                   visa: dict | None = None, clearance: str = "none", driving_licence: bool | None = None,
                   current_status: str = "", notes: str = "", regions: list[str] | None = None,
-                  english_only: bool = True, extra_roles: list[str] | None = None, today: date | None = None) -> dict:
+                  english_only: bool = True, extra_roles: list[str] | None = None, india_min_lpa: float = 8, today: date | None = None) -> dict:
     tax = taxonomy.load()
     locations, countries = expand_regions(regions)
     scans = {track: cv.scan(cv.read_text(path), today) for track, path in cvs.items()}
@@ -149,6 +149,7 @@ def build_profile(cvs: dict[str, Path], roles_text: str = "", *, name: str = "",
         "driving_licence": driving_licence,
         "window_days": 7,
         "min_match": 40,
+        "india_min_lpa": india_min_lpa,
         "tracks": tracks,
         "roles": roles,
         "also_consider": sorted(k for k, t in tiers.items() if t == 4 or k not in {r["family"] for r in roles}),

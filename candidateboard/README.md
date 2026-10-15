@@ -96,3 +96,7 @@ On the upload form (and on the results page) a candidate can attach a PDF, Word 
 ## USA, OPT and Irish Stamp 1G
 
 `regions.json` has a United States region. A profile's `visa.work_rights` (`us_opt`, `ie_stamp_1g`; CLI `--work-rights`) means the candidate needs no sponsor in that country: roles there that offer none (the advert says no sponsorship but welcomes OPT, or in Ireland the employer is not known to sponsor) stay visible and are labelled "open to OPT holders" / "open to Stamp 1G holders" instead of being hidden as "no sponsorship". Rights apply only in their own country; the UK still hides no-sponsorship roles for a candidate who needs a sponsor. Both matchers implement it (parity tested).
+
+## India
+
+`regions.json` has an India region. Roles in India are labelled "India role: no visa needed" (feed status `local`) and are kept for any candidate who ticks India. The candidate's lowest pay (`india_min_lpa`, lakhs per year, default 8; form field or `--india-min-lpa`) is checked against the advert: pay under it hides the role (`pay_below_minimum`), unstated pay stays visible with a note. `jobfeed.salary.inr_range` reads "8 LPA", "12-18 lakhs", "₹ 9,50,000" and plain yearly rupee amounts; monthly and crore figures are left unread. Sources: every employer career site already read now keeps its India postings, and Adzuna India is searched by role with a salary floor of ₹8 lakh. Naukri, Foundit and LinkedIn have no public feed, so they are not read.

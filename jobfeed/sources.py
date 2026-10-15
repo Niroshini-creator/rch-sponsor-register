@@ -29,8 +29,10 @@ log = logging.getLogger("jobfeed")
 # Adzuna country codes covered, mapped to ISO 3166 codes.
 ADZUNA_COUNTRIES = {
     "gb": "GB", "us": "US", "nl": "NL", "pl": "PL", "es": "ES", "de": "DE", "fr": "FR",
-    "be": "BE", "at": "AT", "ch": "CH", "it": "IT", "au": "AU",
+    "be": "BE", "at": "AT", "ch": "CH", "it": "IT", "au": "AU", "in": "IN",
 }
+# Adzuna India asks for a minimum yearly salary (INR 8 lakh) so the searches return the better-paid roles.
+INDIA_MIN_SALARY = 800_000
 
 # Extra keyword searches so the feed covers every domain, not only tech.
 DOMAIN_QUERIES = [
@@ -74,7 +76,7 @@ EUROPE_AVIATION_QUERIES = ["airport operations", "aerospace engineer", "aeronaut
 # Early-career searches for UK Graduate visa (PSW) and US OPT holders.
 EARLY_CAREER_QUERIES = {"gb": ["graduate visa", "graduate scheme sponsorship"],
                         "us": ["opt", "h1b sponsorship", "new grad visa sponsorship"]}
-ADZUNA_MAX_CALLS = int(os.environ.get("ADZUNA_MAX_CALLS", "294"))  # 260 + SAP / GRC searches (<= 16) + Australia role searches (<= 16) + 2
+ADZUNA_MAX_CALLS = int(os.environ.get("ADZUNA_MAX_CALLS", "310"))  # India role searches (<= 16) + 260 + SAP / GRC searches (<= 16) + Australia role searches (<= 16) + 2
 ADZUNA_PAUSE = float(os.environ.get("ADZUNA_PAUSE", "2.5"))  # free tier allows ~25 calls a minute
 
 
@@ -132,6 +134,8 @@ def _adzuna_searches() -> Iterator[tuple[str, dict, int] | tuple[str, dict, int,
     """(country code, search params, max pages[, employer]) in priority order, so the call budget covers the
     essentials first. Employer searches come last and keep only that employer's own adverts."""
     for code in ADZUNA_COUNTRIES:
+        if code == "in":      # India roles need no sponsorship: searched by role below
+            continue
         yield code, {"what_phrase": "visa sponsorship"}, 5 if code in ("gb", "us") else 2
     yield "gb", {"what_phrase": "visa sponsorship", "where": "Scotland"}, 3
     for words in SAP_GRC_QUERIES:
@@ -150,6 +154,8 @@ def _adzuna_searches() -> Iterator[tuple[str, dict, int] | tuple[str, dict, int,
             yield code, {"what_and": words}, 2
         for role in ROLE_QUERIES:
             yield code, {"what_and": f"sponsorship {role}"}, 2
+    for role in ROLE_QUERIES:
+        yield "in", {"what_and": role, "salary_min": INDIA_MIN_SALARY}, 1
     for role in ROLE_QUERIES:   # Australia has no public sponsor register: only adverts that offer sponsorship count
         yield "au", {"what_and": f"sponsorship {role}"}, 1
     for query in DOMAIN_QUERIES[1:]:
@@ -838,6 +844,8 @@ _COUNTRY_WORDS = {
     "kilkenny": "IE", "wexford": "IE", "drogheda": "IE", "dundalk": "IE", "letterkenny": "IE", "maynooth": "IE",
     "blanchardstown": "IE", "sandyford": "IE", "ballsbridge": "IE", "éire": "IE", "co. dublin": "IE", "county cork": "IE",
     "hamilton, new zealand": "NZ", "canada": "CA", "toronto": "CA", "india": "IN", "bengaluru": "IN",
+    "hyderabad": "IN", "pune": "IN", "chennai": "IN", "mumbai": "IN", "navi mumbai": "IN", "new delhi": "IN", "gurugram": "IN",
+    "gurgaon": "IN", "noida": "IN", "kolkata": "IN", "ahmedabad": "IN", "kochi": "IN", "coimbatore": "IN", "thiruvananthapuram": "IN",
     "bangalore": "IN", "singapore": "SG", "australia": "AU", "sydney": "AU", "melbourne": "AU", "japan": "JP",
     "tokyo": "JP", "brazil": "BR", "são paulo": "BR", "mexico": "MX", "china": "CN", "hong kong": "HK",
 }

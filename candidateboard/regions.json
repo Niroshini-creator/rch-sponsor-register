@@ -72,6 +72,12 @@
         "BH",
         "OM"
       ]
+    },
+    "IN": {
+      "label": "India",
+      "countries": [
+        "IN"
+      ]
     }
   }
 }

@@ -443,7 +443,7 @@ def classify_region(job: Job) -> str:
 
 
 # ----------------------------------------------------------------------------- English-speaking
-ENGLISH_SPEAKING_COUNTRIES = {"GB", "IE", "US", "MT", "AU"}
+ENGLISH_SPEAKING_COUNTRIES = {"GB", "IE", "US", "MT", "AU", "IN"}
 _LANGS = (r"german|dutch|french|swedish|finnish|polish|spanish|luxembourgish|italian|arabic|portuguese|danish|"
           r"norwegian|czech|flemish|catalan|hungarian|romanian|greek|estonian|latvian|lithuanian|slovak|slovenian")
 _LANG_REQUIRED = [re.compile(p, re.I) for p in (
