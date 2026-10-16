@@ -19,6 +19,7 @@ from . import checks, taxonomy
 TIER_FACTOR = {1: 1.0, 2: 0.94, 3: 0.86}
 TITLE_LITERAL, TITLE_FAMILY, TITLE_PARTIAL, TITLE_OTHER = 50, 44, 30, 32
 SKILL_MAX, SKILL_EXTRACT_MAX, SKILLS_FOR_FULL = 40, 22, 5
+SKILLS_FOR_FULL_EXTRACT = 3     # a short extract has fewer words to hit, so 3 CV skills earn its full 22 points
 # A job with no target title is still shown when its advert uses many of the CV's skills and keywords (tier 4).
 TITLE_KEYWORD, KEYWORD_MIN, KEYWORD_MIN_EXTRACT = 24, 6, 4
 EXTRACT_CHARS = 600           # shorter adverts are extracts (the shared feed keeps ~400 characters)
@@ -198,7 +199,7 @@ class Matcher:
         title_pts, info = found
         skills = self._skills_for(info)
         hits = self._hits(skills, text, kw)
-        skill_pts = (SKILL_EXTRACT_MAX if extract else SKILL_MAX) * min(1.0, len(hits) / SKILLS_FOR_FULL)
+        skill_pts = (SKILL_EXTRACT_MAX if extract else SKILL_MAX) * min(1.0, len(hits) / (SKILLS_FOR_FULL_EXTRACT if extract else SKILLS_FOR_FULL))
         level_pts, level_why, level_flag = self._level(title)
         total = round(title_pts + skill_pts + level_pts)
         reasons = [f"+{round(title_pts)} {info['why']}"]

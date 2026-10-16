@@ -112,7 +112,7 @@
   // ------------------------------------------------------------------ match.py
   const TIER_FACTOR = { 1: 1.0, 2: 0.94, 3: 0.86 };
   const TITLE_KEYWORD = 24, KEYWORD_MIN = 6, KEYWORD_MIN_EXTRACT = 4;   // a job with no target title but many CV keywords (tier 4)
-  const TITLE_LITERAL = 50, TITLE_FAMILY = 44, TITLE_PARTIAL = 30, TITLE_OTHER = 32, SKILL_MAX = 40, SKILL_EXTRACT_MAX = 22, SKILLS_FOR_FULL = 5, EXTRACT_CHARS = 600;
+  const TITLE_LITERAL = 50, TITLE_FAMILY = 44, TITLE_PARTIAL = 30, TITLE_OTHER = 32, SKILL_MAX = 40, SKILL_EXTRACT_MAX = 22, SKILLS_FOR_FULL = 5, SKILLS_FOR_FULL_EXTRACT = 3, EXTRACT_CHARS = 600;
   const SPONSORSHIP = {
     confirmed: ["Sponsorship offered", 0, true], possible: ["Sponsorship may be available", 1, true], licensed_sponsor: ["Licensed sponsor (advert silent)", 2, true],
     employer_visa: ["Employer provides visa", 2, true], graduate_route: ["Not sponsoring, open to Graduate visa holders", 4, false],
@@ -219,7 +219,7 @@
       const [titlePts, info] = found;
       const skills = skillsFor(info);
       const hits = hitsIn(skills, text, kw);
-      const skillPts = (extract ? SKILL_EXTRACT_MAX : SKILL_MAX) * Math.min(1.0, hits.length / SKILLS_FOR_FULL);
+      const skillPts = (extract ? SKILL_EXTRACT_MAX : SKILL_MAX) * Math.min(1.0, hits.length / (extract ? SKILLS_FOR_FULL_EXTRACT : SKILLS_FOR_FULL));
       const [levelPts, levelWhy, levelFlag] = level(title);
       const total = pyRound(titlePts + skillPts + levelPts);
       const reasons = [`+${pyRound(titlePts)} ${info.why}`, `+${pyRound(skillPts)} ${hits.length} CV skill(s) found in the advert${extract ? " (extract only)" : ""}`, levelWhy];

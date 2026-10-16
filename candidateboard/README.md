@@ -114,3 +114,7 @@ NHS Jobs, jobs.ac.uk and the rest of the public-sector searches now also use the
 ## Feed run time
 
 The feed build reads all sources at the same time (`jobfeed.pipeline.fetch_all`), so a run lasts as long as the slowest source rather than the sum. After `FEED_BUDGET_MINUTES` (default 110) a source still reading is stopped and keeps what it had (shown as "partial" in the sources panel), so a slow source can no longer stop the feed being published. The workflow timeout is 210 minutes.
+
+## Suitable roles: what limits the list
+
+Measured on the feed for a UK profile: of 4,586 UK adverts, about 630 matched a role or the CV's keywords; about 350 of those scored under the 40% cut-off (short extracts earn few skill points), and roughly half of the rest were only on job boards. Changes: (1) a short extract now earns its full skill points from 3 CV skills instead of 5 (`SKILLS_FOR_FULL_EXTRACT`); (2) a candidate who uploads a CV sees job-board adverts by default (`SELF_SERVE_SOURCE` in `candidates/app.js`; the feed already drops agencies and keeps only licensed sponsors or adverts that offer sponsorship), still labelled with the board; (3) under the list, "Not shown at this tab" counts what the filters hide (job boards, no sponsorship, pay below the visa minimum, clearance, language, nationals only) with a "Show them all" button; (4) Reed is also searched for every role family's job titles.
