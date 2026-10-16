@@ -111,6 +111,7 @@
 
   // ------------------------------------------------------------------ match.py
   const TIER_FACTOR = { 1: 1.0, 2: 0.94, 3: 0.86 };
+  const TITLE_KEYWORD = 24, KEYWORD_MIN = 6, KEYWORD_MIN_EXTRACT = 4;   // a job with no target title but many CV keywords (tier 4)
   const TITLE_LITERAL = 50, TITLE_FAMILY = 44, TITLE_PARTIAL = 30, TITLE_OTHER = 32, SKILL_MAX = 40, SKILL_EXTRACT_MAX = 22, SKILLS_FOR_FULL = 5, EXTRACT_CHARS = 600;
   const SPONSORSHIP = {
     confirmed: ["Sponsorship offered", 0, true], possible: ["Sponsorship may be available", 1, true], licensed_sponsor: ["Licensed sponsor (advert silent)", 2, true],
@@ -189,11 +190,27 @@
       if (high >= need) return { status: "partial", required: need, note: `Only the top of the range reaches the ${cur}${comma(need)} ${who}.` };
       return { status: "below", required: need, note: `Pay tops out below the ${cur}${comma(need)} Skilled Worker ${who}: cannot be sponsored at this pay.` };
     }
+    function skillsFor(info) {
+      const base = (info.track ? tracks[info.track] : allSkills) || [], fam = info.family ? TAX.families[info.family] : null;
+      if (!fam) return base;
+      const have = new Set(base.map(([s]) => s));
+      return [...base, ...fam.keywords.filter(([t]) => !have.has(t))];
+    }
+    function keywordMatch(text, extract) {
+      let bestName = null, best = [];
+      for (const [name, skills] of Object.entries(tracks)) {
+        const hits = skills.filter(([, rx]) => rx.test(text)).map(([s]) => s);
+        if (hits.length > best.length) { bestName = name; best = hits; }
+      }
+      if (bestName === null || best.length < (extract ? KEYWORD_MIN_EXTRACT : KEYWORD_MIN)) return null;
+      return [TITLE_KEYWORD, { role: "Matched on CV keywords", family: null, tier: 4, track: bestName, why: `no target title, but the advert uses ${best.length} keywords from your CV` }];
+    }
     function evaluate(job) {
-      const title = job.title || "", found = titleScore(title);
+      const title = job.title || "", body = job.full_text || job.description || "", text = `${title}\n${body}`, extract = body.length < EXTRACT_CHARS;
+      const found = titleScore(title) || keywordMatch(text, extract);
       if (!found) return null;
-      const [titlePts, info] = found, body = job.full_text || job.description || "", text = `${title}\n${body}`, extract = body.length < EXTRACT_CHARS;
-      const skills = info.track ? tracks[info.track] : allSkills;
+      const [titlePts, info] = found;
+      const skills = skillsFor(info);
       const hits = (skills || []).filter(([, rx]) => rx.test(text)).map(([s]) => s);
       const skillPts = (extract ? SKILL_EXTRACT_MAX : SKILL_MAX) * Math.min(1.0, hits.length / SKILLS_FOR_FULL);
       const [levelPts, levelWhy, levelFlag] = level(title);

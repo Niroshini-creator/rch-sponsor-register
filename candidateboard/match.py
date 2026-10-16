@@ -19,6 +19,8 @@ from . import checks, taxonomy
 TIER_FACTOR = {1: 1.0, 2: 0.94, 3: 0.86}
 TITLE_LITERAL, TITLE_FAMILY, TITLE_PARTIAL, TITLE_OTHER = 50, 44, 30, 32
 SKILL_MAX, SKILL_EXTRACT_MAX, SKILLS_FOR_FULL = 40, 22, 5
+# A job with no target title is still shown when its advert uses many of the CV's skills and keywords (tier 4).
+TITLE_KEYWORD, KEYWORD_MIN, KEYWORD_MIN_EXTRACT = 24, 6, 4
 EXTRACT_CHARS = 600           # shorter adverts are extracts (the shared feed keeps ~400 characters)
 
 # sponsorship status -> (label shown, sort rank: lower is better, offered?)
@@ -99,6 +101,27 @@ class Matcher:
                                        "track": None, "why": f"{self.tax.families[family].label}: another route for this skill set"}
         return None
 
+    def _skills_for(self, info: dict) -> list:
+        """CV skills for the role's CV, plus the keywords of the role's own domain (a role from an attached document may be
+        outside what the CV shows, e.g. marketing roles on a business analyst CV)."""
+        base = self.tracks.get(info["track"]) if info["track"] else self.all_skills
+        fam = self.tax.families.get(info.get("family") or "")
+        if not fam:
+            return base or []
+        have = {s for s, _ in (base or [])}
+        return list(base or []) + [(t, rx) for t, rx in fam.keywords if t not in have]
+
+    def _keyword_match(self, text: str, extract: bool) -> tuple[float, dict] | None:
+        best_name, best = None, []
+        for name, skills in self.tracks.items():
+            hits = [s for s, rx in skills if rx.search(text)]
+            if len(hits) > len(best):
+                best_name, best = name, hits
+        if best_name is None or len(best) < (KEYWORD_MIN_EXTRACT if extract else KEYWORD_MIN):
+            return None
+        return TITLE_KEYWORD, {"role": "Matched on CV keywords", "family": None, "tier": 4, "track": best_name,
+                               "why": f"no target title, but the advert uses {len(best)} keywords from your CV"}
+
     # ------------------------------------------------------------------ level
     def _level(self, title: str) -> tuple[int, str, str]:
         if _VERY_SENIOR.search(title) and self.years < 9:
@@ -156,13 +179,13 @@ class Matcher:
     # ------------------------------------------------------------------ whole job
     def evaluate(self, job: dict) -> dict | None:
         title = job.get("title", "")
-        found = self._title(title)
+        text = f"{title}\n{job.get('full_text') or job.get('description', '')}"
+        extract = len(job.get("full_text") or job.get("description", "")) < EXTRACT_CHARS
+        found = self._title(title) or self._keyword_match(text, extract)
         if not found:
             return None
         title_pts, info = found
-        text = f"{title}\n{job.get('full_text') or job.get('description', '')}"
-        extract = len(job.get("full_text") or job.get("description", "")) < EXTRACT_CHARS
-        skills = self.tracks.get(info["track"]) if info["track"] else self.all_skills
+        skills = self._skills_for(info)
         hits = [s for s, rx in (skills or []) if rx.search(text)]
         skill_pts = (SKILL_EXTRACT_MAX if extract else SKILL_MAX) * min(1.0, len(hits) / SKILLS_FOR_FULL)
         level_pts, level_why, level_flag = self._level(title)

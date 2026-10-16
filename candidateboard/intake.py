@@ -73,6 +73,13 @@ def _track_for_section(section: str, tracks: list[str]) -> str | None:
     return best if top >= 0.67 else None
 
 
+def document_domains(text: str, limit: int = 3) -> list[str]:
+    """The role families a document's wording points to (strongest first), for a list that names no job titles."""
+    found = cv.scan(text)["families"]
+    ranked = sorted(found, key=lambda k: (-found[k]["strength"], k))
+    return [k for k in ranked if found[k]["strength"] >= 12][:limit]
+
+
 def build_profile(cvs: dict[str, Path], roles_text: str = "", *, name: str = "", slug: str = "", location: str = "",
                   visa: dict | None = None, clearance: str = "none", driving_licence: bool | None = None,
                   current_status: str = "", notes: str = "", regions: list[str] | None = None,
@@ -121,8 +128,14 @@ def build_profile(cvs: dict[str, Path], roles_text: str = "", *, name: str = "",
 
     for title in clean_titles(extra_roles):
         add(title, tax.family_for_title(title), "added by candidate", first_choice=True)
-    for item in cv.parse_role_list(roles_text) if roles_text else []:
+    items = cv.parse_role_list(roles_text) if roles_text else []
+    for item in items:
         add(item["title"], tax.family_for_title(item["title"]), "recruiter list", item["section"])
+    if roles_text and len(items) < 2:
+        # A document with no role titles (a paragraph, a skills list): read its keywords and search the domains they point to.
+        for fam in document_domains(roles_text):
+            for title in tax.families[fam].searches[:2]:
+                add(title, fam, "document keywords")
     # Suggest roles for families the CV supports but the recruiter's list does not cover.
     covered = {r["family"] for r in roles}
     for fam, tier in tiers.items():

@@ -37,6 +37,8 @@ function mountAdd(h, onProfile) {
   const preview = () => {
     const list = CandidateIntake.parseRoleList($("roles-text").value), by = new Map();
     for (const r of list) by.set(r.section || "", [...(by.get(r.section || "") || []), r.title]);
+    const domains = list.length < 2 ? CandidateIntake.documentDomains($("roles-text").value) : [], labels = CandidateIntake.labels();
+    if (domains.length) { $("roles-preview").replaceChildren(h("b", {}, "No job titles found, so its keywords were read"), h("div", {}, "Searching these kinds of role: ", domains.map(k => labels[k].label).join(" · "))); return; }
     $("roles-preview").replaceChildren(...(list.length ? [h("b", {}, `${list.length} position${list.length === 1 ? "" : "s"} found`),
       ...[...by].map(([sec, titles]) => h("div", {}, sec ? h("span", { class: "muted" }, sec + ": ") : null, titles.join(" · ")))] : []));
   };
