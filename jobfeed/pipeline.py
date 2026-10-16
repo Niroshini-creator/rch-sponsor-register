@@ -4,7 +4,10 @@ from __future__ import annotations
 
 import json
 import logging
+import os
+import time
 import traceback
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Iterable
@@ -50,23 +53,36 @@ def load_sponsor_index(status: dict) -> sponsors.SponsorIndex:
     return index
 
 
+FEED_BUDGET_MINUTES = float(os.environ.get("FEED_BUDGET_MINUTES", "110"))
+
+
 def fetch_all(days: int, source_cfg: dict, status: dict, employers: list[dict] | None = None) -> list[Job]:
-    jobs: list[Job] = []
+    """Read every source at the same time (they are independent, so the run lasts as long as the slowest one, not the sum).
+
+    A source still reading when the time budget ends is stopped and keeps what it had, so a slow source delays nothing and
+    the feed is always published."""
     career_report: dict = {}
     feeds = {
         **sources.SOURCES,
         "rss": lambda d: sources.rss_feeds(d, source_cfg.get("rss", {}).get("feeds", [])),
         "career_sites": lambda d: careers.career_sites(d, employers or [], career_report),
     }
-    for name, fn in feeds.items():
-        if not source_cfg.get(name, {}).get("enabled", True):
-            status[name] = {"status": "disabled"}
-            continue
-        before = len(jobs)
+    deadline = time.monotonic() + FEED_BUDGET_MINUTES * 60
+    results: dict[str, list[Job]] = {}
+
+    def read(name: str, fn) -> None:
+        found: list[Job] = []
+        results[name] = found
         try:
+            cut_short = False
             for job in fn(days):
-                jobs.append(job)
-            status[name] = {"status": "ok", "count": len(jobs) - before}
+                found.append(job)
+                if time.monotonic() > deadline:
+                    cut_short = True
+                    break
+            status[name] = {"status": "ok", "count": len(found)}
+            if cut_short:
+                status[name].update(status="partial", error=f"stopped after the {FEED_BUDGET_MINUTES:g}-minute time budget; kept {len(found)} adverts")
             if name == "career_sites":
                 failed = career_report.get("failed", [])
                 status[name].update(employers_ok=career_report.get("ok", 0), employers_failed=failed)
@@ -78,8 +94,18 @@ def fetch_all(days: int, source_cfg: dict, status: dict, employers: list[dict] |
         except Exception as err:  # noqa: BLE001 - keep partial results from other sources
             log.warning("source %s failed: %s", name, err)
             log.debug(traceback.format_exc())
-            status[name] = {"status": "error", "count": len(jobs) - before, "error": str(err)[:300]}
-    return jobs
+            status[name] = {"status": "error", "count": len(found), "error": str(err)[:300]}
+
+    wanted = {}
+    for name, fn in feeds.items():
+        if not source_cfg.get(name, {}).get("enabled", True):
+            status[name] = {"status": "disabled"}
+        else:
+            wanted[name] = fn
+    with ThreadPoolExecutor(max_workers=max(1, len(wanted))) as pool:
+        for future in [pool.submit(read, name, fn) for name, fn in wanted.items()]:
+            future.result()
+    return [job for name in feeds for job in results.get(name, [])]
 
 
 def enrich(jobs: Iterable[Job], index: sponsors.SponsorIndex, tiers: TierRules,
