@@ -28,7 +28,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Callable, Iterator
 
 from . import http
-from .models import Job
+from .models import UNDATED, Job
 from .sources import _guess_country, _local
 from .text import parse_date, strip_html
 
@@ -62,7 +62,7 @@ def _job(emp: dict, **kw) -> Job:
 def greenhouse(emp: dict, cutoff: datetime) -> Iterator[Job]:
     data = http.get_json(f"https://boards-api.greenhouse.io/v1/boards/{emp['id']}/jobs", params={"content": "true"})
     for j in data.get("jobs", []):
-        posted = parse_date(j.get("first_published") or j.get("updated_at"))
+        posted = parse_date(j.get("first_published") or j.get("updated_at")) or UNDATED
         if posted and posted >= cutoff:
             yield _job(emp, source_id=str(j["id"]), title=j.get("title", ""),
                        location=(j.get("location") or {}).get("name", ""), url=j.get("absolute_url", ""),
@@ -73,7 +73,7 @@ def greenhouse(emp: dict, cutoff: datetime) -> Iterator[Job]:
 def lever(emp: dict, cutoff: datetime) -> Iterator[Job]:
     host = "api.eu.lever.co" if emp.get("region") == "eu" else "api.lever.co"
     for j in http.get_json(f"https://{host}/v0/postings/{emp['id']}", params={"mode": "json"}):
-        posted = parse_date((j.get("createdAt") or 0) / 1000)
+        posted = (parse_date(j["createdAt"] / 1000) if j.get("createdAt") else None) or UNDATED
         if posted and posted >= cutoff:
             lists = " ".join(f"{li.get('text', '')} {strip_html(li.get('content'))}" for li in j.get("lists") or [])
             yield _job(emp, source_id=j["id"], title=j.get("text", ""),
@@ -87,7 +87,7 @@ def lever(emp: dict, cutoff: datetime) -> Iterator[Job]:
 def ashby(emp: dict, cutoff: datetime) -> Iterator[Job]:
     data = http.get_json(f"https://api.ashbyhq.com/posting-api/job-board/{emp['id']}")
     for j in data.get("jobs", []):
-        posted = parse_date(j.get("publishedAt"))
+        posted = parse_date(j.get("publishedAt")) or UNDATED
         if j.get("isListed", True) and posted and posted >= cutoff:
             addr = ((j.get("address") or {}).get("postalAddress") or {})
             yield _job(emp, source_id=j["id"], title=j.get("title", ""), location=j.get("location", ""),
@@ -103,7 +103,7 @@ def smartrecruiters(emp: dict, cutoff: datetime) -> Iterator[Job]:
         page = http.get_json(base, params={"limit": 100, "offset": offset})
         content = page.get("content", [])
         for j in content:
-            posted = parse_date(j.get("releasedDate"))
+            posted = parse_date(j.get("releasedDate")) or UNDATED
             if not posted or posted < cutoff:
                 continue
             loc = j.get("location") or {}
@@ -129,7 +129,7 @@ def smartrecruiters(emp: dict, cutoff: datetime) -> Iterator[Job]:
 def workable(emp: dict, cutoff: datetime) -> Iterator[Job]:
     data = http.get_json(f"https://apply.workable.com/api/v1/widget/accounts/{emp['id']}", params={"details": "true"})
     for j in data.get("jobs", []):
-        posted = parse_date(j.get("published_on") or j.get("created_at"))
+        posted = parse_date(j.get("published_on") or j.get("created_at")) or UNDATED
         if posted and posted >= cutoff:
             yield _job(emp, source_id=j.get("shortcode", ""), title=j.get("title", ""),
                        location=", ".join(filter(None, [j.get("city"), j.get("country")])),
@@ -142,7 +142,7 @@ def workable(emp: dict, cutoff: datetime) -> Iterator[Job]:
 def recruitee(emp: dict, cutoff: datetime) -> Iterator[Job]:
     data = http.get_json(f"https://{emp['id']}.recruitee.com/api/offers/")
     for j in data.get("offers", []):
-        posted = parse_date(j.get("published_at") or j.get("created_at"))
+        posted = parse_date(j.get("published_at") or j.get("created_at")) or UNDATED
         if posted and posted >= cutoff:
             yield _job(emp, source_id=str(j["id"]), title=j.get("title", ""), location=j.get("location", ""),
                        country=j.get("country_code", ""), url=j.get("careers_url", ""), posted_at=posted,
@@ -156,7 +156,7 @@ def personio(emp: dict, cutoff: datetime) -> Iterator[Job]:
     root = ET.fromstring(http.get(f"https://{emp['id']}.jobs.personio.{tld}/xml"))
     for pos in (el for el in root.iter() if _local(el.tag) == "position"):
         f = {_local(c.tag): (c.text or "").strip() for c in pos}
-        posted = parse_date(f.get("createdAt"))
+        posted = parse_date(f.get("createdAt")) or UNDATED
         if not posted or posted < cutoff:
             continue
         description = " ".join(strip_html(el.text) for el in pos.iter() if _local(el.tag) == "value")
@@ -173,7 +173,7 @@ def teamtailor(emp: dict, cutoff: datetime) -> Iterator[Job]:
     root = ET.fromstring(http.get(f"https://{host}/jobs.rss"))
     for item in (el for el in root.iter() if _local(el.tag) == "item"):
         f = {_local(c.tag): (c.text or "").strip() for c in item}
-        posted = parse_date(f.get("pubDate"))
+        posted = parse_date(f.get("pubDate")) or UNDATED
         if not posted or posted < cutoff:
             continue
         places = [{_local(c.tag): (c.text or "").strip() for c in loc}
@@ -210,7 +210,7 @@ def workday(emp: dict, cutoff: datetime) -> Iterator[Job]:
                                               "searchText": emp.get("search", "")})
         postings = page.get("jobPostings", [])
         for j in postings:
-            posted = _workday_posted(j.get("postedOn", ""), now)
+            posted = _workday_posted(j.get("postedOn", ""), now) or UNDATED
             if not posted or posted < cutoff:
                 continue
             # Skip the detail call for roles clearly outside the covered countries ("3 Locations" is checked).
@@ -244,7 +244,7 @@ def oracle(emp: dict, cutoff: datetime) -> Iterator[Job]:
                               ).get("items") or []
         reqs = (items[0].get("requisitionList") or []) if items else []
         for r in reqs:
-            posted = parse_date(r.get("PostedDate"))
+            posted = parse_date(r.get("PostedDate")) or UNDATED
             if not posted or posted < cutoff:
                 return  # newest first: everything after this is older
             country = _iso(r.get("PrimaryLocationCountry"))
@@ -285,7 +285,7 @@ def successfactors(emp: dict, cutoff: datetime) -> Iterator[Job]:
     seen = set()
     for item in items:
         f = {_local(c.tag): (c.text or "").strip() for c in item}
-        posted = parse_date(f.get("pubDate"))
+        posted = parse_date(f.get("pubDate")) or UNDATED
         if not posted or posted < cutoff or f.get("link") in seen:
             continue
         seen.add(f.get("link"))

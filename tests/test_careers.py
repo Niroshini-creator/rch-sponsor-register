@@ -5,7 +5,7 @@ from unittest import mock
 
 from jobfeed import careers, classify, contacts, pipeline, sponsors
 from jobfeed.agencies import AgencyFilter
-from jobfeed.models import Job
+from jobfeed.models import UNDATED, Job
 
 CONFIG = Path(__file__).resolve().parent.parent / "config"
 NOW = datetime.now(timezone.utc)
@@ -33,6 +33,11 @@ class CareerSiteParserTests(unittest.TestCase):
         self.assertEqual((jobs[0].country, jobs[0].channel, jobs[0].description),
                          ("GB", "career_site", "Visa sponsorship available"))
         self.assertEqual(jobs[1].country, "US")  # dropped later by the pipeline, never mislabelled as UK
+
+    def test_advert_without_a_posting_date_is_kept_and_marked(self):
+        payload = {"jobs": [{"id": 1, "title": "Engineer", "location": {"name": "London, UK"}, "absolute_url": "u", "content": ""}]}
+        jobs = run_feed(careers.greenhouse, {"name": "Acme", "id": "acme", "country": "GB"}, [payload])
+        self.assertEqual([j.posted_at for j in jobs], [UNDATED])      # the pipeline turns this into date_known=False
 
     def test_unrecognised_location_not_assumed_local(self):
         payload = {"jobs": [{"id": 1, "title": "Engineer", "first_published": ISO_NOW,

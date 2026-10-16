@@ -28,9 +28,10 @@ async function getJSON(url) {
   if (!r.ok) throw new Error(`${url}: HTTP ${r.status}`);
   return r.json();
 }
+const postedText = j => (j.date_known === false ? "date posted not mentioned" : `posted ${ago(j.posted_at)}`);
 function ago(iso) {
   const d = (Date.now() - new Date(iso).getTime()) / 864e5;
-  if (d < 1) return "today";
+  if (d < 1) { const h = Math.max(1, Math.floor(d * 24)); return h <= 1 && d * 24 < 1 ? "less than an hour ago" : `${h} hour${h === 1 ? "" : "s"} ago`; }
   return d < 2 ? "yesterday" : `${Math.floor(d)} days ago`;
 }
 function monthsLeft(expires) {
@@ -198,7 +199,8 @@ function selfView(profile) {
 function visible(j, tab = state.tab) {
   if (j.tier !== Number(tab)) return false;
   if (j.match < state.min) return false;
-  if ((Date.now() - new Date(j.posted_at)) / 864e5 > state.days) return false;
+  // An advert with no posting date counts as inside the 7-day window only; the shorter windows need a date.
+  if (j.date_known === false ? state.days < 7 : (Date.now() - new Date(j.posted_at)) / 864e5 > state.days) return false;
   if (state.q && !`${j.title} ${j.company} ${j.location} ${j.role} ${j.sector}`.toLowerCase().includes(state.q.toLowerCase())) return false;
   if (state.sector && j.sector !== state.sector) return false;
   if (state.etier && String(j.employer_tier) !== state.etier) return false;
@@ -238,7 +240,7 @@ function hiddenSummary() {
 
 function sortJobs(list) {
   const by = { match: (a, b) => b.match - a.match || a.sponsorship_rank - b.sponsorship_rank,
-    newest: (a, b) => new Date(b.posted_at) - new Date(a.posted_at),
+    newest: (a, b) => (b.date_known === false ? 0 : new Date(b.posted_at)) - (a.date_known === false ? 0 : new Date(a.posted_at)),
     sponsor: (a, b) => a.sponsorship_rank - b.sponsorship_rank || b.match - a.match,
     pay: (a, b) => (b.salary_annual || 0) - (a.salary_annual || 0) }[state.sort];
   return list.slice().sort(by);
@@ -396,7 +398,7 @@ function card(j) {
   return h("li", { class: `card ${j.hidden_by_default.length ? "dim" : ""}`, "data-tier": j.tier },
     h("div", { class: "card-top" },
       h("div", {}, h("h3", {}, h("a", { href: j.url, target: "_blank", rel: "noopener" }, j.title)),
-        h("p", { class: "meta" }, [j.company, j.location, j.country !== "GB" ? countryName(j.country) : "", money(j.salary, j.country), `posted ${ago(j.posted_at)}`].filter(Boolean).join(" · "))),
+        h("p", { class: "meta" }, [j.company, j.location, j.country !== "GB" ? countryName(j.country) : "", money(j.salary, j.country), postedText(j)].filter(Boolean).join(" · "))),
       h("div", { class: "match", title: "Fit with the candidate's CV: title 50 · skills 40 · level 10" }, h("b", {}, `${j.match}%`), "match",
         h("div", { class: "meter" }, h("i", { style: `width:${j.match}%` })))),
     h("ul", { class: "badges" }, badges.filter(Boolean).map(b => h("li", {}, b))),
@@ -456,7 +458,7 @@ function downloadProfile() {
 function exportCsv(list) {
   const cols = ["tier", "match", "title", "company", "location", "salary", "posted_at", "sponsorship_label", "clearance", "visa_pay", "role", "track", "source", "url", "careers_site"];
   const cell = v => `"${String(v ?? "").replaceAll('"', '""')}"`;
-  const val = (j, k) => k === "clearance" ? j.clearance.label : k === "visa_pay" ? j.visa_pay.status : k === "salary" ? money(j.salary) : k === "careers_site" ? (j.employer_site || careerSite(j.company)) : j[k];
+  const val = (j, k) => k === "clearance" ? j.clearance.label : k === "visa_pay" ? j.visa_pay.status : k === "salary" ? money(j.salary) : k === "posted_at" && j.date_known === false ? "date not mentioned" : k === "careers_site" ? (j.employer_site || careerSite(j.company)) : j[k];
   const csv = [cols.join(","), ...list.map(j => cols.map(k => cell(val(j, k))).join(","))].join("\n");
   const a = h("a", { href: URL.createObjectURL(new Blob([csv], { type: "text/csv" })), download: `${data.candidate.slug}-roles.csv` });
   document.body.append(a); a.click(); a.remove();

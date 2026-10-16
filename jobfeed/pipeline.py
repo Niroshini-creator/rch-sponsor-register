@@ -20,7 +20,7 @@ from .classify import (AVIATION_FAMILIES, DOMAINS, ENGLISH_SPEAKING_COUNTRIES, R
 from .contacts import ContactBook
 from .deepen import previous_digests, read_full_adverts, reuse_digest
 from .digest import digest
-from .models import Job
+from .models import UNDATED, Job
 from .salary import salary_check
 from .text import normalise_company
 
@@ -53,6 +53,7 @@ def load_sponsor_index(status: dict) -> sponsors.SponsorIndex:
     return index
 
 
+MAX_UNDATED_PER_SOURCE = int(os.environ.get("MAX_UNDATED_PER_SOURCE", "300"))
 FEED_BUDGET_MINUTES = float(os.environ.get("FEED_BUDGET_MINUTES", "110"))
 
 
@@ -115,8 +116,19 @@ def enrich(jobs: Iterable[Job], index: sponsors.SponsorIndex, tiers: TierRules,
     stats = stats if stats is not None else {}
     stats.setdefault("agency_removed", 0)
     kept: dict[tuple, Job] = {}
+    now = datetime.now(timezone.utc)
+    undated: dict[str, int] = {}
     for job in jobs:
-        if job.posted_at < cutoff or not job.title or not job.url:
+        if not job.title or not job.url:
+            continue
+        if job.posted_at == UNDATED:
+            # No posting date in the advert: keep it, marked, dated the day it was found (a capped number per source, as there is
+            # no way to tell a new advert from an old one).
+            undated[job.source] = undated.get(job.source, 0) + 1
+            if undated[job.source] > MAX_UNDATED_PER_SOURCE:
+                continue
+            job.posted_at, job.date_known = now, False
+        elif job.posted_at < cutoff:
             continue
         if job.country not in COUNTRIES:
             continue
@@ -208,7 +220,7 @@ def enrich(jobs: Iterable[Job], index: sponsors.SponsorIndex, tiers: TierRules,
 def _rank(job: Job) -> tuple:
     # A copy that rules sponsorship out never hides one that offers it (two boards, two wordings).
     return (job.sponsorship != "not_sponsored", _CHANNEL_RANK.get(job.channel, 0), bool(job.contacts),
-            job.sponsorship == "confirmed", job.posted_at)
+            job.sponsorship == "confirmed", job.date_known, job.posted_at)
 
 
 def run(days: int, out_path: Path) -> dict:

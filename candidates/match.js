@@ -267,7 +267,7 @@
   }
   const dedupeKey = j => [j.title.toLowerCase().split(/\s+/).filter(Boolean).join(" "), normaliseCompany(j.company), (j.location || "").toLowerCase().split(",")[0].trim()].join("|");
   const CHANNEL = { career_site: 2, official: 1, aggregator: 0 };
-  const rank = r => [-(SPONSORSHIP[r.sponsorship] || SPONSORSHIP.unverified)[1], CHANNEL[r.channel] || 0, (r.full_text || "").length, r.posted_at];
+  const rank = r => [-(SPONSORSHIP[r.sponsorship] || SPONSORSHIP.unverified)[1], CHANNEL[r.channel] || 0, (r.full_text || "").length, r.date_known !== false, r.posted_at];
   const cmpRank = (a, b) => { const x = rank(a), y = rank(b); for (let i = 0; i < x.length; i++) if (x[i] !== y[i]) return x[i] > y[i] ? 1 : -1; return 0; };
 
   /** Score feed jobs for one candidate; returns board records (same shape as candidates/data/<slug>.json jobs). */
@@ -277,7 +277,7 @@
     const best = new Map();
     for (const rec of feedJobs) {
       const posted = Date.parse(rec.posted_at);
-      if (!posted || now - posted > days * 864e5 || !countries.has(rec.country) || !rec.title || !rec.url) continue;
+      if (!posted || (rec.date_known !== false && now - posted > days * 864e5) || !countries.has(rec.country) || !rec.title || !rec.url) continue;
       const ev = m.evaluate(rec);
       if (!ev || ev.match < minMatch + (ev.tier === 4 ? 5 : 0)) continue;
       if (ev.tier === 4 && (!ev.sponsorship_offered || ev.flags.length)) continue;

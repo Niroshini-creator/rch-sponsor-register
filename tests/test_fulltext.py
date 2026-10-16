@@ -106,3 +106,28 @@ class FetchAllTests(unittest.TestCase):
         self.assertEqual(status["broken"]["status"], "error")
         self.assertGreaterEqual(len(jobs), 3)
         self.assertEqual([j.source_id for j in jobs[:2]], ["1", "2"])        # results keep the sources' order
+
+
+@unittest.skipUnless(__import__("shutil").which("node"), "node is needed")
+class UndatedAdvertTests(unittest.TestCase):
+    def test_browser_keeps_undated_adverts_inside_the_window_only_for_seven_days(self):
+        import subprocess
+        out = json.loads(subprocess.run(["node", "-e", """
+const fs = require('fs'); const R = process.env.ROOT;
+const I = require(R + '/candidates/intake.js').init(JSON.parse(fs.readFileSync(R + '/candidateboard/roles.json', 'utf8')));
+const M = require(R + '/candidates/match.js');
+const p = JSON.parse(process.env.PROFILE);
+const base = { title: 'SAP GRC Consultant', company: 'X', country: 'GB', sponsorship: 'confirmed', url: 'u', location: 'Test', description: 'SAP GRC Access Control, segregation of duties, firefighter' };
+const now = Date.parse('2026-10-16T12:00:00Z');
+const jobs = [
+  { ...base, company: 'Fresh', posted_at: '2026-10-16T08:00:00Z' },
+  { ...base, company: 'Old', posted_at: '2026-10-01T08:00:00Z' },
+  { ...base, company: 'NoDate', posted_at: '2026-10-16T09:00:00Z', date_known: false },
+];
+console.log(JSON.stringify(M.liveJobs(jobs, p, { now }).map(j => [j.company, j.date_known ?? true])));
+""" ], check=True, capture_output=True, text=True, env={"ROOT": str(ROOT), "PROFILE": json.dumps(profile()), "PATH": "/usr/bin:/bin:/usr/local/bin"}).stdout)
+        self.assertEqual(sorted(c for c, _ in out), ["Fresh", "NoDate"])
+        self.assertEqual(dict(out)["NoDate"], False)
+
+
+ROOT = __import__("pathlib").Path(__file__).resolve().parent.parent

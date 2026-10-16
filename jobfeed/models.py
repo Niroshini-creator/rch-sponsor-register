@@ -4,7 +4,11 @@ from __future__ import annotations
 
 import hashlib
 from dataclasses import asdict, dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
+
+
+# Stands in for "no posting date" while a source reads adverts; the pipeline turns it into date_known=False.
+UNDATED = datetime(9999, 12, 30, tzinfo=timezone.utc)
 
 
 @dataclass
@@ -53,6 +57,7 @@ class Job:
     contacts: list[dict] = field(default_factory=list)
     # Employer's own careers site, for job-board adverts at directory employers (board links can be region-locked).
     employer_site: str = ""
+    date_known: bool = True     # False when the advert gives no posting date (posted_at is then the day it was found)
     # Digest of the whole advert (see digest.py): keywords found, clearance / licence / nationality sentences, full length.
     kw: list[str] = field(default_factory=list)
     signals: str = ""

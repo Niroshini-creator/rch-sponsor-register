@@ -21,7 +21,7 @@ from pathlib import Path
 from typing import Callable, Iterator
 
 from . import http
-from .models import Job
+from .models import UNDATED, Job
 from .text import normalise_company, parse_date, strip_html
 
 log = logging.getLogger("jobfeed")
@@ -404,7 +404,7 @@ def teaching_vacancies(days: int) -> Iterator[Job]:
         data = http.get_json(url)
         postings = data.get("data", data if isinstance(data, list) else [])
         for p in postings:
-            posted = parse_date(p.get("datePosted"))
+            posted = parse_date(p.get("datePosted")) or UNDATED
             if not posted or posted < cutoff:
                 continue
             org = p.get("hiringOrganization") or {}
@@ -438,7 +438,7 @@ def arbeitnow(days: int) -> Iterator[Job]:
                              params={"page": page, "visa_sponsorship": "true"})
         results = data.get("data", [])
         for r in results:
-            posted = parse_date(r.get("created_at"))
+            posted = parse_date(r.get("created_at")) or UNDATED
             if not posted or posted < cutoff:
                 continue
             location = r.get("location", "")
@@ -613,7 +613,7 @@ def the_unijobs(days: int) -> Iterator[Job]:
             for item in (el for el in root.iter() if _local(el.tag) == "item"):
                 f = {_local(c.tag): (c.text or "").strip() for c in item}
                 link = f.get("link", "").split("?")[0]
-                posted = parse_date(f.get("pubDate"))
+                posted = parse_date(f.get("pubDate")) or UNDATED
                 if not link or link in items or not posted:
                     continue
                 new += 1
@@ -727,7 +727,7 @@ def rss_feeds(days: int, feeds: list[dict]) -> Iterator[Job]:
             for c in item:
                 tag = _local(c.tag)
                 f.setdefault(tag, (c.text or "").strip() or c.attrib.get("href", ""))
-            posted = parse_date(f.get("pubDate") or f.get("published") or f.get("updated") or f.get("date"))
+            posted = parse_date(f.get("pubDate") or f.get("published") or f.get("updated") or f.get("date")) or UNDATED
             if not posted or posted < cutoff:
                 continue
             title = f.get("title", "")
