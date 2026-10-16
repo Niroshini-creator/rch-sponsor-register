@@ -336,16 +336,20 @@ function jobsView() {
 // employer's own careers site leads and the Adzuna link is the fallback. Elsewhere the advert link leads.
 function applyRow(j) {
   const site = j.employer_site || careerSite(j.company);
-  const viaAdzuna = j.source === "Adzuna";
+  const viaAdzuna = j.channel === "aggregator" || j.source === "Adzuna";       // a job board's page, not the employer's own
+  const board = j.source || "the job board";
   const link = (href, text, primary, title) => h("a", { class: `btn${primary ? " primary" : ""}`, href, target: "_blank", rel: "noopener noreferrer", title }, text);
   const detail = h("p", { class: "small" }, h("b", {}, j.cv_to_use ? `Send: ${j.track} CV` : "Send: best-fitting CV"), ` · target role: ${j.role}${j.family_label ? ` (${j.family_label})` : ""}`);
   if (viaAdzuna && site) {
     return h("div", {}, h("div", { class: "apply-row" }, link(site, "Employer careers site →", true, "The employer's own careers site"),
-      link(j.url, "Advert on Adzuna", false, "Adzuna's page for this advert; it does not open everywhere"), detail),
+      link(j.url, `Advert on ${board}`, false, `${board}'s page for this advert; it may not open everywhere`), detail),
       h("p", { class: "small muted", style: "margin:4px 0 0" }, `On the careers site, search for “${j.title}”${j.location ? ` in ${j.location}` : ""}.`));
   }
-  return h("div", { class: "apply-row" }, link(j.url, viaAdzuna ? "Apply on Adzuna →" : "Apply →", true),
-    site && site !== j.url ? link(site, "Employer careers page", false, "The employer's own careers site, if the Apply link does not open") : null, detail);
+  // A job-board advert whose employer's careers page is not on file: a web search finds it.
+  const search = viaAdzuna && !site && j.company ? `https://www.google.com/search?q=${encodeURIComponent(`${j.company} careers ${j.title}`)}` : "";
+  return h("div", { class: "apply-row" }, link(j.url, viaAdzuna ? `Apply on ${board} →` : "Apply →", true),
+    site && site !== j.url ? link(site, "Employer careers page", false, "The employer's own careers site, if the Apply link does not open") : null,
+    search ? link(search, "Find on company careers site", false, "Searches the web for this employer's own careers page") : null, detail);
 }
 
 function card(j) {

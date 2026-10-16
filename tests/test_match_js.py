@@ -45,6 +45,10 @@ def rights_jobs(jobs):
               description="Own SAP GRC Access Control, access risk analysis, segregation of duties reviews, firefighter emergency access, "
                           "authorisations, ITGC audit evidence and remediation.", full_text="")
     out.append(kw)
+    dg = copy.deepcopy(kw)
+    dg.update(title="SAP GRC Consultant", description=dg["description"], kw=["sap grc", "grc access control", "segregation of duties", "firefighter", "itgc"],
+              signals="This role requires SC clearance and you must be a British citizen.", text_len=2600)
+    out.append(dg)
     return out
 
 

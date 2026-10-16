@@ -321,9 +321,17 @@ def reed(days: int) -> Iterator[Job]:
 
 
 # --------------------------------------------------------------------------- NHS Jobs
-NHS_MAX_ADVERTS = int(os.environ.get("NHS_MAX_ADVERTS", "700"))  # 300 for the sponsorship terms + the role searches
+NHS_MAX_ADVERTS = int(os.environ.get("NHS_MAX_ADVERTS", "1500"))  # 300 for the sponsorship terms + the role searches
 NHS_WORKERS = int(os.environ.get("NHS_WORKERS", "4"))
 _SCRIPT_RE = re.compile(r"(?is)<(script|style|noscript)[^>]*>.*?</\1>")
+
+
+def reed_job_text(job_id: str) -> str:
+    """Full advert text from Reed's job-details endpoint (the search only returns a short snippet)."""
+    key = os.environ.get("REED_API_KEY")
+    if not key:
+        raise SkipSource("REED_API_KEY not set")
+    return strip_html(http.get_json(f"https://www.reed.co.uk/api/1.0/jobs/{job_id}", basic_auth=(key, "")).get("jobDescription"))
 
 
 def _advert_text(url: str) -> str:
@@ -489,7 +497,7 @@ def jobtech_sweden(days: int) -> Iterator[Job]:
 
 
 # --------------------------------------------------------------------------- University & research boards
-ACADEMIC_MAX_ADVERTS = int(os.environ.get("ACADEMIC_MAX_ADVERTS", "400"))  # 150 for the sponsorship terms + the role searches
+ACADEMIC_MAX_ADVERTS = int(os.environ.get("ACADEMIC_MAX_ADVERTS", "800"))  # 150 for the sponsorship terms + the role searches
 ACADEMIC_PAUSE = float(os.environ.get("ACADEMIC_PAUSE", "0.3"))
 _LD_JSON_RE = re.compile(r'(?is)<script[^>]+application/ld\+json[^>]*>(.*?)</script>')
 
@@ -863,12 +871,23 @@ def _guess_country(text: str, default: str) -> str:
 # NHS Jobs and jobs.ac.uk are searched by the sponsorship terms above, which returns mostly clinical and academic posts.
 # These add the analyst, governance, IT, project and business roles that public-sector employers also advertise; the
 # register check in enrich() still keeps only employers that can sponsor.
-PUBLIC_SECTOR_ROLE_QUERIES = (
+def _family_searches(per_family: int = 3) -> tuple[str, ...]:
+    """The job titles each role family searches for (candidateboard/roles.json), so every kind of role a CV can be matched to
+    is also searched for at NHS trusts, universities and the rest of the public sector."""
+    try:
+        families = json.loads((Path(__file__).resolve().parent.parent / "candidateboard" / "roles.json").read_text(encoding="utf-8"))["families"]
+    except (OSError, ValueError, KeyError):
+        return ()
+    return tuple(t.lower() for fam in families.values() for t in fam.get("searches", [])[:per_family])
+
+
+PUBLIC_SECTOR_ROLE_QUERIES = tuple(dict.fromkeys((
     "business analyst", "systems analyst", "data analyst", "information analyst", "business intelligence",
     "sap", "grc", "access management", "information governance", "governance and compliance", "risk and compliance",
     "it support", "service desk", "application support", "systems administrator", "digital",
     "project coordinator", "project officer", "pmo", "digital marketing", "marketing officer", "business development",
-)
+    *_family_searches(),
+)))
 
 SOURCES: dict[str, Callable[..., Iterator[Job]]] = {
     "adzuna": adzuna,

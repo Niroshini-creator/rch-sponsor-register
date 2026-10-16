@@ -15,6 +15,8 @@ from .classify import (AVIATION_FAMILIES, DOMAINS, ENGLISH_SPEAKING_COUNTRIES, R
                        classify_aviation, classify_domain, classify_early_career, classify_english, classify_region,
                        classify_role, classify_sector, is_low_sponsorship, sponsorship_evidence, stamp1g_status)
 from .contacts import ContactBook
+from .deepen import previous_digests, read_full_adverts, reuse_digest
+from .digest import digest
 from .models import Job
 from .salary import salary_check
 from .text import normalise_company
@@ -162,6 +164,7 @@ def enrich(jobs: Iterable[Job], index: sponsors.SponsorIndex, tiers: TierRules,
         job.english = job.country in ENGLISH_SPEAKING_COUNTRIES or classify_english(job)
         job.early_career = job.early_career or classify_early_career(job)
         job.tier, job.size = tiers.classify(job)
+        job.kw, job.signals, job.text_len = digest(job.title, job.description)
         job.contacts = contacts.contacts_for(job)
 
         # Key on the register's legal name when matched, so "Monzo" and "Monzo Bank Ltd" merge.
@@ -189,9 +192,13 @@ def run(days: int, out_path: Path) -> dict:
     index = load_sponsor_index(status)
     raw = fetch_all(days, source_cfg, status, employers)
     stats: dict = {}
+    seen = previous_digests(out_path)
+    stats["full_adverts_read"] = read_full_adverts(raw, seen)
     agencies = AgencyFilter.load(CONFIG / "agencies.json") if source_cfg.get("exclude_agencies", True) else None
     tiers = TierRules.load(CONFIG / "company_tiers.json")
     jobs = enrich(raw, index, tiers, ContactBook.load(CONFIG / "contacts.json"), days, agencies, stats)
+    for job in jobs:
+        reuse_digest(job, seen)
     link_employer_sites(jobs, CONFIG / "early_career_employers.json")
     directory = build_directory(jobs, index, tiers, CONFIG / "early_career_employers.json")
 
@@ -205,7 +212,7 @@ def run(days: int, out_path: Path) -> dict:
         "channels": CHANNELS,
         "featured_countries": FEATURED_COUNTRIES,
         "sources": status,
-        "counts": {"fetched": len(raw), "agency_removed": stats["agency_removed"], "published": len(jobs)},
+        "counts": {"fetched": len(raw), "agency_removed": stats["agency_removed"], "published": len(jobs), "full_adverts_read": stats["full_adverts_read"]},
         "jobs": [j.to_dict() for j in jobs],
         "employers": directory,
     }
