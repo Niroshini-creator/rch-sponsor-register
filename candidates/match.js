@@ -196,22 +196,29 @@
       const have = new Set(base.map(([s]) => s));
       return [...base, ...fam.keywords.filter(([t]) => !have.has(t))];
     }
-    function keywordMatch(text, extract) {
+    // Skills found in the advert: by the feed's digest of the whole advert when there is one, else in the text.
+    const hitsIn = (skills, text, kw) => (skills || []).filter(([s, rx]) => (kw ? kw.has(s) : rx.test(text))).map(([s]) => s);
+    function keywordMatch(text, extract, kw) {
       let bestName = null, best = [];
       for (const [name, skills] of Object.entries(tracks)) {
-        const hits = skills.filter(([, rx]) => rx.test(text)).map(([s]) => s);
+        const hits = hitsIn(skills, text, kw);
         if (hits.length > best.length) { bestName = name; best = hits; }
       }
       if (bestName === null || best.length < (extract ? KEYWORD_MIN_EXTRACT : KEYWORD_MIN)) return null;
       return [TITLE_KEYWORD, { role: "Matched on CV keywords", family: null, tier: 4, track: bestName, why: `no target title, but the advert uses ${best.length} keywords from your CV` }];
     }
     function evaluate(job) {
-      const title = job.title || "", body = job.full_text || job.description || "", text = `${title}\n${body}`, extract = body.length < EXTRACT_CHARS;
-      const found = titleScore(title) || keywordMatch(text, extract);
+      // The feed publishes 400 characters of each advert plus a digest of the whole advert (keywords, clearance / licence /
+      // nationality sentences, length); a full_text read by the board builder takes priority over the digest.
+      const title = job.title || "", full = job.full_text || "", body = full || job.description || "", signals = full ? "" : job.signals || "";
+      const text = `${title}\n${body}` + (signals ? `\n${signals}` : "");
+      const kw = !full && job.text_len && job.kw ? new Set(job.kw) : null;
+      const extract = (full ? full.length : Math.max(job.text_len || 0, body.length)) < EXTRACT_CHARS;
+      const found = titleScore(title) || keywordMatch(text, extract, kw);
       if (!found) return null;
       const [titlePts, info] = found;
       const skills = skillsFor(info);
-      const hits = (skills || []).filter(([, rx]) => rx.test(text)).map(([s]) => s);
+      const hits = hitsIn(skills, text, kw);
       const skillPts = (extract ? SKILL_EXTRACT_MAX : SKILL_MAX) * Math.min(1.0, hits.length / SKILLS_FOR_FULL);
       const [levelPts, levelWhy, levelFlag] = level(title);
       const total = pyRound(titlePts + skillPts + levelPts);
@@ -274,7 +281,7 @@
       const ev = m.evaluate(rec);
       if (!ev || ev.match < minMatch + (ev.tier === 4 ? 5 : 0)) continue;
       if (ev.tier === 4 && (!ev.sponsorship_offered || ev.flags.length)) continue;
-      const out = Object.fromEntries(Object.entries(rec).filter(([k]) => !["full_text", "tier", "contacts"].includes(k)));
+      const out = Object.fromEntries(Object.entries(rec).filter(([k]) => !["full_text", "tier", "contacts", "kw", "signals", "text_len"].includes(k)));
       out.employer_tier = rec.employer_tier ?? rec.tier ?? 3;
       Object.assign(out, ev, { description: (rec.full_text || rec.description || "").slice(0, 500), live: true });
       const key = dedupeKey(rec), prev = best.get(key);

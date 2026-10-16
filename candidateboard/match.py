@@ -111,10 +111,15 @@ class Matcher:
         have = {s for s, _ in (base or [])}
         return list(base or []) + [(t, rx) for t, rx in fam.keywords if t not in have]
 
-    def _keyword_match(self, text: str, extract: bool) -> tuple[float, dict] | None:
+    @staticmethod
+    def _hits(skills: list, text: str, kw: set | None) -> list[str]:
+        """Skills found in the advert: by the feed's digest of the whole advert when there is one, else in the text."""
+        return [s for s, rx in (skills or []) if (s in kw if kw is not None else rx.search(text))]
+
+    def _keyword_match(self, text: str, extract: bool, kw: set | None) -> tuple[float, dict] | None:
         best_name, best = None, []
         for name, skills in self.tracks.items():
-            hits = [s for s, rx in skills if rx.search(text)]
+            hits = self._hits(skills, text, kw)
             if len(hits) > len(best):
                 best_name, best = name, hits
         if best_name is None or len(best) < (KEYWORD_MIN_EXTRACT if extract else KEYWORD_MIN):
@@ -179,14 +184,20 @@ class Matcher:
     # ------------------------------------------------------------------ whole job
     def evaluate(self, job: dict) -> dict | None:
         title = job.get("title", "")
-        text = f"{title}\n{job.get('full_text') or job.get('description', '')}"
-        extract = len(job.get("full_text") or job.get("description", "")) < EXTRACT_CHARS
-        found = self._title(title) or self._keyword_match(text, extract)
+        # The feed publishes 400 characters of each advert plus a digest of the whole advert (keywords, clearance / licence /
+        # nationality sentences, length); a full_text read by the board builder takes priority over the digest.
+        full = job.get("full_text") or ""
+        body = full or job.get("description", "")
+        signals = "" if full else job.get("signals", "")
+        text = f"{title}\n{body}" + (f"\n{signals}" if signals else "")
+        kw = set(job["kw"]) if not full and job.get("text_len") and job.get("kw") is not None else None
+        extract = (len(full) if full else max(job.get("text_len") or 0, len(body))) < EXTRACT_CHARS
+        found = self._title(title) or self._keyword_match(text, extract, kw)
         if not found:
             return None
         title_pts, info = found
         skills = self._skills_for(info)
-        hits = [s for s, rx in (skills or []) if rx.search(text)]
+        hits = self._hits(skills, text, kw)
         skill_pts = (SKILL_EXTRACT_MAX if extract else SKILL_MAX) * min(1.0, len(hits) / SKILLS_FOR_FULL)
         level_pts, level_why, level_flag = self._level(title)
         total = round(title_pts + skill_pts + level_pts)

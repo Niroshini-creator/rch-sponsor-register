@@ -53,6 +53,10 @@ class Job:
     contacts: list[dict] = field(default_factory=list)
     # Employer's own careers site, for job-board adverts at directory employers (board links can be region-locked).
     employer_site: str = ""
+    # Digest of the whole advert (see digest.py): keywords found, clearance / licence / nationality sentences, full length.
+    kw: list[str] = field(default_factory=list)
+    signals: str = ""
+    text_len: int = 0
 
     @property
     def id(self) -> str:
