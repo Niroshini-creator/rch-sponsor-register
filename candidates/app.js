@@ -250,8 +250,17 @@ function saveProfile() {
   try { sessionStorage.setItem("cb_profile", JSON.stringify(profile)); } catch (e) { /* private mode */ }
 }
 function rematch() { saveProfile(); state.tab = "1"; live.status = "pending"; render(); runLive(true); }
+// What was read from the CV: the skills and keywords the matching looks for in each advert, per CV.
+function skillsRead() {
+  const tracks = (data.candidate.tracks || []).filter(t => (t.skills || []).length);
+  if (!tracks.length) return null;
+  const plain = s => s.replace(/\[sz\]/g, "s").replace(/[\\?]/g, "").replace(/s\?$/, "s");
+  return h("details", { style: "margin-top:6px" }, h("summary", {}, `Skills and keywords read from your CV (${new Set(tracks.flatMap(t => t.skills)).size})`),
+    ...tracks.map(t => h("p", { style: "margin:4px 0" }, h("b", {}, `${t.name}: `), t.skills.map(plain).join(", "))),
+    h("p", { class: "muted", style: "margin:4px 0" }, "Adverts that use many of these words are shown even when the job title is not one you listed (under Other roles to consider)."));
+}
 function rolesPanel() {
-  const mine = data.candidate.roles.filter(r => r.source === "added by candidate" || r.source === "attached document");
+  const mine = data.candidate.roles.filter(r => ["added by candidate", "attached document", "document keywords"].includes(r.source));
   const input = h("input", { list: "role-suggestions-results", placeholder: "Add a role, e.g. Data Analyst", style: "min-width:260px;flex:1" });
   const add = () => { if (CandidateIntake.addRoles(data.candidate, input.value.split(/[,\n;]/)).length) rematch(); else input.value = ""; };
   input.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); add(); } });
@@ -272,6 +281,7 @@ function rolesPanel() {
     h("div", { class: "bar", style: "margin-top:6px" }, input, h("button", { type: "button", class: "btn", onclick: add }, "Add role"),
       h("label", {}, "or attach a document of positions", h("input", { type: "file", id: "attach-positions", accept: ".pdf,.docx,.txt,.md", onchange: attach }))),
     attachMsg,
+    skillsRead(),
     h("datalist", { id: "role-suggestions-results" }, ...CandidateIntake.suggestions().map(t => h("option", { value: t }))),
     h("p", { class: "muted", style: "margin:6px 0 0" }, "Roles you add are searched first and show under Tier 1. They only appear if employers advertise them this week, and the match % reflects how much of your CV fits."));
 }

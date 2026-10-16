@@ -156,6 +156,11 @@
     }
     return roles;
   }
+  /** The role families a document's wording points to (strongest first), for a list that names no job titles. */
+  function documentDomains(text, limit = 3) {
+    const found = scan(text).families;
+    return Object.keys(found).sort((a, b) => found[b].strength - found[a].strength || cmp(a, b)).filter(k => found[k].strength >= 12).slice(0, limit);
+  }
   /** A list of suitable roles: bullet or numbered lines are titles, other lines are section headings; with no bullets, line by line. */
   function parseRoleList(text) {
     const roles = []; let section = "", bulleted = false;
@@ -173,14 +178,20 @@
    *  Tier comes from how well the CV evidences that kind of role; a section named after a CV picks that CV. Returns the roles added. */
   function addPositions(profile, text) {
     const have = new Set(profile.roles.map(r => r.title.toLowerCase())), trackNames = profile.tracks.map(t => t.name), added = [];
-    for (const item of parseRoleList(text)) {
+    let items = parseRoleList(text);
+    if (items.length < 2) {      // no job titles in the document: read its keywords and search the domains they point to
+      const viaKeywords = [];
+      for (const fam of documentDomains(text)) for (const t of TAX.families[fam].searches.slice(0, 2)) viaKeywords.push({ title: t, section: "", source: "document keywords" });
+      items = [...items, ...viaKeywords];
+    }
+    for (const item of items) {
       const title = cleanTitles([item.title])[0];
       if (!title || have.has(title.toLowerCase())) continue;
       const family = familyForTitle(title), named = item.section ? trackForSection(item.section, trackNames) : null;
       const sameFamily = profile.roles.find(r => family && r.family === family);
       let tier = family ? ((profile.family_evidence || {})[family]?.tier ?? 3) : 3;
       if (item.section && !named) tier = Math.max(tier, 3);
-      const role = { title, family, tier: Math.min(tier, 3), track: named || (sameFamily ? sameFamily.track : trackNames[0]), source: "attached document" };
+      const role = { title, family, tier: Math.min(tier, 3), track: named || (sameFamily ? sameFamily.track : trackNames[0]), source: item.source || "attached document" };
       profile.roles.push(role); added.push(role); have.add(title.toLowerCase());
     }
     profile.roles.sort((a, b) => a.tier - b.tier || cmp(a.track, b.track) || cmp(a.title, b.title));
@@ -266,7 +277,9 @@
       roles.push({ title, family, tier: Math.min(tier, 3), track, source });
     };
     for (const title of cleanTitles(opts.extraRoles)) add(title, familyForTitle(title), "added by candidate", "", true);
-    if (rolesText) for (const item of parseRoleList(rolesText)) add(item.title, familyForTitle(item.title), "recruiter list", item.section);
+    const items = rolesText ? parseRoleList(rolesText) : [];
+    for (const item of items) add(item.title, familyForTitle(item.title), "recruiter list", item.section);
+    if (rolesText && items.length < 2) for (const fam of documentDomains(rolesText)) for (const t of TAX.families[fam].searches.slice(0, 2)) add(t, fam, "document keywords", "");
     const covered = new Set(roles.map(r => r.family));
     for (const [fam, tier] of Object.entries(tiers)) {
       if (tier <= 2 && !covered.has(fam) && combined[fam].strength >= SUGGEST_MIN_STRENGTH) for (const t of TAX.families[fam].searches.slice(0, 2)) add(t, fam, "suggested from CV", "");
@@ -287,6 +300,6 @@
     };
   }
 
-  const api = { init, addPositions, cleanTitles, suggestions, addRoles, taxonomy: () => TAX, regions: () => REGIONS.regions, expandRegions, keywordRe, tokens, scan, tierFamilies, parseRoleList, familyForTitle, buildProfile, experienceMonths, slugify, labels: () => Object.fromEntries(Object.entries(TAX.families).map(([k, f]) => [k, { label: f.label, sponsor: f.sponsor }])) };
+  const api = { init, addPositions, documentDomains, cleanTitles, suggestions, addRoles, taxonomy: () => TAX, regions: () => REGIONS.regions, expandRegions, keywordRe, tokens, scan, tierFamilies, parseRoleList, familyForTitle, buildProfile, experienceMonths, slugify, labels: () => Object.fromEntries(Object.entries(TAX.families).map(([k, f]) => [k, { label: f.label, sponsor: f.sponsor }])) };
   return api;
 });

@@ -40,6 +40,11 @@ def rights_jobs(jobs):
         j = copy.deepcopy(next(x for x in jobs if x.get("title")))
         j.update(country=country, sponsorship=status, location="Test")
         out.append(j)
+    kw = copy.deepcopy(next(x for x in jobs if x.get("title")))
+    kw.update(country="GB", sponsorship="confirmed", title="Compliance Delivery Officer", location="Test",
+              description="Own SAP GRC Access Control, access risk analysis, segregation of duties reviews, firefighter emergency access, "
+                          "authorisations, ITGC audit evidence and remediation.", full_text="")
+    out.append(kw)
     return out
 
 
@@ -135,3 +140,51 @@ class IndiaTests(unittest.TestCase):
             js = json.loads((d / "js.json").read_text())
         for i, (p, job) in enumerate(zip(profiles, jobs)):
             self.assertEqual(js[i][i], json.loads(json.dumps(match.Matcher(p).evaluate(job))), self.CASES[i][0])
+
+
+class KeywordDiscoveryTests(unittest.TestCase):
+    def profile(self):
+        from candidateboard import intake
+        import tempfile as tf
+        sys_path = ROOT / "tests"
+        from tests_fixtures import SAP_CV
+        with tf.TemporaryDirectory() as d:
+            (Path(d) / "sap.txt").write_text(SAP_CV, encoding="utf-8")
+            return intake.build_profile({"SAP Security & GRC": Path(d) / "sap.txt"}, "", name="Jane", slug="jane", location="Coventry")
+
+    def test_job_without_a_target_title_is_found_by_cv_keywords(self):
+        p = self.profile()
+        job = {"title": "Compliance Delivery Officer", "company": "X", "country": "GB", "sponsorship": "confirmed", "url": "u", "location": "Test",
+               "description": "Own SAP GRC Access Control, access risk analysis, segregation of duties reviews, firefighter emergency access, "
+                              "authorisations, ITGC audit evidence and remediation.", "full_text": ""}
+        r = match.Matcher(p).evaluate(job)
+        self.assertIsNotNone(r)
+        self.assertEqual((r["tier"], r["role"]), (4, "Matched on CV keywords"))
+        self.assertGreaterEqual(len(r["skills_matched"]), 4)
+        job["description"] = "Answer phones and book meetings."
+        self.assertIsNone(match.Matcher(p).evaluate(job))
+
+    def test_domain_keywords_count_for_a_role_the_cv_does_not_show(self):
+        p = self.profile()
+        p["roles"].append({"title": "Digital Marketing Executive", "family": "digital_marketing", "tier": 3, "track": "SAP Security & GRC", "source": "attached document"})
+        job = {"title": "Digital Marketing Executive", "company": "X", "country": "GB", "sponsorship": "confirmed", "url": "u", "location": "Test",
+               "description": "Run SEO, Google Analytics, email marketing and paid social campaigns. " * 3, "full_text": ""}
+        r = match.Matcher(p).evaluate(job)
+        self.assertTrue(r["skills_matched"])        # marketing keywords, not SAP ones
+
+
+@unittest.skipUnless(shutil.which("node"), "node is needed")
+class DocumentKeywordTests(unittest.TestCase):
+    PROSE = "I have worked in digital marketing campaigns, SEO, Google Analytics, email marketing and social media content for retail brands."
+
+    def test_document_without_titles_is_read_by_its_keywords_in_both_engines(self):
+        from candidateboard import intake
+        js = json.loads(subprocess.run(["node", "-e", """
+const fs = require('fs'); const R = process.env.ROOT;
+const I = require(R + '/candidates/intake.js').init(JSON.parse(fs.readFileSync(R + '/candidateboard/roles.json', 'utf8')));
+const p = { roles: [], tracks: [{name: 'CV'}], family_evidence: {} };
+console.log(JSON.stringify({ domains: I.documentDomains(process.env.PROSE), added: I.addPositions(p, process.env.PROSE).map(r => [r.title, r.source]) }));
+""" ], check=True, capture_output=True, text=True, env={"ROOT": str(ROOT), "PROSE": self.PROSE, "PATH": "/usr/bin:/bin:/usr/local/bin"}).stdout)
+        self.assertEqual(js["domains"], intake.document_domains(self.PROSE))
+        self.assertTrue(js["added"] and all(src == "document keywords" for _, src in js["added"]))
+        self.assertEqual(intake.document_domains("Hello"), [])
