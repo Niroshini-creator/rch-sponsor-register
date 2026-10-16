@@ -292,6 +292,7 @@ def reed(days: int) -> Iterator[Job]:
     queries += [(q, 200) for q in EARLY_CAREER_QUERIES["gb"]]
     queries += [(q, 100) for q in AVIATION_QUERIES]
     queries += [(q, 100) for q in MECHANICAL_QUERIES]
+    queries += [(q, 100) for q in _family_searches(3)]      # every role family a CV can be matched to
     owners = {employer.name: employer for employer, opts in _graduate_employers() if opts.get("reed")}
     queries += [(name, 200) for name in owners]
     for query, limit in queries:

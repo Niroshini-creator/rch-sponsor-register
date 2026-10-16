@@ -79,3 +79,30 @@ class ReadFullAdvertTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class FetchAllTests(unittest.TestCase):
+    def job(self, n):
+        return Job(source="S", source_id=str(n), title="T", company="C", location="L", country="GB", url="u", posted_at=datetime.now(timezone.utc))
+
+    def test_sources_run_together_and_a_slow_one_is_cut_off_at_the_time_budget(self):
+        from jobfeed import pipeline, sources
+        import itertools
+
+        def endless(days):
+            for n in itertools.count():
+                yield self.job(n)
+
+        fake = {"quick": lambda d: iter([self.job(1), self.job(2)]), "endless": endless,
+                "skipped": lambda d: (_ for _ in ()).throw(sources.SkipSource("no key")), "broken": lambda d: (_ for _ in ()).throw(RuntimeError("down"))}
+        status = {}
+        with mock.patch.object(sources, "SOURCES", fake), mock.patch.object(pipeline, "FEED_BUDGET_MINUTES", 0.0005), \
+                mock.patch.object(pipeline.careers, "career_sites", lambda d, e, r: iter(())), mock.patch.object(sources, "rss_feeds", lambda d, f: iter(())):
+            jobs = pipeline.fetch_all(7, {}, status)
+        self.assertEqual(status["quick"], {"status": "ok", "count": 2})
+        self.assertEqual(status["endless"]["status"], "partial")
+        self.assertIn("time budget", status["endless"]["error"])
+        self.assertEqual(status["skipped"]["status"], "skipped")
+        self.assertEqual(status["broken"]["status"], "error")
+        self.assertGreaterEqual(len(jobs), 3)
+        self.assertEqual([j.source_id for j in jobs[:2]], ["1", "2"])        # results keep the sources' order
