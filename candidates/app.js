@@ -260,7 +260,7 @@ function render() {
       h("div", { class: "stat" }, h("b", {}, sponsorOffered), "advert offers sponsorship"),
       h("div", { class: "stat" }, h("b", {}, employers), "sponsor-licensed employers"),
       h("div", { class: "stat" }, h("b", {}, jobs.filter(j => j.hidden_by_default.includes("clearance")).length), "need clearance (hidden)")),
-    liveBanner(), live.mode === "self" ? rolesPanel() : null, live.mode === "self" ? publicSectorSearch() : null, sourceStatus(), tabs];
+    liveBanner(), live.mode === "self" ? rolesPanel() : null, live.mode === "self" ? publicSectorSearch() : null, live.mode === "self" ? indiaGovernmentSearch() : null, sourceStatus(), tabs];
   if (state.tab === "employers") parts.push(employersView());
   else if (state.tab === "cv") parts.push(cvView());
   else parts.push(...jobsView());
@@ -303,6 +303,24 @@ function publicSectorSearch() {
   return h("details", { class: "panel small" }, h("summary", {}, "Search government, NHS and university sites for your roles"),
     h("p", { class: "muted", style: "margin:6px 0" }, "These open each site's own search for the roles that fit your CV. Most Civil Service posts are limited to UK nationals or settled status and rarely sponsor, so check the advert's nationality rules first."),
     ...titles.map(t => h("div", { class: "apply-row", style: "margin:4px 0" }, h("b", { style: "min-width:220px" }, t), ...sites.map(([name, url, tip]) => link(url(t), name, tip)))));
+}
+
+// Indian government vacancies are advertised on many separate portals with no shared feed, so for candidates who ticked India these
+// links open the official job portals and a site-restricted search for each of the candidate's best roles.
+function indiaGovernmentSearch() {
+  if (!(data.candidate.countries || []).includes("IN")) return null;
+  const titles = [...new Set(data.candidate.roles.filter(r => r.tier <= 2).map(r => r.title.replace(/\s*[—–(].*$/, "").trim()))].filter(Boolean).slice(0, 6);
+  const q = encodeURIComponent, link = (href, text, title) => h("a", { class: "btn", href, target: "_blank", rel: "noopener noreferrer", title }, text);
+  const web = (t, site) => `https://www.google.com/search?q=${q(`site:${site} "${t}"`)}`;
+  return h("details", { class: "panel small" }, h("summary", {}, "Search Indian government job sites for your roles"),
+    h("p", { class: "muted", style: "margin:6px 0" }, "Government posts are on separate portals, so they are not in the matched list. Open the official portals, or search them for your roles below. Government pay follows pay levels, so the LPA minimum does not apply to them."),
+    h("div", { class: "apply-row", style: "margin:4px 0" }, h("b", { style: "min-width:220px" }, "Official portals"),
+      link("https://www.ncs.gov.in/", "National Career Service", "Government of India's national job portal"),
+      link("https://www.employmentnews.gov.in/", "Employment News", "Weekly government vacancy notices")),
+    ...titles.map(t => h("div", { class: "apply-row", style: "margin:4px 0" }, h("b", { style: "min-width:220px" }, t),
+      link(web(t, "ncs.gov.in"), "National Career Service", "Web search limited to ncs.gov.in"),
+      link(web(t, "gov.in"), "Government sites (gov.in)", "Web search limited to gov.in sites"),
+      link(web(t, "nic.in"), "NIC sites (nic.in)", "Web search limited to nic.in sites"))));
 }
 
 function rolesPanel() {
