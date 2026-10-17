@@ -296,6 +296,7 @@ function publicSectorSearch() {
   const q = encodeURIComponent;
   const sites = [
     ["Civil Service Jobs", t => `https://www.google.com/search?q=${q(`site:civilservicejobs.service.gov.uk "${t}"`)}`, "Searches the web for Civil Service Jobs adverts for this title"],
+    ["All .gov.uk sites (councils, departments)", t => `https://www.google.com/search?q=${q(`site:gov.uk (vacancy OR vacancies OR jobs) "${t}"`)}`, "Searches every .gov.uk site, including council and agency vacancy pages"],
     ["Find a Job (GOV.UK)", t => `https://findajob.dwp.gov.uk/search?q=${q(t)}&w=UK`, "GOV.UK's own job search"],
     ["NHS Jobs", t => `https://www.jobs.nhs.uk/candidate/search/results?keyword=${q(t)}&language=en`, "NHS Jobs search"],
     ["Universities (jobs.ac.uk)", t => `https://www.jobs.ac.uk/search/?keywords=${q(t)}`, "jobs.ac.uk search"]];
