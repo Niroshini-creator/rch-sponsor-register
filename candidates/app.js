@@ -28,9 +28,10 @@ async function getJSON(url) {
   if (!r.ok) throw new Error(`${url}: HTTP ${r.status}`);
   return r.json();
 }
+const postedText = j => (j.date_known === false ? "date posted not mentioned" : `posted ${ago(j.posted_at)}`);
 function ago(iso) {
   const d = (Date.now() - new Date(iso).getTime()) / 864e5;
-  if (d < 1) return "today";
+  if (d < 1) { const h = Math.max(1, Math.floor(d * 24)); return h <= 1 && d * 24 < 1 ? "less than an hour ago" : `${h} hour${h === 1 ? "" : "s"} ago`; }
   return d < 2 ? "yesterday" : `${Math.floor(d)} days ago`;
 }
 function monthsLeft(expires) {
@@ -198,7 +199,8 @@ function selfView(profile) {
 function visible(j, tab = state.tab) {
   if (j.tier !== Number(tab)) return false;
   if (j.match < state.min) return false;
-  if ((Date.now() - new Date(j.posted_at)) / 864e5 > state.days) return false;
+  // An advert with no posting date counts as inside the 7-day window only; the shorter windows need a date.
+  if (j.date_known === false ? state.days < 7 : (Date.now() - new Date(j.posted_at)) / 864e5 > state.days) return false;
   if (state.q && !`${j.title} ${j.company} ${j.location} ${j.role} ${j.sector}`.toLowerCase().includes(state.q.toLowerCase())) return false;
   if (state.sector && j.sector !== state.sector) return false;
   if (state.etier && String(j.employer_tier) !== state.etier) return false;
@@ -238,7 +240,7 @@ function hiddenSummary() {
 
 function sortJobs(list) {
   const by = { match: (a, b) => b.match - a.match || a.sponsorship_rank - b.sponsorship_rank,
-    newest: (a, b) => new Date(b.posted_at) - new Date(a.posted_at),
+    newest: (a, b) => (b.date_known === false ? 0 : new Date(b.posted_at)) - (a.date_known === false ? 0 : new Date(a.posted_at)),
     sponsor: (a, b) => a.sponsorship_rank - b.sponsorship_rank || b.match - a.match,
     pay: (a, b) => (b.salary_annual || 0) - (a.salary_annual || 0) }[state.sort];
   return list.slice().sort(by);
@@ -258,7 +260,7 @@ function render() {
       h("div", { class: "stat" }, h("b", {}, sponsorOffered), "advert offers sponsorship"),
       h("div", { class: "stat" }, h("b", {}, employers), "sponsor-licensed employers"),
       h("div", { class: "stat" }, h("b", {}, jobs.filter(j => j.hidden_by_default.includes("clearance")).length), "need clearance (hidden)")),
-    liveBanner(), live.mode === "self" ? rolesPanel() : null, sourceStatus(), tabs];
+    liveBanner(), live.mode === "self" ? rolesPanel() : null, live.mode === "self" ? publicSectorSearch() : null, live.mode === "self" ? indiaGovernmentSearch() : null, sourceStatus(), tabs];
   if (state.tab === "employers") parts.push(employersView());
   else if (state.tab === "cv") parts.push(cvView());
   else parts.push(...jobsView());
@@ -285,6 +287,43 @@ function skillsRead() {
     ...tracks.map(t => h("p", { style: "margin:4px 0" }, h("b", {}, `${t.name}: `), t.skills.map(plain).join(", "))),
     h("p", { class: "muted", style: "margin:4px 0" }, "Adverts that use many of these words are shown even when the job title is not one you listed (under Other roles to consider)."));
 }
+// Civil Service Jobs has no public feed, so its vacancies cannot be matched here. These links open the public-sector sites' own
+// searches for the candidate's best roles (UK candidates only), so nothing is missed while the feed's coverage is thin.
+function publicSectorSearch() {
+  if (!(data.candidate.countries || []).includes("GB")) return null;
+  const titles = [...new Set(data.candidate.roles.filter(r => r.tier <= 2).map(r => r.title.replace(/\s*[—–(].*$/, "").trim()))].filter(Boolean).slice(0, 6);
+  if (!titles.length) return null;
+  const q = encodeURIComponent;
+  const sites = [
+    ["Civil Service Jobs", t => `https://www.google.com/search?q=${q(`site:civilservicejobs.service.gov.uk "${t}"`)}`, "Searches the web for Civil Service Jobs adverts for this title"],
+    ["All .gov.uk sites (councils, departments)", t => `https://www.google.com/search?q=${q(`site:gov.uk (vacancy OR vacancies OR jobs) "${t}"`)}`, "Searches every .gov.uk site, including council and agency vacancy pages"],
+    ["Find a Job (GOV.UK)", t => `https://findajob.dwp.gov.uk/search?q=${q(t)}&w=UK`, "GOV.UK's own job search"],
+    ["NHS Jobs", t => `https://www.jobs.nhs.uk/candidate/search/results?keyword=${q(t)}&language=en`, "NHS Jobs search"],
+    ["Universities (jobs.ac.uk)", t => `https://www.jobs.ac.uk/search/?keywords=${q(t)}`, "jobs.ac.uk search"]];
+  const link = (href, text, title) => h("a", { class: "btn", href, target: "_blank", rel: "noopener noreferrer", title }, text);
+  return h("details", { class: "panel small" }, h("summary", {}, "Search government, NHS and university sites for your roles"),
+    h("p", { class: "muted", style: "margin:6px 0" }, "These open each site's own search for the roles that fit your CV. Most Civil Service posts are limited to UK nationals or settled status and rarely sponsor, so check the advert's nationality rules first."),
+    ...titles.map(t => h("div", { class: "apply-row", style: "margin:4px 0" }, h("b", { style: "min-width:220px" }, t), ...sites.map(([name, url, tip]) => link(url(t), name, tip)))));
+}
+
+// Indian government vacancies are advertised on many separate portals with no shared feed, so for candidates who ticked India these
+// links open the official job portals and a site-restricted search for each of the candidate's best roles.
+function indiaGovernmentSearch() {
+  if (!(data.candidate.countries || []).includes("IN")) return null;
+  const titles = [...new Set(data.candidate.roles.filter(r => r.tier <= 2).map(r => r.title.replace(/\s*[—–(].*$/, "").trim()))].filter(Boolean).slice(0, 6);
+  const q = encodeURIComponent, link = (href, text, title) => h("a", { class: "btn", href, target: "_blank", rel: "noopener noreferrer", title }, text);
+  const web = (t, site) => `https://www.google.com/search?q=${q(`site:${site} "${t}"`)}`;
+  return h("details", { class: "panel small" }, h("summary", {}, "Search Indian government job sites for your roles"),
+    h("p", { class: "muted", style: "margin:6px 0" }, "Government posts are on separate portals, so they are not in the matched list. Open the official portals, or search them for your roles below. Government pay follows pay levels, so the LPA minimum does not apply to them."),
+    h("div", { class: "apply-row", style: "margin:4px 0" }, h("b", { style: "min-width:220px" }, "Official portals"),
+      link("https://www.ncs.gov.in/", "National Career Service", "Government of India's national job portal"),
+      link("https://www.employmentnews.gov.in/", "Employment News", "Weekly government vacancy notices")),
+    ...titles.map(t => h("div", { class: "apply-row", style: "margin:4px 0" }, h("b", { style: "min-width:220px" }, t),
+      link(web(t, "ncs.gov.in"), "National Career Service", "Web search limited to ncs.gov.in"),
+      link(web(t, "gov.in"), "Government sites (gov.in)", "Web search limited to gov.in sites"),
+      link(web(t, "nic.in"), "NIC sites (nic.in)", "Web search limited to nic.in sites"))));
+}
+
 function rolesPanel() {
   const mine = data.candidate.roles.filter(r => ["added by candidate", "attached document", "document keywords"].includes(r.source));
   const input = h("input", { list: "role-suggestions-results", placeholder: "Add a role, e.g. Data Analyst", style: "min-width:260px;flex:1" });
@@ -396,7 +435,7 @@ function card(j) {
   return h("li", { class: `card ${j.hidden_by_default.length ? "dim" : ""}`, "data-tier": j.tier },
     h("div", { class: "card-top" },
       h("div", {}, h("h3", {}, h("a", { href: j.url, target: "_blank", rel: "noopener" }, j.title)),
-        h("p", { class: "meta" }, [j.company, j.location, j.country !== "GB" ? countryName(j.country) : "", money(j.salary, j.country), `posted ${ago(j.posted_at)}`].filter(Boolean).join(" · "))),
+        h("p", { class: "meta" }, [j.company, j.location, j.country !== "GB" ? countryName(j.country) : "", money(j.salary, j.country), postedText(j)].filter(Boolean).join(" · "))),
       h("div", { class: "match", title: "Fit with the candidate's CV: title 50 · skills 40 · level 10" }, h("b", {}, `${j.match}%`), "match",
         h("div", { class: "meter" }, h("i", { style: `width:${j.match}%` })))),
     h("ul", { class: "badges" }, badges.filter(Boolean).map(b => h("li", {}, b))),
@@ -456,7 +495,7 @@ function downloadProfile() {
 function exportCsv(list) {
   const cols = ["tier", "match", "title", "company", "location", "salary", "posted_at", "sponsorship_label", "clearance", "visa_pay", "role", "track", "source", "url", "careers_site"];
   const cell = v => `"${String(v ?? "").replaceAll('"', '""')}"`;
-  const val = (j, k) => k === "clearance" ? j.clearance.label : k === "visa_pay" ? j.visa_pay.status : k === "salary" ? money(j.salary) : k === "careers_site" ? (j.employer_site || careerSite(j.company)) : j[k];
+  const val = (j, k) => k === "clearance" ? j.clearance.label : k === "visa_pay" ? j.visa_pay.status : k === "salary" ? money(j.salary) : k === "posted_at" && j.date_known === false ? "date not mentioned" : k === "careers_site" ? (j.employer_site || careerSite(j.company)) : j[k];
   const csv = [cols.join(","), ...list.map(j => cols.map(k => cell(val(j, k))).join(","))].join("\n");
   const a = h("a", { href: URL.createObjectURL(new Blob([csv], { type: "text/csv" })), download: `${data.candidate.slug}-roles.csv` });
   document.body.append(a); a.click(); a.remove();

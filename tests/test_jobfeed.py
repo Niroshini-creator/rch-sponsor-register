@@ -5,7 +5,7 @@ from pathlib import Path
 from unittest import mock
 
 from jobfeed import classify, contacts, pipeline, sources, sponsors
-from jobfeed.models import Job
+from jobfeed.models import UNDATED, Job
 from jobfeed.text import normalise_company, parse_date
 
 CONFIG = Path(__file__).resolve().parent.parent / "config"
@@ -162,9 +162,13 @@ class EnrichTests(unittest.TestCase):
             make_job(source_id="dubai", country="AE", location="Dubai", title="Accountant", description="Great role"),
             make_job(source_id="canada", country="CA", title="Chemist", description="Visa sponsorship available"),
             make_job(source_id="india", country="IN", location="Pune", title="Data Analyst", description="Great role"),
+            make_job(source_id="undated", posted_at=UNDATED, title="Engineer", description="Visa sponsorship available"),
         ]
         out = {j.source_id: j for j in self.run_enrich(jobs)}
-        self.assertEqual(set(out), {"neg", "licensed", "confirmed", "us", "dubai", "india"})
+        self.assertEqual(set(out), {"neg", "licensed", "confirmed", "us", "dubai", "india", "undated"})
+        self.assertFalse(out["undated"].date_known)                 # no posting date: kept, marked
+        self.assertTrue(out["licensed"].date_known)
+        self.assertLess((datetime.now(timezone.utc) - out["undated"].posted_at).total_seconds(), 60)
         self.assertEqual(out["india"].sponsorship, "local")        # India: the role is in the candidate's home country
         self.assertEqual((out["neg"].sponsorship, out["neg"].sponsorship_evidence),
                          ("not_sponsored", "We cannot offer sponsorship"))

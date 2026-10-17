@@ -118,3 +118,13 @@ The feed build reads all sources at the same time (`jobfeed.pipeline.fetch_all`)
 ## Suitable roles: what limits the list
 
 Measured on the feed for a UK profile: of 4,586 UK adverts, about 630 matched a role or the CV's keywords; about 350 of those scored under the 40% cut-off (short extracts earn few skill points), and roughly half of the rest were only on job boards. Changes: (1) a short extract now earns its full skill points from 3 CV skills instead of 5 (`SKILLS_FOR_FULL_EXTRACT`); (2) a candidate who uploads a CV sees job-board adverts by default (`SELF_SERVE_SOURCE` in `candidates/app.js`; the feed already drops agencies and keeps only licensed sponsors or adverts that offer sponsorship), still labelled with the board; (3) under the list, "Not shown at this tab" counts what the filters hide (job boards, no sponsorship, pay below the visa minimum, clearance, language, nationals only) with a "Show them all" button; (4) Reed is also searched for every role family's job titles.
+
+## Posting dates
+
+Only adverts from the last 7 days are published (24 hours and 3 days are filters inside that). An advert that gives no posting date is no longer dropped: it is kept with `date_known: false` (`posted_at` is the day the feed found it), shown as "date posted not mentioned", counted only in the 7-day view, and exported as "date not mentioned". At most `MAX_UNDATED_PER_SOURCE` (300) undated adverts are kept per source, since an undated advert cannot be told apart from an old one. An undated copy never replaces a dated copy of the same job.
+
+## Civil Service vacancies
+
+Civil Service Jobs has no public feed or API, so its vacancies are not in the shared feed; the feed only carries the Civil Service departments' adverts that appear on Reed (`config/public_sector_employers.json`) and a few on Adzuna and NHS Jobs. For UK candidates the results page has "Search government, NHS and university sites for your roles": one-click searches on Civil Service Jobs (a site-restricted web search), every .gov.uk site (councils, departments and agencies), Find a Job (GOV.UK), NHS Jobs and jobs.ac.uk for the candidate's best roles (tiers 1-2). Most Civil Service posts are limited to UK nationals or settled status and rarely sponsor, so the nationals-only check hides many of them for visa candidates.
+
+For candidates who ticked India, "Search Indian government job sites for your roles" links to the National Career Service and Employment News portals and to site-restricted searches (ncs.gov.in, gov.in, nic.in) for each best role. Indian government vacancies have no shared feed, so they are not in the matched list, and the LPA minimum does not apply to them.
