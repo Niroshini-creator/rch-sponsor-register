@@ -260,7 +260,7 @@ function render() {
       h("div", { class: "stat" }, h("b", {}, sponsorOffered), "advert offers sponsorship"),
       h("div", { class: "stat" }, h("b", {}, employers), "sponsor-licensed employers"),
       h("div", { class: "stat" }, h("b", {}, jobs.filter(j => j.hidden_by_default.includes("clearance")).length), "need clearance (hidden)")),
-    liveBanner(), live.mode === "self" ? rolesPanel() : null, sourceStatus(), tabs];
+    liveBanner(), live.mode === "self" ? rolesPanel() : null, live.mode === "self" ? publicSectorSearch() : null, sourceStatus(), tabs];
   if (state.tab === "employers") parts.push(employersView());
   else if (state.tab === "cv") parts.push(cvView());
   else parts.push(...jobsView());
@@ -287,6 +287,24 @@ function skillsRead() {
     ...tracks.map(t => h("p", { style: "margin:4px 0" }, h("b", {}, `${t.name}: `), t.skills.map(plain).join(", "))),
     h("p", { class: "muted", style: "margin:4px 0" }, "Adverts that use many of these words are shown even when the job title is not one you listed (under Other roles to consider)."));
 }
+// Civil Service Jobs has no public feed, so its vacancies cannot be matched here. These links open the public-sector sites' own
+// searches for the candidate's best roles (UK candidates only), so nothing is missed while the feed's coverage is thin.
+function publicSectorSearch() {
+  if (!(data.candidate.countries || []).includes("GB")) return null;
+  const titles = [...new Set(data.candidate.roles.filter(r => r.tier <= 2).map(r => r.title.replace(/\s*[—–(].*$/, "").trim()))].filter(Boolean).slice(0, 6);
+  if (!titles.length) return null;
+  const q = encodeURIComponent;
+  const sites = [
+    ["Civil Service Jobs", t => `https://www.google.com/search?q=${q(`site:civilservicejobs.service.gov.uk "${t}"`)}`, "Searches the web for Civil Service Jobs adverts for this title"],
+    ["Find a Job (GOV.UK)", t => `https://findajob.dwp.gov.uk/search?q=${q(t)}&w=UK`, "GOV.UK's own job search"],
+    ["NHS Jobs", t => `https://www.jobs.nhs.uk/candidate/search/results?keyword=${q(t)}&language=en`, "NHS Jobs search"],
+    ["Universities (jobs.ac.uk)", t => `https://www.jobs.ac.uk/search/?keywords=${q(t)}`, "jobs.ac.uk search"]];
+  const link = (href, text, title) => h("a", { class: "btn", href, target: "_blank", rel: "noopener noreferrer", title }, text);
+  return h("details", { class: "panel small" }, h("summary", {}, "Search government, NHS and university sites for your roles"),
+    h("p", { class: "muted", style: "margin:6px 0" }, "These open each site's own search for the roles that fit your CV. Most Civil Service posts are limited to UK nationals or settled status and rarely sponsor, so check the advert's nationality rules first."),
+    ...titles.map(t => h("div", { class: "apply-row", style: "margin:4px 0" }, h("b", { style: "min-width:220px" }, t), ...sites.map(([name, url, tip]) => link(url(t), name, tip)))));
+}
+
 function rolesPanel() {
   const mine = data.candidate.roles.filter(r => ["added by candidate", "attached document", "document keywords"].includes(r.source));
   const input = h("input", { list: "role-suggestions-results", placeholder: "Add a role, e.g. Data Analyst", style: "min-width:260px;flex:1" });

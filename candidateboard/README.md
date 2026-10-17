@@ -122,3 +122,7 @@ Measured on the feed for a UK profile: of 4,586 UK adverts, about 630 matched a 
 ## Posting dates
 
 Only adverts from the last 7 days are published (24 hours and 3 days are filters inside that). An advert that gives no posting date is no longer dropped: it is kept with `date_known: false` (`posted_at` is the day the feed found it), shown as "date posted not mentioned", counted only in the 7-day view, and exported as "date not mentioned". At most `MAX_UNDATED_PER_SOURCE` (300) undated adverts are kept per source, since an undated advert cannot be told apart from an old one. An undated copy never replaces a dated copy of the same job.
+
+## Civil Service vacancies
+
+Civil Service Jobs has no public feed or API, so its vacancies are not in the shared feed; the feed only carries the Civil Service departments' adverts that appear on Reed (`config/public_sector_employers.json`) and a few on Adzuna and NHS Jobs. For UK candidates the results page has "Search government, NHS and university sites for your roles": one-click searches on Civil Service Jobs (a site-restricted web search), Find a Job (GOV.UK), NHS Jobs and jobs.ac.uk for the candidate's best roles (tiers 1-2). Most Civil Service posts are limited to UK nationals or settled status and rarely sponsor, so the nationals-only check hides many of them for visa candidates.
