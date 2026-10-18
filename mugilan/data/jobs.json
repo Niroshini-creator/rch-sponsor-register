@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-17T11:10:00+00:00",
+ "generated_at": "2026-10-18T11:42:21+00:00",
  "window_days": 7,
  "profile": {
   "name": "Mugilan Ramalingam",
@@ -29,11 +29,11 @@
   },
   "Reed": {
    "status": "ok",
-   "count": 375
+   "count": 392
   },
   "Adzuna": {
    "status": "ok",
-   "count": 21
+   "count": 24
   },
   "Career sites": {
    "status": "ok",
@@ -41,10 +41,10 @@
   }
  },
  "counts": {
-  "fetched": 396,
-  "clearance_removed": 32,
+  "fetched": 416,
+  "clearance_removed": 50,
   "no_sponsorship_removed": 6,
-  "language_removed": 16,
+  "language_removed": 18,
   "below_threshold": 342,
   "full_advert_fetched": 80,
   "published": 0
@@ -565,6 +565,61 @@
    ],
    "matched_keywords": [
     "design authority"
+   ],
+   "agency": true,
+   "currency": "£"
+  },
+  {
+   "source": "Reed",
+   "source_id": "57469198",
+   "title": "Solution Architect - Pet Drugs Online",
+   "company": "eFinancialCareers",
+   "location": "Keynsham",
+   "country": "GB",
+   "url": "https://www.reed.co.uk/jobs/solution-architect-pet-drugs-online/57469198",
+   "posted_at": "2026-10-17T00:00:00+00:00",
+   "description": "Pet Drugs Online is one of the UK's largest online pet pharmacies. We started in 2005 in a small Bath vet surgery with a simple aim: to make pet healthcare more affordable. Today we supply veterinary medicines, prescriptions, pet food and everyday essentials to owners across the country. We're part of IVC Evidensia, which gives us the backing of a major veterinary group while we keep the pace of an ecommerce business that trades every day. IVC Evidensia is the UK and Europe's leading veterinary care group, made up of over 900 practices and referral hospitals, united by a shared purpose of…",
+   "salary": "",
+   "contract": "",
+   "channel": "aggregator",
+   "sponsorship": "licensed_sponsor",
+   "sponsor_register": "",
+   "sponsorship_evidence": "",
+   "sponsor_routes": [],
+   "sector": "",
+   "domain": "",
+   "role": "",
+   "region": "",
+   "english": true,
+   "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
+   "salary_check": "",
+   "salary_annual": 0,
+   "salary_threshold": 0,
+   "tier": 3,
+   "size": "unknown",
+   "contacts": [],
+   "employer_site": "",
+   "date_known": true,
+   "kw": [],
+   "signals": "",
+   "text_len": 0,
+   "id": "543944016ff4",
+   "match": 32,
+   "reasons": [
+    "+20 Solution / technical architect title",
+    "+5 telecom OSS/BSS keywords",
+    "+2 architecture practice / GCP",
+    "+5 senior / architect level"
+   ],
+   "flags": [
+    "Salary not stated",
+    "Recruitment agency advert"
+   ],
+   "matched_keywords": [
+    "order management",
+    "togaf"
    ],
    "agency": true,
    "currency": "£"
