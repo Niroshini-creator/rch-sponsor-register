@@ -1,0 +1,48 @@
+/**
+ * Resume Crafting Hub - CV intake.
+ * Saves each CV to Google Drive, logs a row in the bound Google Sheet,
+ * and emails HR the details with the CV attached.
+ * Setup steps are in cv-review/README.md.
+ */
+var HR_EMAIL = "hr@resumecraftinghub.com";
+var FOLDER_NAME = "RCH CV Submissions";
+
+function doPost(e) {
+  try {
+    var d = JSON.parse(e.postData.contents);
+    if (d.honey) return out({ success: true });
+    var bytes = Utilities.base64Decode(d.fileData);
+    var blob = Utilities.newBlob(bytes, d.fileType || "application/octet-stream", d.fileName);
+
+    var stamp = Utilities.formatDate(new Date(), "Europe/London", "yyyy-MM-dd_HHmm");
+    var safeName = String(d.name || "candidate").replace(/[^\w\- ]/g, "").trim();
+    blob.setName(stamp + "_" + safeName + "_" + d.fileName);
+
+    var file = getFolder().createFile(blob);
+
+    SpreadsheetApp.getActiveSpreadsheet().getSheets()[0].appendRow([
+      new Date(), d.name, d.email, d.phone, d.country, d.linkedin, d.plan, file.getUrl()
+    ]);
+
+    MailApp.sendEmail({
+      to: HR_EMAIL,
+      replyTo: d.email,
+      subject: "New CV review registration - " + d.name + " (" + d.plan + ")",
+      htmlBody: "<p><b>Name:</b> " + esc(d.name) + "<br><b>Email:</b> " + esc(d.email) +
+        "<br><b>Mobile:</b> " + esc(d.phone) + "<br><b>Country:</b> " + esc(d.country) +
+        "<br><b>LinkedIn:</b> " + esc(d.linkedin) + "<br><b>Package:</b> " + esc(d.plan) +
+        '</p><p><a href="' + file.getUrl() + '">Open CV in Drive</a></p>',
+      attachments: [file.getBlob()]
+    });
+    return out({ success: true });
+  } catch (err) {
+    return out({ success: false, message: String(err) });
+  }
+}
+
+function getFolder() {
+  var it = DriveApp.getFoldersByName(FOLDER_NAME);
+  return it.hasNext() ? it.next() : DriveApp.createFolder(FOLDER_NAME);
+}
+function esc(s) { return String(s || "").replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+function out(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }

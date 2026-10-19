@@ -139,6 +139,8 @@ footer{text-align:center;color:var(--mute);font-size:.8rem;padding:16px}
 /* ===== CONFIG: edit these ===== */
 const CONFIG = {
   HR_EMAIL: "hr@resumecraftinghub.com",
+  // Google Apps Script web app URL (saves CVs to Drive). Leave "" to fall back to FormSubmit email-only.
+  SCRIPT_URL: "",
   // Stripe/PayPal/Razorpay payment links, one per package. Leave "" to show "email us for payment link".
   PAY_LINKS: { "CV Review & Update - GBP 85": "", "Full Placement Support - GBP 380": "" },
   MAX_MB: 5
@@ -204,13 +206,21 @@ $("regForm").onsubmit = async e => {
   const fd = new FormData($("regForm"));
   fd.delete("attachment"); fd.append("attachment", file, file.name);
   fd.append("_replyto", email);
-  $("submitBtn").disabled = true; $("submitBtn").textContent = "Sending…";
+  $("submitBtn").disabled = true; $("submitBtn").textContent = "Sending\u2026";
   try{
-    const r = await fetch("https://formsubmit.co/ajax/" + CONFIG.HR_EMAIL, {method:"POST", body:fd, headers:{Accept:"application/json"}});
-    const j = await r.json().catch(() => ({}));
+    let r, j;
+    if(CONFIG.SCRIPT_URL){
+      const data = await new Promise((res, rej) => { const fr = new FileReader(); fr.onload = () => res(String(fr.result).split(",")[1]); fr.onerror = rej; fr.readAsDataURL(file); });
+      r = await fetch(CONFIG.SCRIPT_URL, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body: JSON.stringify({
+        name, email, phone, country: fd.get("Country"), linkedin: fd.get("LinkedIn"), plan: fd.get("plan"),
+        honey: fd.get("_honey"), fileName: file.name, fileType: file.type, fileData: data })});
+    } else {
+      r = await fetch("https://formsubmit.co/ajax/" + CONFIG.HR_EMAIL, {method:"POST", body:fd, headers:{Accept:"application/json"}});
+    }
+    j = await r.json().catch(() => ({}));
     if(!r.ok || j.success === "false" || j.success === false) throw new Error(j.message || ("HTTP " + r.status));
   }catch(err){
-    console.error("FormSubmit error:", err);
+    console.error("Submit error:", err);
     $("err3").textContent = "Sorry, we could not send your details (" + (err.message || "network error") + "). Please try again or email your CV to " + CONFIG.HR_EMAIL + ".";
     $("submitBtn").disabled = false; $("submitBtn").textContent = "Register & continue to payment"; return;
   }
