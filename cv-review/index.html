@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Free CV &amp; LinkedIn Review | Resume Crafting Hub</title>
+<meta name="description" content="Upload your CV for a free instant review. UK and Europe candidates: expert CV and LinkedIn update within 24-48 hours.">
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--ink:#1c2433;--mute:#5d6b82;--brand:#0a66c2;--brand-d:#084d94;--ok:#12805c;--warn:#b25e00;--bad:#c0392b;--line:#dde3ee}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:var(--brand);color:#fff;padding:18px 16px;text-align:center}
+header h1{margin:0;font-size:1.35rem}header p{margin:4px 0 0;opacity:.9;font-size:.95rem}
+main{max-width:760px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:16px}
+h2{margin:0 0 6px;font-size:1.2rem}.mute{color:var(--mute);font-size:.92rem}
+.steps{display:flex;gap:6px;margin-bottom:16px;font-size:.8rem;color:var(--mute)}
+.steps span{flex:1;text-align:center;padding:6px 2px;border-bottom:3px solid var(--line)}
+.steps .on{color:var(--brand);border-color:var(--brand);font-weight:600}
+.drop{border:2px dashed #aab7cf;border-radius:10px;padding:26px 12px;text-align:center;cursor:pointer;background:#fafcff}
+.drop:hover,.drop.over{border-color:var(--brand);background:#eef5fd}
+.drop strong{display:block}
+button,.btn{background:var(--brand);color:#fff;border:0;border-radius:8px;padding:12px 20px;font-size:1rem;cursor:pointer;text-decoration:none;display:inline-block}
+button:hover,.btn:hover{background:var(--brand-d)}button:disabled{opacity:.5;cursor:not-allowed}
+.btn.alt{background:#fff;color:var(--brand);border:1px solid var(--brand)}
+label{display:block;font-weight:600;margin:12px 0 4px;font-size:.92rem}
+input[type=text],input[type=email],input[type=tel],input[type=url],select{width:100%;padding:11px;border:1px solid #b9c3d6;border-radius:8px;font-size:1rem}
+.hide{display:none}
+.score{display:flex;align-items:center;gap:16px;margin:10px 0}
+.ring{width:84px;height:84px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:1.4rem;color:var(--bad);border:8px solid #f1c9c4}
+.issue{border-left:4px solid var(--warn);background:#fff8ee;padding:10px 12px;border-radius:6px;margin:8px 0}
+.issue.bad{border-color:var(--bad);background:#fdf1ef}
+.lock{filter:blur(3px);user-select:none;pointer-events:none}
+.plans{display:grid;gap:12px;grid-template-columns:1fr 1fr}
+@media(max-width:600px){.plans{grid-template-columns:1fr}.steps{font-size:.7rem}}
+.plan{border:2px solid var(--line);border-radius:12px;padding:14px;cursor:pointer;position:relative}
+.plan.sel{border-color:var(--brand);background:#eef5fd}
+.plan input{position:absolute;opacity:0}
+.plan h3{margin:0}.price{font-size:1.7rem;font-weight:700;color:var(--brand)}
+.plan ul{padding-left:18px;margin:8px 0 0;font-size:.92rem}
+.tag{position:absolute;top:-10px;right:10px;background:var(--ok);color:#fff;font-size:.72rem;padding:2px 8px;border-radius:10px}
+.note{background:#eef5fd;border-radius:8px;padding:10px 12px;font-size:.92rem;margin-top:12px}
+.err{color:var(--bad);font-size:.9rem;margin-top:8px}
+.bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden;margin:12px 0}
+.bar i{display:block;height:100%;width:0;background:var(--brand);transition:width .25s}
+footer{text-align:center;color:var(--mute);font-size:.8rem;padding:16px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Free CV &amp; LinkedIn Review</h1>
+  <p>For UK &amp; Europe-based job seekers &middot; Resume Crafting Hub</p>
+</header>
+<main>
+  <div class="steps"><span id="s1" class="on">1. Upload CV</span><span id="s2">2. Free review</span><span id="s3">3. Choose &amp; register</span></div>
+
+  <!-- STEP 1 -->
+  <section id="step1" class="card">
+    <h2>Upload your CV for a free review</h2>
+    <p class="mute">PDF, DOC or DOCX, max 5 MB. Our expert team will review it after you register; the quick scan below is instant and free.</p>
+    <label class="drop" id="drop" for="cvfile">
+      <strong id="dropText">Tap to choose your CV, or drag and drop it here</strong>
+      <span class="mute" id="dropSub">PDF &middot; DOC &middot; DOCX</span>
+    </label>
+    <input id="cvfile" type="file" accept=".pdf,.doc,.docx" class="hide">
+    <div id="err1" class="err"></div>
+    <p style="margin-bottom:0"><button id="scanBtn" disabled>Scan my CV (free)</button></p>
+  </section>
+
+  <!-- scanning -->
+  <section id="scanning" class="card hide">
+    <h2>Scanning your CV&hellip;</h2>
+    <p class="mute" id="scanMsg">Checking format and structure</p>
+    <div class="bar"><i id="barFill"></i></div>
+  </section>
+
+  <!-- STEP 2 -->
+  <section id="step2" class="card hide">
+    <h2>Your free review results</h2>
+    <p class="mute" id="fileLabel"></p>
+    <div class="score"><div class="ring" id="score">--</div>
+      <div><strong>Your CV needs improvement</strong><br><span class="mute" id="issueCount"></span></div></div>
+    <div class="issue bad"><strong>Issue 1 &ndash; Not optimised for ATS screening.</strong><br>Recruiters' applicant-tracking systems may fail to read key sections, so your CV can be rejected before a human sees it.</div>
+    <div class="issue"><strong>Issue 2 &ndash; Weak impact statements.</strong><br>Achievements are not quantified, and the profile summary does not target UK / European roles or sponsorship-friendly employers.</div>
+    <div class="issue lock" aria-hidden="true"><strong>Issue 3 &ndash; Keywords, layout and LinkedIn alignment</strong><br>Register to see the full report and fixes for these items.</div>
+    <div class="note">Want to fix this? Our experts will rewrite your CV and optimise your LinkedIn profile manually.</div>
+    <p><button id="toStep3">Improve my CV &amp; LinkedIn &rarr;</button></p>
+    <p class="mute" style="margin:0">The free scan is an indicative summary. Your detailed expert review starts once you register.</p>
+  </section>
+
+  <!-- STEP 3 -->
+  <section id="step3" class="card hide">
+    <h2>Choose your package</h2>
+    <p class="mute">The review is free. Pick a service to proceed with enrolment.</p>
+    <form id="regForm" novalidate>
+      <div class="plans">
+        <label class="plan sel" id="planA"><input type="radio" name="plan" value="CV Review & Update - GBP 85" checked>
+          <h3>CV + LinkedIn Update</h3><div class="price">&pound;85</div>
+          <ul><li>Expert manual review of your CV</li><li>ATS-friendly CV rewrite</li><li>LinkedIn profile optimisation</li><li>Delivered to your email within 24&ndash;48 hours</li></ul></label>
+        <label class="plan" id="planB"><span class="tag">Best value</span><input type="radio" name="plan" value="Full Placement Support - GBP 380">
+          <h3>Full Placement Support</h3><div class="price">&pound;380</div>
+          <ul><li>Everything in the &pound;85 package</li><li>Profile tailored for each job application</li><li>CV &amp; LinkedIn updates</li><li>Profile marketing for sponsorship and non-sponsorship roles</li></ul></label>
+      </div>
+
+      <label for="name">Contact name *</label><input id="name" name="Name" type="text" required autocomplete="name">
+      <label for="email">Email ID *</label><input id="email" name="email" type="email" required autocomplete="email">
+      <label for="phone">Mobile number *</label><input id="phone" name="Mobile" type="tel" required autocomplete="tel" placeholder="+44 / +31 ...">
+      <label for="country">Country</label>
+      <select id="country" name="Country"><option>United Kingdom</option><option>Ireland</option><option>Netherlands</option><option>Germany</option><option>France</option><option>Spain</option><option>Sweden</option><option>Finland</option><option>Poland</option><option>Luxembourg</option><option>Other Europe</option><option>Other</option></select>
+      <label for="linkedin">LinkedIn profile URL</label><input id="linkedin" name="LinkedIn" type="url" placeholder="https://www.linkedin.com/in/...">
+      <label for="cv2">Your CV *</label>
+      <input id="cv2" name="attachment" type="file" accept=".pdf,.doc,.docx">
+      <div class="mute" id="cvKept"></div>
+      <label style="font-weight:400;margin-top:14px"><input type="checkbox" id="consent"> I agree to Resume Crafting Hub processing my CV and details to provide this service. *</label>
+
+      <input type="hidden" name="_subject" value="New CV review registration">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+
+      <div class="note"><strong>What happens next:</strong> your details and CV come straight to our team. An expert reviews and updates your profile manually, and we send the updated CV to your email within 24&ndash;48 hours of payment.</div>
+      <div id="err3" class="err"></div>
+      <p><button type="submit" id="submitBtn">Register &amp; continue to payment</button></p>
+    </form>
+  </section>
+
+  <!-- DONE -->
+  <section id="done" class="card hide">
+    <h2>&#10003; Registration received</h2>
+    <p>Thank you, <span id="doneName"></span>. We have received your CV and details at our team inbox.</p>
+    <p><strong>Final step:</strong> complete your payment to start the work.</p>
+    <p><a id="payBtn" class="btn" href="#" target="_blank" rel="noopener">Pay now</a></p>
+    <p class="mute">After payment, an expert reviews and updates your CV and LinkedIn profile manually and emails the updated CV to you within 24&ndash;48 hours. Questions? Email <a id="hrMail" href="#"></a>.</p>
+  </section>
+</main>
+<footer>&copy; Resume Crafting Hub &middot; Free scan is indicative; paid services are performed by human experts.</footer>
+
+<script>
+/* ===== CONFIG: edit these ===== */
+const CONFIG = {
+  HR_EMAIL: "hr@resumecraftinghub.com",
+  // Stripe/PayPal/Razorpay payment links, one per package. Leave "" to show "email us for payment link".
+  PAY_LINKS: { "CV Review & Update - GBP 85": "", "Full Placement Support - GBP 380": "" },
+  MAX_MB: 5
+};
+/* ===== end config ===== */
+
+const $ = id => document.getElementById(id);
+let cvFile = null;
+const show = id => { ["step1","scanning","step2","step3","done"].forEach(s => $(s).classList.toggle("hide", s !== id)); window.scrollTo({top:0,behavior:"smooth"}); };
+const stepBar = n => [1,2,3].forEach(i => $("s"+i).classList.toggle("on", i === n));
+$("hrMail").textContent = CONFIG.HR_EMAIL; $("hrMail").href = "mailto:" + CONFIG.HR_EMAIL;
+
+function validFile(f){
+  if(!f) return "Please choose your CV.";
+  if(!/\.(pdf|docx?)$/i.test(f.name)) return "Please upload a PDF, DOC or DOCX file.";
+  if(f.size > CONFIG.MAX_MB*1024*1024) return "File is larger than " + CONFIG.MAX_MB + " MB.";
+  return "";
+}
+function setFile(f){
+  const e = validFile(f); $("err1").textContent = e;
+  if(e){ cvFile = null; $("scanBtn").disabled = true; return; }
+  cvFile = f; $("dropText").textContent = f.name; $("dropSub").textContent = (f.size/1024).toFixed(0) + " KB – tap to change";
+  $("scanBtn").disabled = false;
+}
+$("cvfile").onchange = e => setFile(e.target.files[0]);
+const drop = $("drop");
+["dragover","dragenter"].forEach(ev => drop.addEventListener(ev, e => {e.preventDefault(); drop.classList.add("over");}));
+["dragleave","drop"].forEach(ev => drop.addEventListener(ev, e => {e.preventDefault(); drop.classList.remove("over");}));
+drop.addEventListener("drop", e => setFile(e.dataTransfer.files[0]));
+
+$("scanBtn").onclick = () => {
+  show("scanning");
+  const msgs = ["Checking format and structure","Testing ATS readability","Reading keywords and achievements","Comparing with UK & Europe standards"];
+  let p = 0;
+  const t = setInterval(() => {
+    p += 5; $("barFill").style.width = p + "%"; $("scanMsg").textContent = msgs[Math.min(3, Math.floor(p/26))];
+    if(p >= 100){ clearInterval(t); results(); }
+  }, 110);
+};
+function results(){
+  const n = 5 + (cvFile.size % 4);               // sample count of flagged items
+  const sc = 38 + (cvFile.size % 17);             // sample score 38-54
+  $("score").textContent = sc + "%";
+  $("issueCount").textContent = n + " areas flagged for improvement";
+  $("fileLabel").textContent = "File: " + cvFile.name;
+  stepBar(2); show("step2");
+}
+$("toStep3").onclick = () => {
+  stepBar(3); $("cvKept").textContent = "Using the CV you already uploaded: " + cvFile.name + " (choose another file above to replace it).";
+  show("step3");
+};
+document.querySelectorAll(".plan input").forEach(r => r.onchange = () => {
+  document.querySelectorAll(".plan").forEach(p => p.classList.toggle("sel", p.querySelector("input").checked));
+});
+
+$("regForm").onsubmit = async e => {
+  e.preventDefault(); $("err3").textContent = "";
+  const name = $("name").value.trim(), email = $("email").value.trim(), phone = $("phone").value.trim();
+  const file = $("cv2").files[0] || cvFile;
+  if(!name || !/^\S+@\S+\.\S+$/.test(email) || phone.length < 7) return $("err3").textContent = "Please enter your name, a valid email and mobile number.";
+  const fe = validFile(file); if(fe) return $("err3").textContent = fe;
+  if(!$("consent").checked) return $("err3").textContent = "Please tick the consent box.";
+  const fd = new FormData($("regForm"));
+  fd.delete("attachment"); fd.append("attachment", file, file.name);
+  fd.append("_replyto", email);
+  $("submitBtn").disabled = true; $("submitBtn").textContent = "Sending…";
+  try{
+    const r = await fetch("https://formsubmit.co/ajax/" + CONFIG.HR_EMAIL, {method:"POST", body:fd, headers:{Accept:"application/json"}});
+    const j = await r.json();
+    if(!r.ok || j.success === "false") throw new Error(j.message || "Send failed");
+  }catch(err){
+    $("err3").textContent = "Sorry, we could not send your details. Please try again or email your CV to " + CONFIG.HR_EMAIL + ".";
+    $("submitBtn").disabled = false; $("submitBtn").textContent = "Register & continue to payment"; return;
+  }
+  const plan = fd.get("plan"), link = CONFIG.PAY_LINKS[plan];
+  $("doneName").textContent = name;
+  const pay = $("payBtn");
+  if(link){ pay.href = link; } else { pay.textContent = "Email us for your payment link"; pay.href = "mailto:" + CONFIG.HR_EMAIL + "?subject=" + encodeURIComponent("Payment link - " + plan); }
+  show("done");
+};
+</script>
+</body>
+</html>
