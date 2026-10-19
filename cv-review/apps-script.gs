@@ -44,8 +44,8 @@ function doPost(e) {
       name: "Resume Crafting Hub",
       subject: "We received your CV - Resume Crafting Hub",
       htmlBody: "<p>Hi " + esc(d.name) + ",</p><p>Thank you for enrolling for <b>" + esc(d.plan) + "</b>. " +
-        "Please pay by UPI (7358105013-2@ybl) or by bank transfer (account name Resume Crafting Hub, A/C 24790200000865, IFSC FDRL0002479, SWIFT FDRLINBB1BD, Solar Branch, Erode, Tamil Nadu). " +
-        "Send the payment screenshot or transfer reference to this email or WhatsApp +91 63692 25896. Our expert starts work once your payment is received, " +
+        "Message us on WhatsApp (+91 63692 25896) and we will send you the payment details (UPI if you are paying from India, bank transfer if you are elsewhere). " +
+        "Our expert starts work once your payment is received, " +
         "and you will get your updated CV within 24-48 hours after that.</p><p>Resume Crafting Hub<br>" + HR_EMAIL + "</p>"
     });
     return out({ success: true });
