@@ -207,10 +207,11 @@ $("regForm").onsubmit = async e => {
   $("submitBtn").disabled = true; $("submitBtn").textContent = "Sending…";
   try{
     const r = await fetch("https://formsubmit.co/ajax/" + CONFIG.HR_EMAIL, {method:"POST", body:fd, headers:{Accept:"application/json"}});
-    const j = await r.json();
-    if(!r.ok || j.success === "false") throw new Error(j.message || "Send failed");
+    const j = await r.json().catch(() => ({}));
+    if(!r.ok || j.success === "false" || j.success === false) throw new Error(j.message || ("HTTP " + r.status));
   }catch(err){
-    $("err3").textContent = "Sorry, we could not send your details. Please try again or email your CV to " + CONFIG.HR_EMAIL + ".";
+    console.error("FormSubmit error:", err);
+    $("err3").textContent = "Sorry, we could not send your details (" + (err.message || "network error") + "). Please try again or email your CV to " + CONFIG.HR_EMAIL + ".";
     $("submitBtn").disabled = false; $("submitBtn").textContent = "Register & continue to payment"; return;
   }
   const plan = fd.get("plan"), link = CONFIG.PAY_LINKS[plan];
