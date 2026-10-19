@@ -106,6 +106,12 @@ footer{color:var(--muted);font-size:.85rem}
 .pkg:has(input:checked){border-color:var(--accent);background:var(--soft)}
 .pkg input{position:absolute;top:16px;right:16px;width:22px;height:22px;accent-color:var(--accent)}
 .pkg .amt{font-family:var(--display);font-size:2.2rem;font-weight:800;color:var(--accent);line-height:1}
+.qty{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-weight:600;font-size:.95rem;border-top:1px solid var(--line);padding-top:10px}
+.qty[hidden]{display:none}
+.stepper{display:inline-flex;align-items:center;border:2px solid var(--accent);border-radius:10px;overflow:hidden}
+.stepper button{width:40px;height:40px;border:0;background:transparent;color:var(--accent);font-size:1.3rem;font-weight:700;cursor:pointer;font-family:var(--body)}
+.stepper button:focus-visible{outline:3px solid var(--mark);outline-offset:-3px}
+.stepper output{min-width:40px;text-align:center;font-weight:700;font-variant-numeric:tabular-nums}
 .amt small{font-family:var(--body);font-size:.8rem;font-weight:600;color:var(--muted)}
 .pkg ul{margin:0;padding-left:18px;display:grid;gap:4px;font-size:.95rem}
 .pkg.slim{grid-column:1/-1}
@@ -187,7 +193,10 @@ blockquote cite{font-style:normal;font-family:var(--mono);font-size:.8rem;color:
     <h3>Extras you can add</h3>
     <div class="addons">
       <label class="addon pick"><span class="label">Extra</span><h3>CV tailored to one job description</h3><span class="amt">£19</span><p>An extra version of your CV rewritten for one JD you send us.</p><span class="chk"><input type="checkbox" class="addon-chk" data-name="CV tailored to one JD" data-price="19" data-included="full"> <span class="chk-text">Add to my order</span></span></label>
-      <label class="addon pick"><span class="label">Extra</span><h3>Interview preparation guide</h3><span class="amt">£39 <small>one-time, per company</small></span><p><b>One-time charge for one company.</b> Interview preparation for the company you are interviewing with, plus frequently asked questions: CV defence, role-specific technical questions and scenarios, with answer guidance.</p><span class="chk"><input type="checkbox" class="addon-chk" data-name="Interview preparation guide (one company, one-time)" data-price="39"> <span class="chk-text">Add to my order</span></span></label>
+      <label class="addon pick"><span class="label">Extra</span><h3>Interview preparation guide</h3><span class="amt">£39 <small>one-time, per company</small></span><p><b>One-time charge for one company.</b> Interview preparation for the company you are interviewing with, plus frequently asked questions: CV defence, role-specific technical questions and scenarios, with answer guidance.</p><span class="chk"><input type="checkbox" class="addon-chk" data-name="Interview preparation guide" data-price="39" data-qty="1"> <span class="chk-text">Add to my order</span></span>
+        <span class="qty" hidden>Number of companies
+          <span class="stepper"><button type="button" class="q-minus" aria-label="Fewer companies">&minus;</button><output class="q-val" aria-live="polite">1</output><button type="button" class="q-plus" aria-label="More companies">+</button></span>
+        </span></label>
     </div>
     <div class="summary summary-out" aria-live="polite"></div>
     <div class="ctas"><a class="btn primary" id="wa-choose" href="#choose">Order on WhatsApp</a></div>
@@ -290,7 +299,14 @@ function refresh() {
   });
   const items = [];
   if (PKG[pkg]) items.push(PKG[pkg]);
-  chks.filter(c => c.checked).forEach(c => items.push({ n: c.dataset.name, p: Number(c.dataset.price) }));
+  chks.forEach(c => {
+    const box = c.closest(".addon").querySelector(".qty");
+    if (box) box.hidden = !c.checked;
+    if (!c.checked) return;
+    const n = box ? Number(box.querySelector(".q-val").textContent) : 1;
+    const unit = Number(c.dataset.price);
+    items.push(n > 1 ? { n: c.dataset.name + " for " + n + " companies (£" + unit + " each)", p: unit * n } : { n: c.dataset.name + (box ? " for 1 company" : ""), p: unit });
+  });
   const total = items.reduce((a, x) => a + x.p, 0);
   const html = items.length
     ? '<span class="label" style="color:inherit">Your selection</span>' + items.map(x => "<span>" + x.n + ": £" + x.p + "</span>").join("") + "<b>Total £" + total + "</b>"
@@ -307,6 +323,12 @@ function refresh() {
   set("wa-pay", wa("Hi ResumeCrafting Hub, I'd like to pay for: " + list + ". Total: £" + total + ". Please send me the payment details. My name is: "));
 }
 radios.concat(chks).forEach(c => c.addEventListener("change", refresh));
+document.querySelectorAll(".qty").forEach(box => {
+  const out = box.querySelector(".q-val");
+  const step = d => { out.textContent = Math.min(10, Math.max(1, Number(out.textContent) + d)); refresh(); };
+  box.querySelector(".q-minus").addEventListener("click", () => step(-1));
+  box.querySelector(".q-plus").addEventListener("click", () => step(1));
+});
 document.getElementById("wa-text").textContent = "+91 63692 25896";
 refresh();
 </script>
