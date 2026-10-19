@@ -16,5 +16,5 @@ When money arrives, change the sheet row's Status to `PAID`.
 The Razorpay version (pay on the page, CV accepted only after verified payment) is kept in `cv-review/razorpay-later/` (`index.html.txt`, `apps-script.gs`). It needs Razorpay approval, API keys in Script properties, and a new version deploy.
 
 ## Sharing
-Link: `https://niroshini-creator.github.io/rch-sponsor-register/cv-review/`
+Link: `https://apply.resumecraftinghub.com/cv-review/`
 See `share-messages.md` for copy-paste posts.
