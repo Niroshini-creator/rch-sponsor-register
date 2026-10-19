@@ -72,6 +72,12 @@ mark{background:var(--mark);color:var(--mark-ink);padding:0 .15em;border-radius:
 .addons{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 .addon{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px;display:grid;gap:8px;align-content:start}
 .addon .amt{font-family:var(--display);font-size:1.6rem;font-weight:800}
+.addon.pick{cursor:pointer}
+.addon.pick:has(input:checked){border-color:var(--accent);border-width:2px;background:var(--soft)}
+.chk{display:flex;gap:8px;align-items:center;font-weight:700;margin-top:4px}
+.chk input{width:20px;height:20px;accent-color:var(--accent)}
+.summary{border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:grid;gap:4px}
+.summary b{font-family:var(--display);font-size:1.6rem}
 .addon.feature{border-color:var(--accent);border-width:2px}
 .promise{background:var(--soft);border-radius:14px;padding:28px;display:grid;gap:10px}
 .domains{font-family:var(--mono);font-size:.85rem;color:var(--muted);line-height:1.9}
@@ -160,9 +166,10 @@ footer{color:var(--muted);font-size:.85rem}
 
   <section class="section">
     <h2>Need more for a specific job?</h2>
+    <p class="paynote" style="color:var(--muted)">Tick the extras you want. They are added to your order total below.</p>
     <div class="addons">
-      <div class="addon"><span class="label">Add-on</span><h3>Job-matched CV</h3><span class="amt">£19</span><p>An extra version tailored to one job description you send us.</p></div>
-      <div class="addon"><span class="label">Add-on</span><h3>Interview prep pack</h3><span class="amt">£39</span><p>A PDF of likely questions for your interview: CV defence, role-specific technical questions and scenarios, with answer guidance.</p></div>
+      <label class="addon pick"><span class="label">Add-on</span><h3>Job-matched CV</h3><span class="amt">£19</span><p>An extra version tailored to one job description you send us.</p><span class="chk"><input type="checkbox" class="addon-chk" data-name="Job-matched CV" data-price="19"> Add to my order</span></label>
+      <label class="addon pick"><span class="label">Add-on</span><h3>Interview prep pack</h3><span class="amt">£39</span><p>A PDF of likely questions for your interview: CV defence, role-specific technical questions and scenarios, with answer guidance.</p><span class="chk"><input type="checkbox" class="addon-chk" data-name="Interview prep pack" data-price="39"> Add to my order</span></label>
       <div class="addon feature"><span class="label">Full service</span><h3>Managed job search</h3><span class="amt">from £350</span><p>We handle CVs, applications and interview prep for you. Your £85 is credited if you upgrade within 30 days.</p></div>
     </div>
   </section>
@@ -176,6 +183,7 @@ footer{color:var(--muted);font-size:.85rem}
     <div class="label" style="color:var(--mark)">Order today, apply tomorrow</div>
     <h2>Send your CV and target role on WhatsApp to get started.</h2>
     <p>Include the job title or a job link. We reply with the payment details and confirm your delivery time.</p>
+    <div class="summary" id="summary" aria-live="polite"></div>
     <div class="ctas"><a class="btn primary" id="wa-order" href="https://wa.me/916369225896" target="_blank" rel="noopener">Order on WhatsApp</a></div>
     <div class="ctas"><a class="btn primary" id="wa-pay" href="#order" target="_blank" rel="noopener">Pay now: get payment details</a></div>
     <p class="paynote">Tap Pay now and WhatsApp opens with your message ready. We reply with the payment details: UPI if you are paying from India, bank transfer in GBP or EUR if you are in the UK, Ireland or Europe.</p>
@@ -203,12 +211,27 @@ footer{color:var(--muted);font-size:.85rem}
 <script>
 /* WhatsApp number in international format, digits only */
 const WHATSAPP = "916369225896";
-const msg = encodeURIComponent("Hi ResumeCrafting Hub, I'd like the £85 24-hour ATS CV rewrite. My target role is: ");
-const url = "https://wa.me/" + WHATSAPP + "?text=" + msg;
-["wa-hero","wa-order"].forEach(id => { const a = document.getElementById(id); a.href = url; a.target = "_blank"; a.rel = "noopener"; });
+const BASE = 85;
+const chks = [...document.querySelectorAll(".addon-chk")];
+const state = () => {
+  const sel = chks.filter(c => c.checked).map(c => ({ n: c.dataset.name, p: Number(c.dataset.price) }));
+  return { sel, total: BASE + sel.reduce((a, x) => a + x.p, 0) };
+};
+const wa = text => "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(text);
+function refresh() {
+  const { sel, total } = state();
+  const extras = sel.length ? " + add-ons: " + sel.map(x => x.n + " (£" + x.p + ")").join(", ") : "";
+  const order = "24-hour ATS CV rewrite (£" + BASE + ")" + extras + ". Total: £" + total + ".";
+  const set = (id, href) => { const a = document.getElementById(id); a.href = href; a.target = "_blank"; a.rel = "noopener"; };
+  set("wa-hero", wa("Hi ResumeCrafting Hub, I'd like the " + order + " My target role is: "));
+  set("wa-order", wa("Hi ResumeCrafting Hub, I'd like the " + order + " My target role is: "));
+  set("wa-pay", wa("Hi ResumeCrafting Hub, I'd like to pay for the " + order + " Please send me the payment details. My name is: "));
+  const lines = ["<span>CV rewrite: £" + BASE + "</span>"].concat(sel.map(x => "<span>" + x.n + ": £" + x.p + "</span>"));
+  document.getElementById("summary").innerHTML = '<span class="label" style="color:inherit">Your order</span>' + lines.join("") + "<b>Total £" + total + "</b>";
+}
+chks.forEach(c => c.addEventListener("change", refresh));
 document.getElementById("wa-text").textContent = "+91 63692 25896";
-const payUrl = "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent("Hi ResumeCrafting Hub, I'd like to pay for the £85 24-hour ATS CV rewrite. Please send me the payment details. My name is: ");
-const wp = document.getElementById("wa-pay"); wp.href = payUrl; wp.target = "_blank"; wp.rel = "noopener";
+refresh();
 </script>
 </body>
 </html>
