@@ -106,6 +106,7 @@ footer{color:var(--muted);font-size:.85rem}
 .pkg:has(input:checked){border-color:var(--accent);background:var(--soft)}
 .pkg input{position:absolute;top:16px;right:16px;width:22px;height:22px;accent-color:var(--accent)}
 .pkg .amt{font-family:var(--display);font-size:2.2rem;font-weight:800;color:var(--accent);line-height:1}
+.amt small{font-family:var(--body);font-size:.8rem;font-weight:600;color:var(--muted)}
 .pkg ul{margin:0;padding-left:18px;display:grid;gap:4px;font-size:.95rem}
 .pkg.slim{grid-column:1/-1}
 .tag{position:absolute;top:-11px;left:16px;font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:999px;font-weight:600}
@@ -186,7 +187,7 @@ blockquote cite{font-style:normal;font-family:var(--mono);font-size:.8rem;color:
     <h3>Extras you can add</h3>
     <div class="addons">
       <label class="addon pick"><span class="label">Extra</span><h3>CV tailored to one job description</h3><span class="amt">£19</span><p>An extra version of your CV rewritten for one JD you send us.</p><span class="chk"><input type="checkbox" class="addon-chk" data-name="CV tailored to one JD" data-price="19" data-included="full"> <span class="chk-text">Add to my order</span></span></label>
-      <label class="addon pick"><span class="label">Extra</span><h3>Interview preparation guide</h3><span class="amt">£39</span><p>A PDF of likely questions for your interview: CV defence, role-specific technical questions and scenarios, with answer guidance.</p><span class="chk"><input type="checkbox" class="addon-chk" data-name="Interview preparation guide" data-price="39"> <span class="chk-text">Add to my order</span></span></label>
+      <label class="addon pick"><span class="label">Extra</span><h3>Interview preparation guide</h3><span class="amt">£39 <small>one-time, per company</small></span><p><b>One-time charge for one company.</b> Interview preparation for the company you are interviewing with, plus frequently asked questions: CV defence, role-specific technical questions and scenarios, with answer guidance.</p><span class="chk"><input type="checkbox" class="addon-chk" data-name="Interview preparation guide (one company, one-time)" data-price="39"> <span class="chk-text">Add to my order</span></span></label>
     </div>
     <div class="summary summary-out" aria-live="polite"></div>
     <div class="ctas"><a class="btn primary" id="wa-choose" href="#choose">Order on WhatsApp</a></div>
@@ -260,7 +261,7 @@ blockquote cite{font-style:normal;font-family:var(--mono);font-size:.8rem;color:
   <section class="section">
     <h2>Questions</h2>
     <div class="faq">
-      <details><summary>Which option should I choose?</summary><p>If you only need a stronger CV and LinkedIn profile, choose CV Review &amp; Update (£85). If you want us to tailor your profile for each application and market it for sponsorship and non-sponsorship roles, choose Full Placement Support (£380), which we recommend for a serious job search. You can add a CV tailored to one job description (£19) or an interview preparation guide (£39) to any option.</p></details>
+      <details><summary>Which option should I choose?</summary><p>If you only need a stronger CV and LinkedIn profile, choose CV Review &amp; Update (£85). If you want us to tailor your profile for each application and market it for sponsorship and non-sponsorship roles, choose Full Placement Support (£380), which we recommend for a serious job search. You can add a CV tailored to one job description (£19) or an interview preparation guide (£39, a one-time charge for one company, with frequently asked questions) to any option. Need guides for more companies? Order one per company.</p></details>
       <details><summary>How do I pay?</summary><p>Message us on WhatsApp with your CV and target role, or tap Pay now. We reply with the payment details: UPI if you are in India, or bank transfer in GBP or EUR if you are in the UK, Ireland or Europe. Send us the payment screenshot or transfer reference and we start your 24 hours once the money has arrived.</p></details>
       <details><summary>Is it really 24 hours?</summary><p>Yes. Your CV is delivered within 24 hours of payment confirmation. If we ever miss that, we'll tell you upfront before you pay.</p></details>
       <details><summary>Do you guarantee a job or interviews?</summary><p>No one honestly can. A strong, ATS-friendly CV gets you read by recruiters far more often. Offers and visa sponsorship depend on the employer.</p></details>
