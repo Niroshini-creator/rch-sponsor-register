@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>24-Hour ATS CV Rewrite | ResumeCrafting Hub</title>
+<meta name="description" content="Your CV rewritten to get past the ATS within 24 hours. For UK, Ireland and Europe job seekers. £85. Order on WhatsApp.">
+<meta property="og:title" content="Your CV, rewritten to get past the ATS by tomorrow">
+<meta property="og:description" content="24-hour ATS CV rewrite for UK, Ireland and Europe job seekers. Order on WhatsApp.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one narrow sales column; hero pairs the offer with a mock ATS scan panel, then steps, inclusions, add-ons, order block */
+:root{
+  --bg:#F5F7FA; --surface:#FFFFFF; --ink:#13203A; --muted:#55627A; --line:#DCE2EC;
+  --accent:#0E7C57; --accent-ink:#FFFFFF; --mark:#FFE07A; --mark-ink:#13203A; --soft:#E7F3EE;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1524; --surface:#16203A; --ink:#E8EDF6; --muted:#9AA7BF; --line:#2A3654;
+  --accent:#3CC48E; --accent-ink:#06261A; --mark:#E8C34A; --mark-ink:#1A1505; --soft:#123327; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1524; --surface:#16203A; --ink:#E8EDF6; --muted:#9AA7BF; --line:#2A3654;
+  --accent:#3CC48E; --accent-ink:#06261A; --mark:#E8C34A; --mark-ink:#1A1505; --soft:#123327; color-scheme:dark}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55}
+.wrap{max-width:1040px;margin:0 auto;padding-block:28px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:64px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.08}
+h1{font-size:clamp(2.2rem,5.4vw,3.6rem);font-weight:800;letter-spacing:-.02em}
+h2{font-size:clamp(1.5rem,3vw,2rem);font-weight:700}
+h3{font-size:1.1rem;font-weight:700}
+p{margin:0}
+.label{font-family:var(--mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+mark{background:var(--mark);color:var(--mark-ink);padding:0 .15em;border-radius:3px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{font-family:var(--display);font-weight:800;font-size:1.1rem}
+.brand span{color:var(--accent)}
+.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center}
+.hero > *{min-width:0}
+.hero-copy{display:grid;gap:20px}
+.lede{font-size:1.15rem;color:var(--muted);max-width:52ch}
+.price{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.price b{font-family:var(--display);font-size:3rem;font-weight:800;color:var(--accent);line-height:1}
+.price s{color:var(--muted)}
+.ctas{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 22px;border-radius:10px;font-weight:700;font-size:1rem;text-decoration:none;border:2px solid var(--accent);cursor:pointer;font-family:var(--body)}
+.btn.primary{background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn:focus-visible{outline:3px solid var(--mark);outline-offset:2px}
+.scan{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px;display:grid;gap:16px;font-family:var(--mono);font-size:.85rem;box-shadow:0 10px 30px -18px rgba(19,32,58,.35)}
+.scan-head{display:flex;justify-content:space-between;gap:8px;color:var(--muted)}
+.meter{display:grid;gap:6px}
+.meter-row{display:flex;justify-content:space-between;font-variant-numeric:tabular-nums}
+.bar{height:10px;border-radius:6px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:6px}
+.bar .before{width:38%;background:var(--muted)}
+.bar .after{width:88%;background:var(--accent)}
+.kw{display:flex;flex-wrap:wrap;gap:6px}
+.kw span{border:1px solid var(--line);padding:3px 8px;border-radius:999px}
+.kw .hit{background:var(--soft);border-color:var(--accent);color:var(--ink)}
+.note{font-size:.75rem;color:var(--muted)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;counter-reset:s}
+.step{display:grid;gap:8px;padding-top:16px;border-top:3px solid var(--accent)}
+.step .label{color:var(--accent)}
+.section{display:grid;gap:24px}
+.incl{display:grid;grid-template-columns:repeat(2,1fr);gap:14px 32px;list-style:none;padding:0;margin:0}
+.incl li{display:flex;gap:12px;align-items:flex-start}
+.incl li::before{content:"";flex:0 0 18px;height:18px;margin-top:4px;border-radius:50%;background:var(--accent);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='10'/%3E%3C/svg%3E");}
+.incl li span{min-width:0}
+.addons{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.addon{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px;display:grid;gap:8px;align-content:start}
+.addon .amt{font-family:var(--display);font-size:1.6rem;font-weight:800}
+.addon.feature{border-color:var(--accent);border-width:2px}
+.promise{background:var(--soft);border-radius:14px;padding:28px;display:grid;gap:10px}
+.domains{font-family:var(--mono);font-size:.85rem;color:var(--muted);line-height:1.9}
+.order{background:var(--ink);color:var(--bg);border-radius:16px;padding:32px;display:grid;gap:18px}
+.order h2{color:var(--bg)}
+.order p{color:var(--bg);opacity:.85;max-width:60ch}
+.order .btn.primary{border-color:var(--accent)}
+.contact{display:grid;gap:6px;font-family:var(--mono);font-size:.9rem}
+.paynote{font-size:.9rem;max-width:60ch}
+.faq{display:grid;gap:10px}
+details{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 18px}
+summary{font-weight:700;cursor:pointer}
+details p{margin-top:8px;color:var(--muted)}
+footer{color:var(--muted);font-size:.85rem}
+@media (max-width:760px){
+  .hero,.steps,.addons,.incl{grid-template-columns:1fr}
+  .wrap{gap:48px}
+  .order{padding:24px}
+}
+@media (prefers-reduced-motion:no-preference){
+  .bar .after{animation:grow 1.2s ease-out .3s both}
+  @keyframes grow{from{width:38%}to{width:88%}}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">ResumeCrafting <span>Hub</span></div>
+    <div class="label">UK · Ireland · Europe</div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-copy">
+      <div class="label">24-hour express service</div>
+      <h1>Your CV, rewritten to <mark>get past the ATS</mark> by tomorrow.</h1>
+      <p class="lede">Applying for UK, Irish or European roles and hearing nothing back? Most CVs are rejected by software before a recruiter reads them. We rebuild yours so it gets read.</p>
+      <div class="price"><b>£85</b><span>one-off · delivered within 24 hours of payment</span></div>
+      <div class="ctas">
+        <a class="btn primary" id="wa-hero" href="#order">Order on WhatsApp</a>
+        <a class="btn ghost" href="#included">What you get</a>
+      </div>
+    </div>
+    <aside class="scan" aria-label="Example ATS keyword match">
+      <div class="scan-head"><span>ATS keyword match</span><span>Data Analyst · London</span></div>
+      <div class="meter">
+        <div class="meter-row"><span>Before</span><span>38%</span></div>
+        <div class="bar"><i class="before"></i></div>
+      </div>
+      <div class="meter">
+        <div class="meter-row"><span>After rewrite</span><span>88%</span></div>
+        <div class="bar"><i class="after"></i></div>
+      </div>
+      <div class="kw">
+        <span class="hit">SQL</span><span class="hit">Power BI</span><span class="hit">stakeholder reporting</span><span class="hit">data quality</span><span class="hit">KPI dashboards</span><span>Python</span>
+      </div>
+      <p class="note">Illustrative example. Actual match depends on your experience and the role.</p>
+    </aside>
+  </section>
+
+  <section class="section">
+    <h2>How it works</h2>
+    <div class="steps">
+      <div class="step"><span class="label">Step 1</span><h3>Send your CV</h3><p>Message us your current CV and the job title (or job link) you're targeting.</p></div>
+      <div class="step"><span class="label">Step 2</span><h3>Pay £85</h3><p>We reply with the payment details (UPI or bank transfer). Your 24 hours start once payment is confirmed.</p></div>
+      <div class="step"><span class="label">Step 3</span><h3>Get your new CV</h3><p>Receive your rewritten CV in Word and PDF, ready to upload to any job portal.</p></div>
+    </div>
+  </section>
+
+  <section class="section" id="included">
+    <h2>What's included for £85</h2>
+    <ul class="incl">
+      <li><span><b>Full rewrite</b>, not a light edit. Summary, experience and skills rebuilt around your target role.</span></li>
+      <li><span><b>ATS-safe single-column format</b> that parses cleanly in Workday, Taleo, iCIMS and SuccessFactors.</span></li>
+      <li><span><b>UK and Ireland conventions</b>: no photo or date of birth, 2-page length, British English.</span></li>
+      <li><span><b>Keywords for your target role</b> placed where recruiters and ATS filters look.</span></li>
+      <li><span><b>Word (DOCX) and PDF</b> versions, so you can edit it yourself later.</span></li>
+      <li><span><b>One free revision</b> within 7 days if anything needs changing.</span></li>
+    </ul>
+  </section>
+
+  <section class="promise">
+    <h2>We only use what's really on your CV</h2>
+    <p>We never invent skills, job titles or experience. Recruiters check, and a made-up line can cost you the offer. We reframe your real work so its value is obvious to a UK or European employer.</p>
+  </section>
+
+  <section class="section">
+    <h2>Need more for a specific job?</h2>
+    <div class="addons">
+      <div class="addon"><span class="label">Add-on</span><h3>Job-matched CV</h3><span class="amt">£19</span><p>An extra version tailored to one job description you send us.</p></div>
+      <div class="addon"><span class="label">Add-on</span><h3>Interview prep pack</h3><span class="amt">£39</span><p>A PDF of likely questions for your interview: CV defence, role-specific technical questions and scenarios, with answer guidance.</p></div>
+      <div class="addon feature"><span class="label">Full service</span><h3>Managed job search</h3><span class="amt">from £350</span><p>We handle CVs, applications and interview prep for you. Your £85 is credited if you upgrade within 30 days.</p></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Roles we write for</h2>
+    <p class="domains">Data &amp; BI analytics · Business analysis · KYC / AML &amp; financial crime · DevOps &amp; cloud · QA &amp; test automation · Supply chain &amp; logistics · Finance &amp; accounting · HR &amp; recruitment · Digital marketing &amp; CRM · Engineering &amp; aerospace · Project &amp; PMO</p>
+  </section>
+
+  <section class="order" id="order">
+    <div class="label" style="color:var(--mark)">Order today, apply tomorrow</div>
+    <h2>Send your CV and target role on WhatsApp to get started.</h2>
+    <p>Include the job title or a job link. We reply with the payment details and confirm your delivery time.</p>
+    <div class="ctas"><a class="btn primary" id="wa-order" href="https://wa.me/916369225896" target="_blank" rel="noopener">Order on WhatsApp</a></div>
+    <div class="ctas"><a class="btn primary" id="wa-pay" href="#order" target="_blank" rel="noopener">Pay now: get payment details</a></div>
+    <p class="paynote">Tap Pay now and WhatsApp opens with your message ready. We reply with the payment details: UPI if you are paying from India, bank transfer in GBP or EUR if you are in the UK, Ireland or Europe.</p>
+    <div class="contact">
+      <span>WhatsApp: <span id="wa-text">+91 63692 25896</span></span>
+      <span>Payment: UPI (paying from India) or bank transfer (UK, Ireland, Europe)</span>
+      <span>Payment details are sent on WhatsApp. Your 24 hours start once the payment is confirmed.</span>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Questions</h2>
+    <div class="faq">
+      <details><summary>How do I pay?</summary><p>Message us on WhatsApp with your CV and target role, or tap Pay now. We reply with the payment details: UPI if you are in India, or bank transfer in GBP or EUR if you are in the UK, Ireland or Europe. Send us the payment screenshot or transfer reference and we start your 24 hours once the money has arrived.</p></details>
+      <details><summary>Is it really 24 hours?</summary><p>Yes. Your CV is delivered within 24 hours of payment confirmation. If we ever miss that, we'll tell you upfront before you pay.</p></details>
+      <details><summary>Do you guarantee a job or interviews?</summary><p>No one honestly can. A strong, ATS-friendly CV gets you read by recruiters far more often. Offers and visa sponsorship depend on the employer.</p></details>
+      <details><summary>I need visa sponsorship. Can you help?</summary><p>Yes. We write for candidates on Graduate, Skilled Worker and Stamp 1G routes and can add your right-to-work status clearly so recruiters don't have to guess.</p></details>
+      <details><summary>Which countries do you cover?</summary><p>UK and Ireland formats as standard. We also prepare CVs for roles across Europe in English.</p></details>
+    </div>
+  </section>
+
+  <footer>ResumeCrafting Hub Pvt Ltd · Career services for UK, Ireland and Europe</footer>
+</div>
+
+<script>
+/* WhatsApp number in international format, digits only */
+const WHATSAPP = "916369225896";
+const msg = encodeURIComponent("Hi ResumeCrafting Hub, I'd like the £85 24-hour ATS CV rewrite. My target role is: ");
+const url = "https://wa.me/" + WHATSAPP + "?text=" + msg;
+["wa-hero","wa-order"].forEach(id => { const a = document.getElementById(id); a.href = url; a.target = "_blank"; a.rel = "noopener"; });
+document.getElementById("wa-text").textContent = "+91 63692 25896";
+const payUrl = "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent("Hi ResumeCrafting Hub, I'd like to pay for the £85 24-hour ATS CV rewrite. Please send me the payment details. My name is: ");
+const wp = document.getElementById("wa-pay"); wp.href = payUrl; wp.target = "_blank"; wp.rel = "noopener";
+</script>
+</body>
+</html>
