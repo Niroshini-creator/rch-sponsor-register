@@ -118,19 +118,18 @@ footer{text-align:center;color:var(--mute);font-size:.8rem;padding:16px}
       <input type="hidden" name="_captcha" value="false">
       <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
 
-      <div class="note"><strong>What happens next:</strong> your details and CV come straight to our team. An expert reviews and updates your profile manually, and we send the updated CV to your email within 24&ndash;48 hours of payment.</div>
+      <div class="note"><strong>What happens next:</strong> submit your enrolment and we will email you the payment details. <strong>Our expert starts work only after your payment is received</strong>, then updates your profile manually and emails the updated CV within 24&ndash;48 hours.</div>
       <div id="err3" class="err"></div>
-      <p><button type="submit" id="submitBtn">Register &amp; continue to payment</button></p>
+      <p><button type="submit" id="submitBtn">Submit enrolment</button></p>
     </form>
   </section>
 
   <!-- DONE -->
   <section id="done" class="card hide">
-    <h2>&#10003; Registration received</h2>
-    <p>Thank you, <span id="doneName"></span>. We have received your CV and details at our team inbox.</p>
-    <p><strong>Final step:</strong> complete your payment to start the work.</p>
-    <p><a id="payBtn" class="btn" href="#" target="_blank" rel="noopener">Pay now</a></p>
-    <p class="mute">After payment, an expert reviews and updates your CV and LinkedIn profile manually and emails the updated CV to you within 24&ndash;48 hours. Questions? Email <a id="hrMail" href="#"></a>.</p>
+    <h2>&#10003; Enrolment received</h2>
+    <p>Thank you, <span id="doneName"></span>. We have received your CV and details.</p>
+    <p><strong>Next step:</strong> we will email the payment details for your chosen package to <span id="doneEmail"></span> shortly (please check your spam folder too).</p>
+    <p class="mute">Our expert starts updating your CV and LinkedIn profile only after your payment is received, and emails the updated CV within 24&ndash;48 hours. Questions? Email <a id="hrMail" href="#"></a>.</p>
   </section>
 </main>
 <footer>&copy; Resume Crafting Hub &middot; Free scan is indicative; paid services are performed by human experts.</footer>
@@ -142,7 +141,6 @@ const CONFIG = {
   // Google Apps Script web app URL (saves CVs to Drive). Leave "" to fall back to FormSubmit email-only.
   SCRIPT_URL: "https://script.google.com/macros/s/AKfycbx4KELEe1F8AEEZ5yg72ExxQV1duGNiP2iTGMayp_82n1JHGH91FHHhvzUKYFmTzK7nYQ/exec",
   // Stripe/PayPal/Razorpay payment links, one per package. Leave "" to show "email us for payment link".
-  PAY_LINKS: { "CV Review & Update - GBP 85": "", "Full Placement Support - GBP 380": "" },
   MAX_MB: 5
 };
 /* ===== end config ===== */
@@ -222,12 +220,9 @@ $("regForm").onsubmit = async e => {
   }catch(err){
     console.error("Submit error:", err);
     $("err3").textContent = "Sorry, we could not send your details (" + (err.message || "network error") + "). Please try again or email your CV to " + CONFIG.HR_EMAIL + ".";
-    $("submitBtn").disabled = false; $("submitBtn").textContent = "Register & continue to payment"; return;
+    $("submitBtn").disabled = false; $("submitBtn").textContent = "Submit enrolment"; return;
   }
-  const plan = fd.get("plan"), link = CONFIG.PAY_LINKS[plan];
-  $("doneName").textContent = name;
-  const pay = $("payBtn");
-  if(link){ pay.href = link; } else { pay.textContent = "Email us for your payment link"; pay.href = "mailto:" + CONFIG.HR_EMAIL + "?subject=" + encodeURIComponent("Payment link - " + plan); }
+  $("doneName").textContent = name; $("doneEmail").textContent = email;
   show("done");
 };
 </script>

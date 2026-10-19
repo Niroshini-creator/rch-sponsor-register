@@ -2,23 +2,19 @@
 
 Page: `cv-review/index.html` (live at `/cv-review/` on GitHub Pages).
 
-Flow: upload CV -> instant free scan (sample findings) -> choose £85 CV+LinkedIn update or £380 Full Placement Support -> name/email/mobile/CV submitted to hr@resumecraftinghub.com -> payment link -> expert updates within 24-48 h and emails the CV back.
+## Flow (enrolment first, payment by email)
+Upload CV -> free scan (sample findings) -> choose £85 CV+LinkedIn update or £380 Full Placement Support -> name/email/mobile/CV submitted -> CV saved to Google Drive, row added to the sheet as **Enrolled - awaiting payment**, HR emailed, candidate gets an acknowledgement -> you email the payment details -> **work starts only after payment is received** -> updated CV emailed within 24-48 h.
 
-## Setup (one-time)
-1. Email delivery uses FormSubmit (free, no server). Open the page, submit one test registration, then click the **activation link** FormSubmit emails to hr@resumecraftinghub.com. After that every registration arrives with the CV attached.
-2. Create two payment links (Stripe Payment Link / PayPal / Razorpay): £85 and £380. Paste them into `PAY_LINKS` in the `CONFIG` block at the top of the script. Until then the page asks the candidate to email you for the link.
-3. Scan results are sample/indicative text, not a real analysis. Do not claim otherwise in marketing.
+When money arrives, change the sheet row's Status to `PAID`.
+
+## Google Apps Script (bound to the sheet)
+1. Open the sheet > Extensions > Apps Script, paste `apps-script.gs`, save.
+2. Run `getFolder` once and approve permissions (Drive, Sheets, Gmail).
+3. Deploy > Manage deployments > pencil > New version > Deploy (access: Anyone). The URL stays the same and is set as `SCRIPT_URL` in `index.html`.
+
+## Later: automatic payment
+The Razorpay version (pay on the page, CV accepted only after verified payment) is kept in `cv-review/razorpay-later/` (`index.html.txt`, `apps-script.gs`). It needs Razorpay approval, API keys in Script properties, and a new version deploy.
 
 ## Sharing
 Link: `https://niroshini-creator.github.io/rch-sponsor-register/cv-review/`
-Add `?src=linkedin`, `?src=whatsapp`, `?src=email` to track where candidates come from (visible in your analytics).
 See `share-messages.md` for copy-paste posts.
-
-## Save CVs to Google Drive (Apps Script)
-1. Create a new Google Sheet (name it "RCH CV Submissions"). Optional header row: Time, Name, Email, Mobile, Country, LinkedIn, Package, CV link.
-2. In the sheet: Extensions > Apps Script. Delete the sample code, paste in `cv-review/apps-script.gs`, save.
-3. Run the `getFolder` function once and approve the permissions (Drive, Sheets, Gmail send).
-4. Deploy > New deployment > type **Web app**. Execute as: **Me**. Who has access: **Anyone**. Deploy and copy the Web app URL.
-5. Paste that URL into `SCRIPT_URL` in the CONFIG block of `cv-review/index.html` and publish.
-
-Every submission then: saves the CV to the Drive folder "RCH CV Submissions", adds a row (with the Drive link) to the sheet, and emails HR with the CV attached. FormSubmit is no longer needed once `SCRIPT_URL` is set. After editing the script later, use Deploy > Manage deployments > New version.
