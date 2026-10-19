@@ -39,6 +39,12 @@ input[type=text],input[type=email],input[type=tel],input[type=url],select{width:
 .plan h3{margin:0}.price{font-size:1.7rem;font-weight:700;color:var(--brand)}
 .plan ul{padding-left:18px;margin:8px 0 0;font-size:.92rem}
 .tag{position:absolute;top:-10px;right:10px;background:var(--ok);color:#fff;font-size:.72rem;padding:2px 8px;border-radius:10px}
+.paybox{display:grid;gap:12px;margin:14px 0}
+.payopt{border:2px solid var(--line);border-radius:12px;padding:14px 16px}
+.payopt h3{margin:0 0 6px;font-size:1.05rem}
+.payopt dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:.95rem}
+.payopt dt{color:var(--mute)}.payopt dd{margin:0;font-weight:600;word-break:break-all}
+.copy{background:#fff;color:var(--brand);border:1px solid var(--brand);padding:3px 10px;border-radius:6px;font-size:.8rem;margin-left:8px;cursor:pointer}
 .note{background:#eef5fd;border-radius:8px;padding:10px 12px;font-size:.92rem;margin-top:12px}
 .err{color:var(--bad);font-size:.9rem;margin-top:8px}
 .bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden;margin:12px 0}
@@ -118,7 +124,7 @@ footer{text-align:center;color:var(--mute);font-size:.8rem;padding:16px}
       <input type="hidden" name="_captcha" value="false">
       <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
 
-      <div class="note"><strong>What happens next:</strong> submit your enrolment and we will email you the payment details. <strong>Our expert starts work only after your payment is received</strong>, then updates your profile manually and emails the updated CV within 24&ndash;48 hours.</div>
+      <div class="note"><strong>What happens next:</strong> submit your enrolment, then pay by <strong>UPI</strong> or <strong>bank transfer</strong>. <strong>Our expert starts work only after your payment is received</strong>, then updates your profile manually and emails the updated CV within 24&ndash;48 hours.</div>
       <div id="err3" class="err"></div>
       <p><button type="submit" id="submitBtn">Submit enrolment</button></p>
     </form>
@@ -128,7 +134,26 @@ footer{text-align:center;color:var(--mute);font-size:.8rem;padding:16px}
   <section id="done" class="card hide">
     <h2>&#10003; Enrolment received</h2>
     <p>Thank you, <span id="doneName"></span>. We have received your CV and details.</p>
-    <p><strong>Next step:</strong> we will email the payment details for your chosen package to <span id="doneEmail"></span> shortly (please check your spam folder too).</p>
+    <p><strong>Your package:</strong> <span id="donePlan"></span></p>
+    <p><strong>Next step:</strong> choose how you would like to pay. Our expert starts work only after your payment is received.</p>
+    <div class="paybox">
+      <div class="payopt">
+        <h3>Option 1: Pay with UPI (from India)</h3>
+        <dl><dt>UPI ID</dt><dd><span id="upiId">7358105013-2@ybl</span><button type="button" class="copy" data-copy="7358105013-2@ybl">Copy</button></dd>
+        <dt>Name</dt><dd>Resume Crafting Hub</dd></dl>
+        <p class="mute" style="margin:8px 0 0">UPI pays in rupees. Message us on WhatsApp for today's amount for your package.</p>
+      </div>
+      <div class="payopt">
+        <h3>Option 2: Bank transfer (UK, Europe and elsewhere)</h3>
+        <dl><dt>Account name</dt><dd>Resume Crafting Hub</dd>
+        <dt>Account number</dt><dd>24790200000865<button type="button" class="copy" data-copy="24790200000865">Copy</button></dd>
+        <dt>IFSC</dt><dd>FDRL0002479<button type="button" class="copy" data-copy="FDRL0002479">Copy</button></dd>
+        <dt>SWIFT code</dt><dd>FDRLINBB1BD<button type="button" class="copy" data-copy="FDRLINBB1BD">Copy</button></dd>
+        <dt>Branch</dt><dd>Solar Branch, Erode, Tamil Nadu, India</dd></dl>
+        <p class="mute" style="margin:8px 0 0">Send the amount in GBP or EUR. Put your name and email in the payment reference.</p>
+      </div>
+    </div>
+    <p><strong>After paying:</strong> send the payment screenshot or transfer reference to <a id="hrMail2" href="#"></a> or on WhatsApp <strong>+91 63692 25896</strong>. We confirm the payment, then start your 24&ndash;48 hours.</p>
     <p class="mute">Our expert starts updating your CV and LinkedIn profile only after your payment is received, and emails the updated CV within 24&ndash;48 hours. Questions? Email <a id="hrMail" href="#"></a>.</p>
   </section>
 </main>
@@ -145,11 +170,16 @@ const CONFIG = {
 };
 /* ===== end config ===== */
 
+document.addEventListener("click", e => {
+  const b = e.target.closest(".copy"); if(!b) return;
+  const t = b.dataset.copy, ok = () => { b.textContent = "Copied"; setTimeout(() => b.textContent = "Copy", 1500); };
+  if(navigator.clipboard) navigator.clipboard.writeText(t).then(ok, () => {}); else { const x = document.createElement("textarea"); x.value = t; document.body.appendChild(x); x.select(); try{ document.execCommand("copy"); ok(); }catch(_){} x.remove(); }
+});
 const $ = id => document.getElementById(id);
 let cvFile = null;
 const show = id => { ["step1","scanning","step2","step3","done"].forEach(s => $(s).classList.toggle("hide", s !== id)); window.scrollTo({top:0,behavior:"smooth"}); };
 const stepBar = n => [1,2,3].forEach(i => $("s"+i).classList.toggle("on", i === n));
-$("hrMail").textContent = CONFIG.HR_EMAIL; $("hrMail").href = "mailto:" + CONFIG.HR_EMAIL;
+$("hrMail").textContent = CONFIG.HR_EMAIL; $("hrMail2").textContent = CONFIG.HR_EMAIL; $("hrMail2").href = "mailto:" + CONFIG.HR_EMAIL; $("hrMail").href = "mailto:" + CONFIG.HR_EMAIL;
 
 function validFile(f){
   if(!f) return "Please choose your CV.";
@@ -222,7 +252,7 @@ $("regForm").onsubmit = async e => {
     $("err3").textContent = "Sorry, we could not send your details (" + (err.message || "network error") + "). Please try again or email your CV to " + CONFIG.HR_EMAIL + ".";
     $("submitBtn").disabled = false; $("submitBtn").textContent = "Submit enrolment"; return;
   }
-  $("doneName").textContent = name; $("doneEmail").textContent = email;
+  $("doneName").textContent = name; $("donePlan").textContent = String(fd.get("plan")).replace(" - ", ": ");
   show("done");
 };
 </script>
