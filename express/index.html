@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>24-Hour ATS CV Rewrite | ResumeCrafting Hub</title>
-<meta name="description" content="Your CV rewritten to get past the ATS within 24 hours. For UK, Ireland and Europe job seekers. £85. Order on WhatsApp.">
+<title>CV Update &amp; Placement Support | ResumeCrafting Hub</title>
+<meta name="description" content="CV review and update from £85, or full placement support. For UK, Ireland and Europe job seekers. Choose your option and order on WhatsApp.">
 <meta property="og:title" content="Your CV, rewritten to get past the ATS by tomorrow">
-<meta property="og:description" content="24-hour ATS CV rewrite for UK, Ireland and Europe job seekers. Order on WhatsApp.">
+<meta property="og:description" content="CV review and update, tailored CVs, interview guides and full placement support for UK, Ireland and Europe job seekers.">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -101,6 +101,29 @@ footer{color:var(--muted);font-size:.85rem}
   .bar .after{animation:grow 1.2s ease-out .3s both}
   @keyframes grow{from{width:38%}to{width:88%}}
 }
+.pkgs{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.pkg{position:relative;background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:22px 20px 18px;display:grid;gap:8px;align-content:start;cursor:pointer}
+.pkg:has(input:checked){border-color:var(--accent);background:var(--soft)}
+.pkg input{position:absolute;top:16px;right:16px;width:22px;height:22px;accent-color:var(--accent)}
+.pkg .amt{font-family:var(--display);font-size:2.2rem;font-weight:800;color:var(--accent);line-height:1}
+.pkg ul{margin:0;padding-left:18px;display:grid;gap:4px;font-size:.95rem}
+.pkg.slim{grid-column:1/-1}
+.tag{position:absolute;top:-11px;left:16px;font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:999px;font-weight:600}
+.tag.good{background:var(--mark);color:var(--mark-ink)}
+.tag.rec{background:var(--accent);color:var(--accent-ink)}
+.addon.pick:has(input:disabled){opacity:.6;cursor:default}
+.logos{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:center}
+.wm{font-family:var(--display);font-weight:800;font-size:1.5rem;letter-spacing:-.01em;color:var(--ink)}
+.wm-eb{font-size:1.9rem;text-transform:lowercase}
+.wm small{font-family:var(--body);font-weight:600;font-size:.8rem;color:var(--muted);letter-spacing:0}
+.stories{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.story{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;display:grid;gap:6px;align-content:start;min-width:0}
+.story .label{color:var(--accent)}
+.story p{color:var(--muted)}
+.quotes{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+blockquote{margin:0;background:var(--soft);border-radius:12px;padding:18px 20px;display:grid;gap:8px;font-size:1.05rem}
+blockquote cite{font-style:normal;font-family:var(--mono);font-size:.8rem;color:var(--muted)}
+  @media (max-width:760px){.pkgs,.stories,.quotes{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -115,10 +138,10 @@ footer{color:var(--muted);font-size:.85rem}
       <div class="label">24-hour express service</div>
       <h1>Your CV, rewritten to <mark>get past the ATS</mark> by tomorrow.</h1>
       <p class="lede">Applying for UK, Irish or European roles and hearing nothing back? Most CVs are rejected by software before a recruiter reads them. We rebuild yours so it gets read.</p>
-      <div class="price"><b>£85</b><span>one-off · delivered within 24 hours of payment</span></div>
+      <div class="price"><span>CV Review &amp; Update from</span><b>£85</b><span>· delivered within 24 hours of payment</span></div>
       <div class="ctas">
-        <a class="btn primary" id="wa-hero" href="#order">Order on WhatsApp</a>
-        <a class="btn ghost" href="#included">What you get</a>
+        <a class="btn primary" href="#choose">Choose your option</a>
+        <a class="btn ghost" href="#stories">See placed candidates</a>
       </div>
     </div>
     <aside class="scan" aria-label="Example ATS keyword match">
@@ -138,22 +161,54 @@ footer{color:var(--muted);font-size:.85rem}
     </aside>
   </section>
 
+  <section class="section" id="choose">
+    <h2>Choose your option</h2>
+    <p class="lede">You decide what you need. Pick one package, then tick any extras. Not sure? We suggest <b>Full Placement Support</b>, our most complete option.</p>
+    <div class="pkgs">
+      <label class="pkg"><input type="radio" name="pkg" value="cv" checked>
+        <span class="tag good">Best offer</span>
+        <span class="label">Option 1</span>
+        <h3>CV Review &amp; Update</h3><span class="amt">£85</span>
+        <ul><li>Expert review of your current CV</li><li>Full ATS-friendly rewrite for your target role</li><li>LinkedIn profile update</li><li>Word and PDF within 24 hours of payment</li></ul>
+      </label>
+      <label class="pkg"><input type="radio" name="pkg" value="full">
+        <span class="tag rec">Recommended</span>
+        <span class="label">Option 2</span>
+        <h3>Full Placement Support</h3><span class="amt">£380</span>
+        <ul><li>Your profile tailored for each application</li><li>CV update and LinkedIn update</li><li>Profile marketing for sponsorship and non-sponsorship roles</li><li>Best for a serious job search</li></ul>
+      </label>
+      <label class="pkg slim"><input type="radio" name="pkg" value="none">
+        <span class="label">Option 3</span>
+        <h3>Extras only</h3>
+        <p>Already have a strong CV? Just pick the extras below.</p>
+      </label>
+    </div>
+    <h3>Extras you can add</h3>
+    <div class="addons">
+      <label class="addon pick"><span class="label">Extra</span><h3>CV tailored to one job description</h3><span class="amt">£19</span><p>An extra version of your CV rewritten for one JD you send us.</p><span class="chk"><input type="checkbox" class="addon-chk" data-name="CV tailored to one JD" data-price="19" data-included="full"> <span class="chk-text">Add to my order</span></span></label>
+      <label class="addon pick"><span class="label">Extra</span><h3>Interview preparation guide</h3><span class="amt">£39</span><p>A PDF of likely questions for your interview: CV defence, role-specific technical questions and scenarios, with answer guidance.</p><span class="chk"><input type="checkbox" class="addon-chk" data-name="Interview preparation guide" data-price="39"> <span class="chk-text">Add to my order</span></span></label>
+    </div>
+    <div class="summary summary-out" aria-live="polite"></div>
+    <div class="ctas"><a class="btn primary" id="wa-choose" href="#choose">Order on WhatsApp</a></div>
+  </section>
+
   <section class="section">
     <h2>How it works</h2>
     <div class="steps">
-      <div class="step"><span class="label">Step 1</span><h3>Send your CV</h3><p>Message us your current CV and the job title (or job link) you're targeting.</p></div>
-      <div class="step"><span class="label">Step 2</span><h3>Pay £85</h3><p>We reply with the payment details (UPI or bank transfer). Your 24 hours start once payment is confirmed.</p></div>
-      <div class="step"><span class="label">Step 3</span><h3>Get your new CV</h3><p>Receive your rewritten CV in Word and PDF, ready to upload to any job portal.</p></div>
+      <div class="step"><span class="label">Step 1</span><h3>Choose and send your CV</h3><p>Pick your option above, then message us your current CV and the job title (or job link) you're targeting.</p></div>
+      <div class="step"><span class="label">Step 2</span><h3>Pay</h3><p>We reply with the payment details (UPI or bank transfer). Your 24 hours start once payment is confirmed.</p></div>
+      <div class="step"><span class="label">Step 3</span><h3>Get your results</h3><p>Receive your updated CV in Word and PDF, ready to upload to any job portal. Full Placement Support continues with applications and profile marketing.</p></div>
     </div>
   </section>
 
   <section class="section" id="included">
-    <h2>What's included for £85</h2>
+    <h2>What's in the CV Review &amp; Update (£85)</h2>
     <ul class="incl">
       <li><span><b>Full rewrite</b>, not a light edit. Summary, experience and skills rebuilt around your target role.</span></li>
       <li><span><b>ATS-safe single-column format</b> that parses cleanly in Workday, Taleo, iCIMS and SuccessFactors.</span></li>
       <li><span><b>UK and Ireland conventions</b>: no photo or date of birth, 2-page length, British English.</span></li>
       <li><span><b>Keywords for your target role</b> placed where recruiters and ATS filters look.</span></li>
+      <li><span><b>LinkedIn profile update</b> so your profile matches your new CV and recruiters find you.</span></li>
       <li><span><b>Word (DOCX) and PDF</b> versions, so you can edit it yourself later.</span></li>
       <li><span><b>One free revision</b> within 7 days if anything needs changing.</span></li>
     </ul>
@@ -164,14 +219,22 @@ footer{color:var(--muted);font-size:.85rem}
     <p>We never invent skills, job titles or experience. Recruiters check, and a made-up line can cost you the offer. We reframe your real work so its value is obvious to a UK or European employer.</p>
   </section>
 
-  <section class="section">
-    <h2>Need more for a specific job?</h2>
-    <p class="paynote" style="color:var(--muted)">Tick the extras you want. They are added to your order total below.</p>
-    <div class="addons">
-      <label class="addon pick"><span class="label">Add-on</span><h3>Job-matched CV</h3><span class="amt">£19</span><p>An extra version tailored to one job description you send us.</p><span class="chk"><input type="checkbox" class="addon-chk" data-name="Job-matched CV" data-price="19"> Add to my order</span></label>
-      <label class="addon pick"><span class="label">Add-on</span><h3>Interview prep pack</h3><span class="amt">£39</span><p>A PDF of likely questions for your interview: CV defence, role-specific technical questions and scenarios, with answer guidance.</p><span class="chk"><input type="checkbox" class="addon-chk" data-name="Interview prep pack" data-price="39"> Add to my order</span></label>
-      <div class="addon feature"><span class="label">Full service</span><h3>Managed job search</h3><span class="amt">from £350</span><p>We handle CVs, applications and interview prep for you. Your £85 is credited if you upgrade within 30 days.</p></div>
+  <section class="section" id="stories">
+    <h2>Successfully placed candidates</h2>
+    <p class="lede">Candidates we supported have received job offers from employers including:</p>
+    <div class="logos" aria-label="Employers">
+      <span class="wm wm-mc">Mastercard</span><span class="wm wm-eb">ebay</span><span class="wm wm-uhg">Optum <small>UnitedHealth Group</small></span>
     </div>
+    <div class="stories">
+      <div class="story"><span class="label">Offer received</span><h3>Data Scientist</h3><p>Optum, part of UnitedHealth Group</p></div>
+      <div class="story"><span class="label">Offer received</span><h3>Enterprise Operations Engineer II</h3><p>Mastercard</p></div>
+      <div class="story"><span class="label">Placed</span><h3>eBay Europe Services</h3><p>Dublin, Ireland</p></div>
+    </div>
+    <div class="quotes">
+      <blockquote>"Thank you so much for all your efforts you put in to get me this job. I am delighted and happy!"<cite>Placed candidate</cite></blockquote>
+      <blockquote>"Without your team's support I can't be here at this position. Thank you."<cite>Placed candidate</cite></blockquote>
+    </div>
+    <p class="note">Candidate names and documents are kept private. Company names belong to their owners; this page does not imply any partnership with or endorsement by them.</p>
   </section>
 
   <section class="section">
@@ -183,7 +246,7 @@ footer{color:var(--muted);font-size:.85rem}
     <div class="label" style="color:var(--mark)">Order today, apply tomorrow</div>
     <h2>Send your CV and target role on WhatsApp to get started.</h2>
     <p>Include the job title or a job link. We reply with the payment details and confirm your delivery time.</p>
-    <div class="summary" id="summary" aria-live="polite"></div>
+    <div class="summary summary-out" aria-live="polite"></div>
     <div class="ctas"><a class="btn primary" id="wa-order" href="https://wa.me/916369225896" target="_blank" rel="noopener">Order on WhatsApp</a></div>
     <div class="ctas"><a class="btn primary" id="wa-pay" href="#order" target="_blank" rel="noopener">Pay now: get payment details</a></div>
     <p class="paynote">Tap Pay now and WhatsApp opens with your message ready. We reply with the payment details: UPI if you are paying from India, bank transfer in GBP or EUR if you are in the UK, Ireland or Europe.</p>
@@ -197,6 +260,7 @@ footer{color:var(--muted);font-size:.85rem}
   <section class="section">
     <h2>Questions</h2>
     <div class="faq">
+      <details><summary>Which option should I choose?</summary><p>If you only need a stronger CV and LinkedIn profile, choose CV Review &amp; Update (£85). If you want us to tailor your profile for each application and market it for sponsorship and non-sponsorship roles, choose Full Placement Support (£380), which we recommend for a serious job search. You can add a CV tailored to one job description (£19) or an interview preparation guide (£39) to any option.</p></details>
       <details><summary>How do I pay?</summary><p>Message us on WhatsApp with your CV and target role, or tap Pay now. We reply with the payment details: UPI if you are in India, or bank transfer in GBP or EUR if you are in the UK, Ireland or Europe. Send us the payment screenshot or transfer reference and we start your 24 hours once the money has arrived.</p></details>
       <details><summary>Is it really 24 hours?</summary><p>Yes. Your CV is delivered within 24 hours of payment confirmation. If we ever miss that, we'll tell you upfront before you pay.</p></details>
       <details><summary>Do you guarantee a job or interviews?</summary><p>No one honestly can. A strong, ATS-friendly CV gets you read by recruiters far more often. Offers and visa sponsorship depend on the employer.</p></details>
@@ -211,25 +275,37 @@ footer{color:var(--muted);font-size:.85rem}
 <script>
 /* WhatsApp number in international format, digits only */
 const WHATSAPP = "916369225896";
-const BASE = 85;
+const PKG = { cv: { n: "CV Review & Update", p: 85 }, full: { n: "Full Placement Support", p: 380 }, none: null };
+const radios = [...document.querySelectorAll('input[name="pkg"]')];
 const chks = [...document.querySelectorAll(".addon-chk")];
-const state = () => {
-  const sel = chks.filter(c => c.checked).map(c => ({ n: c.dataset.name, p: Number(c.dataset.price) }));
-  return { sel, total: BASE + sel.reduce((a, x) => a + x.p, 0) };
-};
 const wa = text => "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(text);
 function refresh() {
-  const { sel, total } = state();
-  const extras = sel.length ? " + add-ons: " + sel.map(x => x.n + " (£" + x.p + ")").join(", ") : "";
-  const order = "24-hour ATS CV rewrite (£" + BASE + ")" + extras + ". Total: £" + total + ".";
-  const set = (id, href) => { const a = document.getElementById(id); a.href = href; a.target = "_blank"; a.rel = "noopener"; };
-  set("wa-hero", wa("Hi ResumeCrafting Hub, I'd like the " + order + " My target role is: "));
-  set("wa-order", wa("Hi ResumeCrafting Hub, I'd like the " + order + " My target role is: "));
-  set("wa-pay", wa("Hi ResumeCrafting Hub, I'd like to pay for the " + order + " Please send me the payment details. My name is: "));
-  const lines = ["<span>CV rewrite: £" + BASE + "</span>"].concat(sel.map(x => "<span>" + x.n + ": £" + x.p + "</span>"));
-  document.getElementById("summary").innerHTML = '<span class="label" style="color:inherit">Your order</span>' + lines.join("") + "<b>Total £" + total + "</b>";
+  const pkg = radios.find(r => r.checked).value;
+  chks.forEach(c => {
+    const incl = c.dataset.included === pkg;
+    if (incl) c.checked = false;
+    c.disabled = incl;
+    c.parentNode.querySelector(".chk-text").textContent = incl ? "Included in Full Placement Support" : "Add to my order";
+  });
+  const items = [];
+  if (PKG[pkg]) items.push(PKG[pkg]);
+  chks.filter(c => c.checked).forEach(c => items.push({ n: c.dataset.name, p: Number(c.dataset.price) }));
+  const total = items.reduce((a, x) => a + x.p, 0);
+  const html = items.length
+    ? '<span class="label" style="color:inherit">Your selection</span>' + items.map(x => "<span>" + x.n + ": £" + x.p + "</span>").join("") + "<b>Total £" + total + "</b>"
+    : '<span class="label" style="color:inherit">Your selection</span><span>Nothing selected yet. Choose a package or an extra above.</span>';
+  document.querySelectorAll(".summary-out").forEach(el => { el.innerHTML = html; });
+  const list = items.map(x => x.n + " (£" + x.p + ")").join(", ");
+  const set = (id, href) => {
+    const a = document.getElementById(id);
+    a.href = items.length ? href : "#choose";
+    if (items.length) { a.target = "_blank"; a.rel = "noopener"; } else { a.removeAttribute("target"); }
+  };
+  set("wa-choose", wa("Hi ResumeCrafting Hub, I'd like to order: " + list + ". Total: £" + total + ". My target role is: "));
+  set("wa-order", wa("Hi ResumeCrafting Hub, I'd like to order: " + list + ". Total: £" + total + ". My target role is: "));
+  set("wa-pay", wa("Hi ResumeCrafting Hub, I'd like to pay for: " + list + ". Total: £" + total + ". Please send me the payment details. My name is: "));
 }
-chks.forEach(c => c.addEventListener("change", refresh));
+radios.concat(chks).forEach(c => c.addEventListener("change", refresh));
 document.getElementById("wa-text").textContent = "+91 63692 25896";
 refresh();
 </script>
