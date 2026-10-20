@@ -312,6 +312,28 @@ ATS: dict[str, EmployerFeed] = {
 }
 
 
+def careers_page(emp: dict) -> str:
+    """The public careers page of a config/employers.json employer, built from its job-system settings."""
+    if emp.get("careers_url"):
+        return emp["careers_url"]
+    ats, key, host = emp.get("ats"), emp.get("id", ""), emp.get("host", "")
+    pages = {
+        "greenhouse": f"https://job-boards.greenhouse.io/{key}",
+        "lever": f"https://jobs.{'eu.' if emp.get('region') == 'eu' else ''}lever.co/{key}",
+        "ashby": f"https://jobs.ashbyhq.com/{key}",
+        "smartrecruiters": f"https://jobs.smartrecruiters.com/{key}",
+        "workable": f"https://apply.workable.com/{key}/",
+        "recruitee": f"https://{key}.recruitee.com/",
+        "personio": f"https://{key}.jobs.personio.{emp.get('tld', 'de')}/",
+        "teamtailor": f"https://{host or key + '.teamtailor.com'}/jobs",
+        "workday": f"https://{host}/{emp.get('site', '')}",
+        "oracle": f"https://{host}/hcmUI/CandidateExperience/en/sites/{emp.get('site', '')}/jobs",
+        "successfactors": f"https://{host}/",
+    }
+    page = pages.get(ats, "")
+    return "" if not page or page.startswith("https:///") else page
+
+
 def career_sites(days: int, employers: list[dict], report: dict) -> Iterator[Job]:
     """Yield jobs from every configured employer; one broken board never stops the others."""
     cutoff = datetime.now(timezone.utc) - timedelta(days=days)

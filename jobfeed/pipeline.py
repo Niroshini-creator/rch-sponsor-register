@@ -237,7 +237,7 @@ def run(days: int, out_path: Path) -> dict:
     jobs = enrich(raw, index, tiers, ContactBook.load(CONFIG / "contacts.json"), days, agencies, stats)
     for job in jobs:
         reuse_digest(job, seen)
-    link_employer_sites(jobs, CONFIG / "early_career_employers.json")
+    link_employer_sites(jobs, CONFIG / "early_career_employers.json", employers)
     directory = build_directory(jobs, index, tiers, CONFIG / "early_career_employers.json")
 
     payload = {
@@ -259,17 +259,22 @@ def run(days: int, out_path: Path) -> dict:
     return payload
 
 
-def link_employer_sites(jobs: list[Job], path: Path) -> None:
-    """Give job-board adverts at the directory's employers a link to the employer's own careers site.
+def link_employer_sites(jobs: list[Job], path: Path, career_employers: list[dict] | None = None) -> None:
+    """Give job-board adverts a link to the employer's own careers site, when the board knows it: the
+    directory's employers (path) and every employer whose careers site the board reads (config/employers.json).
 
-    Board links (Adzuna, Reed) can be closed to visitors outside the board's country; the careers site is not.
+    Board links (Adzuna especially) can be closed to visitors outside the board's country; the careers site is not.
     """
     cfg = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
     sites = {(normalise_company(e["name"]), e.get("country", "GB")): e["careers_url"]
              for e in cfg.get("employers", []) if e.get("careers_url")}
+    # Career-site employers hire in many countries from one site: match them by name alone.
+    anywhere = {normalise_company(e["name"]): page for e in career_employers or []
+                if e.get("enabled", True) and (page := careers.careers_page(e))}
     for job in jobs:
         if job.channel != "career_site":
-            job.employer_site = sites.get((normalise_company(job.company), job.country), "")
+            key = normalise_company(job.company)
+            job.employer_site = sites.get((key, job.country)) or anywhere.get(key, "")
 
 
 def build_directory(jobs: list[Job], index: sponsors.SponsorIndex, tiers: TierRules, path: Path) -> list[dict]:

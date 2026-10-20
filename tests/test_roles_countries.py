@@ -8,7 +8,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from unittest import mock
 
-from jobfeed import classify, contacts, pipeline, salary, sources, sponsors
+from jobfeed import careers, classify, contacts, pipeline, salary, sources, sponsors
 from jobfeed.models import Job
 
 CONFIG = Path(__file__).resolve().parent.parent / "config"
@@ -414,6 +414,17 @@ class NewSourceTests(unittest.TestCase):
         pipeline.link_employer_sites([board, other, own], CONFIG / "early_career_employers.json")
         self.assertEqual(board.employer_site, "https://search.jobs.barclays/")
         self.assertEqual((other.employer_site, own.employer_site), ("", ""))
+        # Employers whose careers site the board reads: their page, whatever the advert's country.
+        monzo = make_job(source="Adzuna", source_id="m", company="Monzo Bank", country="IE", channel="aggregator")
+        pipeline.link_employer_sites([monzo], CONFIG / "early_career_employers.json",
+                                     [{"name": "Monzo", "ats": "greenhouse", "id": "monzo"},
+                                      {"name": "Visa", "ats": "workday", "host": "visa.wd5.myworkdayjobs.com", "site": "Visa"}])
+        self.assertEqual(monzo.employer_site, "")  # "monzo bank" is not "monzo": names must match
+        monzo.company = "Monzo"
+        pipeline.link_employer_sites([monzo], CONFIG / "early_career_employers.json", [{"name": "Monzo", "ats": "greenhouse", "id": "monzo"}])
+        self.assertEqual(monzo.employer_site, "https://job-boards.greenhouse.io/monzo")
+        employers = json.loads((CONFIG / "employers.json").read_text(encoding="utf-8"))["employers"]
+        self.assertTrue(all(careers.careers_page(e).startswith("https://") for e in employers))
         rows = json.loads((CONFIG / "early_career_employers.json").read_text(encoding="utf-8"))["employers"]
         self.assertTrue(all(r.get("careers_url", "").startswith("https://") for r in rows))
 

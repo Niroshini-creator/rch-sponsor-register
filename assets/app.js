@@ -241,20 +241,30 @@ function siteDomain(url) {
 function applyHtml(j, label) {
   const board = `<a class="btn" href="${esc(safeUrl(j.url))}" target="_blank" rel="noopener">${esc(label)}</a>`;
   if (j.channel !== "aggregator") return board;
-  // Job-board links (Adzuna especially) can be closed to visitors outside the board's country: offer the employer's site.
+  // Job-board links (Adzuna especially) only open in the board's own country: lead with the employer's careers site.
   const search = (q) => `https://www.google.com/search?q=${encodeURIComponent(q)}`;
+  const boardNote = j.source === "Adzuna" ? "may only open in the UK" : "job-board copy";
+  const boardLink = `<a href="${esc(safeUrl(j.url))}" target="_blank" rel="noopener" title="Job-board link; ${boardNote}">advert via ${esc(j.source)}</a>`;
   if (j.employer_site) {
     const domain = siteDomain(j.employer_site);
     return `<div class="apply">
-      <a class="btn" href="${esc(search(`site:${domain} "${j.title}"`))}" target="_blank" rel="noopener"
-        title="Finds this vacancy on ${esc(j.company)}'s own website">Find on ${esc(j.company)} site</a>
-      <span class="small"><a href="${esc(safeUrl(j.employer_site))}" target="_blank" rel="noopener">${esc(j.company)} careers page</a> ·
-        <a href="${esc(safeUrl(j.url))}" target="_blank" rel="noopener" title="Job-board link; may only open in the board's country">advert via ${esc(j.source)}</a></span>
+      <a class="btn" href="${esc(safeUrl(j.employer_site))}" target="_blank" rel="noopener"
+        title="${esc(j.company)}'s own careers site">Apply on ${esc(j.company)} careers site</a>
+      <span class="small"><a href="${esc(search(`site:${domain} "${j.title}"`))}" target="_blank" rel="noopener"
+        title="Searches ${esc(j.company)}'s website for this exact job title">Find this job on their site</a> · ${boardLink}</span>
+    </div>`;
+  }
+  const find = search(`"${j.title}" ${j.company} careers`);
+  if (j.source === "Adzuna") {
+    return `<div class="apply">
+      <a class="btn" href="${esc(find)}" target="_blank" rel="noopener"
+        title="Finds this vacancy on ${esc(j.company)}'s own website">Find on ${esc(j.company)} careers site</a>
+      <span class="small">${boardLink}</span>
     </div>`;
   }
   return `<div class="apply">${board}
-    <span class="small"><a href="${esc(search(`"${j.title}" ${j.company} careers`))}" target="_blank" rel="noopener"
-      title="If the job-board link doesn't open in your country, find the vacancy on the employer's own website">Find on employer's site</a></span>
+    <span class="small"><a href="${esc(find)}" target="_blank" rel="noopener"
+      title="Find the vacancy on the employer's own website">Find on employer's site</a></span>
   </div>`;
 }
 
