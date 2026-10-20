@@ -152,10 +152,19 @@ const SORTS = {
   contact: (a, b) => (b.contacts.length > 0) - (a.contacts.length > 0) || b._posted - a._posted,
 };
 
+// Each country option shows how many jobs choosing it would list under the other filters as they stand.
+function countryCounts(f) {
+  for (const o of document.querySelectorAll("select[name=country] option[data-label]")) {
+    const n = state.jobs.filter((j) => matches(j, { ...f, country: o.value })).length;
+    o.textContent = `${o.dataset.label} (${n})`;
+  }
+}
+
 function apply() {
   const f = readFilters();
   state.filtered = state.jobs.filter((j) => matches(j, f)).sort(SORTS[$("#sort").value]);
   renderViews(f);
+  countryCounts(f);
   state.shown = PAGE_SIZE;
   syncUrl();
   render();
@@ -253,6 +262,7 @@ function jobHtml(j) {
   const sponsorTag = {
     confirmed: `<span class="tag ok" title="The advert itself states that visa sponsorship is available">Sponsorship offered</span>`,
     possible: `<span class="tag warn" title="The advert says sponsorship may be possible (for example 'may be eligible' or 'will be considered'): ask the employer before applying">May be sponsored</span>`,
+    local: `<span class="tag direct" title="A job in India: no visa or sponsorship needed for Indian candidates">Local role (no visa needed)</span>`,
     not_sponsored: `<span class="tag no" title="The advert says sponsorship is not available for this role">Not sponsored</span>`,
     licensed_sponsor: `<span class="tag warn" title="Employer is on the official sponsor register but the advert does not mention sponsorship — ask before applying">${{ "US H-1B": "H-1B sponsor", "IE employment permits": "Permit employer" }[j.sponsor_register] || "Licensed sponsor"}</span>`,
     employer_visa: `<span class="tag ok" title="UAE employers sponsor every foreign hire's residence and work visa">Employer visa (UAE)</span>`,
@@ -579,9 +589,8 @@ async function main() {
   // Country filter: the board's featured countries and regions first, then any other country with jobs.
   const featured = data.featured_countries || DEFAULT_FEATURED;
   const optionLabel = (c) => REGION_OPTIONS[c] ? REGION_OPTIONS[c].label : countryName(c);
-  const inWindow = state.jobs.filter((j) => Date.now() - j._posted <= 7 * DAY_MS);
-  const option = (c) => `<option value="${esc(c)}">${flag(REGION_OPTIONS[c]?.flag || c)} ${esc(optionLabel(c))} (${
-    inWindow.filter((j) => matchesCountry(j, c)).length})</option>`;
+  // The count after each name is filled in by countryCounts(), so it always matches what choosing it shows.
+  const option = (c) => `<option value="${esc(c)}" data-label="${esc(`${flag(REGION_OPTIONS[c]?.flag || c)} ${optionLabel(c)}`)}"></option>`;
   const others = [...new Set(state.jobs.map((j) => j.country))].filter((c) => !featured.includes(c))
     .sort((a, b) => countryName(a).localeCompare(countryName(b)));
   $("select[name=country]").insertAdjacentHTML("beforeend",
