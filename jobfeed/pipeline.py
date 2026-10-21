@@ -118,7 +118,7 @@ def enrich(jobs: Iterable[Job], index: sponsors.SponsorIndex, tiers: TierRules,
            stats: dict | None = None) -> list[Job]:
     cutoff = datetime.now(timezone.utc) - timedelta(days=days)
     stats = stats if stats is not None else {}
-    stats.setdefault("agency_removed", 0)
+    stats.setdefault("agency_kept", 0)
     kept: dict[tuple, Job] = {}
     now = datetime.now(timezone.utc)
     undated: dict[str, int] = {}
@@ -137,9 +137,11 @@ def enrich(jobs: Iterable[Job], index: sponsors.SponsorIndex, tiers: TierRules,
         if job.country not in COUNTRIES:
             continue
         # Career-site jobs are the employer's own adverts by definition.
+        # Recruitment agencies' adverts are kept, marked, and shown in their own list: the end employer is often unnamed, so they
+        # never count as the employer's own advert or as offering sponsorship unless the advert says so.
         if agencies and job.channel != "career_site" and agencies.is_agency(job.company, job.description):
-            stats["agency_removed"] += 1
-            continue
+            job.agency = True
+            stats["agency_kept"] += 1
 
         signal, evidence = sponsorship_evidence(f"{job.title}. {job.description}")
         entry = index.lookup(job.register_name or job.company, job.country)
@@ -178,6 +180,8 @@ def enrich(jobs: Iterable[Job], index: sponsors.SponsorIndex, tiers: TierRules,
             job.sponsorship = "confirmed"
         elif signal == "possible":
             job.sponsorship = "possible"
+        elif job.agency:
+            job.sponsorship = "agency"          # the agency's own licence says nothing about its client's vacancy
         elif entry and sponsors.REGISTER_COUNTRY.get(entry.register) == job.country:
             # Employer holds a sponsor licence in the job's country; the advert is silent.
             job.sponsorship = "licensed_sponsor"
@@ -224,7 +228,7 @@ def enrich(jobs: Iterable[Job], index: sponsors.SponsorIndex, tiers: TierRules,
 
 def _rank(job: Job) -> tuple:
     # A copy that rules sponsorship out never hides one that offers it (two boards, two wordings).
-    return (job.sponsorship != "not_sponsored", _CHANNEL_RANK.get(job.channel, 0), bool(job.contacts),
+    return (job.sponsorship != "not_sponsored", not job.agency, _CHANNEL_RANK.get(job.channel, 0), bool(job.contacts),
             job.sponsorship == "confirmed", job.date_known, job.posted_at)
 
 
@@ -256,7 +260,7 @@ def run(days: int, out_path: Path) -> dict:
         "channels": CHANNELS,
         "featured_countries": FEATURED_COUNTRIES,
         "sources": status,
-        "counts": {"fetched": len(raw), "agency_removed": stats["agency_removed"], "published": len(jobs), "full_adverts_read": stats["full_adverts_read"]},
+        "counts": {"fetched": len(raw), "agency_kept": stats["agency_kept"], "published": len(jobs), "full_adverts_read": stats["full_adverts_read"]},
         "jobs": [j.to_dict() for j in jobs],
         "employers": directory,
     }

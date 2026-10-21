@@ -140,3 +140,7 @@ Roles the candidate's experience does not reach are hidden by default (shown aga
 ## Older and undated adverts
 
 Employer career sites are read 10 days back (`CAREER_EXTRA_DAYS` = 3 on top of the 7-day window; every other source stays at 7). On the candidate page the tier tabs list adverts posted up to "7 days ago"; two further tabs hold **Older · 8–10 days** (career-site adverts only) and **Date not mentioned** (adverts that give no posting date). Both tabs have the same filters, and the "Posted within" filter applies only to the fresh tabs.
+
+## Recruiter adverts and LinkedIn
+
+Adverts placed by recruitment agencies and job boards (Robert Walters, Hays, eFinancialCareers... see `config/agencies.json`) are no longer dropped: the feed keeps them with `agency: true` and the sponsorship label `agency` ("end employer unknown") unless the advert itself offers or rules out sponsorship, since an agency's own licence says nothing about its client's vacancy. The candidate page lists them in the **Recruiter adverts** tab, which ignores the source and sponsorship filters; the tier tabs list employers' own adverts only, and an employer's copy of a job wins over an agency's. LinkedIn and Indeed adverts cannot be read (no public feed; LinkedIn forbids scraping), so "Search LinkedIn and Indeed for your roles" opens their searches for the candidate's best roles with the country and date window filled in.

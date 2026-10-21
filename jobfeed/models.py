@@ -57,6 +57,7 @@ class Job:
     contacts: list[dict] = field(default_factory=list)
     # Employer's own careers site, for job-board adverts at directory employers (board links can be region-locked).
     employer_site: str = ""
+    agency: bool = False        # advert placed by a recruitment agency, not the employer (kept, shown in its own list)
     date_known: bool = True     # False when the advert gives no posting date (posted_at is then the day it was found)
     # Digest of the whole advert (see digest.py): keywords found, clearance / licence / nationality sentences, full length.
     kw: list[str] = field(default_factory=list)
