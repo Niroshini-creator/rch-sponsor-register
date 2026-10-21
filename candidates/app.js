@@ -63,7 +63,11 @@ async function listView() {
 }
 
 // ------------------------------------------------------------------------------------------ one candidate
-const TABS = [["1", "Tier 1 · Core"], ["2", "Tier 2 · Close"], ["3", "Tier 3 · Stretch"], ["4", "Other roles"], ["employers", "Employers"], ["cv", "CV scan"]];
+const TABS = [["1", "Tier 1 · Core"], ["2", "Tier 2 · Close"], ["3", "Tier 3 · Stretch"], ["4", "Other roles"], ["older", "Older · 8–10 days"], ["undated", "Date not mentioned"], ["employers", "Employers"], ["cv", "CV scan"]];
+// Where an advert sits in time: "fresh" (posted up to "7 days ago"), "older" (8 to 10 days old, read from employer career sites only) or
+// "undated" (the advert gives no posting date). The tier tabs list fresh roles; the two other lists have their own tabs.
+const DAY_MS = 864e5, bucketOf = j => (j.date_known === false ? "undated" : (Date.now() - new Date(j.posted_at)) / DAY_MS >= 8 ? "older" : "fresh");
+const inTabOf = (j, tab) => (tab === "older" || tab === "undated" ? bucketOf(j) === tab : bucketOf(j) === "fresh" && j.tier === Number(tab));
 const state = { tab: "1", q: "", spons: "offered", min: 0, days: 7, sort: "match", showBlocked: false, sector: "", etier: "", source: "direct", country: "" };
 // By default only genuine employers are shown: employer career sites and the official boards (NHS Jobs, councils and Civil
 // Service departments, universities, schools). Job boards (Reed, Adzuna, Arbeitnow) are one click away.
@@ -104,7 +108,7 @@ async function runLive(force) {
     await loadCareerLinks();
     data.feedSources = feed.sources || {};
     if (!force && live.feedTime === feed.generated_at && live.status === "ok") return;
-    const fresh = CandidateMatch.liveJobs(feed.jobs, data.candidate, { days: data.window_days });
+    const fresh = CandidateMatch.liveJobs(feed.jobs, data.candidate, { days: Math.max(data.window_days, 10) });   // up to 10 days: 8 to 10 days old go in their own tab
     const ids = new Set(live.baseJobs.map(j => j.id)), keys = new Set(live.baseJobs.map(CandidateMatch.dedupeKey));
     const added = fresh.filter(j => !ids.has(j.id) && !keys.has(CandidateMatch.dedupeKey(j)));
     data.jobs = [...live.baseJobs, ...added];
@@ -116,7 +120,7 @@ async function runLive(force) {
   data.sources["Live feed"] = live.status === "ok" ? { status: "ok", count: live.added } : { status: "error", error: live.error };
   if (live.mode === "self" && live.firstPaint && live.status === "ok") {
     live.firstPaint = false;
-    const first = ["1", "2", "3", "4"].find(t => data.jobs.some(j => String(j.tier) === t && visible({ ...j }, t)));
+    const first = ["1", "2", "3", "4"].find(t => data.jobs.some(j => inTabOf(j, t) && visible({ ...j }, t)));
     if (first) state.tab = first;
   }
   render();
@@ -197,10 +201,10 @@ function selfView(profile) {
 }
 
 function visible(j, tab = state.tab) {
-  if (j.tier !== Number(tab)) return false;
+  if (!inTabOf(j, tab)) return false;
   if (j.match < state.min) return false;
-  // An advert with no posting date counts as inside the 7-day window only; the shorter windows need a date.
-  if (j.date_known === false ? state.days < 7 : (Date.now() - new Date(j.posted_at)) / 864e5 > state.days) return false;
+  // "Posted within" narrows the fresh lists only; the older and undated lists are outside the 7-day window by definition.
+  if (bucketOf(j) === "fresh" && (Date.now() - new Date(j.posted_at)) / DAY_MS > state.days) return false;
   if (state.q && !`${j.title} ${j.company} ${j.location} ${j.role} ${j.sector}`.toLowerCase().includes(state.q.toLowerCase())) return false;
   if (state.sector && j.sector !== state.sector) return false;
   if (state.etier && String(j.employer_tier) !== state.etier) return false;
@@ -223,7 +227,7 @@ function hiddenSummary() {
   const counts = {}, keep = { source: state.source, spons: state.spons, showBlocked: state.showBlocked };
   const tally = (key, label) => { counts[label] = (counts[label] || 0) + 1; };
   for (const j of data.jobs) {
-    if (String(j.tier) !== state.tab) continue;
+    if (!inTabOf(j, state.tab)) continue;
     Object.assign(state, { source: "all", spons: "all", showBlocked: true });
     const wanted = visible(j);
     Object.assign(state, keep);
@@ -248,7 +252,7 @@ function sortJobs(list) {
 
 function render() {
   const jobs = data.jobs;
-  const counts = Object.fromEntries(["1", "2", "3", "4"].map(t => [t, jobs.filter(j => String(j.tier) === t && j.sponsorship_offered && !j.hidden_by_default.length && sourceOk(j)).length]));
+  const counts = Object.fromEntries(["1", "2", "3", "4", "older", "undated"].map(t => [t, jobs.filter(j => inTabOf(j, t) && j.sponsorship_offered && !j.hidden_by_default.length && sourceOk(j)).length]));
   const sponsorOffered = jobs.filter(j => j.sponsorship === "confirmed" || j.sponsorship === "possible").length;
   const employers = new Set(jobs.filter(j => j.sponsorship_offered && sourceOk(j)).map(j => j.company)).size;
   const tabs = h("div", { class: "tabs", role: "tablist" }, TABS.map(([key, label]) =>
@@ -366,7 +370,7 @@ function sourceStatus() {
 }
 
 function jobsView() {
-  const inTab = data.jobs.filter(j => String(j.tier) === state.tab);
+  const inTab = data.jobs.filter(j => inTabOf(j, state.tab));
   const sectors = [...new Set(inTab.map(j => j.sector).filter(Boolean))].sort();
   const keepCountry = state.country; state.country = "";           // counts per country under every other filter
   const tally = {};
@@ -390,7 +394,9 @@ function jobsView() {
     h("label", { class: "check" }, h("input", { type: "checkbox", ...(state.showBlocked ? { checked: true } : {}), onchange: e => { state.showBlocked = e.target.checked; render(); } }), "Show roles needing clearance, more senior than your experience, rarely sponsored role types, below visa pay or your India minimum, in another language, reserved for nationals, or without a Skilled Worker licence"),
     h("button", { class: "btn", onclick: () => exportCsv(sortJobs(data.jobs.filter(j => visible(j)))) }, "Export CSV"));
   const list = sortJobs(data.jobs.filter(j => visible(j)));
-  const note = state.tab === "4" ? h("p", { class: "small muted" }, "Other roles at employers that can sponsor, using the same skills on a different route. Many of these (admin, IT support) are below the Skilled Worker skill level, so ask the employer first.") : null;
+  const note = state.tab === "older" ? h("p", { class: "small muted" }, "Adverts posted 8 to 10 days ago, read from employer career sites only. They may be close to closing: check the advert.")
+    : state.tab === "undated" ? h("p", { class: "small muted" }, "Adverts that do not say when they were posted. They could be new or old: check the advert before applying.")
+    : state.tab === "4" ? h("p", { class: "small muted" }, "Other roles at employers that can sponsor, using the same skills on a different route. Many of these (admin, IT support) are below the Skilled Worker skill level, so ask the employer first.") : null;
   return [bar, note, h("p", { class: "small muted" }, `${plural(list.length, "role")} shown`), hiddenSummary(),
     list.length ? h("ul", { class: "cards" }, list.slice(0, 250).map(card)) : h("p", { class: "empty" }, state.country ? `No roles in ${countryName(state.country)} match these filters right now. Roles abroad are fewer: try “Where advertised” or “Sponsorship”, and see “Where these vacancies come from” for what the feed covers.` : "No roles match these filters.")];
 }

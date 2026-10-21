@@ -136,3 +136,7 @@ The match % is a quick screen, not an assessment of the whole advert against the
 ## Seniority and experience
 
 Roles the candidate's experience does not reach are hidden by default (shown again with the tick-box or "Show them all"): `too_senior` for a very senior title (director, head of, VP, chief, principal, partner) when the CV shows under 8 years, or a senior title (senior, lead, manager, staff) under 4 years ("Assistant Manager" and "Associate" titles are not treated as senior); `experience_gap` when the advert asks for more than 2 years beyond the CV's (`candidateboard.checks.required_years` reads "5+ years' experience", "experience of 3-5 years" and takes the smallest figure; the feed records it as `exp_years` from the full advert). Nothing is hidden when the CV's dates could not be read (0 years). Python and browser engines are parity tested.
+
+## Older and undated adverts
+
+Employer career sites are read 10 days back (`CAREER_EXTRA_DAYS` = 3 on top of the 7-day window; every other source stays at 7). On the candidate page the tier tabs list adverts posted up to "7 days ago"; two further tabs hold **Older · 8–10 days** (career-site adverts only) and **Date not mentioned** (adverts that give no posting date). Both tabs have the same filters, and the "Posted within" filter applies only to the fresh tabs.
