@@ -148,6 +148,17 @@ class EnrichTests(unittest.TestCase):
     def run_enrich(self, jobs):
         return pipeline.enrich(jobs, self.index, self.tiers, self.book, days=7)
 
+    def test_career_sites_are_read_ten_days_back_and_everything_else_seven(self):
+        old = lambda days: NOW - timedelta(days=days)
+        jobs = [
+            make_job(source_id="career-9", title="Data Engineer", channel="career_site", posted_at=old(9), description="Visa sponsorship available"),
+            make_job(source_id="career-11", title="Chef", channel="career_site", posted_at=old(11), description="Visa sponsorship available"),
+            make_job(source_id="board-9", title="Pilot", channel="aggregator", posted_at=old(9), description="Visa sponsorship available"),
+            make_job(source_id="career-3", title="Analyst", channel="career_site", posted_at=old(3), description="Visa sponsorship available"),
+        ]
+        out = {j.source_id for j in self.run_enrich(jobs)}
+        self.assertEqual(out, {"career-9", "career-3"})
+
     def test_rules(self):
         jobs = [
             make_job(source_id="old", posted_at=NOW - timedelta(days=8), description="Visa sponsorship available"),

@@ -27,7 +27,7 @@ def previous_digests(path: Path) -> dict[str, tuple[list[str], str, int]]:
         data = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, ValueError):
         return {}
-    return {j["id"]: (j.get("kw") or [], j.get("signals") or "", int(j.get("text_len") or 0))
+    return {j["id"]: (j.get("kw") or [], j.get("signals") or "", int(j.get("text_len") or 0), int(j.get("exp_years") or 0))
             for j in data.get("jobs", []) if j.get("id") and (j.get("text_len") or 0) > 600}
 
 
@@ -58,3 +58,4 @@ def reuse_digest(job: Job, seen: dict) -> None:
     old = seen.get(job.id)
     if old and old[2] > job.text_len:
         job.kw, job.signals, job.text_len = old[0], old[1], old[2]
+        job.exp_years = old[3] if len(old) > 3 else job.exp_years

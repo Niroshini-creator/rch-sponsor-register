@@ -12,6 +12,8 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Iterable
 
+from candidateboard.checks import required_years
+
 from . import careers, sources, sponsors
 from .agencies import AgencyFilter
 from .classify import (AVIATION_FAMILIES, DOMAINS, ENGLISH_SPEAKING_COUNTRIES, ROLES, SECTORS, TierRules,
@@ -53,6 +55,8 @@ def load_sponsor_index(status: dict) -> sponsors.SponsorIndex:
     return index
 
 
+# Employer career sites are read this many days further back (7 + 3 = 10) for the candidate page's "older" list; every other source stays at 7.
+CAREER_EXTRA_DAYS = int(os.environ.get("CAREER_EXTRA_DAYS", "3"))
 MAX_UNDATED_PER_SOURCE = int(os.environ.get("MAX_UNDATED_PER_SOURCE", "300"))
 FEED_BUDGET_MINUTES = float(os.environ.get("FEED_BUDGET_MINUTES", "110"))
 
@@ -66,7 +70,7 @@ def fetch_all(days: int, source_cfg: dict, status: dict, employers: list[dict] |
     feeds = {
         **sources.SOURCES,
         "rss": lambda d: sources.rss_feeds(d, source_cfg.get("rss", {}).get("feeds", [])),
-        "career_sites": lambda d: careers.career_sites(d, employers or [], career_report),
+        "career_sites": lambda d: careers.career_sites(d + CAREER_EXTRA_DAYS, employers or [], career_report),
     }
     deadline = time.monotonic() + FEED_BUDGET_MINUTES * 60
     results: dict[str, list[Job]] = {}
@@ -128,7 +132,7 @@ def enrich(jobs: Iterable[Job], index: sponsors.SponsorIndex, tiers: TierRules,
             if undated[job.source] > MAX_UNDATED_PER_SOURCE:
                 continue
             job.posted_at, job.date_known = now, False
-        elif job.posted_at < cutoff:
+        elif job.posted_at < (cutoff - timedelta(days=CAREER_EXTRA_DAYS) if job.channel == "career_site" else cutoff):
             continue
         if job.country not in COUNTRIES:
             continue
@@ -203,6 +207,7 @@ def enrich(jobs: Iterable[Job], index: sponsors.SponsorIndex, tiers: TierRules,
         job.early_career = job.early_career or classify_early_career(job)
         job.tier, job.size = tiers.classify(job)
         job.kw, job.signals, job.text_len = digest(job.title, job.description)
+        job.exp_years = required_years(job.description)
         job.contacts = contacts.contacts_for(job)
 
         # Key on the register's legal name when matched, so "Monzo" and "Monzo Bank Ltd" merge.
@@ -243,6 +248,7 @@ def run(days: int, out_path: Path) -> dict:
     payload = {
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "window_days": days,
+        "career_window_days": days + CAREER_EXTRA_DAYS,
         "sectors": SECTORS,
         "domains": DOMAINS,
         "roles": ROLES,

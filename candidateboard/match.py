@@ -25,6 +25,10 @@ TITLE_KEYWORD, KEYWORD_MIN, KEYWORD_MIN_EXTRACT = 24, 6, 4
 # A role whose kind the CV barely shows (family strength under EVIDENCE_OK) is scored on its own domain's keywords at half weight and
 # can not pass UNEVIDENCED_CAP: the title and the advert's wording say little about whether the candidate could do the job.
 EVIDENCE_OK, DOMAIN_WEIGHT, UNEVIDENCED_CAP = 30, 0.5, 60
+# Roles the candidate's experience does not reach are hidden by default: a very senior title (director, head of...) needs about 9
+# years and a senior one (senior, lead, manager) about 5, with a year's tolerance; an advert asking for more than 2 years beyond
+# the CV's is also hidden. Skipped when the CV's years could not be read.
+VERY_SENIOR_MIN_YEARS, SENIOR_MIN_YEARS, EXPERIENCE_TOLERANCE_YEARS, ASKED_YEARS_GAP = 8, 4, 1, 2
 EXTRACT_CHARS = 600           # shorter adverts are extracts (the shared feed keeps ~400 characters)
 
 # sponsorship status -> (label shown, sort rank: lower is better, offered?)
@@ -142,7 +146,7 @@ class Matcher:
     def _level(self, title: str) -> tuple[int, str, str]:
         if _VERY_SENIOR.search(title) and self.years < 9:
             return 0, "0 leadership level", "More senior than the CV"
-        if _SENIOR.search(title):
+        if _SENIOR.search(title) and not (_ASSISTANT.search(title) or _JUNIOR.search(title)):
             return (3, "+3 senior title", "Senior level") if self.years < 5 else (8, "+8 senior title", "")
         if _ASSISTANT.search(title):
             return 4, "+4 assistant-level title", "Assistant level, below the CV"
@@ -259,6 +263,15 @@ class Matcher:
             hidden.append("no_skilled_worker_route")
         # Admin, customer service, retail and similar roles are usually below the Skilled Worker skill level: a licensed sponsor
         # rarely sponsors them, so for a candidate who needs a sponsor they are hidden unless the advert itself offers sponsorship.
+        if self.years > 0:
+            if (_VERY_SENIOR.search(title) and self.years < VERY_SENIOR_MIN_YEARS) or (
+                    _SENIOR.search(title) and not (_ASSISTANT.search(title) or _JUNIOR.search(title)) and not _VERY_SENIOR.search(title)
+                    and self.years < SENIOR_MIN_YEARS):
+                hidden.append("too_senior")
+            asked = job["exp_years"] if not full and job.get("exp_years") is not None else checks.required_years(text)
+            if asked and asked - self.years > ASKED_YEARS_GAP:
+                flags.append(f"Asks for {asked}+ years' experience; the CV shows {self.years:g}")
+                hidden.append("experience_gap")
         if needs and ((family and family.sponsor == "rare") or job.get("low_sponsorship")):
             flags.append("Role type is usually below the Skilled Worker skill level")
             if status != "confirmed":

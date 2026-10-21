@@ -104,3 +104,16 @@ def nationality_restriction(text: str) -> dict:
     """{"restricted": bool, "quote"}: the advert is reserved for nationals of the country, so a foreign candidate cannot take it."""
     m = _NATIONALS_ONLY_RE.search(text)
     return {"restricted": bool(m), "quote": _sentence(text, m.start()) if m else ""}
+
+
+# ---------------------------------------------------------------------------- years of experience an advert asks for
+_YEARS_BEFORE_RE = re.compile(r"\b(\d{1,2})\s*\+?\s*(?:(?:to|-|–)\s*\d{1,2}\s*\+?\s*)?years?\b[^.\n]{0,40}?\bexperience", re.I)
+_YEARS_AFTER_RE = re.compile(r"\bexperience\b[^.\n]{0,30}?\b(\d{1,2})\s*\+?\s*(?:(?:to|-|–)\s*\d{1,2}\s*\+?\s*)?years?\b", re.I)
+
+
+def required_years(text: str) -> int:
+    """The smallest number of years of experience the advert asks for ("5+ years' experience", "experience of 3-5 years"), or 0.
+    The smallest, so "3 years in X, 5 years in Y" asks for 3 and the check errs towards showing a role."""
+    found = [int(m.group(1)) for rx in (_YEARS_BEFORE_RE, _YEARS_AFTER_RE) for m in rx.finditer(text)]
+    found = [n for n in found if 1 <= n <= 20]
+    return min(found) if found else 0
