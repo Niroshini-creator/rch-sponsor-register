@@ -17,7 +17,7 @@ def get(url, data=None):
     req = urllib.request.Request(url, data=data, headers=headers)
     try:
         with urllib.request.urlopen(req, timeout=20) as r:
-            return r.status, r.read(4_000_000).decode("utf-8", "replace"), r.geturl()
+            return r.status, r.read(40_000_000).decode("utf-8", "replace"), r.geturl()
     except urllib.error.HTTPError as e:
         return e.code, "", url
     except Exception as e:  # noqa: BLE001
@@ -39,6 +39,13 @@ def places(items):
 
 
 def probe(name):
+    try:
+        return _probe(name)
+    except Exception as e:  # noqa: BLE001
+        return name, [f"probe error {str(e)[:60]}"]
+
+
+def _probe(name):
     found = []
     for s in slugs(name):
         st, body, _ = get(f"https://boards-api.greenhouse.io/v1/boards/{s}/jobs")
