@@ -22,6 +22,9 @@ SKILL_MAX, SKILL_EXTRACT_MAX, SKILLS_FOR_FULL = 40, 22, 5
 SKILLS_FOR_FULL_EXTRACT = 3     # a short extract has fewer words to hit, so 3 CV skills earn its full 22 points
 # A job with no target title is still shown when its advert uses many of the CV's skills and keywords (tier 4).
 TITLE_KEYWORD, KEYWORD_MIN, KEYWORD_MIN_EXTRACT = 24, 6, 4
+# A role whose kind the CV barely shows (family strength under EVIDENCE_OK) is scored on its own domain's keywords at half weight and
+# can not pass UNEVIDENCED_CAP: the title and the advert's wording say little about whether the candidate could do the job.
+EVIDENCE_OK, DOMAIN_WEIGHT, UNEVIDENCED_CAP = 30, 0.5, 60
 EXTRACT_CHARS = 600           # shorter adverts are extracts (the shared feed keeps ~400 characters)
 
 # sponsorship status -> (label shown, sort rank: lower is better, offered?)
@@ -102,15 +105,22 @@ class Matcher:
                                        "track": None, "why": f"{self.tax.families[family].label}: another route for this skill set"}
         return None
 
-    def _skills_for(self, info: dict) -> list:
-        """CV skills for the role's CV, plus the keywords of the role's own domain (a role from an attached document may be
-        outside what the CV shows, e.g. marketing roles on a business analyst CV)."""
-        base = self.tracks.get(info["track"]) if info["track"] else self.all_skills
+    def _skills_for(self, info: dict) -> tuple[list, list]:
+        """(CV skills for the role's CV, keywords of the role's own domain the CV does not list). A role from an attached document
+        may be outside what the CV shows, e.g. marketing roles on a business analyst CV."""
+        base = list((self.tracks.get(info["track"]) if info["track"] else self.all_skills) or [])
         fam = self.tax.families.get(info.get("family") or "")
         if not fam:
-            return base or []
-        have = {s for s, _ in (base or [])}
-        return list(base or []) + [(t, rx) for t, rx in fam.keywords if t not in have]
+            return base, []
+        have = {s for s, _ in base}
+        return base, [(t, rx) for t, rx in fam.keywords if t not in have]
+
+    def _evidence(self, family: str | None) -> float | None:
+        """How strongly the CV shows this kind of role (0-100), or None when the profile does not record it."""
+        evidence = self.profile.get("family_evidence")
+        if evidence is None or not family:
+            return None
+        return (evidence.get(family) or {}).get("strength", 0)
 
     @staticmethod
     def _hits(skills: list, text: str, kw: set | None) -> list[str]:
@@ -197,14 +207,23 @@ class Matcher:
         if not found:
             return None
         title_pts, info = found
-        skills = self._skills_for(info)
-        hits = self._hits(skills, text, kw)
-        skill_pts = (SKILL_EXTRACT_MAX if extract else SKILL_MAX) * min(1.0, len(hits) / (SKILLS_FOR_FULL_EXTRACT if extract else SKILLS_FOR_FULL))
+        base, extra = self._skills_for(info)
+        cv_hits, domain_hits = self._hits(base, text, kw), self._hits(extra, text, kw)
+        evidence = self._evidence(info.get("family"))
+        weak = evidence is not None and evidence < EVIDENCE_OK
+        hits = cv_hits + domain_hits
+        counted = len(cv_hits) + (DOMAIN_WEIGHT if weak else 1.0) * len(domain_hits)
+        skill_pts = (SKILL_EXTRACT_MAX if extract else SKILL_MAX) * min(1.0, counted / (SKILLS_FOR_FULL_EXTRACT if extract else SKILLS_FOR_FULL))
         level_pts, level_why, level_flag = self._level(title)
         total = round(title_pts + skill_pts + level_pts)
+        capped = weak and total > UNEVIDENCED_CAP
+        if capped:
+            total = UNEVIDENCED_CAP
         reasons = [f"+{round(title_pts)} {info['why']}"]
         reasons.append(f"+{round(skill_pts)} {len(hits)} CV skill(s) found in the advert" + (" (extract only)" if extract else ""))
         reasons.append(level_why)
+        if capped:
+            reasons.append(f"Capped at {UNEVIDENCED_CAP}: the CV shows little evidence for this kind of role")
 
         status = job.get("sponsorship", "unverified")
         label, rank, offered = SPONSORSHIP.get(status, SPONSORSHIP["unverified"])
@@ -238,6 +257,12 @@ class Matcher:
         needs = self.needs_for(job)
         if no_route and needs:
             hidden.append("no_skilled_worker_route")
+        # Admin, customer service, retail and similar roles are usually below the Skilled Worker skill level: a licensed sponsor
+        # rarely sponsors them, so for a candidate who needs a sponsor they are hidden unless the advert itself offers sponsorship.
+        if needs and ((family and family.sponsor == "rare") or job.get("low_sponsorship")):
+            flags.append("Role type is usually below the Skilled Worker skill level")
+            if status != "confirmed":
+                hidden.append("role_not_sponsorable")
         if clear["blocks"]:
             hidden.append("clearance")
         if needs and not offered:

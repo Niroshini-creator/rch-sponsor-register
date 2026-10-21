@@ -192,3 +192,32 @@ console.log(JSON.stringify({ domains: I.documentDomains(process.env.PROSE), adde
         self.assertEqual(js["domains"], intake.document_domains(self.PROSE))
         self.assertTrue(js["added"] and all(src == "document keywords" for _, src in js["added"]))
         self.assertEqual(intake.document_domains("Hello"), [])
+
+
+class RareRoleTests(unittest.TestCase):
+    """Admin-type roles: scored on little CV evidence, and hidden for a candidate who needs a sponsor."""
+    ADMIN = {"title": "Business Support Administrator", "company": "X", "country": "GB", "location": "Test", "url": "u",
+             "description": "Office administration, diary management, filing, data entry, minute taking, reception cover, supplier invoices, stock ordering and travel booking. " * 3}
+
+    def setUp(self):
+        from candidateboard import intake
+        sys_tests = ROOT / "tests"
+        from tests_fixtures import SAP_CV
+        with tempfile.TemporaryDirectory() as d:
+            (Path(d) / "sap.txt").write_text(SAP_CV, encoding="utf-8")
+            self.profile = intake.build_profile({"SAP": Path(d) / "sap.txt"}, "Business Support Administrator\n• Business Support Administrator\n", name="J", slug="j", location="Coventry")
+        self.profile["visa"]["sponsorship"] = "required"
+
+    def test_unevidenced_admin_role_is_capped_and_hidden_for_a_candidate_who_needs_a_sponsor(self):
+        r = match.Matcher(self.profile).evaluate({**self.ADMIN, "sponsorship": "licensed_sponsor"})
+        self.assertLessEqual(r["match"], 60)
+        self.assertIn("role_not_sponsorable", r["hidden_by_default"])
+        self.assertTrue(any("little evidence" in x for x in r["reasons"]))
+
+    def test_an_advert_that_offers_sponsorship_or_a_candidate_who_needs_none_keeps_it_visible(self):
+        r = match.Matcher(self.profile).evaluate({**self.ADMIN, "sponsorship": "confirmed"})
+        self.assertNotIn("role_not_sponsorable", r["hidden_by_default"])
+        self.assertIn("Role type is usually below the Skilled Worker skill level", r["flags"])
+        self.profile["visa"]["sponsorship"] = "not_needed"
+        r = match.Matcher(self.profile).evaluate({**self.ADMIN, "sponsorship": "licensed_sponsor"})
+        self.assertNotIn("role_not_sponsorable", r["hidden_by_default"])
