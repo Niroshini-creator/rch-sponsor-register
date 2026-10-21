@@ -112,7 +112,7 @@
   // ------------------------------------------------------------------ match.py
   const TIER_FACTOR = { 1: 1.0, 2: 0.94, 3: 0.86 };
   const EVIDENCE_OK = 30, DOMAIN_WEIGHT = 0.5, UNEVIDENCED_CAP = 60;
-  const VERY_SENIOR_MIN_YEARS = 8, SENIOR_MIN_YEARS = 4, ASKED_YEARS_GAP = 2;   // hide roles the experience does not reach (see candidateboard/match.py)
+  const VERY_SENIOR_MIN_YEARS = 10, SENIOR_MIN_YEARS = 6, MANAGER_MIN_YEARS = 5, ASKED_YEARS_GAP = 1;   // hide roles the experience does not reach (see candidateboard/match.py)
   const YEARS_BEFORE = /\b(\d{1,2})\s*\+?\s*(?:(?:to|-|–)\s*\d{1,2}\s*\+?\s*)?years?\b[^.\n]{0,40}?\bexperience/gi, YEARS_AFTER = /\bexperience\b[^.\n]{0,30}?\b(\d{1,2})\s*\+?\s*(?:(?:to|-|–)\s*\d{1,2}\s*\+?\s*)?years?\b/gi;
   /** The smallest number of years of experience an advert asks for, or 0 (= candidateboard.checks.required_years). */
   function requiredYears(text) {
@@ -132,7 +132,7 @@
   const RIGHTS = { us_opt: "US", ie_stamp_1g: "IE" };   // visa.work_rights key -> country where it lets the holder work without a sponsor
   const RIGHT_LABELS = { "US/graduate_route": "No sponsorship, open to OPT holders", "US/not_sponsored": "No sponsorship offered: check the advert accepts OPT",
     "IE/stamp_1g": "No sponsorship needed: open to Stamp 1G holders" };
-  const VERY_SENIOR = /\b(director|head of|vice president|vp|avp|svp|chief|principal|partner)\b/i, SENIOR = /\b(senior|lead|manager|staff|sr\.?)\b/i;
+  const VERY_SENIOR = /\b(director|head of|vice president|vp|avp|svp|chief|principal|partner)\b/i, SENIOR = /\b(senior|lead|manager|staff|sr\.?)\b/i, SENIOR_ONLY = /\b(senior|lead|staff|sr\.?)\b/i, MANAGER = /\bmanager\b/i;
   const JUNIOR = /\b(junior|graduate|trainee|entry[- ]level|associate)\b/i, ASSISTANT = /\b(assistant|intern(ship)?|apprentice(ship)?|placement)\b/i;
   const ENGLISH_COUNTRIES = new Set(["GB", "IE", "US", "MT", "AU", "IN"]);   // = jobfeed.classify.ENGLISH_SPEAKING_COUNTRIES
   const escRe = s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -174,8 +174,8 @@
       return null;
     }
     function level(title) {
-      if (VERY_SENIOR.test(title) && years < 9) return [0, "0 leadership level", "More senior than the CV"];
-      if (SENIOR.test(title) && !(ASSISTANT.test(title) || JUNIOR.test(title))) return years < 5 ? [3, "+3 senior title", "Senior level"] : [8, "+8 senior title", ""];
+      if (VERY_SENIOR.test(title) && years < VERY_SENIOR_MIN_YEARS) return [0, "0 leadership level", "More senior than the CV"];
+      if (SENIOR.test(title) && !(ASSISTANT.test(title) || JUNIOR.test(title))) return years < SENIOR_MIN_YEARS ? [3, "+3 senior title", "Senior level"] : [8, "+8 senior title", ""];
       if (ASSISTANT.test(title)) return [4, "+4 assistant-level title", "Assistant level, below the CV"];
       if (JUNIOR.test(title)) return [6, "+6 junior/graduate title", ""];
       return [10, "+10 level fits the CV", ""];
@@ -261,8 +261,8 @@
       if (noRoute && needs) hidden.push("no_skilled_worker_route");
       // Admin, customer service, retail and similar roles are usually below the Skilled Worker skill level (see candidateboard/match.py).
       if (years > 0) {
-        const plain = !(ASSISTANT.test(title) || JUNIOR.test(title));
-        if ((VERY_SENIOR.test(title) && years < VERY_SENIOR_MIN_YEARS) || (SENIOR.test(title) && plain && !VERY_SENIOR.test(title) && years < SENIOR_MIN_YEARS)) hidden.push("too_senior");
+        const needed = VERY_SENIOR.test(title) ? VERY_SENIOR_MIN_YEARS : (ASSISTANT.test(title) || JUNIOR.test(title)) ? 0 : SENIOR_ONLY.test(title) ? SENIOR_MIN_YEARS : MANAGER.test(title) ? MANAGER_MIN_YEARS : 0;
+        if (years < needed) hidden.push("too_senior");
         const asked = !full && job.exp_years != null ? job.exp_years : requiredYears(text);
         if (asked && asked - years > ASKED_YEARS_GAP) {
           flags.push(`Asks for ${asked}+ years' experience; the CV shows ${Number(years.toFixed(10))}`);

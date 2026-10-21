@@ -63,11 +63,13 @@ async function listView() {
 }
 
 // ------------------------------------------------------------------------------------------ one candidate
-const TABS = [["1", "Tier 1 · Core"], ["2", "Tier 2 · Close"], ["3", "Tier 3 · Stretch"], ["4", "Other roles"], ["older", "Older · 8–10 days"], ["undated", "Date not mentioned"], ["employers", "Employers"], ["cv", "CV scan"]];
+const TABS = [["1", "Tier 1 · Core"], ["2", "Tier 2 · Close"], ["3", "Tier 3 · Stretch"], ["4", "Other roles"], ["agency", "Recruiter adverts"], ["older", "Older · 8–10 days"], ["undated", "Date not mentioned"], ["employers", "Employers"], ["cv", "CV scan"]];
 // Where an advert sits in time: "fresh" (posted up to "7 days ago"), "older" (8 to 10 days old, read from employer career sites only) or
 // "undated" (the advert gives no posting date). The tier tabs list fresh roles; the two other lists have their own tabs.
 const DAY_MS = 864e5, bucketOf = j => (j.date_known === false ? "undated" : (Date.now() - new Date(j.posted_at)) / DAY_MS >= 8 ? "older" : "fresh");
-const inTabOf = (j, tab) => (tab === "older" || tab === "undated" ? bucketOf(j) === tab : bucketOf(j) === "fresh" && j.tier === Number(tab));
+// Recruitment agencies' adverts (Robert Walters, Hays, Reed Specialist...) have their own tab: the end employer is often unnamed, so the
+// tier tabs list employers' own adverts only.
+const inTabOf = (j, tab) => (tab === "agency" ? Boolean(j.agency) : j.agency ? false : tab === "older" || tab === "undated" ? bucketOf(j) === tab : bucketOf(j) === "fresh" && j.tier === Number(tab));
 const state = { tab: "1", q: "", spons: "offered", min: 0, days: 7, sort: "match", showBlocked: false, sector: "", etier: "", source: "direct", country: "" };
 // By default only genuine employers are shown: employer career sites and the official boards (NHS Jobs, councils and Civil
 // Service departments, universities, schools). Job boards (Reed, Adzuna, Arbeitnow) are one click away.
@@ -157,7 +159,7 @@ function candidateHeader(c, back, sub) {
       (c.locations || []).length && !(c.locations.length === 1 && c.locations[0] === "GB")
         ? h("li", { class: "chip info" }, `Looking in: ${c.locations.map(k => (CandidateIntake.regions()[k] || {}).label || k).join(", ")}`) : null,
       c.english_only === false ? null : (c.locations || []).some(k => k !== "GB" && k !== "IE" && k !== "AU" && k !== "IN") ? h("li", { class: "chip" }, "English-language roles only") : null,
-      c.experience_years ? h("li", { class: "chip" }, `${c.experience_years} yrs experience`) : null,
+      c.experience_years ? h("li", { class: "chip" }, c.experience_level ? `${({ junior: "Junior", mid: "Mid level", senior: "Senior", lead: "Lead" })[c.experience_level]} (matched on about ${c.experience_years} yrs)` : `${c.experience_years} yrs experience`) : null,
       c.education ? h("li", { class: "chip" }, c.education) : null),
     c.current_status ? h("p", { class: "small muted", style: "margin:6px 0 0" }, `Now: ${c.current_status}`) : null, sub);
 }
@@ -208,10 +210,11 @@ function visible(j, tab = state.tab) {
   if (state.q && !`${j.title} ${j.company} ${j.location} ${j.role} ${j.sector}`.toLowerCase().includes(state.q.toLowerCase())) return false;
   if (state.sector && j.sector !== state.sector) return false;
   if (state.etier && String(j.employer_tier) !== state.etier) return false;
-  if (!sourceOk(j)) return false;
+  const recruiter = tab === "agency";     // recruiter adverts ignore the source and sponsorship filters: the client decides on sponsorship
+  if (!recruiter && !sourceOk(j)) return false;
   if (state.country && j.country !== state.country) return false;
-  if (state.spons === "offered" && !j.sponsorship_offered) return false;
-  if (state.spons === "not" && j.sponsorship_offered) return false;
+  if (!recruiter && state.spons === "offered" && !j.sponsorship_offered) return false;
+  if (!recruiter && state.spons === "not" && j.sponsorship_offered) return false;
   const blockers = j.hidden_by_default.filter(r => r !== "no_sponsorship");
   if (!state.showBlocked && blockers.length) return false;
   return true;
@@ -252,7 +255,7 @@ function sortJobs(list) {
 
 function render() {
   const jobs = data.jobs;
-  const counts = Object.fromEntries(["1", "2", "3", "4", "older", "undated"].map(t => [t, jobs.filter(j => inTabOf(j, t) && j.sponsorship_offered && !j.hidden_by_default.length && sourceOk(j)).length]));
+  const counts = Object.fromEntries(["1", "2", "3", "4", "agency", "older", "undated"].map(t => [t, jobs.filter(j => inTabOf(j, t) && (t === "agency" || (j.sponsorship_offered && sourceOk(j))) && !j.hidden_by_default.filter(r => t !== "agency" || r !== "no_sponsorship").length).length]));
   const sponsorOffered = jobs.filter(j => j.sponsorship === "confirmed" || j.sponsorship === "possible").length;
   const employers = new Set(jobs.filter(j => j.sponsorship_offered && sourceOk(j)).map(j => j.company)).size;
   const tabs = h("div", { class: "tabs", role: "tablist" }, TABS.map(([key, label]) =>
@@ -264,7 +267,7 @@ function render() {
       h("div", { class: "stat" }, h("b", {}, sponsorOffered), "advert offers sponsorship"),
       h("div", { class: "stat" }, h("b", {}, employers), "sponsor-licensed employers"),
       h("div", { class: "stat" }, h("b", {}, jobs.filter(j => j.hidden_by_default.includes("clearance")).length), "need clearance (hidden)")),
-    liveBanner(), live.mode === "self" ? rolesPanel() : null, live.mode === "self" ? publicSectorSearch() : null, live.mode === "self" ? indiaGovernmentSearch() : null, sourceStatus(), tabs];
+    liveBanner(), live.mode === "self" ? rolesPanel() : null, live.mode === "self" ? jobSiteSearch() : null, live.mode === "self" ? publicSectorSearch() : null, live.mode === "self" ? indiaGovernmentSearch() : null, sourceStatus(), tabs];
   if (state.tab === "employers") parts.push(employersView());
   else if (state.tab === "cv") parts.push(cvView());
   else parts.push(...jobsView());
@@ -326,6 +329,24 @@ function indiaGovernmentSearch() {
       link(web(t, "ncs.gov.in"), "National Career Service", "Web search limited to ncs.gov.in"),
       link(web(t, "gov.in"), "Government sites (gov.in)", "Web search limited to gov.in sites"),
       link(web(t, "nic.in"), "NIC sites (nic.in)", "Web search limited to nic.in sites"))));
+}
+
+// LinkedIn and Indeed adverts cannot be read here (no public feed; LinkedIn forbids scraping), so these open their own searches for the
+// candidate's best roles, limited to the last 7 days or 24 hours, in the countries the candidate ticked.
+function jobSiteSearch() {
+  const titles = [...new Set(data.candidate.roles.filter(r => r.tier <= 2).map(r => r.title.replace(/\s*[—–(].*$/, "").trim()))].filter(Boolean).slice(0, 6);
+  if (!titles.length) return null;
+  const places = { GB: ["United Kingdom", "co.uk"], IE: ["Ireland", "ie"], US: ["United States", "com"], AU: ["Australia", "com.au"], IN: ["India", "co.in"] };
+  const codes = (data.candidate.countries || []).filter(c => places[c]).slice(0, 3);
+  if (!codes.length) return null;
+  const q = encodeURIComponent, link = (href, text, title) => h("a", { class: "btn", href, target: "_blank", rel: "noopener noreferrer", title }, text);
+  return h("details", { class: "panel small" }, h("summary", {}, "Search LinkedIn and Indeed for your roles"),
+    h("p", { class: "muted", style: "margin:6px 0" }, "Recruiters such as Robert Walters advertise on LinkedIn without Easy Apply. Those adverts are not in the matched list, so these open LinkedIn and Indeed with the role, country and date already filled in."),
+    ...titles.map(t => h("div", { class: "apply-row", style: "margin:4px 0" }, h("b", { style: "min-width:220px" }, t),
+      ...codes.flatMap(c => [
+        link(`https://www.linkedin.com/jobs/search/?keywords=${q(t)}&location=${q(places[c][0])}&f_TPR=r604800`, `LinkedIn ${c}, 7 days`, `LinkedIn jobs in ${places[c][0]} posted in the last 7 days`),
+        link(`https://www.linkedin.com/jobs/search/?keywords=${q(t)}&location=${q(places[c][0])}&f_TPR=r86400`, `LinkedIn ${c}, 24 hours`, `LinkedIn jobs in ${places[c][0]} posted in the last 24 hours`),
+        link(`https://${c === "US" ? "www" : c === "GB" ? "uk" : c === "IE" ? "ie" : c === "AU" ? "au" : "in"}.indeed.com/jobs?q=${q(t)}&fromage=7`, `Indeed ${c}, 7 days`, `Indeed jobs in ${places[c][0]} posted in the last 7 days`)]))));
 }
 
 function rolesPanel() {
@@ -394,7 +415,8 @@ function jobsView() {
     h("label", { class: "check" }, h("input", { type: "checkbox", ...(state.showBlocked ? { checked: true } : {}), onchange: e => { state.showBlocked = e.target.checked; render(); } }), "Show roles needing clearance, more senior than your experience, rarely sponsored role types, below visa pay or your India minimum, in another language, reserved for nationals, or without a Skilled Worker licence"),
     h("button", { class: "btn", onclick: () => exportCsv(sortJobs(data.jobs.filter(j => visible(j)))) }, "Export CSV"));
   const list = sortJobs(data.jobs.filter(j => visible(j)));
-  const note = state.tab === "older" ? h("p", { class: "small muted" }, "Adverts posted 8 to 10 days ago, read from employer career sites only. They may be close to closing: check the advert.")
+  const note = state.tab === "agency" ? h("p", { class: "small muted" }, "Adverts placed by recruitment agencies and job boards (for example Robert Walters, Hays). The employer is often not named, so ask the recruiter whether the client can sponsor before applying.")
+    : state.tab === "older" ? h("p", { class: "small muted" }, "Adverts posted 8 to 10 days ago, read from employer career sites only. They may be close to closing: check the advert.")
     : state.tab === "undated" ? h("p", { class: "small muted" }, "Adverts that do not say when they were posted. They could be new or old: check the advert before applying.")
     : state.tab === "4" ? h("p", { class: "small muted" }, "Other roles at employers that can sponsor, using the same skills on a different route. Many of these (admin, IT support) are below the Skilled Worker skill level, so ask the employer first.") : null;
   return [bar, note, h("p", { class: "small muted" }, `${plural(list.length, "role")} shown`), hiddenSummary(),

@@ -166,12 +166,12 @@ class DirectPreferenceTests(unittest.TestCase):
         self.assertEqual(out[0].channel, "career_site")
         self.assertEqual(out[0].contacts[0]["email"], "hr@monzo.com")  # email kept from the board copy
 
-    def test_agency_adverts_removed_and_counted(self):
+    def test_agency_adverts_are_kept_marked_and_counted(self):
         stats = {}
         agency = self.job(company="Hays", channel="aggregator", description="Visa sponsorship available")
         out = pipeline.enrich([agency], self.index, self.tiers, contacts.ContactBook({}), 7,
                               AgencyFilter.load(CONFIG / "agencies.json"), stats)
-        self.assertEqual((out, stats["agency_removed"]), ([], 1))
+        self.assertEqual((len(out), out[0].agency, out[0].sponsorship, stats["agency_kept"]), (1, True, "confirmed", 1))   # the advert itself offers sponsorship
 
     def test_non_european_dropped(self):
         out = pipeline.enrich([self.job(country="US", channel="career_site"), self.job(country="", channel="career_site")],

@@ -260,7 +260,12 @@ class SeniorityTests(unittest.TestCase):
         gap = m.evaluate(self.job(base, "You will have 7+ years' experience in this field."))
         self.assertIn("experience_gap", gap["hidden_by_default"])
         self.assertTrue(any("7+ years" in f for f in gap["flags"]))
-        self.assertNotIn("experience_gap", m.evaluate(self.job(base, "You will have 5 years' experience."))["hidden_by_default"])
+        self.assertIn("experience_gap", m.evaluate(self.job(base, "You will have 5 years' experience."))["hidden_by_default"])     # 1.3 years more than the CV
+        self.assertNotIn("experience_gap", m.evaluate(self.job(base, "You will have 4 years' experience."))["hidden_by_default"])
+        self.assertIn("too_senior", match.Matcher(self.profile(5)).evaluate(self.job(f"Senior {base}"))["hidden_by_default"])      # a mid-level CV does not see senior roles
+        self.assertIn("too_senior", match.Matcher(self.profile(4)).evaluate(self.job(f"{base} Manager"))["hidden_by_default"])
+        self.assertNotIn("too_senior", match.Matcher(self.profile(5)).evaluate(self.job(f"{base} Manager"))["hidden_by_default"])
         self.assertNotIn("too_senior", match.Matcher(self.profile(6)).evaluate(self.job(f"Senior {base}"))["hidden_by_default"])
+        self.assertIn("too_senior", match.Matcher(self.profile(8)).evaluate(self.job(f"Director of {base}"))["hidden_by_default"])
         unknown = match.Matcher(self.profile(0)).evaluate(self.job(f"Senior {base}", "9 years' experience"))
         self.assertEqual([r for r in unknown["hidden_by_default"] if r in ("too_senior", "experience_gap")], [])    # CV years unknown: no hiding

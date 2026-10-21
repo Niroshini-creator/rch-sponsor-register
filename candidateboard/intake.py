@@ -14,6 +14,8 @@ from pathlib import Path
 from . import cv, taxonomy
 
 REGIONS_FILE = Path(__file__).resolve().parent / "regions.json"
+# The recruiter can state the candidate's level instead of working it out from the CV dates (years used for matching).
+LEVEL_YEARS = {"junior": 1, "mid": 4, "senior": 8, "lead": 12}
 SKILLS_PER_TRACK = 60
 SUGGEST_MIN_STRENGTH = 30     # only suggest titles for families the CV clearly supports
 
@@ -83,7 +85,7 @@ def document_domains(text: str, limit: int = 3) -> list[str]:
 def build_profile(cvs: dict[str, Path], roles_text: str = "", *, name: str = "", slug: str = "", location: str = "",
                   visa: dict | None = None, clearance: str = "none", driving_licence: bool | None = None,
                   current_status: str = "", notes: str = "", regions: list[str] | None = None,
-                  english_only: bool = True, extra_roles: list[str] | None = None, india_min_lpa: float = 8, today: date | None = None) -> dict:
+                  english_only: bool = True, extra_roles: list[str] | None = None, india_min_lpa: float = 8, experience_level: str = "", today: date | None = None) -> dict:
     tax = taxonomy.load()
     locations, countries = expand_regions(regions)
     scans = {track: cv.scan(cv.read_text(path), today) for track, path in cvs.items()}
@@ -155,7 +157,8 @@ def build_profile(cvs: dict[str, Path], roles_text: str = "", *, name: str = "",
         "countries": countries,
         "english_only": english_only,
         "current_status": current_status,
-        "experience_years": round(months / 12, 1),
+        "experience_years": LEVEL_YEARS.get(experience_level, round(months / 12, 1)),
+        "experience_level": experience_level,
         "education": first["education"],
         "visa": visa or {"type": "", "label": "", "expires": "", "sponsorship": "required", "new_entrant": False},
         "clearance": {"held": clearance},

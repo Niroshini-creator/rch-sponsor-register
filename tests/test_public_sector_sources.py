@@ -44,7 +44,7 @@ class PublicSectorEmployerTests(unittest.TestCase):
 
 
 class JobBoardExclusionTests(unittest.TestCase):
-    def test_job_boards_and_recruiters_posing_as_employers_are_dropped(self):
+    def test_job_boards_and_recruiters_posing_as_employers_are_kept_apart(self):
         from jobfeed.agencies import AgencyFilter
         index = sponsors.SponsorIndex()
         for name in ("eFinancialCareers", "Salt Search", "Barclays Bank UK PLC"):
@@ -58,8 +58,10 @@ class JobBoardExclusionTests(unittest.TestCase):
         out = pipeline.enrich([job("eFinancialCareers", "1"), job("Salt Search", "2"), job("Barclays Bank UK PLC", "3")], index,
                               TierRules.load(CONFIG / "company_tiers.json"), contacts.ContactBook({}), 7,
                               AgencyFilter.load(CONFIG / "agencies.json"), stats)
-        self.assertEqual([j.company for j in out], ["Barclays Bank UK PLC"])
-        self.assertEqual(stats["agency_removed"], 2)
+        # Kept, but marked as agency adverts and never counted as the employer's own or as a licensed sponsor.
+        self.assertEqual([(j.company, j.agency, j.sponsorship) for j in out],
+                         [("eFinancialCareers", True, "agency"), ("Salt Search", True, "agency"), ("Barclays Bank UK PLC", False, "licensed_sponsor")])
+        self.assertEqual(stats["agency_kept"], 2)
 
 
 class CouncilRssTests(unittest.TestCase):

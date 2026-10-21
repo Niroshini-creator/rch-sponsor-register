@@ -32,7 +32,7 @@ def cmd_intake(a) -> int:
             "work_rights": [w.strip() for w in a.work_rights.split(",") if w.strip()]}
     profile = intake.build_profile(cvs, roles_text, name=a.name, slug=a.slug, location=a.location, visa=visa,
                                    clearance=a.clearance, driving_licence=_yes_no(a.driving_licence),
-                                   current_status=a.status, notes=a.notes, regions=[r.strip().upper() for r in a.regions.split(",") if r.strip()], english_only=not a.any_language, extra_roles=a.role, india_min_lpa=a.india_min_lpa)
+                                   current_status=a.status, notes=a.notes, regions=[r.strip().upper() for r in a.regions.split(",") if r.strip()], english_only=not a.any_language, extra_roles=a.role, india_min_lpa=a.india_min_lpa, experience_level=a.level)
     out = Path(a.out) if a.out else pipeline.PROFILES / f"{profile['slug']}.json"
     intake.write_profile(profile, out)
     by_tier = {t: [r["title"] for r in profile["roles"] if r["tier"] == t] for t in (1, 2, 3)}
@@ -75,6 +75,7 @@ def main(argv: list[str] | None = None) -> int:
                    help="preferred = can work now but wants a sponsor before the visa ends")
     i.add_argument("--work-rights", default="", help="comma list of work rights that need no sponsor: us_opt (USA), ie_stamp_1g (Ireland)")
     i.add_argument("--india-min-lpa", type=float, default=8, help="lowest yearly pay (lakhs per annum) wanted for roles in India")
+    i.add_argument("--level", default="", choices=["", "junior", "mid", "senior", "lead"], help="the candidate's level, instead of working it out from the CV dates")
     i.add_argument("--new-entrant", action="store_true", help="eligible for the Skilled Worker new-entrant salary rate")
     i.add_argument("--clearance", choices=["none", "basic", "sc", "dv"], default="none")
     i.add_argument("--driving-licence", choices=["yes", "no", "unknown"], default="unknown")
