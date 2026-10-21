@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-20T12:10:44+00:00",
+ "generated_at": "2026-10-21T12:24:18+00:00",
  "window_days": 7,
  "profile": {
   "name": "Mugilan Ramalingam",
@@ -25,15 +25,15 @@
  "sources": {
   "UK sponsor register": {
    "status": "ok",
-   "count": 132689
+   "count": 132705
   },
   "Reed": {
    "status": "ok",
-   "count": 306
+   "count": 325
   },
   "Adzuna": {
    "status": "ok",
-   "count": 25
+   "count": 22
   },
   "Career sites": {
    "status": "ok",
@@ -41,12 +41,12 @@
   }
  },
  "counts": {
-  "fetched": 331,
-  "clearance_removed": 43,
-  "no_sponsorship_removed": 7,
-  "language_removed": 14,
-  "below_threshold": 267,
-  "full_advert_fetched": 77,
+  "fetched": 347,
+  "clearance_removed": 44,
+  "no_sponsorship_removed": 0,
+  "language_removed": 10,
+  "below_threshold": 293,
+  "full_advert_fetched": 80,
   "published": 0
  },
  "jobs": [],
@@ -83,10 +83,12 @@
    "size": "unknown",
    "contacts": [],
    "employer_site": "",
+   "agency": false,
    "date_known": true,
    "kw": [],
    "signals": "",
    "text_len": 0,
+   "exp_years": 0,
    "id": "89dcb24c57cf",
    "match": 42,
    "reasons": [
@@ -96,23 +98,22 @@
    ],
    "flags": [],
    "matched_keywords": [],
-   "agency": false,
    "currency": "£"
   },
   {
-   "source": "Reed",
-   "source_id": "57457051",
-   "title": "Network Architect - Manufacturing IT/OT & Edge",
-   "company": "Access Computer Consulting plc",
-   "location": "Liverpool",
+   "source": "Adzuna",
+   "source_id": "5935449012",
+   "title": "Network Architect",
+   "company": "Reed Technology",
+   "location": "Ingleton, Darlington",
    "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/network-architect-manufacturing-it-ot-edge/57457051",
-   "posted_at": "2026-10-14T00:00:00+00:00",
-   "description": "Network Architect - Manufacturing IT/OT & Edge £475-£525/day | Inside IR35 | Liverpool - 1-2 days onsite We are recruiting for an experienced Network Architect to support a major global manufacturing infrastructure programme. The role involves designing secure, resilient network connectivity between enterprise IT, factory operational technology (OT) environments and locally hosted Edge infrastructure. We are particularly interested in candidates with network architecture experience within manufacturing, industrial or production environments, rather than purely corporate IT or data centre…",
-   "salary": "450 – 525",
-   "contract": "",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5935449012?se=_uV9akrN8RGPC9RVczJhRA&utm_medium=api&utm_source=2f99c3af&v=11606C67B0A925B5E0A30E3E396FD39C9E2B281C",
+   "posted_at": "2026-10-20T14:21:34+00:00",
+   "description": "I'm currently working with a well-established technology consultancy that's looking to hire a Network Solutions Architect for a permanent position. The role offers a mix of remote working, office collaboration, and travel to client sites across the North East, supporting a diverse portfolio of enterprise and critical infrastructure customers. This is a senior, hands-on architecture role where you'll be involved throughout the full project lifecycle, from requirements gathering and solution desi…",
+   "salary": "62,000 – 72,000",
+   "contract": "full_time",
    "channel": "aggregator",
-   "sponsorship": "agency",
+   "sponsorship": "unverified",
    "sponsor_register": "",
    "sponsorship_evidence": "",
    "sponsor_routes": [],
@@ -131,25 +132,130 @@
    "size": "unknown",
    "contacts": [],
    "employer_site": "",
+   "agency": false,
    "date_known": true,
    "kw": [],
    "signals": "",
    "text_len": 0,
-   "id": "6a275cd9ffb8",
-   "match": 40,
+   "exp_years": 0,
+   "id": "a923aab1b971",
+   "match": 37,
    "reasons": [
     "+32 Network architect title",
-    "+3 telecom OSS/BSS keywords",
-    "+5 senior / architect level"
+    "+5 senior / architect level",
+    "+5 pay reaches the 60,000 expectation",
+    "-5 sponsorship / work permit not confirmed"
+   ],
+   "flags": [],
+   "matched_keywords": [],
+   "currency": "£"
+  },
+  {
+   "source": "Adzuna",
+   "source_id": "5935432566",
+   "title": "Network Architect",
+   "company": "Reed",
+   "location": "Darlington, County Durham",
+   "country": "GB",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5935432566?se=_uV9akrN8RGPC9RVczJhRA&utm_medium=api&utm_source=2f99c3af&v=8967F648236E938F5506CF95F66B49B64B0B843A",
+   "posted_at": "2026-10-20T14:02:52+00:00",
+   "description": "I'm currently working with a well-established technology consultancy that's looking to hire a Network Solutions Architect for a permanent position. The role offers a mix of remote working, office collaboration, and travel to client sites across the North East, supporting a diverse portfolio of enterprise and critical infrastructure customers. This is a senior, hands-on architecture role where you'll be involved throughout the full project lifecycle, from requirements gathering and solution desi…",
+   "salary": "62,000 – 72,000",
+   "contract": "full_time",
+   "channel": "aggregator",
+   "sponsorship": "unverified",
+   "sponsor_register": "",
+   "sponsorship_evidence": "",
+   "sponsor_routes": [],
+   "sector": "",
+   "domain": "",
+   "role": "",
+   "region": "",
+   "english": true,
+   "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
+   "salary_check": "",
+   "salary_annual": 0,
+   "salary_threshold": 0,
+   "tier": 3,
+   "size": "unknown",
+   "contacts": [],
+   "employer_site": "",
+   "agency": false,
+   "date_known": true,
+   "kw": [],
+   "signals": "",
+   "text_len": 0,
+   "exp_years": 0,
+   "id": "2b7cc1cc87c3",
+   "match": 37,
+   "reasons": [
+    "+32 Network architect title",
+    "+5 senior / architect level",
+    "+5 pay reaches the 60,000 expectation",
+    "-5 sponsorship / work permit not confirmed"
+   ],
+   "flags": [],
+   "matched_keywords": [],
+   "currency": "£"
+  },
+  {
+   "source": "Reed",
+   "source_id": "57477185",
+   "title": "Solution Architect - eCommerce",
+   "company": "ASDA",
+   "location": "LS115AD",
+   "country": "GB",
+   "url": "https://www.reed.co.uk/jobs/solution-architect-ecommerce/57477185",
+   "posted_at": "2026-10-20T00:00:00+00:00",
+   "description": "Job Title Solution Architect - eCommerce Location Asda House Employment Type Full time Contract Type Permanent Hours Per Week 37.5 Salary Competitive salary plus benefits Category Software Engineering Closing Date 2 November 2026 Are you an experienced ?Solutions ?Architect ?with ?a passion for designing and delivering technology ?solutions in a rapidly evolving digital landscape? Would you help shape Asda’s technology landscape ?in a ?mature architecture practice? Asda are looking for eCommerce Solution Architects to lead the definition of our?application & technology landscape. If you have…",
+   "salary": "",
+   "contract": "",
+   "channel": "aggregator",
+   "sponsorship": "unverified",
+   "sponsor_register": "",
+   "sponsorship_evidence": "",
+   "sponsor_routes": [],
+   "sector": "",
+   "domain": "",
+   "role": "",
+   "region": "",
+   "english": true,
+   "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
+   "salary_check": "",
+   "salary_annual": 0,
+   "salary_threshold": 0,
+   "tier": 3,
+   "size": "unknown",
+   "contacts": [],
+   "employer_site": "",
+   "agency": false,
+   "date_known": true,
+   "kw": [],
+   "signals": "",
+   "text_len": 0,
+   "exp_years": 0,
+   "id": "dcc82d3db6b9",
+   "match": 37,
+   "reasons": [
+    "+20 Solution / technical architect title",
+    "+15 telecom OSS/BSS keywords",
+    "+2 architecture practice / GCP",
+    "+5 senior / architect level",
+    "-5 sponsorship / work permit not confirmed"
    ],
    "flags": [
-    "Salary not stated",
-    "Recruitment agency advert"
+    "Salary not stated"
    ],
    "matched_keywords": [
-    "hld"
+    "design authority",
+    "inventory management",
+    "order management",
+    "solution architecture"
    ],
-   "agency": true,
    "currency": "£"
   },
   {
@@ -184,10 +290,12 @@
    "size": "unknown",
    "contacts": [],
    "employer_site": "",
+   "agency": false,
    "date_known": true,
    "kw": [],
    "signals": "",
    "text_len": 0,
+   "exp_years": 0,
    "id": "95caaeb62d45",
    "match": 37,
    "reasons": [
@@ -198,7 +306,6 @@
    ],
    "flags": [],
    "matched_keywords": [],
-   "agency": false,
    "currency": "£"
   },
   {
@@ -233,10 +340,12 @@
    "size": "unknown",
    "contacts": [],
    "employer_site": "",
+   "agency": true,
    "date_known": true,
    "kw": [],
    "signals": "",
    "text_len": 0,
+   "exp_years": 0,
    "id": "ef3a185c651f",
    "match": 37,
    "reasons": [
@@ -248,7 +357,6 @@
     "Recruitment agency advert"
    ],
    "matched_keywords": [],
-   "agency": true,
    "currency": "£"
   },
   {
@@ -283,10 +391,12 @@
    "size": "unknown",
    "contacts": [],
    "employer_site": "",
+   "agency": true,
    "date_known": true,
    "kw": [],
    "signals": "",
    "text_len": 0,
+   "exp_years": 0,
    "id": "a39416fc2baa",
    "match": 37,
    "reasons": [
@@ -298,7 +408,6 @@
     "Recruitment agency advert"
    ],
    "matched_keywords": [],
-   "agency": true,
    "currency": "£"
   },
   {
@@ -333,10 +442,12 @@
    "size": "unknown",
    "contacts": [],
    "employer_site": "",
+   "agency": true,
    "date_known": true,
    "kw": [],
    "signals": "",
    "text_len": 0,
+   "exp_years": 0,
    "id": "1f2962813a9e",
    "match": 37,
    "reasons": [
@@ -348,7 +459,6 @@
     "Recruitment agency advert"
    ],
    "matched_keywords": [],
-   "agency": true,
    "currency": "£"
   },
   {
@@ -383,10 +493,12 @@
    "size": "unknown",
    "contacts": [],
    "employer_site": "",
+   "agency": true,
    "date_known": true,
    "kw": [],
    "signals": "",
    "text_len": 0,
+   "exp_years": 0,
    "id": "8fcdaeb232fa",
    "match": 35,
    "reasons": [
@@ -403,7 +515,6 @@
     "design authority",
     "security by design"
    ],
-   "agency": true,
    "currency": "£"
   },
   {
@@ -438,10 +549,12 @@
    "size": "unknown",
    "contacts": [],
    "employer_site": "",
+   "agency": true,
    "date_known": true,
    "kw": [],
    "signals": "",
    "text_len": 0,
+   "exp_years": 0,
    "id": "59b8ed511537",
    "match": 32,
    "reasons": [
@@ -456,60 +569,6 @@
    "matched_keywords": [
     "solution architecture"
    ],
-   "agency": true,
-   "currency": "£"
-  },
-  {
-   "source": "Reed",
-   "source_id": "57473980",
-   "title": "Solution Architect - Applications & Technology",
-   "company": "Circle Recruitment",
-   "location": "London",
-   "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/solution-architect-applications-technology/57473980",
-   "posted_at": "2026-10-19T00:00:00+00:00",
-   "description": "Solution Architect - Applications & Technology- London Solution Architect - Applications & Technology with strong experience designing end-to-end application and technology solutions is required by a global law firm based in central London. It's a brand-new role to become part of a newly established solutions architecture team with hybrid working 2 days in the London office working across major technology transformation and application modernisation programmes. Experience Required: * Working as a Solution Architect, Application Architect, Technical Architect or similar, with end-to-end…",
-   "salary": "85,000 – 95,000",
-   "contract": "",
-   "channel": "aggregator",
-   "sponsorship": "agency",
-   "sponsor_register": "",
-   "sponsorship_evidence": "",
-   "sponsor_routes": [],
-   "sector": "",
-   "domain": "",
-   "role": "",
-   "region": "",
-   "english": true,
-   "early_career": "",
-   "aviation": "",
-   "low_sponsorship": false,
-   "salary_check": "",
-   "salary_annual": 0,
-   "salary_threshold": 0,
-   "tier": 3,
-   "size": "unknown",
-   "contacts": [],
-   "employer_site": "",
-   "date_known": true,
-   "kw": [],
-   "signals": "",
-   "text_len": 0,
-   "id": "2947e50eeac1",
-   "match": 32,
-   "reasons": [
-    "+20 Solution / technical architect title",
-    "+2 architecture practice / GCP",
-    "+5 senior / architect level",
-    "+5 pay reaches the 60,000 expectation"
-   ],
-   "flags": [
-    "Recruitment agency advert"
-   ],
-   "matched_keywords": [
-    "togaf"
-   ],
-   "agency": true,
    "currency": "£"
   },
   {
@@ -544,10 +603,12 @@
    "size": "unknown",
    "contacts": [],
    "employer_site": "",
+   "agency": true,
    "date_known": true,
    "kw": [],
    "signals": "",
    "text_len": 0,
+   "exp_years": 0,
    "id": "05e8f62c160e",
    "match": 32,
    "reasons": [
@@ -562,7 +623,60 @@
    "matched_keywords": [
     "togaf"
    ],
+   "currency": "£"
+  },
+  {
+   "source": "Reed",
+   "source_id": "57473980",
+   "title": "Solution Architect - Applications & Technology",
+   "company": "Circle Recruitment",
+   "location": "London",
+   "country": "GB",
+   "url": "https://www.reed.co.uk/jobs/solution-architect-applications-technology/57473980",
+   "posted_at": "2026-10-19T00:00:00+00:00",
+   "description": "Solution Architect - Applications & Technology- London Solution Architect - Applications & Technology with strong experience designing end-to-end application and technology solutions is required by a global law firm based in central London. It's a brand-new role to become part of a newly established solutions architecture team with hybrid working 2 days in the London office working across major technology transformation and application modernisation programmes. Experience Required: * Working as a Solution Architect, Application Architect, Technical Architect or similar, with end-to-end…",
+   "salary": "85,000 – 95,000",
+   "contract": "",
+   "channel": "aggregator",
+   "sponsorship": "agency",
+   "sponsor_register": "",
+   "sponsorship_evidence": "",
+   "sponsor_routes": [],
+   "sector": "",
+   "domain": "",
+   "role": "",
+   "region": "",
+   "english": true,
+   "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
+   "salary_check": "",
+   "salary_annual": 0,
+   "salary_threshold": 0,
+   "tier": 3,
+   "size": "unknown",
+   "contacts": [],
+   "employer_site": "",
    "agency": true,
+   "date_known": true,
+   "kw": [],
+   "signals": "",
+   "text_len": 0,
+   "exp_years": 0,
+   "id": "2947e50eeac1",
+   "match": 32,
+   "reasons": [
+    "+20 Solution / technical architect title",
+    "+2 architecture practice / GCP",
+    "+5 senior / architect level",
+    "+5 pay reaches the 60,000 expectation"
+   ],
+   "flags": [
+    "Recruitment agency advert"
+   ],
+   "matched_keywords": [
+    "togaf"
+   ],
    "currency": "£"
   },
   {
@@ -597,10 +711,12 @@
    "size": "unknown",
    "contacts": [],
    "employer_site": "",
+   "agency": true,
    "date_known": true,
    "kw": [],
    "signals": "",
    "text_len": 0,
+   "exp_years": 0,
    "id": "543944016ff4",
    "match": 32,
    "reasons": [
@@ -617,60 +733,6 @@
     "order management",
     "togaf"
    ],
-   "agency": true,
-   "currency": "£"
-  },
-  {
-   "source": "Reed",
-   "source_id": "57457759",
-   "title": "Solution Architect",
-   "company": "Matched Group",
-   "location": "London",
-   "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/solution-architect/57457759",
-   "posted_at": "2026-10-14T00:00:00+00:00",
-   "description": "Solution Architect Why ? Growing & Established Global Software Vendor Location - Remote in UK with occasional travel to Buckinghamshire based office The client is a global growing FinTech software vendor. They have created powerful and innovative technology platforms. You will work with Sales, Pre-Sales, and Customers to take responsibility for solution, consultation, and estimation of software projects and ensure a smooth handover to service delivery colleagues. You will bring knowledge of commercial or consumer lending (wholesale finance, asset finance, asset-based lending, or equipment…",
-   "salary": "95,000 – 120,000",
-   "contract": "",
-   "channel": "aggregator",
-   "sponsorship": "agency",
-   "sponsor_register": "",
-   "sponsorship_evidence": "",
-   "sponsor_routes": [],
-   "sector": "",
-   "domain": "",
-   "role": "",
-   "region": "",
-   "english": true,
-   "early_career": "",
-   "aviation": "",
-   "low_sponsorship": false,
-   "salary_check": "",
-   "salary_annual": 0,
-   "salary_threshold": 0,
-   "tier": 3,
-   "size": "unknown",
-   "contacts": [],
-   "employer_site": "",
-   "date_known": true,
-   "kw": [],
-   "signals": "",
-   "text_len": 0,
-   "id": "f61248f170d2",
-   "match": 32,
-   "reasons": [
-    "+20 Solution / technical architect title",
-    "+2 telecom OSS/BSS keywords",
-    "+5 senior / architect level",
-    "+5 pay reaches the 60,000 expectation"
-   ],
-   "flags": [
-    "Recruitment agency advert"
-   ],
-   "matched_keywords": [
-    "wholesale"
-   ],
-   "agency": true,
    "currency": "£"
   },
   {
@@ -705,10 +767,12 @@
    "size": "unknown",
    "contacts": [],
    "employer_site": "",
+   "agency": false,
    "date_known": true,
    "kw": [],
    "signals": "",
    "text_len": 0,
+   "exp_years": 0,
    "id": "e7e677700086",
    "match": 28,
    "reasons": [
@@ -723,7 +787,6 @@
    "matched_keywords": [
     "capacity planning"
    ],
-   "agency": false,
    "currency": "£"
   },
   {
@@ -758,10 +821,12 @@
    "size": "unknown",
    "contacts": [],
    "employer_site": "",
+   "agency": false,
    "date_known": true,
    "kw": [],
    "signals": "",
    "text_len": 0,
+   "exp_years": 0,
    "id": "5e09ba0f7ee3",
    "match": 28,
    "reasons": [
@@ -776,7 +841,114 @@
    "matched_keywords": [
     "capacity planning"
    ],
-   "agency": false,
+   "currency": "£"
+  },
+  {
+   "source": "Reed",
+   "source_id": "57478341",
+   "title": "Solutions Architect - Oracle HCM",
+   "company": "Sanderson ",
+   "location": "Bristol",
+   "country": "GB",
+   "url": "https://www.reed.co.uk/jobs/solutions-architect-oracle-hcm/57478341",
+   "posted_at": "2026-10-20T00:00:00+00:00",
+   "description": "Solutions Architect £800p/d - £850p/d (Inside) 2 Month initial contract, scope for extension We're looking for an experienced Solutions Architect to support a major transformation programme in the public sector. The successful candidate must either hold a current SC, or be eligible to be cleared. You will work as part of a multi-skilled team, and will be responsible for engaging with technical and non-technical stakeholders across a complex public sector org. You'll be responsible for shaping end-to-end Oracle HCM solutions, producing high-quality architecture documentation, supporting…",
+   "salary": "800 – 850",
+   "contract": "",
+   "channel": "aggregator",
+   "sponsorship": "agency",
+   "sponsor_register": "",
+   "sponsorship_evidence": "",
+   "sponsor_routes": [],
+   "sector": "",
+   "domain": "",
+   "role": "",
+   "region": "",
+   "english": true,
+   "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
+   "salary_check": "",
+   "salary_annual": 0,
+   "salary_threshold": 0,
+   "tier": 3,
+   "size": "unknown",
+   "contacts": [],
+   "employer_site": "",
+   "agency": true,
+   "date_known": true,
+   "kw": [],
+   "signals": "",
+   "text_len": 0,
+   "exp_years": 0,
+   "id": "a7d96a4e85e1",
+   "match": 27,
+   "reasons": [
+    "+20 Solution / technical architect title",
+    "+2 architecture practice / GCP",
+    "+5 senior / architect level"
+   ],
+   "flags": [
+    "Salary not stated",
+    "Recruitment agency advert"
+   ],
+   "matched_keywords": [
+    "solution architecture"
+   ],
+   "currency": "£"
+  },
+  {
+   "source": "Reed",
+   "source_id": "57478088",
+   "title": "Data Enterprise Architect",
+   "company": "Pontoon",
+   "location": "Warwickshire",
+   "country": "GB",
+   "url": "https://www.reed.co.uk/jobs/data-enterprise-architect/57478088",
+   "posted_at": "2026-10-20T00:00:00+00:00",
+   "description": "Data Enterprise Architect Utilities Hybrid: 1 day per week in Warwick 6 months+ £950 - £1000 per day In short: We're seeking a strong, senior Data Enterprise Architect to define the data landscape across our business. This is not an ivory tower role. The perfect person would be able to map out and assess the current state of data architecture, work with transformation teams to improve areas while modelling the conceptual and logical piece. You need to have the skills to dig deep where possible and confidently present findings that will be used for decision-making. A hands-on, consultative…",
+   "salary": "950 – 1,000",
+   "contract": "",
+   "channel": "aggregator",
+   "sponsorship": "agency",
+   "sponsor_register": "",
+   "sponsorship_evidence": "",
+   "sponsor_routes": [],
+   "sector": "",
+   "domain": "",
+   "role": "",
+   "region": "",
+   "english": true,
+   "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
+   "salary_check": "",
+   "salary_annual": 0,
+   "salary_threshold": 0,
+   "tier": 3,
+   "size": "unknown",
+   "contacts": [],
+   "employer_site": "",
+   "agency": true,
+   "date_known": true,
+   "kw": [],
+   "signals": "",
+   "text_len": 0,
+   "exp_years": 0,
+   "id": "ee7ee6937cfb",
+   "match": 27,
+   "reasons": [
+    "+20 Solution / technical architect title",
+    "+2 architecture practice / GCP",
+    "+5 senior / architect level"
+   ],
+   "flags": [
+    "Salary not stated",
+    "Recruitment agency advert"
+   ],
+   "matched_keywords": [
+    "enterprise architecture"
+   ],
    "currency": "£"
   },
   {
@@ -811,10 +983,12 @@
    "size": "unknown",
    "contacts": [],
    "employer_site": "",
+   "agency": true,
    "date_known": true,
    "kw": [],
    "signals": "",
    "text_len": 0,
+   "exp_years": 0,
    "id": "b69ee4de935c",
    "match": 27,
    "reasons": [
@@ -829,7 +1003,6 @@
    "matched_keywords": [
     "enterprise architecture"
    ],
-   "agency": true,
    "currency": "£"
   },
   {
@@ -864,10 +1037,12 @@
    "size": "unknown",
    "contacts": [],
    "employer_site": "",
+   "agency": false,
    "date_known": true,
    "kw": [],
    "signals": "",
    "text_len": 0,
+   "exp_years": 0,
    "id": "75bb61b47c4a",
    "match": 27,
    "reasons": [
@@ -881,7 +1056,57 @@
    "matched_keywords": [
     "enterprise architecture"
    ],
-   "agency": false,
+   "currency": "£"
+  },
+  {
+   "source": "Reed",
+   "source_id": "57477481",
+   "title": "Technical Architect",
+   "company": "Adecco ",
+   "location": "Ireland",
+   "country": "GB",
+   "url": "https://www.reed.co.uk/jobs/technical-architect/57477481",
+   "posted_at": "2026-10-20T00:00:00+00:00",
+   "description": "Solution Architect Belfast | Hybrid Working Available - 2 days onsite per week 6 month initially contract | Up to £680 inside IR35 via umbrella Shape the Future of Enterprise Infrastructure An exciting opportunity has arisen for an experienced Solution Architect to join a leading technology team delivering complex infrastructure and cloud transformation solutions for enterprise-scale customers. We're looking for a commercially minded architect who can engage with customers, understand business challenges, and design innovative solutions across cloud, infrastructure and security environments.…",
+   "salary": "550 – 650",
+   "contract": "",
+   "channel": "aggregator",
+   "sponsorship": "licensed_sponsor",
+   "sponsor_register": "",
+   "sponsorship_evidence": "",
+   "sponsor_routes": [],
+   "sector": "",
+   "domain": "",
+   "role": "",
+   "region": "",
+   "english": true,
+   "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
+   "salary_check": "",
+   "salary_annual": 0,
+   "salary_threshold": 0,
+   "tier": 3,
+   "size": "unknown",
+   "contacts": [],
+   "employer_site": "",
+   "agency": true,
+   "date_known": true,
+   "kw": [],
+   "signals": "",
+   "text_len": 0,
+   "exp_years": 0,
+   "id": "8d2dc2c13b92",
+   "match": 25,
+   "reasons": [
+    "+20 Solution / technical architect title",
+    "+5 senior / architect level"
+   ],
+   "flags": [
+    "Salary not stated",
+    "Recruitment agency advert"
+   ],
+   "matched_keywords": [],
    "currency": "£"
   },
   {
@@ -916,10 +1141,12 @@
    "size": "unknown",
    "contacts": [],
    "employer_site": "",
+   "agency": false,
    "date_known": true,
    "kw": [],
    "signals": "",
    "text_len": 0,
+   "exp_years": 0,
    "id": "16867b78a27e",
    "match": 25,
    "reasons": [
@@ -930,7 +1157,6 @@
     "Salary not stated"
    ],
    "matched_keywords": [],
-   "agency": false,
    "currency": "£"
   },
   {
@@ -965,10 +1191,12 @@
    "size": "unknown",
    "contacts": [],
    "employer_site": "",
+   "agency": true,
    "date_known": true,
    "kw": [],
    "signals": "",
    "text_len": 0,
+   "exp_years": 0,
    "id": "da141489edfd",
    "match": 25,
    "reasons": [
@@ -980,7 +1208,6 @@
     "Recruitment agency advert"
    ],
    "matched_keywords": [],
-   "agency": true,
    "currency": "£"
   },
   {
@@ -1015,10 +1242,12 @@
    "size": "unknown",
    "contacts": [],
    "employer_site": "",
+   "agency": false,
    "date_known": true,
    "kw": [],
    "signals": "",
    "text_len": 0,
+   "exp_years": 0,
    "id": "0bb60f6368bd",
    "match": 25,
    "reasons": [
@@ -1035,57 +1264,6 @@
     "design authority",
     "non-functional"
    ],
-   "agency": false,
-   "currency": "£"
-  },
-  {
-   "source": "Reed",
-   "source_id": "57457095",
-   "title": "Infrastructure Solution Architect - Distributed Edge Platforms",
-   "company": "Access Computer Consulting plc",
-   "location": "Liverpool",
-   "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/infrastructure-solution-architect-distributed-edge-platforms/57457095",
-   "posted_at": "2026-10-14T00:00:00+00:00",
-   "description": "Infrastructure Solution Architect - Distributed Edge Platforms £525-£575/day | Inside IR35 | 6 months | UK Hybrid We are recruiting for a senior Infrastructure Solution Architect to design and standardise distributed hosting platforms across a global manufacturing environment. The programme involves establishing repeatable Edge Hosting solutions supporting virtual machines, containers, legacy applications and data/AI workloads across multiple factory locations. Key experience: Enterprise infrastructure architecture across distributed and hybrid environments Virtualisation and hyperconverged…",
-   "salary": "525 – 575",
-   "contract": "",
-   "channel": "aggregator",
-   "sponsorship": "agency",
-   "sponsor_register": "",
-   "sponsorship_evidence": "",
-   "sponsor_routes": [],
-   "sector": "",
-   "domain": "",
-   "role": "",
-   "region": "",
-   "english": true,
-   "early_career": "",
-   "aviation": "",
-   "low_sponsorship": false,
-   "salary_check": "",
-   "salary_annual": 0,
-   "salary_threshold": 0,
-   "tier": 3,
-   "size": "unknown",
-   "contacts": [],
-   "employer_site": "",
-   "date_known": true,
-   "kw": [],
-   "signals": "",
-   "text_len": 0,
-   "id": "049eec47c408",
-   "match": 25,
-   "reasons": [
-    "+20 Solution / technical architect title",
-    "+5 senior / architect level"
-   ],
-   "flags": [
-    "Salary not stated",
-    "Recruitment agency advert"
-   ],
-   "matched_keywords": [],
-   "agency": true,
    "currency": "£"
   },
   {
@@ -1120,10 +1298,12 @@
    "size": "unknown",
    "contacts": [],
    "employer_site": "",
+   "agency": false,
    "date_known": true,
    "kw": [],
    "signals": "",
    "text_len": 0,
+   "exp_years": 0,
    "id": "2b4e327d0e6b",
    "match": 22,
    "reasons": [
@@ -1138,7 +1318,6 @@
    "matched_keywords": [
     "solution architecture"
    ],
-   "agency": false,
    "currency": "£"
   },
   {
@@ -1173,10 +1352,12 @@
    "size": "unknown",
    "contacts": [],
    "employer_site": "",
+   "agency": false,
    "date_known": true,
    "kw": [],
    "signals": "",
    "text_len": 0,
+   "exp_years": 0,
    "id": "6f08f5aa016c",
    "match": 22,
    "reasons": [
@@ -1189,7 +1370,6 @@
     "Below salary expectation"
    ],
    "matched_keywords": [],
-   "agency": false,
    "currency": "£"
   }
  ]
