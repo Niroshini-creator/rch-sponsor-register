@@ -55,6 +55,7 @@
 
   // ------------------------------------------------------------------ CV scan
   const rangeRe = () => /\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+(\d{4})\s*[–—-]\s*(?:(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+(\d{4})|(present|current|now|date))/gi;
+  const LEVEL_YEARS = { junior: 1, mid: 4, senior: 8, lead: 12 };   // = candidateboard.intake.LEVEL_YEARS
   function experienceMonths(text, today) {
     today = today || new Date();
     const spans = [];
@@ -290,7 +291,7 @@
     return {
       slug: opts.slug || slugify(opts.name || first.name), name: opts.name || first.name, headline: first.headline,
       base_location: opts.location || "", country: countries[0], locations, countries, english_only: opts.englishOnly ?? true, current_status: opts.status || "",
-      experience_years: pyRound1(months / 12), education: first.education,
+      experience_years: LEVEL_YEARS[opts.experienceLevel] ?? pyRound1(months / 12), experience_level: opts.experienceLevel || "", education: first.education,
       visa: opts.visa || { type: "", label: "", expires: "", sponsorship: "required", new_entrant: false },
       clearance: { held: opts.clearance || "none" }, driving_licence: opts.drivingLicence ?? null,
       window_days: 7, min_match: 40, india_min_lpa: opts.indiaMinLpa ?? 8, tracks, roles,

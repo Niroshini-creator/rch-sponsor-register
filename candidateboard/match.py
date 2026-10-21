@@ -25,10 +25,10 @@ TITLE_KEYWORD, KEYWORD_MIN, KEYWORD_MIN_EXTRACT = 24, 6, 4
 # A role whose kind the CV barely shows (family strength under EVIDENCE_OK) is scored on its own domain's keywords at half weight and
 # can not pass UNEVIDENCED_CAP: the title and the advert's wording say little about whether the candidate could do the job.
 EVIDENCE_OK, DOMAIN_WEIGHT, UNEVIDENCED_CAP = 30, 0.5, 60
-# Roles the candidate's experience does not reach are hidden by default: a very senior title (director, head of...) needs about 9
-# years and a senior one (senior, lead, manager) about 5, with a year's tolerance; an advert asking for more than 2 years beyond
-# the CV's is also hidden. Skipped when the CV's years could not be read.
-VERY_SENIOR_MIN_YEARS, SENIOR_MIN_YEARS, EXPERIENCE_TOLERANCE_YEARS, ASKED_YEARS_GAP = 8, 4, 1, 2
+# Roles the candidate's experience does not reach are hidden by default: a very senior title (director, head of...) needs 10 years,
+# senior / lead / staff 6, manager 5; an advert asking for more than 1 year beyond the CV's is also hidden. Skipped when the
+# CV's years could not be read.
+VERY_SENIOR_MIN_YEARS, SENIOR_MIN_YEARS, MANAGER_MIN_YEARS, ASKED_YEARS_GAP = 10, 6, 5, 1
 EXTRACT_CHARS = 600           # shorter adverts are extracts (the shared feed keeps ~400 characters)
 
 # sponsorship status -> (label shown, sort rank: lower is better, offered?)
@@ -50,6 +50,8 @@ SPONSORSHIP = {
 }
 _VERY_SENIOR = re.compile(r"\b(director|head of|vice president|vp|avp|svp|chief|principal|partner)\b", re.I)
 _SENIOR = re.compile(r"\b(senior|lead|manager|staff|sr\.?)\b", re.I)
+_SENIOR_ONLY = re.compile(r"\b(senior|lead|staff|sr\.?)\b", re.I)
+_MANAGER = re.compile(r"\bmanager\b", re.I)
 _JUNIOR = re.compile(r"\b(junior|graduate|trainee|entry[- ]level|associate)\b", re.I)
 _ASSISTANT = re.compile(r"\b(assistant|intern(ship)?|apprentice(ship)?|placement)\b", re.I)
 
@@ -143,11 +145,20 @@ class Matcher:
                                "why": f"no target title, but the advert uses {len(best)} keywords from your CV"}
 
     # ------------------------------------------------------------------ level
+    @staticmethod
+    def _years_needed(title: str) -> int:
+        """Years of experience a title's seniority calls for (0 for an ordinary, junior or assistant title)."""
+        if _VERY_SENIOR.search(title):
+            return VERY_SENIOR_MIN_YEARS
+        if _ASSISTANT.search(title) or _JUNIOR.search(title):
+            return 0
+        return SENIOR_MIN_YEARS if _SENIOR_ONLY.search(title) else MANAGER_MIN_YEARS if _MANAGER.search(title) else 0
+
     def _level(self, title: str) -> tuple[int, str, str]:
-        if _VERY_SENIOR.search(title) and self.years < 9:
+        if _VERY_SENIOR.search(title) and self.years < VERY_SENIOR_MIN_YEARS:
             return 0, "0 leadership level", "More senior than the CV"
         if _SENIOR.search(title) and not (_ASSISTANT.search(title) or _JUNIOR.search(title)):
-            return (3, "+3 senior title", "Senior level") if self.years < 5 else (8, "+8 senior title", "")
+            return (3, "+3 senior title", "Senior level") if self.years < SENIOR_MIN_YEARS else (8, "+8 senior title", "")
         if _ASSISTANT.search(title):
             return 4, "+4 assistant-level title", "Assistant level, below the CV"
         if _JUNIOR.search(title):
@@ -264,9 +275,7 @@ class Matcher:
         # Admin, customer service, retail and similar roles are usually below the Skilled Worker skill level: a licensed sponsor
         # rarely sponsors them, so for a candidate who needs a sponsor they are hidden unless the advert itself offers sponsorship.
         if self.years > 0:
-            if (_VERY_SENIOR.search(title) and self.years < VERY_SENIOR_MIN_YEARS) or (
-                    _SENIOR.search(title) and not (_ASSISTANT.search(title) or _JUNIOR.search(title)) and not _VERY_SENIOR.search(title)
-                    and self.years < SENIOR_MIN_YEARS):
+            if self.years < self._years_needed(title):
                 hidden.append("too_senior")
             asked = job["exp_years"] if not full and job.get("exp_years") is not None else checks.required_years(text)
             if asked and asked - self.years > ASKED_YEARS_GAP:

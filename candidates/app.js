@@ -157,7 +157,7 @@ function candidateHeader(c, back, sub) {
       (c.locations || []).length && !(c.locations.length === 1 && c.locations[0] === "GB")
         ? h("li", { class: "chip info" }, `Looking in: ${c.locations.map(k => (CandidateIntake.regions()[k] || {}).label || k).join(", ")}`) : null,
       c.english_only === false ? null : (c.locations || []).some(k => k !== "GB" && k !== "IE" && k !== "AU" && k !== "IN") ? h("li", { class: "chip" }, "English-language roles only") : null,
-      c.experience_years ? h("li", { class: "chip" }, `${c.experience_years} yrs experience`) : null,
+      c.experience_years ? h("li", { class: "chip" }, c.experience_level ? `${({ junior: "Junior", mid: "Mid level", senior: "Senior", lead: "Lead" })[c.experience_level]} (matched on about ${c.experience_years} yrs)` : `${c.experience_years} yrs experience`) : null,
       c.education ? h("li", { class: "chip" }, c.education) : null),
     c.current_status ? h("p", { class: "small muted", style: "margin:6px 0 0" }, `Now: ${c.current_status}`) : null, sub);
 }

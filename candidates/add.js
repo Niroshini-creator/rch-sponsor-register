@@ -75,7 +75,7 @@ function mountAdd(h, onProfile) {
     if (!document.querySelector('input[name=region]:checked')) throw new Error("Tick at least one place you would work.");
       const profile = CandidateIntake.buildProfile(cvs, $("roles-text").value, {
         name: $("name").value.trim(), location: $("location").value.trim(), status: $("status").value.trim(), notes: $("notes").value.trim(),
-        regions: [...document.querySelectorAll('input[name=region]:checked')].map(el => el.value), englishOnly: $("english-only").checked, extraRoles: wanted, indiaMinLpa: Number($("india-lpa").value) || 0,
+        regions: [...document.querySelectorAll('input[name=region]:checked')].map(el => el.value), englishOnly: $("english-only").checked, extraRoles: wanted, indiaMinLpa: Number($("india-lpa").value) || 0, experienceLevel: $("level").value,
       clearance: $("clearance").value, drivingLicence: licence === "" ? null : licence === "yes",
         visa: { type, label, expires: $("expires").value, sponsorship: $("sponsorship").value, new_entrant: $("new-entrant").checked,
           work_rights: [$("right-opt").checked ? "us_opt" : "", $("right-1g").checked ? "ie_stamp_1g" : ""].filter(Boolean) },
