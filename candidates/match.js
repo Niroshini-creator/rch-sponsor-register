@@ -111,6 +111,7 @@
 
   // ------------------------------------------------------------------ match.py
   const TIER_FACTOR = { 1: 1.0, 2: 0.94, 3: 0.86 };
+  const EVIDENCE_OK = 30, DOMAIN_WEIGHT = 0.5, UNEVIDENCED_CAP = 60;   // see candidateboard/match.py
   const TITLE_KEYWORD = 24, KEYWORD_MIN = 6, KEYWORD_MIN_EXTRACT = 4;   // a job with no target title but many CV keywords (tier 4)
   const TITLE_LITERAL = 50, TITLE_FAMILY = 44, TITLE_PARTIAL = 30, TITLE_OTHER = 32, SKILL_MAX = 40, SKILL_EXTRACT_MAX = 22, SKILLS_FOR_FULL = 5, SKILLS_FOR_FULL_EXTRACT = 3, EXTRACT_CHARS = 600;
   const SPONSORSHIP = {
@@ -192,10 +193,11 @@
     }
     function skillsFor(info) {
       const base = (info.track ? tracks[info.track] : allSkills) || [], fam = info.family ? TAX.families[info.family] : null;
-      if (!fam) return base;
+      if (!fam) return [base, []];
       const have = new Set(base.map(([s]) => s));
-      return [...base, ...fam.keywords.filter(([t]) => !have.has(t))];
+      return [base, fam.keywords.filter(([t]) => !have.has(t))];
     }
+    const evidenceFor = family => (!profile.family_evidence || !family ? null : (profile.family_evidence[family] || {}).strength ?? 0);
     // Skills found in the advert: by the feed's digest of the whole advert when there is one, else in the text.
     const hitsIn = (skills, text, kw) => (skills || []).filter(([s, rx]) => (kw ? kw.has(s) : rx.test(text))).map(([s]) => s);
     function keywordMatch(text, extract, kw) {
@@ -217,12 +219,17 @@
       const found = titleScore(title) || keywordMatch(text, extract, kw);
       if (!found) return null;
       const [titlePts, info] = found;
-      const skills = skillsFor(info);
-      const hits = hitsIn(skills, text, kw);
-      const skillPts = (extract ? SKILL_EXTRACT_MAX : SKILL_MAX) * Math.min(1.0, hits.length / (extract ? SKILLS_FOR_FULL_EXTRACT : SKILLS_FOR_FULL));
+      const [baseSkills, extraSkills] = skillsFor(info);
+      const cvHits = hitsIn(baseSkills, text, kw), domainHits = hitsIn(extraSkills, text, kw), evidence = evidenceFor(info.family);
+      const weak = evidence !== null && evidence < EVIDENCE_OK, hits = [...cvHits, ...domainHits];
+      const counted = cvHits.length + (weak ? DOMAIN_WEIGHT : 1.0) * domainHits.length;
+      const skillPts = (extract ? SKILL_EXTRACT_MAX : SKILL_MAX) * Math.min(1.0, counted / (extract ? SKILLS_FOR_FULL_EXTRACT : SKILLS_FOR_FULL));
       const [levelPts, levelWhy, levelFlag] = level(title);
-      const total = pyRound(titlePts + skillPts + levelPts);
+      let total = pyRound(titlePts + skillPts + levelPts);
+      const capped = weak && total > UNEVIDENCED_CAP;
+      if (capped) total = UNEVIDENCED_CAP;
       const reasons = [`+${pyRound(titlePts)} ${info.why}`, `+${pyRound(skillPts)} ${hits.length} CV skill(s) found in the advert${extract ? " (extract only)" : ""}`, levelWhy];
+      if (capped) reasons.push(`Capped at ${UNEVIDENCED_CAP}: the CV shows little evidence for this kind of role`);
       const status = job.sponsorship || "unverified", needs = needsFor(job);
       let [label, rank, offered] = SPONSORSHIP[status] || SPONSORSHIP.unverified;
       const rightLabel = rights.has(job.country) ? RIGHT_LABELS[`${job.country}/${status}`] : null;
@@ -243,6 +250,11 @@
         hidden.push("nationals_only");
       }
       if (noRoute && needs) hidden.push("no_skilled_worker_route");
+      // Admin, customer service, retail and similar roles are usually below the Skilled Worker skill level (see candidateboard/match.py).
+      if (needs && ((family && family.sponsor === "rare") || job.low_sponsorship)) {
+        flags.push("Role type is usually below the Skilled Worker skill level");
+        if (status !== "confirmed") hidden.push("role_not_sponsorable");
+      }
       if (clear.blocks) hidden.push("clearance");
       if (needs && !offered) hidden.push("no_sponsorship");
       if (pay.status === "below") hidden.push(job.country === "IN" ? "pay_below_minimum" : "pay_below_visa");
