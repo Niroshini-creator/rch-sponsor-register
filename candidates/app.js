@@ -217,7 +217,7 @@ function visible(j, tab = state.tab) {
 function withSource(j, mode) { const keep = state.source; state.source = mode; const ok = visible(j); state.source = keep; return ok; }
 
 // Why roles that fit the CV are not on the list, with one click to bring them back.
-const HIDDEN_LABELS = { role_not_sponsorable: "role type rarely sponsored (below Skilled Worker level)", clearance: "need security clearance", pay_below_visa: "pay below the visa minimum", pay_below_minimum: "pay below your minimum", licence: "need a driving licence",
+const HIDDEN_LABELS = { too_senior: "more senior than your experience", experience_gap: "ask for more years of experience than your CV shows", role_not_sponsorable: "role type rarely sponsored (below Skilled Worker level)", clearance: "need security clearance", pay_below_visa: "pay below the visa minimum", pay_below_minimum: "pay below your minimum", licence: "need a driving licence",
   no_skilled_worker_route: "licence has no Skilled Worker route", language: "need another language", nationals_only: "reserved for nationals" };
 function hiddenSummary() {
   const counts = {}, keep = { source: state.source, spons: state.spons, showBlocked: state.showBlocked };
@@ -387,7 +387,7 @@ function jobsView() {
     showCountry ? h("label", {}, "Country", sel("country", [["", "All countries"], ...countries.map(([c, n]) => [c, `${countryName(c)} (${n})`])], state.country, v => state.country = v)) : null,
     h("label", {}, "Where advertised", sel("source", SOURCE_FILTERS, state.source, v => state.source = v)),
     h("label", {}, "Sort", sel("sort", [["match", "Best match"], ["sponsor", "Sponsorship first"], ["newest", "Newest"], ["pay", "Highest pay"]], state.sort, v => state.sort = v)),
-    h("label", { class: "check" }, h("input", { type: "checkbox", ...(state.showBlocked ? { checked: true } : {}), onchange: e => { state.showBlocked = e.target.checked; render(); } }), "Show roles needing clearance, rarely sponsored role types, below visa pay or your India minimum, in another language, reserved for nationals, or without a Skilled Worker licence"),
+    h("label", { class: "check" }, h("input", { type: "checkbox", ...(state.showBlocked ? { checked: true } : {}), onchange: e => { state.showBlocked = e.target.checked; render(); } }), "Show roles needing clearance, more senior than your experience, rarely sponsored role types, below visa pay or your India minimum, in another language, reserved for nationals, or without a Skilled Worker licence"),
     h("button", { class: "btn", onclick: () => exportCsv(sortJobs(data.jobs.filter(j => visible(j)))) }, "Export CSV"));
   const list = sortJobs(data.jobs.filter(j => visible(j)));
   const note = state.tab === "4" ? h("p", { class: "small muted" }, "Other roles at employers that can sponsor, using the same skills on a different route. Many of these (admin, IT support) are below the Skilled Worker skill level, so ask the employer first.") : null;

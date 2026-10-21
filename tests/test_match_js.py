@@ -221,3 +221,46 @@ class RareRoleTests(unittest.TestCase):
         self.profile["visa"]["sponsorship"] = "not_needed"
         r = match.Matcher(self.profile).evaluate({**self.ADMIN, "sponsorship": "licensed_sponsor"})
         self.assertNotIn("role_not_sponsorable", r["hidden_by_default"])
+
+
+class SeniorityTests(unittest.TestCase):
+    """Roles the candidate's experience does not reach are hidden by default."""
+    CASES = ["5+ years' experience in SAP", "experience of 3-5 years", "minimum 7 years of relevant experience", "10 years proven commercial experience",
+             "3 years in testing and 5 years of SAP experience", "Join our team. No experience needed.", "Experience: 8+ years", "2 to 4 years' experience"]
+
+    def profile(self, years):
+        p = json.loads(PROFILE.read_text())
+        p["experience_years"] = years
+        p["visa"]["sponsorship"] = "not_needed"
+        return p
+
+    def job(self, title, text=""):
+        return {"title": title, "company": "X", "country": "GB", "sponsorship": "licensed_sponsor", "url": "u", "location": "Test",
+                "description": text, "full_text": ""}
+
+    def test_required_years_reads_the_smallest_stated_figure(self):
+        from candidateboard import checks
+        self.assertEqual([checks.required_years(t) for t in self.CASES], [5, 3, 7, 10, 3, 0, 8, 2])
+
+    def test_required_years_is_the_same_in_the_browser(self):
+        if not shutil.which("node"):
+            self.skipTest("node needed")
+        from candidateboard import checks
+        js = json.loads(subprocess.run(["node", "-e", "const M = require(process.env.ROOT + '/candidates/match.js'); console.log(JSON.stringify(JSON.parse(process.env.CASES).map(M.requiredYears)))"],
+                                       check=True, capture_output=True, text=True, env={"ROOT": str(ROOT), "CASES": json.dumps(self.CASES), "PATH": "/usr/bin:/bin:/usr/local/bin"}).stdout)
+        self.assertEqual(js, [checks.required_years(t) for t in self.CASES])
+
+    def test_senior_and_experience_asks_are_hidden_when_the_cv_does_not_reach_them(self):
+        base = json.loads(PROFILE.read_text())["roles"][0]["title"]
+        m = match.Matcher(self.profile(3.7))
+        self.assertIn("too_senior", m.evaluate(self.job(f"Senior {base}"))["hidden_by_default"])
+        self.assertIn("too_senior", m.evaluate(self.job(f"Head of {base}"))["hidden_by_default"])
+        self.assertNotIn("too_senior", m.evaluate(self.job(f"Assistant Manager, {base}"))["hidden_by_default"])
+        self.assertNotIn("too_senior", m.evaluate(self.job(base))["hidden_by_default"])
+        gap = m.evaluate(self.job(base, "You will have 7+ years' experience in this field."))
+        self.assertIn("experience_gap", gap["hidden_by_default"])
+        self.assertTrue(any("7+ years" in f for f in gap["flags"]))
+        self.assertNotIn("experience_gap", m.evaluate(self.job(base, "You will have 5 years' experience."))["hidden_by_default"])
+        self.assertNotIn("too_senior", match.Matcher(self.profile(6)).evaluate(self.job(f"Senior {base}"))["hidden_by_default"])
+        unknown = match.Matcher(self.profile(0)).evaluate(self.job(f"Senior {base}", "9 years' experience"))
+        self.assertEqual([r for r in unknown["hidden_by_default"] if r in ("too_senior", "experience_gap")], [])    # CV years unknown: no hiding

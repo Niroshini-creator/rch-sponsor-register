@@ -62,6 +62,7 @@ class Job:
     kw: list[str] = field(default_factory=list)
     signals: str = ""
     text_len: int = 0
+    exp_years: int = 0          # smallest number of years of experience the advert asks for (0 = none stated)
 
     @property
     def id(self) -> str:

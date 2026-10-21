@@ -12,6 +12,8 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Iterable
 
+from candidateboard.checks import required_years
+
 from . import careers, sources, sponsors
 from .agencies import AgencyFilter
 from .classify import (AVIATION_FAMILIES, DOMAINS, ENGLISH_SPEAKING_COUNTRIES, ROLES, SECTORS, TierRules,
@@ -203,6 +205,7 @@ def enrich(jobs: Iterable[Job], index: sponsors.SponsorIndex, tiers: TierRules,
         job.early_career = job.early_career or classify_early_career(job)
         job.tier, job.size = tiers.classify(job)
         job.kw, job.signals, job.text_len = digest(job.title, job.description)
+        job.exp_years = required_years(job.description)
         job.contacts = contacts.contacts_for(job)
 
         # Key on the register's legal name when matched, so "Monzo" and "Monzo Bank Ltd" merge.

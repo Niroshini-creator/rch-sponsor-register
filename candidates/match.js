@@ -111,7 +111,16 @@
 
   // ------------------------------------------------------------------ match.py
   const TIER_FACTOR = { 1: 1.0, 2: 0.94, 3: 0.86 };
-  const EVIDENCE_OK = 30, DOMAIN_WEIGHT = 0.5, UNEVIDENCED_CAP = 60;   // see candidateboard/match.py
+  const EVIDENCE_OK = 30, DOMAIN_WEIGHT = 0.5, UNEVIDENCED_CAP = 60;
+  const VERY_SENIOR_MIN_YEARS = 8, SENIOR_MIN_YEARS = 4, ASKED_YEARS_GAP = 2;   // hide roles the experience does not reach (see candidateboard/match.py)
+  const YEARS_BEFORE = /\b(\d{1,2})\s*\+?\s*(?:(?:to|-|–)\s*\d{1,2}\s*\+?\s*)?years?\b[^.\n]{0,40}?\bexperience/gi, YEARS_AFTER = /\bexperience\b[^.\n]{0,30}?\b(\d{1,2})\s*\+?\s*(?:(?:to|-|–)\s*\d{1,2}\s*\+?\s*)?years?\b/gi;
+  /** The smallest number of years of experience an advert asks for, or 0 (= candidateboard.checks.required_years). */
+  function requiredYears(text) {
+    const found = [];
+    for (const rx of [YEARS_BEFORE, YEARS_AFTER]) for (const m of text.matchAll(rx)) found.push(parseInt(m[1], 10));
+    const ok = found.filter(n => n >= 1 && n <= 20);
+    return ok.length ? Math.min(...ok) : 0;
+  }   // see candidateboard/match.py
   const TITLE_KEYWORD = 24, KEYWORD_MIN = 6, KEYWORD_MIN_EXTRACT = 4;   // a job with no target title but many CV keywords (tier 4)
   const TITLE_LITERAL = 50, TITLE_FAMILY = 44, TITLE_PARTIAL = 30, TITLE_OTHER = 32, SKILL_MAX = 40, SKILL_EXTRACT_MAX = 22, SKILLS_FOR_FULL = 5, SKILLS_FOR_FULL_EXTRACT = 3, EXTRACT_CHARS = 600;
   const SPONSORSHIP = {
@@ -166,7 +175,7 @@
     }
     function level(title) {
       if (VERY_SENIOR.test(title) && years < 9) return [0, "0 leadership level", "More senior than the CV"];
-      if (SENIOR.test(title)) return years < 5 ? [3, "+3 senior title", "Senior level"] : [8, "+8 senior title", ""];
+      if (SENIOR.test(title) && !(ASSISTANT.test(title) || JUNIOR.test(title))) return years < 5 ? [3, "+3 senior title", "Senior level"] : [8, "+8 senior title", ""];
       if (ASSISTANT.test(title)) return [4, "+4 assistant-level title", "Assistant level, below the CV"];
       if (JUNIOR.test(title)) return [6, "+6 junior/graduate title", ""];
       return [10, "+10 level fits the CV", ""];
@@ -251,6 +260,15 @@
       }
       if (noRoute && needs) hidden.push("no_skilled_worker_route");
       // Admin, customer service, retail and similar roles are usually below the Skilled Worker skill level (see candidateboard/match.py).
+      if (years > 0) {
+        const plain = !(ASSISTANT.test(title) || JUNIOR.test(title));
+        if ((VERY_SENIOR.test(title) && years < VERY_SENIOR_MIN_YEARS) || (SENIOR.test(title) && plain && !VERY_SENIOR.test(title) && years < SENIOR_MIN_YEARS)) hidden.push("too_senior");
+        const asked = !full && job.exp_years != null ? job.exp_years : requiredYears(text);
+        if (asked && asked - years > ASKED_YEARS_GAP) {
+          flags.push(`Asks for ${asked}+ years' experience; the CV shows ${Number(years.toFixed(10))}`);
+          hidden.push("experience_gap");
+        }
+      }
       if (needs && ((family && family.sponsor === "rare") || job.low_sponsorship)) {
         flags.push("Role type is usually below the Skilled Worker skill level");
         if (status !== "confirmed") hidden.push("role_not_sponsorable");
@@ -302,5 +320,5 @@
     return [...best.values()].map(r => { delete r._src; return r; });
   }
 
-  return { Matcher, liveJobs, clearance, drivingLicence, annualRange, normaliseCompany, dedupeKey };
+  return { Matcher, liveJobs, requiredYears, clearance, drivingLicence, annualRange, normaliseCompany, dedupeKey };
 });
