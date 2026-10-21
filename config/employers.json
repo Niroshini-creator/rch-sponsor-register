@@ -149,6 +149,21 @@
     { "name": "Vestas", "ats": "successfactors", "host": "careers.vestas.com", "country": "DK" },
     { "name": "Alstom", "ats": "successfactors", "host": "jobsearch.alstom.com", "country": "FR" },
     { "name": "Accenture", "country": "GB", "register_name": "Accenture (UK) Limited", "ats": "workday", "host": "accenture.wd103.myworkdayjobs.com", "site": "AccentureCareers", "max_jobs": 1500, "verify": true },
-    { "name": "Comcast", "country": "US", "ats": "workday", "host": "comcast.wd5.myworkdayjobs.com", "site": "Comcast_Careers", "max_jobs": 1000, "verify": true }
+    { "name": "Comcast", "country": "US", "ats": "workday", "host": "comcast.wd5.myworkdayjobs.com", "site": "Comcast_Careers", "max_jobs": 1000, "verify": true },
+    { "name": "Clifford Chance", "ats": "smartrecruiters", "id": "CliffordChance", "country": "GB", "register_name": "Clifford Chance LLP" },
+    { "name": "Wise", "ats": "smartrecruiters", "id": "wise", "country": "GB", "register_name": "Wise Payments Limited" },
+    { "name": "Turner & Townsend", "ats": "smartrecruiters", "id": "turnertownsend", "country": "GB" },
+    { "name": "Snowflake", "ats": "ashby", "id": "snowflake", "country": "GB" },
+    { "name": "Allica Bank", "ats": "ashby", "id": "allica-bank", "country": "GB" },
+    { "name": "Legora", "ats": "ashby", "id": "legora", "country": "GB" },
+    { "name": "Auto Trader", "ats": "greenhouse", "id": "autotrader", "country": "GB" },
+    { "name": "Celonis", "ats": "greenhouse", "id": "celonis", "country": "DE" },
+    { "name": "Thoughtworks", "ats": "greenhouse", "id": "thoughtworks", "country": "GB" },
+    { "name": "Forvis Mazars", "ats": "greenhouse", "id": "forvismazars", "country": "DE" },
+    { "name": "LogicMonitor", "ats": "greenhouse", "id": "logicmonitor", "country": "GB" },
+    { "name": "Farfetch", "ats": "lever", "id": "farfetch", "country": "GB" },
+    { "name": "Scott Logic", "ats": "lever", "id": "scottlogic", "country": "GB", "register_name": "Scott Logic Limited" },
+    { "name": "SonarSource", "ats": "lever", "id": "sonarsource", "country": "CH" },
+    { "name": "Ekimetrics", "ats": "lever", "id": "ekimetrics", "country": "FR" }
   ]
 }
