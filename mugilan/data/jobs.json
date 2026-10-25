@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-24T11:37:26+00:00",
+ "generated_at": "2026-10-25T11:59:15+00:00",
  "window_days": 7,
  "profile": {
   "name": "Mugilan Ramalingam",
@@ -29,11 +29,12 @@
   },
   "Reed": {
    "status": "ok",
-   "count": 386
+   "count": 393
   },
   "Adzuna": {
-   "status": "ok",
-   "count": 28
+   "status": "error",
+   "count": 3,
+   "error": "HTTP Error 503: Service Temporarily Unavailable"
   },
   "Career sites": {
    "status": "ok",
@@ -41,11 +42,11 @@
   }
  },
  "counts": {
-  "fetched": 414,
-  "clearance_removed": 56,
+  "fetched": 396,
+  "clearance_removed": 57,
   "no_sponsorship_removed": 0,
-  "language_removed": 18,
-  "below_threshold": 340,
+  "language_removed": 0,
+  "below_threshold": 339,
   "full_advert_fetched": 80,
   "published": 0
  },
@@ -58,7 +59,7 @@
    "company": "Reed Technology",
    "location": "Ingleton, Darlington",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5937982954?se=ejAkW5_P8RG0GownEE_3tg&utm_medium=api&utm_source=2f99c3af&v=B1D9372610B02E6B77287D0A0E202EEEBB95C2E3",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5937982954?se=AuA-kWvQ8RGoCKNhQJNyfw&utm_medium=api&utm_source=2f99c3af&v=B1D9372610B02E6B77287D0A0E202EEEBB95C2E3",
    "posted_at": "2026-10-22T14:29:53+00:00",
    "description": "I'm currently working with a well-established technology consultancy that's looking to hire a Network Solutions Architect for a permanent position. The role offers a mix of remote working, office collaboration, and travel to client sites across the North East, supporting a diverse portfolio of enterprise and critical infrastructure customers. This is a senior, hands-on architecture role where you'll be involved throughout the full project lifecycle, from requirements gathering and solution desi…",
    "salary": "72,000",
@@ -158,7 +159,7 @@
    "company": "Reed",
    "location": "Darlington, County Durham",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5935432566?se=ejAkW5_P8RG0GownEE_3tg&utm_medium=api&utm_source=2f99c3af&v=8967F648236E938F5506CF95F66B49B64B0B843A",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5935432566?se=AuA-kWvQ8RGoCKNhQJNyfw&utm_medium=api&utm_source=2f99c3af&v=8967F648236E938F5506CF95F66B49B64B0B843A",
    "posted_at": "2026-10-20T14:02:52+00:00",
    "description": "I'm currently working with a well-established technology consultancy that's looking to hire a Network Solutions Architect for a permanent position. The role offers a mix of remote working, office collaboration, and travel to client sites across the North East, supporting a diverse portfolio of enterprise and critical infrastructure customers. This is a senior, hands-on architecture role where you'll be involved throughout the full project lifecycle, from requirements gathering and solution desi…",
    "salary": "62,000 – 72,000",
