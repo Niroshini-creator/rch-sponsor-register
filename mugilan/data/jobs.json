@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-27T12:40:04+00:00",
+ "generated_at": "2026-10-28T13:31:00+00:00",
  "window_days": 7,
  "profile": {
   "name": "Mugilan Ramalingam",
@@ -25,15 +25,15 @@
  "sources": {
   "UK sponsor register": {
    "status": "ok",
-   "count": 132708
+   "count": 132721
   },
   "Reed": {
    "status": "ok",
-   "count": 297
+   "count": 316
   },
   "Adzuna": {
    "status": "ok",
-   "count": 20
+   "count": 14
   },
   "Career sites": {
    "status": "ok",
@@ -41,12 +41,12 @@
   }
  },
  "counts": {
-  "fetched": 317,
-  "clearance_removed": 81,
+  "fetched": 330,
+  "clearance_removed": 92,
   "no_sponsorship_removed": 0,
-  "language_removed": 13,
-  "below_threshold": 223,
-  "full_advert_fetched": 58,
+  "language_removed": 8,
+  "below_threshold": 230,
+  "full_advert_fetched": 47,
   "published": 0
  },
  "jobs": [],
@@ -58,7 +58,7 @@
    "company": "Reed Technology",
    "location": "Ingleton, Darlington",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5937982954?se=AiRMnAPS8RGqIa0uNZZhTQ&utm_medium=api&utm_source=2f99c3af&v=B1D9372610B02E6B77287D0A0E202EEEBB95C2E3",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5937982954?se=QgFc5NPS8RG6zOi37PL_Zg&utm_medium=api&utm_source=2f99c3af&v=B1D9372610B02E6B77287D0A0E202EEEBB95C2E3",
    "posted_at": "2026-10-22T14:29:53+00:00",
    "description": "I'm currently working with a well-established technology consultancy that's looking to hire a Network Solutions Architect for a permanent position. The role offers a mix of remote working, office collaboration, and travel to client sites across the North East, supporting a diverse portfolio of enterprise and critical infrastructure customers. This is a senior, hands-on architecture role where you'll be involved throughout the full project lifecycle, from requirements gathering and solution desi…",
    "salary": "72,000",
@@ -152,19 +152,19 @@
    "currency": "£"
   },
   {
-   "source": "Adzuna",
-   "source_id": "5935432566",
-   "title": "Network Architect",
-   "company": "Reed",
-   "location": "Darlington, County Durham",
+   "source": "Reed",
+   "source_id": "57498005",
+   "title": "Solution Architect",
+   "company": "Lorien",
+   "location": "London",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/land/ad/5935432566?se=AiRMnAPS8RGqIa0uNZZhTQ&utm_medium=api&utm_source=2f99c3af&v=8967F648236E938F5506CF95F66B49B64B0B843A",
-   "posted_at": "2026-10-20T14:02:52+00:00",
-   "description": "I'm currently working with a well-established technology consultancy that's looking to hire a Network Solutions Architect for a permanent position. The role offers a mix of remote working, office collaboration, and travel to client sites across the North East, supporting a diverse portfolio of enterprise and critical infrastructure customers. This is a senior, hands-on architecture role where you'll be involved throughout the full project lifecycle, from requirements gathering and solution desi…",
-   "salary": "62,000 – 72,000",
-   "contract": "full_time",
+   "url": "https://www.reed.co.uk/jobs/solution-architect/57498005",
+   "posted_at": "2026-10-27T00:00:00+00:00",
+   "description": "Solution Architect / DV Clearable / 5 Days Onsite Location: London We're seeking an experienced Solution Architect to provide design leadership across complex technology programmes and critical product areas. This is an opportunity for a technology-driven architect who can shape innovative solutions, influence strategic direction, and balance immediate delivery requirements with long-term business goals. The Role As a Solution Architect, you will act as the design authority for key technology initiatives, working closely with product managers, engineers, business stakeholders and…",
+   "salary": "",
+   "contract": "",
    "channel": "aggregator",
-   "sponsorship": "unverified",
+   "sponsorship": "agency",
    "sponsor_register": "",
    "sponsorship_evidence": "",
    "sponsor_routes": [],
@@ -183,22 +183,28 @@
    "size": "unknown",
    "contacts": [],
    "employer_site": "",
-   "agency": false,
+   "agency": true,
    "date_known": true,
    "kw": [],
    "signals": "",
    "text_len": 0,
    "exp_years": 0,
-   "id": "2b7cc1cc87c3",
-   "match": 37,
+   "id": "572c3d077155",
+   "match": 30,
    "reasons": [
-    "+32 Network architect title",
-    "+5 senior / architect level",
-    "+5 pay reaches the 60,000 expectation",
-    "-5 sponsorship / work permit not confirmed"
+    "+20 Solution / technical architect title",
+    "+3 telecom OSS/BSS keywords",
+    "+2 architecture practice / GCP",
+    "+5 senior / architect level"
    ],
-   "flags": [],
-   "matched_keywords": [],
+   "flags": [
+    "Salary not stated",
+    "Recruitment agency advert"
+   ],
+   "matched_keywords": [
+    "design authority",
+    "solution architecture"
+   ],
    "currency": "£"
   },
   {
@@ -358,163 +364,6 @@
    "matched_keywords": [
     "enterprise architecture"
    ],
-   "currency": "£"
-  },
-  {
-   "source": "Reed",
-   "source_id": "57480755",
-   "title": "Solution Architect",
-   "company": "Sanderson ",
-   "location": "South West England",
-   "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/solution-architect/57480755",
-   "posted_at": "2026-10-21T00:00:00+00:00",
-   "description": "Solution Architect £650 / £675 per day (Umbrella) 6 Month Contract South West, Commutable from - Bristol, Reading, Swindon, Cheltenham, Gloucester, Oxford, Birmingham 1-2 Days Onsite per Week Immediate Start We're looking for an experienced Application focused Solution Architect with a strong background in Wealth / Investment Management to join a major transformation programme within a leading financial services environment. This role will see you providing hands-on architecture leadership across a range of business-critical initiatives, working closely with Product, Engineering, Data,…",
-   "salary": "650 – 675",
-   "contract": "",
-   "channel": "aggregator",
-   "sponsorship": "agency",
-   "sponsor_register": "",
-   "sponsorship_evidence": "",
-   "sponsor_routes": [],
-   "sector": "",
-   "domain": "",
-   "role": "",
-   "region": "",
-   "english": true,
-   "early_career": "",
-   "aviation": "",
-   "low_sponsorship": false,
-   "salary_check": "",
-   "salary_annual": 0,
-   "salary_threshold": 0,
-   "tier": 3,
-   "size": "unknown",
-   "contacts": [],
-   "employer_site": "",
-   "agency": true,
-   "date_known": true,
-   "kw": [],
-   "signals": "",
-   "text_len": 0,
-   "exp_years": 0,
-   "id": "9211a67b5de6",
-   "match": 27,
-   "reasons": [
-    "+20 Solution / technical architect title",
-    "+2 architecture practice / GCP",
-    "+5 senior / architect level"
-   ],
-   "flags": [
-    "Salary not stated",
-    "Wants immediate start (candidate's notice is 90 days)",
-    "Recruitment agency advert"
-   ],
-   "matched_keywords": [
-    "solution architecture"
-   ],
-   "currency": "£"
-  },
-  {
-   "source": "Reed",
-   "source_id": "57481999",
-   "title": "Enterprise Architect (AML)",
-   "company": "Opus Recruitment Solutions Ltd",
-   "location": "City of London",
-   "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/enterprise-architect-aml/57481999",
-   "posted_at": "2026-10-21T00:00:00+00:00",
-   "description": "Enterprise Architect (AML) / 6 months / London (Hybrid) / £650-£700pd (Inside IR35) We’re looking for a Enterprise Architect to lead a major AML regulatory programme within a highly regulated environment. This will require 2 days per week onsite in London. Key points: Lead enterprise & business architecture for a critical AML programme Define future-state architecture, operating models, and capabilities Own architecture governance and work with senior stakeholders Strong strategic thinking, proactive approach, excellent stakeholder management AML experience and regulated industry background…",
-   "salary": "650 – 700",
-   "contract": "",
-   "channel": "aggregator",
-   "sponsorship": "agency",
-   "sponsor_register": "",
-   "sponsorship_evidence": "",
-   "sponsor_routes": [],
-   "sector": "",
-   "domain": "",
-   "role": "",
-   "region": "",
-   "english": true,
-   "early_career": "",
-   "aviation": "",
-   "low_sponsorship": false,
-   "salary_check": "",
-   "salary_annual": 0,
-   "salary_threshold": 0,
-   "tier": 3,
-   "size": "unknown",
-   "contacts": [],
-   "employer_site": "",
-   "agency": true,
-   "date_known": true,
-   "kw": [],
-   "signals": "",
-   "text_len": 0,
-   "exp_years": 0,
-   "id": "5cf2d6311fc2",
-   "match": 25,
-   "reasons": [
-    "+20 Solution / technical architect title",
-    "+5 senior / architect level"
-   ],
-   "flags": [
-    "Salary not stated",
-    "Recruitment agency advert"
-   ],
-   "matched_keywords": [],
-   "currency": "£"
-  },
-  {
-   "source": "Reed",
-   "source_id": "57482306",
-   "title": "Solution Architect",
-   "company": "Reed",
-   "location": "RG224BY",
-   "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/solution-architect/57482306",
-   "posted_at": "2026-10-21T00:00:00+00:00",
-   "description": "Data Storage Solution Architect Location: Remote Contract: Inside IR35 We are looking for an experienced Data Storage Solution Architect to join a major transformation programme supporting critical enterprise services. This role sits within a Service Operations team and has been created to support increased project demand, with a particular focus on a large-scale Data Centre Exit Programme . You will play a key role in ensuring storage, data protection, and recovery capabilities remain resilient throughout migration and transformation activities. Key Responsibilities Design and implement…",
-   "salary": "600",
-   "contract": "",
-   "channel": "aggregator",
-   "sponsorship": "unverified",
-   "sponsor_register": "",
-   "sponsorship_evidence": "",
-   "sponsor_routes": [],
-   "sector": "",
-   "domain": "",
-   "role": "",
-   "region": "",
-   "english": true,
-   "early_career": "",
-   "aviation": "",
-   "low_sponsorship": false,
-   "salary_check": "",
-   "salary_annual": 0,
-   "salary_threshold": 0,
-   "tier": 3,
-   "size": "unknown",
-   "contacts": [],
-   "employer_site": "",
-   "agency": false,
-   "date_known": true,
-   "kw": [],
-   "signals": "",
-   "text_len": 0,
-   "exp_years": 0,
-   "id": "188dd382eb95",
-   "match": 20,
-   "reasons": [
-    "+20 Solution / technical architect title",
-    "+5 senior / architect level",
-    "-5 sponsorship / work permit not confirmed"
-   ],
-   "flags": [
-    "Salary not stated"
-   ],
-   "matched_keywords": [],
    "currency": "£"
   }
  ]
