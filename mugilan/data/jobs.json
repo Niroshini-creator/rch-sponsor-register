@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-31T13:03:38+00:00",
+ "generated_at": "2026-11-01T13:47:00+00:00",
  "window_days": 7,
  "profile": {
   "name": "Mugilan Ramalingam",
@@ -29,11 +29,11 @@
   },
   "Reed": {
    "status": "ok",
-   "count": 374
+   "count": 380
   },
   "Adzuna": {
    "status": "ok",
-   "count": 20
+   "count": 18
   },
   "Career sites": {
    "status": "ok",
@@ -41,11 +41,11 @@
   }
  },
  "counts": {
-  "fetched": 394,
-  "clearance_removed": 82,
+  "fetched": 398,
+  "clearance_removed": 84,
   "no_sponsorship_removed": 6,
-  "language_removed": 18,
-  "below_threshold": 288,
+  "language_removed": 17,
+  "below_threshold": 291,
   "full_advert_fetched": 80,
   "published": 0
  },
@@ -58,7 +58,7 @@
    "company": "Teksystems",
    "location": "South East London, London",
    "country": "GB",
-   "url": "https://www.adzuna.co.uk/jobs/details/5946775894?utm_medium=api&utm_source=2f99c3af",
+   "url": "https://www.adzuna.co.uk/jobs/land/ad/5946775894?se=CmkRxvrV8RGRQOLR_vdAhg&utm_medium=api&utm_source=2f99c3af&v=23DC5A1D7AAA88C0B7ACBC9174D87BE2998EDD5D",
    "posted_at": "2026-10-30T11:21:21+00:00",
    "description": "Job Title: SD-WAN / Network Solution Architect Contract Length: 4-6 Months with potential for additional extensions, Inside IR35 Location : Fully remote Job Description We are seeking an experienced SD-WAN / Network Solution Architect to support the design and assurance of a new enterprise connectivity environment. This role requires specialist architecture expertise across SD-WAN, WAN, LAN, and edge connectivity to ensure the future network architecture delivers the required performance, scala…",
    "salary": "63,338",
@@ -745,6 +745,60 @@
     "Recruitment agency advert"
    ],
    "matched_keywords": [],
+   "currency": "£"
+  },
+  {
+   "source": "Reed",
+   "source_id": "57510900",
+   "title": "Solutions Architect - Juniper",
+   "company": "Appcast Enterprise",
+   "location": "Bracknell",
+   "country": "GB",
+   "url": "https://www.reed.co.uk/jobs/solutions-architect-juniper/57510900",
+   "posted_at": "2026-11-01T00:00:00+00:00",
+   "description": "Design complex solutions. Influence strategy. Deliver technology that transforms businesses. At TD SYNNEX, we're looking for a Juniper Solutions Architect to help shape and deliver complex technology solutions for our partners and customers. This is a senior technical role for an experienced Juniper presales architect with expertise around enterprise networking and security, and a passion for solving complex business challenges. Working with partners, vendors, end users, and internal stakeholders, you'll design innovative multi-technology solutions, guide technical strategy, and lead projects…",
+   "salary": "",
+   "contract": "",
+   "channel": "aggregator",
+   "sponsorship": "unverified",
+   "sponsor_register": "",
+   "sponsorship_evidence": "",
+   "sponsor_routes": [],
+   "sector": "",
+   "domain": "",
+   "role": "",
+   "region": "",
+   "english": true,
+   "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
+   "salary_check": "",
+   "salary_annual": 0,
+   "salary_threshold": 0,
+   "tier": 3,
+   "size": "unknown",
+   "contacts": [],
+   "employer_site": "",
+   "agency": false,
+   "date_known": true,
+   "kw": [],
+   "signals": "",
+   "text_len": 0,
+   "exp_years": 0,
+   "id": "bd78d7f50521",
+   "match": 22,
+   "reasons": [
+    "+20 Solution / technical architect title",
+    "+2 architecture practice / GCP",
+    "+5 senior / architect level",
+    "-5 sponsorship / work permit not confirmed"
+   ],
+   "flags": [
+    "Salary not stated"
+   ],
+   "matched_keywords": [
+    "solution architecture"
+   ],
    "currency": "£"
   },
   {
