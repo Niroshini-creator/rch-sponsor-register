@@ -400,6 +400,27 @@ _LOW_SPONSORSHIP_RE = re.compile(
     r"\bapprentice(ship)?s?\b", re.I)
 
 
+# UK Civil Service vacancies (HMRC, Home Office, DWP...). They rarely sponsor visas, but under the Civil Service
+# nationality rules Commonwealth citizens (India, Sri Lanka...) with any UK right to work, such as the Graduate
+# visa, can apply to most posts. Recognised by the department's name or by Civil Service wording in the advert.
+_CIVIL_SERVICE_EMPLOYER_RE = re.compile(
+    r"\b(hm revenue|hmrc|home office|ministry of (justice|defence)|department (for|of) (work|education|transport|health|"
+    r"environment|business|science|culture|energy|levelling|international)|dwp\b|cabinet office|hm treasury|"
+    r"hm courts|hm prison|hmpps|hmcts|dvla|dvsa|driver and vehicle|hm land registry|companies house|valuation office|"
+    r"office for national statistics|uk health security agency|ukhsa|foreign,? commonwealth|fcdo|ofgem|ofsted|"
+    r"insolvency service|crown commercial service|government property agency|met office|national crime agency|"
+    r"united kingdom government|uk government)", re.I)
+_CIVIL_SERVICE_TEXT_RE = re.compile(
+    r"civil service nationality rules|nationality requirements? (of|for) the civil service|\bcivil service (jobs|"
+    r"success profiles|code|pension|competenc)|\bsuccess profiles\b|\bcivil servants?\b", re.I)
+
+
+def is_civil_service(job: Job) -> bool:
+    if job.country != "GB":
+        return False
+    return bool(_CIVIL_SERVICE_EMPLOYER_RE.search(job.company or "") or _CIVIL_SERVICE_TEXT_RE.search(job.description))
+
+
 def is_low_sponsorship(job: Job) -> bool:
     return bool(_LOW_SPONSORSHIP_RE.search(job.title))
 
