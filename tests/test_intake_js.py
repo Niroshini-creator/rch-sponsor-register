@@ -69,3 +69,19 @@ class AddRolesTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+@unittest.skipUnless(shutil.which("node"), "node is needed to run the browser scan")
+class TierOneFloorTests(unittest.TestCase):
+    def test_a_thinner_cv_still_gets_a_tier_one_family_in_both_engines(self):
+        from candidateboard import cv
+        fams = {"business_analyst": {"strength": 40}, "data_analyst": {"strength": 20}}
+        py = cv.tier_families(fams)
+        self.assertEqual(py["business_analyst"], 1)
+        js = json.loads(subprocess.run(["node", "-e", """
+const fs = require('fs'); const R = process.env.ROOT;
+const I = require(R + '/candidates/intake.js').init(JSON.parse(fs.readFileSync(R + '/candidateboard/roles.json', 'utf8')));
+console.log(JSON.stringify(I.tierFamilies(JSON.parse(process.env.FAMS))));
+"""], check=True, capture_output=True, text=True, env={"ROOT": str(ROOT), "FAMS": json.dumps(fams), "PATH": "/usr/bin:/bin:/usr/local/bin"}).stdout)
+        self.assertEqual(js, py)
+        self.assertNotIn(1, cv.tier_families({"business_analyst": {"strength": 20}}).values())      # below the floor: nothing is promoted

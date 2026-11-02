@@ -106,11 +106,13 @@
     return { name, headline, months: experienceMonths(text, today), education: education(text), families };
   }
 
+  const TIER1_FLOOR = 30;   // = candidateboard.cv.TIER1_FLOOR
   function tierFamilies(families) {
     const strength = Object.fromEntries(Object.entries(families).map(([k, v]) => [k, v.strength]));
     const ranked = Object.keys(strength).sort((a, b) => strength[b] - strength[a]);
     const tiers = {};
     for (const k of ranked.slice(0, 3)) if (strength[k] >= 55) tiers[k] = 1;
+    if (!Object.keys(tiers).length && ranked.length && strength[ranked[0]] >= TIER1_FLOOR) tiers[ranked[0]] = 1;   // a thinner CV still has a core role family
     const adj = (a, b) => TAX.families[a].adjacent.includes(b);
     for (const k of ranked) {
       if (k in tiers) continue;

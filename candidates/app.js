@@ -226,6 +226,18 @@ function withSource(j, mode) { const keep = state.source; state.source = mode; c
 // Why roles that fit the CV are not on the list, with one click to bring them back.
 const HIDDEN_LABELS = { too_senior: "more senior than your experience", experience_gap: "ask for more years of experience than your CV shows", role_not_sponsorable: "role type rarely sponsored (below Skilled Worker level)", clearance: "need security clearance", pay_below_visa: "pay below the visa minimum", pay_below_minimum: "pay below your minimum", licence: "need a driving licence",
   no_skilled_worker_route: "licence has no Skilled Worker route", language: "need another language", nationals_only: "reserved for nationals" };
+function hiddenCount() {
+  const keep = { source: state.source, spons: state.spons, showBlocked: state.showBlocked };
+  let n = 0;
+  for (const j of data.jobs) {
+    if (!inTabOf(j, state.tab)) continue;
+    Object.assign(state, { source: "all", spons: "all", showBlocked: true });
+    const wanted = visible(j);
+    Object.assign(state, keep);
+    if (wanted && !visible(j)) n++;
+  }
+  return n;
+}
 function hiddenSummary() {
   const counts = {}, keep = { source: state.source, spons: state.spons, showBlocked: state.showBlocked };
   const tally = (key, label) => { counts[label] = (counts[label] || 0) + 1; };
@@ -420,7 +432,7 @@ function jobsView() {
     : state.tab === "undated" ? h("p", { class: "small muted" }, "Adverts that do not say when they were posted. They could be new or old: check the advert before applying.")
     : state.tab === "4" ? h("p", { class: "small muted" }, "Other roles at employers that can sponsor, using the same skills on a different route. Many of these (admin, IT support) are below the Skilled Worker skill level, so ask the employer first.") : null;
   return [bar, note, h("p", { class: "small muted" }, `${plural(list.length, "role")} shown`), hiddenSummary(),
-    list.length ? h("ul", { class: "cards" }, list.slice(0, 250).map(card)) : h("p", { class: "empty" }, state.country ? `No roles in ${countryName(state.country)} match these filters right now. Roles abroad are fewer: try “Where advertised” or “Sponsorship”, and see “Where these vacancies come from” for what the feed covers.` : "No roles match these filters.")];
+    list.length ? h("ul", { class: "cards" }, list.slice(0, 250).map(card)) : h("p", { class: "empty" }, hiddenCount() ? "Nothing is shown in this tab with the current filters, but roles that fit are hidden (see the line above for why). Use “Show them all” to see them; for rarely sponsored role types, ask the employer about sponsorship before applying." : state.country ? `No roles in ${countryName(state.country)} match these filters right now. Roles abroad are fewer: try “Where advertised” or “Sponsorship”, and see “Where these vacancies come from” for what the feed covers.` : "No roles match these filters.")];
 }
 
 // Adzuna links open through an Adzuna page that does not load everywhere (for example in India), so for those adverts the

@@ -144,3 +144,7 @@ Employer career sites are read 10 days back (`CAREER_EXTRA_DAYS` = 3 on top of t
 ## Recruiter adverts and LinkedIn
 
 Adverts placed by recruitment agencies and job boards (Robert Walters, Hays, eFinancialCareers... see `config/agencies.json`) are no longer dropped: the feed keeps them with `agency: true` and the sponsorship label `agency` ("end employer unknown") unless the advert itself offers or rules out sponsorship, since an agency's own licence says nothing about its client's vacancy. The candidate page lists them in the **Recruiter adverts** tab, which ignores the source and sponsorship filters; the tier tabs list employers' own adverts only, and an employer's copy of a job wins over an agency's. LinkedIn and Indeed adverts cannot be read (no public feed; LinkedIn forbids scraping), so "Search LinkedIn and Indeed for your roles" opens their searches for the candidate's best roles with the country and date window filled in.
+
+## Empty Tier 1
+
+Tier 1 is the CV's strongest role families (strength 55+, at most 3); a thinner CV whose best family scores 30-54 now still gets that family as Tier 1 (`TIER1_FLOOR`). A Tier 1 that is empty on the page is usually because every Tier 1 role type is one that is rarely sponsored (marketing, IT support, admin, customer service...): those are hidden for a candidate who needs a sponsor, and the empty tab now says so and counts them, with "Show them all". Tier 1 also depends on the feed holding adverts for the roles.
