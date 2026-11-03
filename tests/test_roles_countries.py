@@ -241,6 +241,31 @@ class SalaryThresholdTests(unittest.TestCase):
         self.assertEqual(out["ok"].salary_check, "meets")
 
 
+class CivilServiceTests(unittest.TestCase):
+    def test_recognised(self):
+        self.assertTrue(classify.is_civil_service(make_job(company="HM Revenue & Customs")))
+        self.assertTrue(classify.is_civil_service(make_job(company="Ministry of Justice")))
+        self.assertTrue(classify.is_civil_service(make_job(
+            company="Valuation Office", description="This post is subject to the Civil Service Nationality Rules.")))
+        self.assertTrue(classify.is_civil_service(make_job(
+            company="UK Space Agency", description="We'll assess you against these Success Profiles: behaviours.")))
+        self.assertFalse(classify.is_civil_service(make_job(company="Acme Ltd", description="Great team.")))
+        self.assertFalse(classify.is_civil_service(make_job(company="HMRC", country="IE")))
+
+    def test_pipeline_label(self):
+        index = sponsors.SponsorIndex()
+        index.add(sponsors.SponsorEntry("Home Office", "UK Home Office", routes={"Skilled Worker"}))
+        tiers = classify.TierRules.load(CONFIG / "company_tiers.json")
+        jobs = [make_job(source_id="hmrc", company="HMRC", title="Tax Specialist", salary="£30,000",
+                         description="Civil Service Nationality Rules apply. We cannot offer visa sponsorship."),
+                make_job(source_id="ho", company="Home Office", title="Policy Adviser",
+                         description="Visa sponsorship is available for this role.")]
+        out = {j.source_id: j for j in pipeline.enrich(jobs, index, tiers, contacts.ContactBook({}), days=7)}
+        self.assertEqual(out["hmrc"].sponsorship, "civil_service")
+        self.assertEqual(out["hmrc"].salary_check, "")  # no sponsorship, so no visa salary minimum
+        self.assertEqual(out["ho"].sponsorship, "confirmed")  # an advert that offers sponsorship says so
+
+
 class EnrichNewCountriesTests(unittest.TestCase):
     def setUp(self):
         self.index = sponsors.SponsorIndex()

@@ -272,6 +272,7 @@ function jobHtml(j) {
   const sponsorTag = {
     confirmed: `<span class="tag ok" title="The advert itself states that visa sponsorship is available">Sponsorship offered</span>`,
     possible: `<span class="tag warn" title="The advert says sponsorship may be possible (for example 'may be eligible' or 'will be considered'): ask the employer before applying">May be sponsored</span>`,
+    civil_service: `<span class="tag direct" title="UK Civil Service: no visa sponsorship as a rule, but Commonwealth nationals and others with UK right to work (e.g. Graduate visa) can apply to most posts">Civil Service: right to work needed</span>`,
     local: `<span class="tag direct" title="A job in India: no visa or sponsorship needed for Indian candidates">Local role (no visa needed)</span>`,
     not_sponsored: `<span class="tag no" title="The advert says sponsorship is not available for this role">Not sponsored</span>`,
     licensed_sponsor: `<span class="tag warn" title="Employer is on the official sponsor register but the advert does not mention sponsorship — ask before applying">${{ "US H-1B": "H-1B sponsor", "IE employment permits": "Permit employer" }[j.sponsor_register] || "Licensed sponsor"}</span>`,

@@ -18,7 +18,7 @@ from . import careers, sources, sponsors
 from .agencies import AgencyFilter
 from .classify import (AVIATION_FAMILIES, DOMAINS, ENGLISH_SPEAKING_COUNTRIES, ROLES, SECTORS, TierRules,
                        classify_aviation, classify_domain, classify_early_career, classify_english, classify_region,
-                       classify_role, classify_sector, is_low_sponsorship, sponsorship_evidence, stamp1g_status)
+                       classify_role, classify_sector, is_civil_service, is_low_sponsorship, sponsorship_evidence, stamp1g_status)
 from .contacts import ContactBook
 from .deepen import previous_digests, read_full_adverts, reuse_digest
 from .digest import digest
@@ -168,6 +168,9 @@ def enrich(jobs: Iterable[Job], index: sponsors.SponsorIndex, tiers: TierRules,
             else:
                 # No sponsorship evidence, or the advert rules sponsorship out: shown only when Stamp 1G is ticked.
                 job.sponsorship = "stamp_1g"
+        elif signal != "positive" and is_civil_service(job):
+            # Civil Service: no sponsorship as a rule, but open to Commonwealth nationals with UK right to work.
+            job.sponsorship = "civil_service"
         elif signal == "negative":
             if classify_early_career(job) == "stated":
                 # No sponsorship, but the advert welcomes Graduate visa (PSW) / OPT holders, who need none.
@@ -203,7 +206,7 @@ def enrich(jobs: Iterable[Job], index: sponsors.SponsorIndex, tiers: TierRules,
         job.role = classify_role(job)
         job.aviation = classify_aviation(job)
         job.low_sponsorship = is_low_sponsorship(job)
-        if job.sponsorship not in ("graduate_route", "stamp_1g", "not_sponsored", "local"):
+        if job.sponsorship not in ("graduate_route", "stamp_1g", "not_sponsored", "local", "civil_service"):
             # Graduate visa / Stamp 1G holders need no sponsorship, so no salary minimum applies to them.
             job.salary_check, job.salary_annual, job.salary_threshold = salary_check(job)
         job.region = classify_region(job)

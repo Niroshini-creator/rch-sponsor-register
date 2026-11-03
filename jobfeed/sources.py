@@ -76,7 +76,8 @@ EUROPE_AVIATION_QUERIES = ["airport operations", "aerospace engineer", "aeronaut
 # Early-career searches for UK Graduate visa (PSW) and US OPT holders.
 EARLY_CAREER_QUERIES = {"gb": ["graduate visa", "graduate scheme sponsorship"],
                         "us": ["opt", "h1b sponsorship", "new grad visa sponsorship"]}
-ADZUNA_MAX_CALLS = int(os.environ.get("ADZUNA_MAX_CALLS", "310"))  # India role searches (<= 16) + 260 + SAP / GRC searches (<= 16) + Australia role searches (<= 16) + 2
+CIVIL_SERVICE_PAGES = int(os.environ.get("ADZUNA_CIVIL_SERVICE_PAGES", "10"))
+ADZUNA_MAX_CALLS = int(os.environ.get("ADZUNA_MAX_CALLS", "320"))  # Civil Service (<= 10) + India role searches (<= 16) + 260 + SAP / GRC searches (<= 16) + Australia role searches (<= 16) + 2
 ADZUNA_PAUSE = float(os.environ.get("ADZUNA_PAUSE", "2.5"))  # free tier allows ~25 calls a minute
 
 
@@ -162,6 +163,8 @@ def _adzuna_searches() -> Iterator[tuple[str, dict, int] | tuple[str, dict, int,
         yield "gb", {"what_and": query}, 2
     for code in ("nl", "pl", "es"):
         yield code, {"what_and": "relocation english"}, 1
+    # Civil Service vacancies (Civil Service Jobs itself can't be read): Adzuna carries many departments' adverts.
+    yield "gb", {"what_phrase": "civil service"}, CIVIL_SERVICE_PAGES
     for employer, opts in _graduate_employers():
         if opts.get("adzuna", True):
             query = {"what_and": opts["what_and"]} if opts.get("what_and") else {"company": employer.name}
