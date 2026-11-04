@@ -406,19 +406,26 @@ _LOW_SPONSORSHIP_RE = re.compile(
 _CIVIL_SERVICE_EMPLOYER_RE = re.compile(
     r"\b(hm revenue|hmrc|home office|ministry of (justice|defence)|department (for|of) (work|education|transport|health|"
     r"environment|business|science|culture|energy|levelling|international)|dwp\b|cabinet office|hm treasury|"
-    r"hm courts|hm prison|hmpps|hmcts|dvla|dvsa|driver and vehicle|hm land registry|companies house|valuation office|"
-    r"office for national statistics|uk health security agency|ukhsa|foreign,? commonwealth|fcdo|ofgem|ofsted|"
-    r"insolvency service|crown commercial service|government property agency|met office|national crime agency|"
+    r"hm courts|hm prison|hmpps|hmcts|dvla|dvsa|driver (and|&) vehicle|hm land registry|companies house|"
+    r"valuation office|office for national statistics|uk health security agency|ukhsa|foreign,? commonwealth|fcdo|"
+    r"ofgem|ofsted|insolvency service|crown commercial service|government property agency|met office|"
+    r"national crime agency|maritime (and|&) coastguard|vehicle certification agency|uk visas|border force|"
     r"united kingdom government|uk government)", re.I)
+# Only wording a department's own advert uses. Not "civil servants" (consultancies selling to government say it)
+# nor "Civil Service Pension" (many arm's-length bodies outside the Civil Service offer it).
 _CIVIL_SERVICE_TEXT_RE = re.compile(
-    r"civil service nationality rules|nationality requirements? (of|for) the civil service|\bcivil service (jobs|"
-    r"success profiles|code|pension|competenc)|\bsuccess profiles\b|\bcivil servants?\b", re.I)
+    r"civil service nationality rules|nationality requirements? (of|for) the civil service|\bsuccess profiles\b", re.I)
 
 
 def is_civil_service(job: Job) -> bool:
-    if job.country != "GB":
+    """A UK Civil Service vacancy: a named department or agency (UKHSA also advertises on NHS Jobs), or a job-board
+    advert written to Civil Service rules. Employers' own careers sites are never the Civil Service, and NHS Jobs
+    adverts count only by employer name, whatever their text mentions."""
+    if job.country != "GB" or job.channel == "career_site":
         return False
-    return bool(_CIVIL_SERVICE_EMPLOYER_RE.search(job.company or "") or _CIVIL_SERVICE_TEXT_RE.search(job.description))
+    if _CIVIL_SERVICE_EMPLOYER_RE.search(job.company or ""):
+        return True
+    return job.source != "NHS Jobs" and bool(_CIVIL_SERVICE_TEXT_RE.search(job.description))
 
 
 def is_low_sponsorship(job: Job) -> bool:
