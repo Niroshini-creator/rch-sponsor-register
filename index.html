@@ -66,6 +66,7 @@
           <label><input type="checkbox" name="sponsorship" value="licensed_sponsor" checked> Licensed sponsor / permit employer (advert silent) <span class="count" data-count="sponsorship:licensed_sponsor"></span></label>
           <label><input type="checkbox" name="sponsorship" value="employer_visa" checked> Employer visa (UAE) <span class="count" data-count="sponsorship:employer_visa"></span></label>
           <label><input type="checkbox" name="sponsorship" value="local" checked> India: local roles (no visa needed) <span class="count" data-count="sponsorship:local"></span></label>
+          <label><input type="checkbox" name="sponsorship" value="civil_service" checked> UK Civil Service (HMRC, Home Office…): Commonwealth nationals with right to work <span class="count" data-count="sponsorship:civil_service"></span></label>
           <label><input type="checkbox" name="sponsorship" value="graduate_route"> No sponsorship, Graduate visa / OPT accepted <span class="count" data-count="sponsorship:graduate_route"></span></label>
           <label><input type="checkbox" name="sponsorship" value="stamp_1g"> Ireland: open to Stamp 1G holders (no permit) <span class="count" data-count="sponsorship:stamp_1g"></span></label>
           <label><input type="checkbox" name="sponsorship" value="not_sponsored"> Not sponsored (advert says no sponsorship) <span class="count" data-count="sponsorship:not_sponsored"></span></label>
@@ -77,6 +78,19 @@
           <label><input type="checkbox" name="early" value="1"> PSW (UK) / Stamp 1G (Ireland) / OPT (US) friendly</label>
           <label><input type="checkbox" name="hideLow" value="1" checked> Hide roles rarely sponsored (agents, admin, retail, apprenticeships)</label>
           <label><input type="checkbox" name="hideBelowPay" value="1" checked> Hide jobs paid below the visa minimum salary (UK, Ireland)</label>
+        </fieldset>
+
+        <fieldset class="gov-links">
+          <legend>Government jobs (HMRC, Home Office…)</legend>
+          <p class="muted small">Civil Service Jobs can't be read automatically, so many HMRC vacancies only appear there.
+            These open the live lists:</p>
+          <a href="https://www.civilservicejobs.service.gov.uk/" target="_blank" rel="noopener">Civil Service Jobs (search "HMRC")</a>
+          <a href="https://findajob.dwp.gov.uk/search?q=HMRC" target="_blank" rel="noopener">HMRC on Find a Job</a>
+          <a href="https://findajob.dwp.gov.uk/search?q=Home+Office" target="_blank" rel="noopener">Home Office on Find a Job</a>
+          <a href="https://findajob.dwp.gov.uk/search?q=Department+for+Work+and+Pensions" target="_blank" rel="noopener">DWP on Find a Job</a>
+          <a href="https://findajob.dwp.gov.uk/search?q=Ministry+of+Justice" target="_blank" rel="noopener">Ministry of Justice on Find a Job</a>
+          <a href="https://findajob.dwp.gov.uk/search?q=Ministry+of+Defence" target="_blank" rel="noopener">Ministry of Defence on Find a Job</a>
+          <a href="https://findajob.dwp.gov.uk/search?q=civil+service" target="_blank" rel="noopener">All Civil Service on Find a Job</a>
         </fieldset>
 
         <fieldset>
@@ -162,6 +176,11 @@
       <dd>Front-line roles such as passenger service, check-in, gate, baggage and ramp agents, reservations, customer
         service advisers, administrators, receptionists, retail or hospitality jobs and apprenticeships seldom meet
         sponsorship skill and salary levels, so they are hidden unless you untick the option.</dd>
+      <dt>UK Civil Service</dt>
+      <dd>HMRC, Home Office, DWP, Ministry of Justice and other departments rarely sponsor visas, but under the Civil
+        Service nationality rules Commonwealth citizens (for example from India or Sri Lanka) and others who already
+        have the right to work in the UK, such as Graduate visa holders, can apply to most posts. Some posts (security
+        and defence) are reserved for UK nationals; the advert says so.</dd>
       <dt>Sponsorship labels</dt>
       <dd><strong>Sponsorship offered</strong>: the advert says sponsorship is available (the sentence is quoted on the card).
         <strong>May be sponsored</strong>: the advert says it may be possible ("may be eligible for sponsorship",
