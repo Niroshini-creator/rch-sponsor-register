@@ -43,6 +43,7 @@ SPONSORSHIP = {
     "employer_visa": ("Employer provides visa", 2, True),
     "graduate_route": ("Not sponsoring, open to Graduate visa holders", 4, False),
     "local": ("India role: no visa needed", 2, True),
+    "civil_service": ("Civil Service: right to work needed", 4, False),
     "stamp_1g": ("No sponsorship evidence (Ireland: open to Stamp 1G holders only)", 5, False),
     "unverified": ("Employer not on sponsor register", 5, False),
     "agency": ("Agency advert, end employer unknown", 5, False),
@@ -64,7 +65,8 @@ class Matcher:
         self.held = (profile.get("clearance") or {}).get("held", "none")
         self.licence = profile.get("driving_licence")
         visa = profile.get("visa") or {}
-        self.needs_sponsorship = visa.get("sponsorship", "required") != "not_needed"
+        self.visa_sponsorship = visa.get("sponsorship", "required")
+        self.needs_sponsorship = self.visa_sponsorship != "not_needed"
         self.new_entrant = bool(visa.get("new_entrant"))
         # Work rights that need no sponsor in one country: US OPT / STEM OPT, Irish Stamp 1G (Graduate visa is the sponsorship answer for GB).
         self.rights = {RIGHTS[k] for k in (visa.get("work_rights") or []) if k in RIGHTS}
@@ -168,6 +170,8 @@ class Matcher:
     # ------------------------------------------------------------------ visa pay
     def needs_for(self, job: dict) -> bool:
         """Whether this candidate needs the employer to sponsor them for this job (not if they hold work rights in its country)."""
+        if job.get("sponsorship") == "civil_service" and self.visa_sponsorship == "preferred":
+            return False        # Civil Service posts rarely sponsor but take anyone with a UK right to work, such as the Graduate visa
         return self.needs_sponsorship and job.get("country") not in self.rights and job.get("country") not in LOCAL
 
     def india_pay(self, job: dict) -> dict:
@@ -243,6 +247,8 @@ class Matcher:
         status = job.get("sponsorship", "unverified")
         label, rank, offered = SPONSORSHIP.get(status, SPONSORSHIP["unverified"])
         right_label = RIGHT_LABELS.get((job.get("country"), status)) if job.get("country") in self.rights else None
+        if status == "civil_service" and self.visa_sponsorship != "required":
+            rank, offered = 3, True                # open to a candidate who can already work in the UK
         if right_label:                            # holds US OPT / Irish Stamp 1G: a role that needs no sponsor is a fit
             label, rank, offered = right_label, 3, True
         clear = checks.clearance(text, self.held)

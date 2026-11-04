@@ -98,6 +98,9 @@ def scan(text: str, today: date | None = None) -> dict:
             "education": education(text), "families": families}
 
 
+TIER1_FLOOR = 30      # strongest family becomes Tier 1 when none reaches 55
+
+
 def tier_families(families: dict, tax: taxonomy.Taxonomy | None = None) -> dict[str, int]:
     """family -> tier (1 core, 2 close, 3 stretch, 4 other roles worth a look)."""
     tax = tax or taxonomy.load()
@@ -107,6 +110,8 @@ def tier_families(families: dict, tax: taxonomy.Taxonomy | None = None) -> dict[
     for k in ranked[:3]:
         if strength[k] >= 55:
             tiers[k] = 1
+    if not tiers and ranked and strength[ranked[0]] >= TIER1_FLOOR:
+        tiers[ranked[0]] = 1        # a thinner CV still has a core role family, so Tier 1 is never empty for want of a strong score
     for k in ranked:
         if k in tiers:
             continue
