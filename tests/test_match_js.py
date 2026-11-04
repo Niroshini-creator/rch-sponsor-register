@@ -209,6 +209,8 @@ class RareRoleTests(unittest.TestCase):
         self.profile["visa"]["sponsorship"] = "required"
 
     def test_unevidenced_admin_role_is_capped_and_hidden_for_a_candidate_who_needs_a_sponsor(self):
+        for r in self.profile["roles"]:
+            r["source"] = "suggested from CV"          # not named by the recruiter or the candidate
         r = match.Matcher(self.profile).evaluate({**self.ADMIN, "sponsorship": "licensed_sponsor"})
         self.assertLessEqual(r["match"], 60)
         self.assertIn("role_not_sponsorable", r["hidden_by_default"])
@@ -221,6 +223,13 @@ class RareRoleTests(unittest.TestCase):
         self.profile["visa"]["sponsorship"] = "not_needed"
         r = match.Matcher(self.profile).evaluate({**self.ADMIN, "sponsorship": "licensed_sponsor"})
         self.assertNotIn("role_not_sponsorable", r["hidden_by_default"])
+
+    def test_a_role_the_recruiter_listed_is_warned_about_not_hidden(self):
+        r = match.Matcher(self.profile).evaluate({**self.ADMIN, "sponsorship": "licensed_sponsor"})      # the fixture lists it under "recruiter list"
+        self.assertEqual({r["source"] for r in self.profile["roles"] if r["title"] == "Business Support Administrator"}, {"recruiter list"})
+        self.assertNotIn("role_not_sponsorable", r["hidden_by_default"])
+        self.assertIn("Role type is usually below the Skilled Worker skill level", r["flags"])
+
 
 
 class SeniorityTests(unittest.TestCase):

@@ -25,6 +25,9 @@ TITLE_KEYWORD, KEYWORD_MIN, KEYWORD_MIN_EXTRACT = 24, 6, 4
 # A role whose kind the CV barely shows (family strength under EVIDENCE_OK) is scored on its own domain's keywords at half weight and
 # can not pass UNEVIDENCED_CAP: the title and the advert's wording say little about whether the candidate could do the job.
 EVIDENCE_OK, DOMAIN_WEIGHT, UNEVIDENCED_CAP = 30, 0.5, 60
+# Roles the recruiter or candidate named themselves (a suitable-roles list or attached document, roles added on the page) are not hidden
+# for being a rarely sponsored type: they are shown with a warning, because the person chose them.
+EXPLICIT_ROLE_SOURCES = {"recruiter list", "attached document", "document keywords", "added by candidate"}
 # Roles the candidate's experience does not reach are hidden by default: a very senior title (director, head of...) needs 10 years,
 # senior / lead / staff 6, manager 5; an advert asking for more than 1 year beyond the CV's is also hidden. Skipped when the
 # CV's years could not be read.
@@ -104,7 +107,7 @@ class Matcher:
                 continue
             pts = base * TIER_FACTOR.get(r["tier"], 0.86)
             if best is None or pts > best[0]:
-                best = (pts, {"role": r["title"], "family": r.get("family"), "tier": r["tier"], "track": r["track"], "why": why})
+                best = (pts, {"role": r["title"], "family": r.get("family"), "tier": r["tier"], "track": r["track"], "why": why, "source": r.get("source", "")})
         if best:
             return best
         family = self.tax.family_for_title(title)
@@ -289,7 +292,7 @@ class Matcher:
                 hidden.append("experience_gap")
         if needs and ((family and family.sponsor == "rare") or job.get("low_sponsorship")):
             flags.append("Role type is usually below the Skilled Worker skill level")
-            if status != "confirmed":
+            if status != "confirmed" and info.get("source") not in EXPLICIT_ROLE_SOURCES:
                 hidden.append("role_not_sponsorable")
         if clear["blocks"]:
             hidden.append("clearance")

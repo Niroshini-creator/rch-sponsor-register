@@ -152,3 +152,7 @@ Tier 1 is the CV's strongest role families (strength 55+, at most 3); a thinner 
 ## Civil Service adverts on the candidate page
 
 The feed labels Civil Service adverts (department names or Civil Service wording) `civil_service`. The candidate page now knows that label: for a candidate who can already work in the UK ("I can work now, I want a sponsor" or "I need no sponsor", e.g. on a Graduate visa) they show as "Civil Service: right to work needed" with no visa salary minimum; for a candidate who needs a sponsor to start they stay hidden as "no sponsorship". Before this the label was unknown to the page, so these adverts (Ministry of Justice, DWP, UKHSA...) were treated as unverified and hidden for everyone who wanted sponsorship.
+
+## Roles the recruiter listed are not hidden
+
+A role named in a suitable-roles list or attached document (`recruiter list`, `attached document`, `document keywords`) or added on the page (`added by candidate`) is no longer hidden as `role_not_sponsorable` when it is a rarely sponsored type (marketing, SEO, digital marketing, sales support, IT support...): the person chose it, so it is shown with the warning "Role type is usually below the Skilled Worker skill level". Roles the tool only suggests from the CV are still hidden for a candidate who needs a sponsor. On the test CVs and the recruiter's own PDF this took the visible marketing executive / digital marketing / sales support adverts from 2 to 64.
