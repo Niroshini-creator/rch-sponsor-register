@@ -251,6 +251,17 @@ class CivilServiceTests(unittest.TestCase):
             company="UK Space Agency", description="We'll assess you against these Success Profiles: behaviours.")))
         self.assertFalse(classify.is_civil_service(make_job(company="Acme Ltd", description="Great team.")))
         self.assertFalse(classify.is_civil_service(make_job(company="HMRC", country="IE")))
+        self.assertTrue(classify.is_civil_service(make_job(company="Driver & Vehicle Standards Agency")))
+        # Not the Civil Service: consultancies selling to government, arm's-length bodies, careers sites, NHS.
+        self.assertFalse(classify.is_civil_service(make_job(
+            company="Faculty", description="You will work closely with senior civil servants.")))
+        self.assertFalse(classify.is_civil_service(make_job(
+            company="Student Loans Company", description="Benefits include the Civil Service Pension.")))
+        self.assertFalse(classify.is_civil_service(make_job(
+            company="Scale AI", channel="career_site", description="Civil Service Nationality Rules apply.")))
+        self.assertFalse(classify.is_civil_service(make_job(
+            company="Barts Health NHS Trust", source="NHS Jobs", description="Success Profiles will be used.")))
+        self.assertTrue(classify.is_civil_service(make_job(company="UK Health Security Agency", source="NHS Jobs")))
 
     def test_pipeline_label(self):
         index = sponsors.SponsorIndex()
