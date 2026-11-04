@@ -126,7 +126,7 @@
   const SPONSORSHIP = {
     confirmed: ["Sponsorship offered", 0, true], possible: ["Sponsorship may be available", 1, true], licensed_sponsor: ["Licensed sponsor (advert silent)", 2, true],
     employer_visa: ["Employer provides visa", 2, true], graduate_route: ["Not sponsoring, open to Graduate visa holders", 4, false],
-    local: ["India role: no visa needed", 2, true],
+    local: ["India role: no visa needed", 2, true], civil_service: ["Civil Service: right to work needed", 4, false],
     stamp_1g: ["No sponsorship evidence (Ireland: open to Stamp 1G holders only)", 5, false], unverified: ["Employer not on sponsor register", 5, false], agency: ["Agency advert, end employer unknown", 5, false], not_sponsored: ["Sponsorship not offered", 6, false],
   };
   const RIGHTS = { us_opt: "US", ie_stamp_1g: "IE" };   // visa.work_rights key -> country where it lets the holder work without a sponsor
@@ -143,7 +143,7 @@
     const years = Number(profile.experience_years || 0), held = (profile.clearance || {}).held || "none", licence = profile.driving_licence ?? null;
     const visa = profile.visa || {}, needsSponsor = visa.sponsorship !== "not_needed", newEntrant = Boolean(visa.new_entrant);
     const englishOnly = profile.english_only ?? true, rights = new Set((visa.work_rights || []).filter(k => RIGHTS[k]).map(k => RIGHTS[k]));
-    const needsFor = job => needsSponsor && !rights.has(job.country) && job.country !== "IN";
+    const needsFor = job => !(job.sponsorship === "civil_service" && visa.sponsorship === "preferred") && needsSponsor && !rights.has(job.country) && job.country !== "IN";
     const tracks = {}, cvFor = {}, every = new Map();
     for (const t of profile.tracks) {
       tracks[t.name] = (t.skills || []).map(s => [s, I.keywordRe(s)]);
@@ -242,6 +242,7 @@
       const status = job.sponsorship || "unverified", needs = needsFor(job);
       let [label, rank, offered] = SPONSORSHIP[status] || SPONSORSHIP.unverified;
       const rightLabel = rights.has(job.country) ? RIGHT_LABELS[`${job.country}/${status}`] : null;
+      if (status === "civil_service" && visa.sponsorship !== "required") [rank, offered] = [3, true];   // open to a candidate who can already work in the UK
       if (rightLabel) [label, rank, offered] = [rightLabel, 3, true];
       const clear = clearance(text, held);
       if (extract && clear.level === "none") clear.label = "No clearance in the extract: check the advert";

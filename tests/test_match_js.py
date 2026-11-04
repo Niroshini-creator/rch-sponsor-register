@@ -36,7 +36,7 @@ def variants():
 def rights_jobs(jobs):
     """Copies of a real advert as US / Irish roles with the sponsorship labels OPT and Stamp 1G holders care about."""
     out = []
-    for country, status in (("US", "graduate_route"), ("US", "not_sponsored"), ("US", "confirmed"), ("IE", "stamp_1g"), ("IE", "confirmed"), ("GB", "not_sponsored")):
+    for country, status in (("GB", "civil_service"), ("US", "graduate_route"), ("US", "not_sponsored"), ("US", "confirmed"), ("IE", "stamp_1g"), ("IE", "confirmed"), ("GB", "not_sponsored")):
         j = copy.deepcopy(next(x for x in jobs if x.get("title")))
         j.update(country=country, sponsorship=status, location="Test")
         out.append(j)
@@ -269,3 +269,27 @@ class SeniorityTests(unittest.TestCase):
         self.assertIn("too_senior", match.Matcher(self.profile(8)).evaluate(self.job(f"Director of {base}"))["hidden_by_default"])
         unknown = match.Matcher(self.profile(0)).evaluate(self.job(f"Senior {base}", "9 years' experience"))
         self.assertEqual([r for r in unknown["hidden_by_default"] if r in ("too_senior", "experience_gap")], [])    # CV years unknown: no hiding
+
+
+class CivilServiceTests(unittest.TestCase):
+    """Civil Service adverts (feed status civil_service) rarely sponsor but take anyone with a UK right to work."""
+
+    def setUp(self):
+        self.profile = json.loads(PROFILE.read_text())
+        self.job = {"title": self.profile["roles"][0]["title"], "company": "Ministry of Justice", "country": "GB", "location": "Test", "url": "u",
+                    "sponsorship": "civil_service", "description": "Civil Service nationality rules apply.", "salary": "25,000"}
+
+    def evaluate(self, sponsorship):
+        p = json.loads(json.dumps(self.profile)); p["visa"]["sponsorship"] = sponsorship
+        return match.Matcher(p).evaluate(self.job)
+
+    def test_shown_to_a_candidate_who_can_already_work_and_hidden_from_one_who_needs_a_sponsor(self):
+        for kind in ("preferred", "not_needed"):
+            r = self.evaluate(kind)
+            self.assertTrue(r["sponsorship_offered"], kind)
+            self.assertEqual(r["sponsorship_label"], "Civil Service: right to work needed")
+            self.assertEqual(r["hidden_by_default"], [], kind)
+            self.assertEqual(r["visa_pay"]["status"], "", "no visa salary minimum applies")
+        r = self.evaluate("required")
+        self.assertFalse(r["sponsorship_offered"])
+        self.assertIn("no_sponsorship", r["hidden_by_default"])

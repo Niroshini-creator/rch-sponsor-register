@@ -148,3 +148,7 @@ Adverts placed by recruitment agencies and job boards (Robert Walters, Hays, eFi
 ## Empty Tier 1
 
 Tier 1 is the CV's strongest role families (strength 55+, at most 3); a thinner CV whose best family scores 30-54 now still gets that family as Tier 1 (`TIER1_FLOOR`). A Tier 1 that is empty on the page is usually because every Tier 1 role type is one that is rarely sponsored (marketing, IT support, admin, customer service...): those are hidden for a candidate who needs a sponsor, and the empty tab now says so and counts them, with "Show them all". Tier 1 also depends on the feed holding adverts for the roles.
+
+## Civil Service adverts on the candidate page
+
+The feed labels Civil Service adverts (department names or Civil Service wording) `civil_service`. The candidate page now knows that label: for a candidate who can already work in the UK ("I can work now, I want a sponsor" or "I need no sponsor", e.g. on a Graduate visa) they show as "Civil Service: right to work needed" with no visa salary minimum; for a candidate who needs a sponsor to start they stay hidden as "no sponsorship". Before this the label was unknown to the page, so these adverts (Ministry of Justice, DWP, UKHSA...) were treated as unverified and hidden for everyone who wanted sponsorship.
