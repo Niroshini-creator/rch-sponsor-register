@@ -82,6 +82,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 
 /* pillars */
 .pillars{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.pillars .wide{grid-column:1/-1}
 @media (max-width:720px){.pillars{grid-template-columns:1fr}}
 .pillar{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:26px;display:grid;gap:12px;align-content:start}
 .pillar .k{font-family:var(--f-mono);font-size:.75rem;color:var(--cobalt);letter-spacing:.06em;text-transform:uppercase}
@@ -188,7 +189,7 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
       <div class="hero-copy">
         <p class="eyebrow">ResumeCrafting Hub · Internship Support</p>
         <h1>Land an internship in the <em>UK or Ireland</em> that fits your degree.</h1>
-        <p class="lede">Built for international students on a Student visa or Stamp 2, Stamp 1 / 1G holders, and recent graduates. We review your CV and LinkedIn, find internships that suit your studies and visa conditions, support every application, and prepare you for the interview.</p>
+        <p class="lede">Built for international students on a Student visa or Stamp 2, Stamp 1 / 1G holders, and recent graduates. We review your CV and LinkedIn, find internships that suit your studies and visa conditions, support every application, give you real-time projects to work on, and prepare you for the interview.</p>
         <div class="cta-row">
           <a class="btn" href="#apply">Register for support</a>
           <a class="btn ghost" href="#how">See how it works</a>
@@ -221,7 +222,7 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
     <div class="wrap">
       <div class="sec-head">
         <p class="eyebrow">What we do for you</p>
-        <h2>Four kinds of support, one team</h2>
+        <h2>Five kinds of support, one team</h2>
         <p class="lede">You stay focused on your studies. We handle the groundwork that gets internship applications noticed.</p>
       </div>
       <div class="pillars">
@@ -259,6 +260,15 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
             <li>Prep pack mapped to the job description and your own CV</li>
             <li>Competency (STAR) answers, assessment centre and video interview practice</li>
             <li>Guidance on questions to ask and how to follow up</li>
+          </ul>
+        </article>
+        <article class="pillar wide">
+          <span class="k">Projects</span>
+          <h3>Real-time projects and problems to work on</h3>
+          <ul>
+            <li>Practical, industry-style projects and business problems matched to your course and target sector</li>
+            <li>Build work you can show: analyses, dashboards, reports, case studies and portfolios</li>
+            <li>Feedback from our team, so you can talk about real results on your CV and in interviews</li>
           </ul>
         </article>
       </div>
@@ -415,6 +425,7 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
         <details><summary>Can I do an internship on a Student visa or Stamp 2?</summary><p>Usually yes, within your visa conditions. UK Student visa and Irish Stamp 2 holders have limits on working hours during term time, with more flexibility in official vacation periods. Always check the conditions on your own permission; we plan applications around them.</p></details>
         <details><summary>I'm a recent graduate on Stamp 1G or the Graduate Route. Is an internship worth it?</summary><p>Often, yes. A graduate internship gives you UK or Irish experience and references during your permission period, which helps when you move on to a full-time role. We focus on roles that can lead to longer-term employment.</p></details>
         <details><summary>How much does it cost and how do I pay?</summary><p>The service fee is £150, paid once. After you register we send you a secure Razorpay payment link by email or WhatsApp, and it also appears on this page when you return. Our team starts once the payment is confirmed.</p></details>
+        <details><summary>What are the real-time projects?</summary><p>Practical projects and business problems based on real industry scenarios, chosen to fit your course and the roles you are targeting. You work on them with feedback from our team, and the finished work gives you concrete results to put on your CV and discuss in interviews.</p></details>
         <details><summary>Do you apply on my behalf?</summary><p>With your approval. You see the shortlist first, and we tell you which roles were submitted and when.</p></details>
         <details><summary>Which fields do you cover?</summary><p>Data and analytics, business analysis, finance and accounting, marketing, HR, supply chain and logistics, engineering, IT and software testing, and more. Tell us your course and we'll say if it's a fit.</p></details>
         <details><summary>How will I get updates?</summary><p>By email or WhatsApp, and on this page: return here signed in to see your current stage and the latest note from our team.</p></details>
