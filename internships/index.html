@@ -478,8 +478,9 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
     sendError='';
     if(!FORMSPREE_ENDPOINT){sendError='No endpoint configured.';return false;}
     try{
-      const r=await fetch(FORMSPREE_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},
-        body:JSON.stringify(Object.assign({_subject:'Internship registration: '+d.name,_cc:'resumecraftfriendlyhub@gmail.com',_captcha:'false',_template:'table'},d,{types:d.types.join(', ')}))});
+      const payload=Object.assign({_subject:'Internship registration: '+d.name,_cc:'resumecraftfriendlyhub@gmail.com',_captcha:'false',_template:'table'},d,{types:d.types.join(', ')});
+      // URL-encoded body = a "simple" request, so the browser sends no CORS preflight.
+      const r=await fetch(FORMSPREE_ENDPOINT,{method:'POST',headers:{'Accept':'application/json'},body:new URLSearchParams(payload)});
       let j=null;try{j=await r.json();}catch(e){}
       const ok=r.ok&&(!j||j.success===true||j.success==='true');
       if(!ok)sendError='HTTP '+r.status+(j&&j.message?': '+j.message:'');
