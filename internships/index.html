@@ -473,10 +473,18 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
   const HR_EMAIL='hr@resumecraftinghub.com';
   // Paste your Formspree endpoint here, e.g. 'https://formspree.io/f/abcdwxyz' (no spaces). Empty = automatic email off.
   const FORMSPREE_ENDPOINT='https://formsubmit.co/ajax/'+HR_EMAIL;
+  let sendError='';
   async function notifyHR(d){
-    if(!FORMSPREE_ENDPOINT)return false;
-    try{const r=await fetch(FORMSPREE_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},
-      body:JSON.stringify(Object.assign({_subject:'Internship registration: '+d.name,_cc:'resumecraftfriendlyhub@gmail.com',_captcha:'false',_template:'table'},d,{types:d.types.join(', ')}))});return r.ok;}catch(e){return false;}
+    sendError='';
+    if(!FORMSPREE_ENDPOINT){sendError='No endpoint configured.';return false;}
+    try{
+      const r=await fetch(FORMSPREE_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},
+        body:JSON.stringify(Object.assign({_subject:'Internship registration: '+d.name,_cc:'resumecraftfriendlyhub@gmail.com',_captcha:'false',_template:'table'},d,{types:d.types.join(', ')}))});
+      let j=null;try{j=await r.json();}catch(e){}
+      const ok=r.ok&&(!j||j.success===true||j.success==='true');
+      if(!ok)sendError='HTTP '+r.status+(j&&j.message?': '+j.message:'');
+      return ok;
+    }catch(e){sendError='Network error: '+(e&&e.message||e);return false;}
   }
   function mailtoHref(d){return 'mailto:'+HR_EMAIL+'?cc=resumecraftfriendlyhub@gmail.com&subject='+encodeURIComponent('Internship registration: '+d.name)+'&body='+encodeURIComponent(summaryText(d));}
   function showDone(d,saved){
@@ -490,6 +498,7 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
       box.append(again);
     }else{
       box.append(el('p',null,'We could not send your registration just now. Please go back and press Register again, or copy your details below and send them to '+HR_EMAIL+'.'));
+      if(sendError)box.append(el('p',{class:'note'},'Reason: '+sendError));
       const pre=el('pre',{class:'summary'},summaryText(d));
       const copy=el('button',{class:'btn sm',type:'button'},'Copy my details');
       copy.addEventListener('click',()=>{
