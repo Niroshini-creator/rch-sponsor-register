@@ -471,35 +471,20 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
   }
 
   const HR_EMAIL='hr@resumecraftinghub.com';
-  // Paste your Formspree endpoint here, e.g. 'https://formspree.io/f/abcdwxyz' (no spaces). Empty = automatic email off.
-  const FORMSPREE_ENDPOINT='https://formsubmit.co/ajax/'+HR_EMAIL;
-  let sendError='';
-  async function notifyHR(d){
-    sendError='';
-    if(!FORMSPREE_ENDPOINT){sendError='No endpoint configured.';return false;}
-    try{
-      const payload=Object.assign({_subject:'Internship registration: '+d.name,_cc:'resumecraftfriendlyhub@gmail.com',_captcha:'false',_template:'table'},d,{types:d.types.join(', ')});
-      // URL-encoded body = a "simple" request, so the browser sends no CORS preflight.
-      const r=await fetch(FORMSPREE_ENDPOINT,{method:'POST',headers:{'Accept':'application/json'},body:new URLSearchParams(payload)});
-      let j=null;try{j=await r.json();}catch(e){}
-      const ok=r.ok&&(!j||j.success===true||j.success==='true');
-      if(!ok)sendError='HTTP '+r.status+(j&&j.message?': '+j.message:'');
-      return ok;
-    }catch(e){sendError='Network error: '+(e&&e.message||e);return false;}
-  }
   function mailtoHref(d){return 'mailto:'+HR_EMAIL+'?cc=resumecraftfriendlyhub@gmail.com&subject='+encodeURIComponent('Internship registration: '+d.name)+'&body='+encodeURIComponent(summaryText(d));}
   function showDone(d,saved){
     host.replaceChildren();
     const box=el('div',{class:'done'});
-    box.append(el('h3',null,saved?'Registration received':'Almost done'));
+    box.append(el('h3',null,saved?'Registration received':'One last step'));
     if(saved){
       box.append(el('p',null,'Thanks, '+(d.name.split(' ')[0]||'there')+'. We will send your Razorpay payment link for the £150 service fee to '+d.email+(d.phone?' and '+d.phone:'')+'. Once payment is confirmed, our team starts on your profile. Come back to this page any time to see your payment link and stage.'));
       const again=el('button',{class:'btn ghost sm',type:'button'},'Edit my details');
       again.addEventListener('click',()=>location.reload());
       box.append(again);
     }else{
-      box.append(el('p',null,'We could not send your registration just now. Please go back and press Register again, or copy your details below and send them to '+HR_EMAIL+'.'));
-      if(sendError)box.append(el('p',{class:'note'},'Reason: '+sendError));
+      box.append(el('p',null,'Press the button to email your details to RCH. Your registration is complete once we receive that email, and we will then send your Razorpay payment link for the \u00a3150 service fee.'));
+      box.append(el('a',{class:'btn',href:mailtoHref(d)},'Email my details to RCH'));
+      box.append(el('p',{class:'note'},'If your email app does not open, copy your details below and send them to '+HR_EMAIL+'.'));
       const pre=el('pre',{class:'summary'},summaryText(d));
       const copy=el('button',{class:'btn sm',type:'button'},'Copy my details');
       copy.addEventListener('click',()=>{
@@ -533,10 +518,10 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
           payment:old&&old.payment||'Awaiting payment', payLink:old&&old.payLink||'',
           createdAt:old&&old.createdAt||Date.now(), updatedAt:Date.now()
         }));
-        notifyHR(d);showDone(d,true);return;
+        showDone(d,true);return;
       }catch(err){ /* fall through */ }
     }
-    showDone(d,await notifyHR(d));
+    showDone(d,false);
   });
 
   async function initAdmin(){
