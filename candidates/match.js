@@ -112,6 +112,7 @@
   // ------------------------------------------------------------------ match.py
   const TIER_FACTOR = { 1: 1.0, 2: 0.94, 3: 0.86 };
   const EVIDENCE_OK = 30, DOMAIN_WEIGHT = 0.5, UNEVIDENCED_CAP = 60;
+  const EXPLICIT_ROLE_SOURCES = new Set(["recruiter list", "attached document", "document keywords", "added by candidate"]);   // named by the recruiter / candidate: warned about, not hidden
   const VERY_SENIOR_MIN_YEARS = 10, SENIOR_MIN_YEARS = 6, MANAGER_MIN_YEARS = 5, ASKED_YEARS_GAP = 1;   // hide roles the experience does not reach (see candidateboard/match.py)
   const YEARS_BEFORE = /\b(\d{1,2})\s*\+?\s*(?:(?:to|-|–)\s*\d{1,2}\s*\+?\s*)?years?\b[^.\n]{0,40}?\bexperience/gi, YEARS_AFTER = /\bexperience\b[^.\n]{0,30}?\b(\d{1,2})\s*\+?\s*(?:(?:to|-|–)\s*\d{1,2}\s*\+?\s*)?years?\b/gi;
   /** The smallest number of years of experience an advert asks for, or 0 (= candidateboard.checks.required_years). */
@@ -166,7 +167,7 @@
         else if (shared >= 2 && shared / uni >= 0.6) { base = TITLE_PARTIAL; why = `title is close to “${r.title}”`; }
         else continue;
         const pts = base * (TIER_FACTOR[r.tier] ?? 0.86);
-        if (!best || pts > best[0]) best = [pts, { role: r.title, family: r.family || null, tier: r.tier, track: r.track, why }];
+        if (!best || pts > best[0]) best = [pts, { role: r.title, family: r.family || null, tier: r.tier, track: r.track, why, source: r.source || "" }];
       }
       if (best) return best;
       const family = I.familyForTitle(title);
@@ -272,7 +273,7 @@
       }
       if (needs && ((family && family.sponsor === "rare") || job.low_sponsorship)) {
         flags.push("Role type is usually below the Skilled Worker skill level");
-        if (status !== "confirmed") hidden.push("role_not_sponsorable");
+        if (status !== "confirmed" && !EXPLICIT_ROLE_SOURCES.has(info.source)) hidden.push("role_not_sponsorable");
       }
       if (clear.blocks) hidden.push("clearance");
       if (needs && !offered) hidden.push("no_sponsorship");
