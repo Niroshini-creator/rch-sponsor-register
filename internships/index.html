@@ -385,7 +385,8 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
 
           <label class="consent" for="f-consent"><input id="f-consent" type="checkbox" name="consent"> I agree to RCH contacting me about internship support and using these details for my applications.</label>
           <p class="err" id="formErr" hidden></p>
-          <div><button class="btn" type="submit" id="submitBtn">Register for support</button></div>
+          <div><button class="btn" type="submit" id="submitBtn">Send my details to hr@resumecraftinghub.com</button></div>
+          <p class="hint" style="color:var(--muted);font-size:.85rem;margin:-6px 0 0">This opens an email to RCH with your details filled in. Press send in your email app to complete your registration.</p>
         </form>
       </div>
     </div>
@@ -507,7 +508,7 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
     if(!form.consent.checked)missing.push('consent to be contacted');
     if(missing.length){errEl.textContent='Please add '+missing.join(', ')+'.';errEl.hidden=false;return;}
     errEl.hidden=true;
-    const btn=document.getElementById('submitBtn');btn.disabled=true;btn.textContent='Sending…';
+    const btn=document.getElementById('submitBtn');btn.disabled=true;btn.textContent='Opening email…';
     if(db&&myId){
       try{
         const ref=db.collection('applications').doc(myId);
@@ -521,6 +522,7 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
         showDone(d,true);return;
       }catch(err){ /* fall through */ }
     }
+    location.href=mailtoHref(d);
     showDone(d,false);
   });
 
