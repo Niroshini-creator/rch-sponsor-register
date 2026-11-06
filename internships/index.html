@@ -472,11 +472,11 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
 
   const HR_EMAIL='hr@resumecraftinghub.com';
   // Paste your Formspree endpoint here, e.g. 'https://formspree.io/f/abcdwxyz' (no spaces). Empty = automatic email off.
-  const FORMSPREE_ENDPOINT='';
+  const FORMSPREE_ENDPOINT='https://formsubmit.co/ajax/'+HR_EMAIL;
   async function notifyHR(d){
     if(!FORMSPREE_ENDPOINT)return false;
     try{const r=await fetch(FORMSPREE_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},
-      body:JSON.stringify(Object.assign({_subject:'Internship registration: '+d.name},d,{types:d.types.join(', ')}))});return r.ok;}catch(e){return false;}
+      body:JSON.stringify(Object.assign({_subject:'Internship registration: '+d.name,_cc:'resumecraftfriendlyhub@gmail.com',_captcha:'false',_template:'table'},d,{types:d.types.join(', ')}))});return r.ok;}catch(e){return false;}
   }
   function mailtoHref(d){return 'mailto:'+HR_EMAIL+'?cc=resumecraftfriendlyhub@gmail.com&subject='+encodeURIComponent('Internship registration: '+d.name)+'&body='+encodeURIComponent(summaryText(d));}
   function showDone(d,saved){
@@ -485,19 +485,18 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
     box.append(el('h3',null,saved?'Registration received':'Almost done'));
     if(saved){
       box.append(el('p',null,'Thanks, '+(d.name.split(' ')[0]||'there')+'. We will send your Razorpay payment link for the £150 service fee to '+d.email+(d.phone?' and '+d.phone:'')+'. Once payment is confirmed, our team starts on your profile. Come back to this page any time to see your payment link and stage.'));
-      box.append(el('a',{class:'btn sm',href:mailtoHref(d)},'Email my details to RCH'));
       const again=el('button',{class:'btn ghost sm',type:'button'},'Edit my details');
       again.addEventListener('click',()=>location.reload());
       box.append(again);
     }else{
-      box.append(el('p',null,'This page could not save your registration from this browser. Copy your details below and send them to '+HR_EMAIL+'.'));
+      box.append(el('p',null,'We could not send your registration just now. Please go back and press Register again, or copy your details below and send them to '+HR_EMAIL+'.'));
       const pre=el('pre',{class:'summary'},summaryText(d));
       const copy=el('button',{class:'btn sm',type:'button'},'Copy my details');
       copy.addEventListener('click',()=>{
         navigator.clipboard.writeText(pre.textContent).then(()=>{copy.textContent='Copied';},()=>{
           const r=document.createRange();r.selectNodeContents(pre);const s=getSelection();s.removeAllRanges();s.addRange(r);copy.textContent='Selected, press Ctrl+C';});
       });
-      box.append(pre,copy,el('a',{class:'btn sm',href:mailtoHref(d)},'Email to '+HR_EMAIL));
+      box.append(pre,copy);
     }
     host.append(box);
   }
