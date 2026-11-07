@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-06T14:36:42+00:00",
+ "generated_at": "2026-11-07T13:32:22+00:00",
  "window_days": 7,
  "profile": {
   "name": "Mugilan Ramalingam",
@@ -29,11 +29,11 @@
   },
   "Reed": {
    "status": "ok",
-   "count": 425
+   "count": 451
   },
   "Adzuna": {
    "status": "ok",
-   "count": 16
+   "count": 56
   },
   "Career sites": {
    "status": "ok",
@@ -41,11 +41,11 @@
   }
  },
  "counts": {
-  "fetched": 441,
-  "clearance_removed": 59,
+  "fetched": 507,
+  "clearance_removed": 61,
   "no_sponsorship_removed": 0,
-  "language_removed": 14,
-  "below_threshold": 368,
+  "language_removed": 50,
+  "below_threshold": 396,
   "full_advert_fetched": 80,
   "published": 0
  },
@@ -262,6 +262,60 @@
    ],
    "matched_keywords": [
     "detailed design",
+    "solution architecture"
+   ],
+   "currency": "£"
+  },
+  {
+   "source": "Reed",
+   "source_id": "57540861",
+   "title": "Solutions Architect (Power Platform)",
+   "company": "Morgan Philips Specialist Recruitment",
+   "location": "London",
+   "country": "GB",
+   "url": "https://www.reed.co.uk/jobs/solutions-architect-power-platform/57540861",
+   "posted_at": "2026-11-06T00:00:00+00:00",
+   "description": "Solutions Architect (Power Platform) We are looking for an experienced Microsoft 365 & Power Platform architect to join our client and lead the design and delivery of secure, scalable Modern Workplace solutions for enterprise solutions. This will suit someone who is equally comfortable with solution architecture, hands-on delivery, and stakeholder engagement. You'll work across Microsoft 365, Power Platform, security and governance, helping the company modernize how they collaborate, automate and operate. You will act as a trusted advisor to the business in this role. Responsibilities Design…",
+   "salary": "65,000 – 75,000",
+   "contract": "",
+   "channel": "aggregator",
+   "sponsorship": "agency",
+   "sponsor_register": "",
+   "sponsorship_evidence": "",
+   "sponsor_routes": [],
+   "sector": "",
+   "domain": "",
+   "role": "",
+   "region": "",
+   "english": true,
+   "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
+   "salary_check": "",
+   "salary_annual": 0,
+   "salary_threshold": 0,
+   "tier": 3,
+   "size": "unknown",
+   "contacts": [],
+   "employer_site": "",
+   "agency": true,
+   "date_known": true,
+   "kw": [],
+   "signals": "",
+   "text_len": 0,
+   "exp_years": 0,
+   "id": "2e0595084cae",
+   "match": 32,
+   "reasons": [
+    "+20 Solution / technical architect title",
+    "+2 architecture practice / GCP",
+    "+5 senior / architect level",
+    "+5 pay reaches the 60,000 expectation"
+   ],
+   "flags": [
+    "Recruitment agency advert"
+   ],
+   "matched_keywords": [
     "solution architecture"
    ],
    "currency": "£"
@@ -704,6 +758,116 @@
   },
   {
    "source": "Reed",
+   "source_id": "57541706",
+   "title": "Enterprise Architect",
+   "company": "TXP Technology x People",
+   "location": "London",
+   "country": "GB",
+   "url": "https://www.reed.co.uk/jobs/enterprise-architect/57541706",
+   "posted_at": "2026-11-07T00:00:00+00:00",
+   "description": "Enterprise Architect ££750 per day | Inside IR35 Contract: Until the end of the financial year, with potential extension TBC Location: London, Bristol or Manchester Working Pattern: Predominantly Remote Clearance: BPSS Interview: One-stage Microsoft Teams interview We are looking for an experienced Enterprise Architect to join a Central Government client on an exciting programme focused on strengthening and connecting architecture information across government organisations. This is a hands-on role suited to an experienced architect who can operate independently, work at pace and quickly…",
+   "salary": "750 – 751",
+   "contract": "",
+   "channel": "aggregator",
+   "sponsorship": "unverified",
+   "sponsor_register": "",
+   "sponsorship_evidence": "",
+   "sponsor_routes": [],
+   "sector": "",
+   "domain": "",
+   "role": "",
+   "region": "",
+   "english": true,
+   "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
+   "salary_check": "",
+   "salary_annual": 0,
+   "salary_threshold": 0,
+   "tier": 3,
+   "size": "unknown",
+   "contacts": [],
+   "employer_site": "",
+   "agency": false,
+   "date_known": true,
+   "kw": [],
+   "signals": "",
+   "text_len": 0,
+   "exp_years": 0,
+   "id": "8f67efac8c38",
+   "match": 25,
+   "reasons": [
+    "+20 Solution / technical architect title",
+    "+3 telecom OSS/BSS keywords",
+    "+2 architecture practice / GCP",
+    "+5 senior / architect level",
+    "-5 sponsorship / work permit not confirmed"
+   ],
+   "flags": [
+    "Salary not stated"
+   ],
+   "matched_keywords": [
+    "architecture review",
+    "enterprise architecture"
+   ],
+   "currency": "£"
+  },
+  {
+   "source": "Reed",
+   "source_id": "57541652",
+   "title": "Senior Solution Architect",
+   "company": "Appcast Enterprise",
+   "location": "London",
+   "country": "GB",
+   "url": "https://www.reed.co.uk/jobs/senior-solution-architect/57541652",
+   "posted_at": "2026-11-07T00:00:00+00:00",
+   "description": "Entity: Technology Job Family Group: IT&S Group Job Description: Our purpose is to deliver energy to the world, today and tomorrow. For over 100 years, bp has focused on discovering, developing and producing energy in the regions where we operate. We are one of the few companies globally that can provide customers with an integrated energy offering. Delivering our strategy sustainably is fundamental to achieving our ambition to become a net zero company by 2050 or sooner. Join bp’s Refining and Products Trading as a Senior Solution Architect focusing on biofuels. This is a unique opportunity…",
+   "salary": "",
+   "contract": "",
+   "channel": "aggregator",
+   "sponsorship": "unverified",
+   "sponsor_register": "",
+   "sponsorship_evidence": "",
+   "sponsor_routes": [],
+   "sector": "",
+   "domain": "",
+   "role": "",
+   "region": "",
+   "english": true,
+   "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
+   "salary_check": "",
+   "salary_annual": 0,
+   "salary_threshold": 0,
+   "tier": 3,
+   "size": "unknown",
+   "contacts": [],
+   "employer_site": "",
+   "agency": false,
+   "date_known": true,
+   "kw": [],
+   "signals": "",
+   "text_len": 0,
+   "exp_years": 0,
+   "id": "eaa73fbfcc02",
+   "match": 22,
+   "reasons": [
+    "+20 Solution / technical architect title",
+    "+2 architecture practice / GCP",
+    "+5 senior / architect level",
+    "-5 sponsorship / work permit not confirmed"
+   ],
+   "flags": [
+    "Salary not stated"
+   ],
+   "matched_keywords": [
+    "enterprise architecture"
+   ],
+   "currency": "£"
+  },
+  {
+   "source": "Reed",
    "source_id": "57537491",
    "title": "Enterprise Architect",
    "company": "Advanced Resource Managers Limited",
@@ -741,60 +905,6 @@
    "text_len": 0,
    "exp_years": 0,
    "id": "fb8491e5f64f",
-   "match": 22,
-   "reasons": [
-    "+20 Solution / technical architect title",
-    "+2 architecture practice / GCP",
-    "+5 senior / architect level",
-    "-5 sponsorship / work permit not confirmed"
-   ],
-   "flags": [
-    "Salary not stated"
-   ],
-   "matched_keywords": [
-    "enterprise architecture"
-   ],
-   "currency": "£"
-  },
-  {
-   "source": "Reed",
-   "source_id": "57538168",
-   "title": "Senior Solution Architect",
-   "company": "Appcast Enterprise",
-   "location": "London",
-   "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/senior-solution-architect/57538168",
-   "posted_at": "2026-11-06T00:00:00+00:00",
-   "description": "Entity: Technology Job Family Group: IT&S Group Job Description: Our purpose is to deliver energy to the world, today and tomorrow. For over 100 years, bp has focused on discovering, developing and producing energy in the regions where we operate. We are one of the few companies globally that can provide customers with an integrated energy offering. Delivering our strategy sustainably is fundamental to achieving our ambition to become a net zero company by 2050 or sooner. Join bp’s Refining and Products Trading as a Senior Solution Architect focusing on biofuels. This is a unique opportunity…",
-   "salary": "",
-   "contract": "",
-   "channel": "aggregator",
-   "sponsorship": "unverified",
-   "sponsor_register": "",
-   "sponsorship_evidence": "",
-   "sponsor_routes": [],
-   "sector": "",
-   "domain": "",
-   "role": "",
-   "region": "",
-   "english": true,
-   "early_career": "",
-   "aviation": "",
-   "low_sponsorship": false,
-   "salary_check": "",
-   "salary_annual": 0,
-   "salary_threshold": 0,
-   "tier": 3,
-   "size": "unknown",
-   "contacts": [],
-   "employer_site": "",
-   "agency": false,
-   "date_known": true,
-   "kw": [],
-   "signals": "",
-   "text_len": 0,
-   "exp_years": 0,
-   "id": "50a5b968907f",
    "match": 22,
    "reasons": [
     "+20 Solution / technical architect title",
