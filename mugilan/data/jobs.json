@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-07T13:32:22+00:00",
+ "generated_at": "2026-11-08T13:51:09+00:00",
  "window_days": 7,
  "profile": {
   "name": "Mugilan Ramalingam",
@@ -29,11 +29,11 @@
   },
   "Reed": {
    "status": "ok",
-   "count": 451
+   "count": 450
   },
   "Adzuna": {
    "status": "ok",
-   "count": 56
+   "count": 21
   },
   "Career sites": {
    "status": "ok",
@@ -41,11 +41,11 @@
   }
  },
  "counts": {
-  "fetched": 507,
-  "clearance_removed": 61,
+  "fetched": 471,
+  "clearance_removed": 62,
   "no_sponsorship_removed": 0,
-  "language_removed": 50,
-  "below_threshold": 396,
+  "language_removed": 18,
+  "below_threshold": 391,
   "full_advert_fetched": 80,
   "published": 0
  },
@@ -814,13 +814,13 @@
   },
   {
    "source": "Reed",
-   "source_id": "57541652",
+   "source_id": "57542494",
    "title": "Senior Solution Architect",
    "company": "Appcast Enterprise",
    "location": "London",
    "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/senior-solution-architect/57541652",
-   "posted_at": "2026-11-07T00:00:00+00:00",
+   "url": "https://www.reed.co.uk/jobs/senior-solution-architect/57542494",
+   "posted_at": "2026-11-08T00:00:00+00:00",
    "description": "Entity: Technology Job Family Group: IT&S Group Job Description: Our purpose is to deliver energy to the world, today and tomorrow. For over 100 years, bp has focused on discovering, developing and producing energy in the regions where we operate. We are one of the few companies globally that can provide customers with an integrated energy offering. Delivering our strategy sustainably is fundamental to achieving our ambition to become a net zero company by 2050 or sooner. Join bp’s Refining and Products Trading as a Senior Solution Architect focusing on biofuels. This is a unique opportunity…",
    "salary": "",
    "contract": "",
@@ -850,7 +850,7 @@
    "signals": "",
    "text_len": 0,
    "exp_years": 0,
-   "id": "eaa73fbfcc02",
+   "id": "3b8d175a6483",
    "match": 22,
    "reasons": [
     "+20 Solution / technical architect title",
