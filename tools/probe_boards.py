@@ -1,5 +1,5 @@
-"""Where did Mistral AI's job board move? (temporary)"""
-import json, re, urllib.error, urllib.request
+"""Where did Mistral AI's job board move? (temporary, round 2)"""
+import json, re, urllib.error, urllib.parse, urllib.request
 
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36"
 
@@ -15,20 +15,16 @@ def get(url):
         return 0, str(e)[:80], url
 
 
-for slug in ["mistral", "mistralai", "mistral-ai"]:
-    for url in [f"https://api.lever.co/v0/postings/{slug}?mode=json", f"https://api.eu.lever.co/v0/postings/{slug}?mode=json",
-                f"https://api.ashbyhq.com/posting-api/job-board/{slug}", f"https://boards-api.greenhouse.io/v1/boards/{slug}/jobs",
-                f"https://apply.workable.com/api/v1/widget/accounts/{slug}"]:
-        st, body, _ = get(url)
-        n = ""
-        if st == 200:
-            try:
-                d = json.loads(body)
-                n = len(d) if isinstance(d, list) else len(d.get("jobs", []))
-            except ValueError:
-                n = "non-json"
-        print(f"{st} {url} jobs={n}")
-for url in ["https://mistral.ai/careers", "https://jobs.lever.co/mistral", "https://jobs.ashbyhq.com/mistral"]:
-    st, body, final = get(url)
-    hints = sorted(set(re.findall(r"(?:jobs\.(?:eu\.)?lever\.co|jobs\.ashbyhq\.com|boards\.greenhouse\.io|job-boards\.greenhouse\.io|apply\.workable\.com|[a-z0-9-]+\.teamtailor\.com|[a-z0-9-]+\.jobs\.personio\.(?:de|com)|[a-z0-9-]+\.wd\d+\.myworkdayjobs\.com)/?[A-Za-z0-9_\-]*", body)))[:10]
-    print(f"PAGE {url}: [{st}] final={final} len={len(body)} hints={hints}")
+st, body, _ = get("https://mistral.ai/careers")
+links = sorted(set(re.findall(r"https?://jobs\.ashbyhq\.com/[^\"'\s<>\\)]+", body)))
+print("links", links[:10])
+slugs = {urllib.parse.unquote(l.split("jobs.ashbyhq.com/")[1].split("/")[0].split("?")[0]) for l in links} | {"mistral.ai", "Mistral AI", "mistralai"}
+for slug in slugs:
+    url = "https://api.ashbyhq.com/posting-api/job-board/" + urllib.parse.quote(slug)
+    st2, body2, _ = get(url)
+    n = ""
+    if st2 == 200:
+        d = json.loads(body2)
+        jobs = d.get("jobs", [])
+        n = f"{len(jobs)} sample={[ (j.get('title'), j.get('location')) for j in jobs[:3]]}"
+    print(st2, repr(slug), n)
