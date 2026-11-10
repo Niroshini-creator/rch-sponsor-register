@@ -258,3 +258,35 @@ class TeamtailorTests(unittest.TestCase):
         with mock.patch.object(careers.http, "get", return_value=rss) as get:
             jobs = list(careers.successfactors(dict(emp, keywords=["London", "Dublin"]), CUTOFF))
         self.assertEqual((get.call_count, len(jobs)), (2, 1))
+
+
+class ParallelBoardsTests(unittest.TestCase):
+    def test_boards_read_together_and_a_failed_board_keeps_what_it_gave(self):
+        import time as _time
+        from datetime import datetime, timezone
+        from jobfeed import careers
+        from jobfeed.models import Job
+
+        def job(name, n):
+            return Job(source=f"{name} careers", source_id=str(n), title="Analyst", company=name, location="London",
+                       country="GB", url="https://x/" + str(n), posted_at=datetime.now(timezone.utc), channel="career_site")
+
+        def slow(emp, cutoff):
+            _time.sleep(0.3)
+            yield job(emp["name"], 1)
+
+        def half(emp, cutoff):
+            yield job(emp["name"], 2)
+            raise RuntimeError("HTTP Error 500")
+
+        employers = [{"name": f"Slow{i}", "ats": "slow"} for i in range(8)] + [{"name": "Half", "ats": "half"},
+                                                                              {"name": "Off", "ats": "slow", "enabled": False}]
+        report = {}
+        started = _time.monotonic()
+        with mock.patch.dict(careers.ATS, {"slow": slow, "half": half}):
+            jobs = list(careers.career_sites(7, employers, report))
+        self.assertLess(_time.monotonic() - started, 1.5)                # 8 slow boards at once, not one after another
+        self.assertEqual(len(jobs), 9)
+        self.assertEqual(report["ok"], 8)
+        self.assertEqual(len(report["failed"]), 1)
+        self.assertIn("Half", report["failed"][0])
