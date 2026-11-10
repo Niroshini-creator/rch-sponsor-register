@@ -31,7 +31,7 @@
     { "name": "Isomorphic Labs", "ats": "greenhouse", "id": "isomorphiclabs", "country": "GB" },
     { "name": "Palantir Technologies", "ats": "lever", "id": "palantir", "country": "GB" },
     { "name": "Spotify", "ats": "lever", "id": "spotify", "country": "SE" },
-    { "name": "Mistral AI", "ats": "lever", "id": "mistral", "country": "FR" },
+    { "name": "Mistral AI", "ats": "ashby", "id": "mistral.ai", "country": "FR" },
     { "name": "OpenAI", "ats": "ashby", "id": "openai", "country": "GB" },
     { "name": "Synthesia", "ats": "ashby", "id": "synthesia", "country": "GB" },
     { "name": "ElevenLabs", "ats": "ashby", "id": "elevenlabs", "country": "GB" },
