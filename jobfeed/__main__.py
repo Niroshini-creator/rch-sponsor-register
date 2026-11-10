@@ -22,7 +22,8 @@ def main(argv: list[str] | None = None) -> int:
     payload = run(args.days, args.out)
     for name, st in payload["sources"].items():
         detail = st.get("count", st.get("reason") or st.get("error") or "")
-        print(f"  {name:<24} {st['status']:<9} {detail}")
+        took = f"  ({st['minutes']} min)" if "minutes" in st else ""
+        print(f"  {name:<24} {st['status']:<9} {detail}{took}")
     c = payload["counts"]
     print(f"fetched {c['fetched']} → kept {c['agency_kept']} agency adverts (own list) → published {c['published']} jobs → {args.out}")
     return 0

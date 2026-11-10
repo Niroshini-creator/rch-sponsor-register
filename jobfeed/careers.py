@@ -22,8 +22,10 @@ sites take the careers domain as `host` (jobs.swissport.com).
 from __future__ import annotations
 
 import logging
+import os
 import re
 import xml.etree.ElementTree as ET
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta, timezone
 from typing import Callable, Iterator
 
@@ -334,10 +336,17 @@ def careers_page(emp: dict) -> str:
     return "" if not page or page.startswith("https:///") else page
 
 
+CAREER_WORKERS = int(os.environ.get("CAREER_WORKERS", "8"))
+
+
 def career_sites(days: int, employers: list[dict], report: dict) -> Iterator[Job]:
-    """Yield jobs from every configured employer; one broken board never stops the others."""
+    """Yield jobs from every configured employer; one broken board never stops the others.
+
+    Boards are read CAREER_WORKERS at a time (each employer's board is its own site, so they don't share a rate limit);
+    jobs are yielded as each board finishes, so the feed's time budget still stops the reading cleanly."""
     cutoff = datetime.now(timezone.utc) - timedelta(days=days)
     report.update(ok=0, failed=[])
+    todo = []
     for emp in employers:
         if emp.get("enabled", True) is False:
             continue
@@ -345,12 +354,30 @@ def career_sites(days: int, employers: list[dict], report: dict) -> Iterator[Job
         if not feed:
             report["failed"].append(f"{emp.get('name')}: unknown ATS '{emp.get('ats')}'")
             continue
+        todo.append((emp, feed))
+
+    def board(item):
+        emp, feed = item
+        found: list[Job] = []
         try:
-            yield from feed(emp, cutoff)
-            report["ok"] += 1
-        except Exception as err:  # noqa: BLE001
-            log.warning("career site %s (%s) failed: %s", emp.get("name"), emp.get("ats"), err)
-            report["failed"].append(f"{emp.get('name')}: {str(err)[:120]}")
+            for job in feed(emp, cutoff):
+                found.append(job)
+            return emp, found, None
+        except Exception as err:  # noqa: BLE001 - keep what the board gave before it failed
+            return emp, found, err
+
+    pool = ThreadPoolExecutor(max_workers=max(1, CAREER_WORKERS))
+    try:
+        for future in as_completed([pool.submit(board, item) for item in todo]):
+            emp, found, err = future.result()
+            if err is None:
+                report["ok"] += 1
+            else:
+                log.warning("career site %s (%s) failed: %s", emp.get("name"), emp.get("ats"), err)
+                report["failed"].append(f"{emp.get('name')}: {str(err)[:120]}")
+            yield from found
+    finally:
+        pool.shutdown(wait=False, cancel_futures=True)  # a budget stop doesn't wait for boards still being read
 
 
 _COUNTRY_NAMES = {

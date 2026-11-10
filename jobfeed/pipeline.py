@@ -58,7 +58,7 @@ def load_sponsor_index(status: dict) -> sponsors.SponsorIndex:
 # Employer career sites are read this many days further back (7 + 3 = 10) for the candidate page's "older" list; every other source stays at 7.
 CAREER_EXTRA_DAYS = int(os.environ.get("CAREER_EXTRA_DAYS", "3"))
 MAX_UNDATED_PER_SOURCE = int(os.environ.get("MAX_UNDATED_PER_SOURCE", "300"))
-FEED_BUDGET_MINUTES = float(os.environ.get("FEED_BUDGET_MINUTES", "110"))
+FEED_BUDGET_MINUTES = float(os.environ.get("FEED_BUDGET_MINUTES", "75"))
 
 
 def fetch_all(days: int, source_cfg: dict, status: dict, employers: list[dict] | None = None) -> list[Job]:
@@ -78,6 +78,7 @@ def fetch_all(days: int, source_cfg: dict, status: dict, employers: list[dict] |
     def read(name: str, fn) -> None:
         found: list[Job] = []
         results[name] = found
+        started = time.monotonic()
         try:
             cut_short = False
             for job in fn(days):
@@ -100,6 +101,10 @@ def fetch_all(days: int, source_cfg: dict, status: dict, employers: list[dict] |
             log.warning("source %s failed: %s", name, err)
             log.debug(traceback.format_exc())
             status[name] = {"status": "error", "count": len(found), "error": str(err)[:300]}
+        if name in status:
+            # How long each source took, so a slow one shows up in the feed and the run log.
+            status[name]["minutes"] = round((time.monotonic() - started) / 60, 1)
+            log.info("source %s finished in %.1f min (%s adverts)", name, status[name]["minutes"], len(found))
 
     wanted = {}
     for name, fn in feeds.items():

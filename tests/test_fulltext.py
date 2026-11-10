@@ -99,7 +99,8 @@ class FetchAllTests(unittest.TestCase):
         with mock.patch.object(sources, "SOURCES", fake), mock.patch.object(pipeline, "FEED_BUDGET_MINUTES", 0.0005), \
                 mock.patch.object(pipeline.careers, "career_sites", lambda d, e, r: iter(())), mock.patch.object(sources, "rss_feeds", lambda d, f: iter(())):
             jobs = pipeline.fetch_all(7, {}, status)
-        self.assertEqual(status["quick"], {"status": "ok", "count": 2})
+        self.assertEqual((status["quick"]["status"], status["quick"]["count"]), ("ok", 2))
+        self.assertIn("minutes", status["quick"])                       # each source's time is recorded
         self.assertEqual(status["endless"]["status"], "partial")
         self.assertIn("time budget", status["endless"]["error"])
         self.assertEqual(status["skipped"]["status"], "skipped")
