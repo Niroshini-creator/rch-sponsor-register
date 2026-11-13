@@ -126,7 +126,7 @@
   const TITLE_LITERAL = 50, TITLE_FAMILY = 44, TITLE_PARTIAL = 30, TITLE_OTHER = 32, SKILL_MAX = 40, SKILL_EXTRACT_MAX = 22, SKILLS_FOR_FULL = 5, SKILLS_FOR_FULL_EXTRACT = 3, EXTRACT_CHARS = 600;
   const SPONSORSHIP = {
     confirmed: ["Sponsorship offered", 0, true], possible: ["Sponsorship may be available", 1, true], licensed_sponsor: ["Licensed sponsor (advert silent)", 2, true],
-    employer_visa: ["Employer provides visa", 2, true], graduate_route: ["Not sponsoring, open to Graduate visa holders", 4, false],
+    employer_visa: ["Employer provides visa", 2, true], international_employer: ["Hires internationally, sponsorship not stated", 3, false], graduate_route: ["Not sponsoring, open to Graduate visa holders", 4, false],
     local: ["India role: no visa needed", 2, true], civil_service: ["Civil Service: right to work needed", 4, false],
     stamp_1g: ["No sponsorship evidence (Ireland: open to Stamp 1G holders only)", 5, false], unverified: ["Employer not on sponsor register", 5, false], agency: ["Agency advert, end employer unknown", 5, false], not_sponsored: ["Sponsorship not offered", 6, false],
   };

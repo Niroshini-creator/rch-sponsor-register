@@ -276,6 +276,7 @@ function jobHtml(j) {
     local: `<span class="tag direct" title="A job in India: no visa or sponsorship needed for Indian candidates">Local role (no visa needed)</span>`,
     not_sponsored: `<span class="tag no" title="The advert says sponsorship is not available for this role">Not sponsored</span>`,
     licensed_sponsor: `<span class="tag warn" title="Employer is on the official sponsor register but the advert does not mention sponsorship — ask before applying">${{ "US H-1B": "H-1B sponsor", "IE employment permits": "Permit employer" }[j.sponsor_register] || "Licensed sponsor"}</span>`,
+    international_employer: `<span class="tag warn" title="From the employer's own careers site. This employer hires internationally, but the advert does not say it sponsors visas, and this country publishes no sponsor register to check: ask before applying">Hires internationally · sponsorship not stated</span>`,
     employer_visa: `<span class="tag ok" title="UAE employers sponsor every foreign hire's residence and work visa">Employer visa (UAE)</span>`,
     graduate_route: `<span class="tag warn" title="No sponsorship, but Graduate visa (PSW) / OPT holders are welcome">No sponsorship · ${j.country === "US" ? "OPT" : "Graduate visa"} OK</span>`,
     stamp_1g: `<span class="tag warn" title="Ireland: no sponsorship evidence. Stamp 1G graduates can take this job without an employment permit; the advert does not rule them out">Open to Stamp 1G</span>`,
