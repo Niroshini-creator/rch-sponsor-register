@@ -172,11 +172,15 @@ class EnrichTests(unittest.TestCase):
             make_job(source_id="us-silent", country="US", title="Chemist", description="Great role"),
             make_job(source_id="dubai", country="AE", location="Dubai", title="Accountant", description="Great role"),
             make_job(source_id="canada", country="CA", title="Chemist", description="Visa sponsorship available"),
+            make_job(source_id="fr-career", country="FR", location="Paris", channel="career_site", title="Engineer", description="Great role"),
+            make_job(source_id="de-board", country="DE", location="Berlin", title="Engineer", description="Great role"),
             make_job(source_id="india", country="IN", location="Pune", title="Data Analyst", description="Great role"),
             make_job(source_id="undated", posted_at=UNDATED, title="Engineer", description="Visa sponsorship available"),
         ]
         out = {j.source_id: j for j in self.run_enrich(jobs)}
-        self.assertEqual(set(out), {"neg", "licensed", "confirmed", "us", "dubai", "india", "undated"})
+        self.assertEqual(set(out), {"neg", "licensed", "confirmed", "us", "dubai", "india", "undated", "fr-career"})
+        # No sponsor register in France: the employer's own careers-site advert is kept, with the caveat label.
+        self.assertEqual(out["fr-career"].sponsorship, "international_employer")
         self.assertFalse(out["undated"].date_known)                 # no posting date: kept, marked
         self.assertTrue(out["licensed"].date_known)
         self.assertLess((datetime.now(timezone.utc) - out["undated"].posted_at).total_seconds(), 60)

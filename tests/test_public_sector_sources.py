@@ -106,15 +106,17 @@ class OverseasCoverageTests(unittest.TestCase):
         self.assertEqual(sum(1 for c, _ in searches if c == "au"), 1 + len(sources.ROLE_QUERIES))
         self.assertEqual(sources.ADZUNA_COUNTRIES["au"], "AU")
 
-    def test_gulf_job_is_kept_as_employer_visa_and_australian_job_needs_a_sponsorship_statement(self):
+    def test_gulf_job_is_employer_visa_and_silent_australian_job_is_kept_only_from_a_careers_site(self):
         now = datetime.now(timezone.utc)
 
-        def job(country, sid, text=""):
+        def job(country, sid, text="", channel="career_site"):
             return Job(source="Reed", source_id=sid, title="Business Analyst", company="Acme Co", location={"SA": "Riyadh", "AU": "Sydney"}[country] + sid, country=country, url=f"https://x/{sid}",
-                       posted_at=now, description=text, channel="career_site")
-        out = pipeline.enrich([job("SA", "1"), job("AU", "2"), job("AU", "3", "Visa sponsorship is available.")], sponsors.SponsorIndex(),
-                              TierRules.load(CONFIG / "company_tiers.json"), contacts.ContactBook({}), 7)
-        self.assertEqual(sorted((j.country, j.sponsorship) for j in out), [("AU", "confirmed"), ("SA", "employer_visa")])
+                       posted_at=now, description=text, channel=channel)
+        out = pipeline.enrich([job("SA", "1"), job("AU", "2"), job("AU", "3", "Visa sponsorship is available."), job("AU", "4", channel="aggregator")],
+                              sponsors.SponsorIndex(), TierRules.load(CONFIG / "company_tiers.json"), contacts.ContactBook({}), 7)
+        # Australia publishes no sponsor register: a silent advert is kept from the employer's own site (with a caveat), not from a job board.
+        self.assertEqual(sorted((j.country, j.sponsorship) for j in out),
+                         [("AU", "confirmed"), ("AU", "international_employer"), ("SA", "employer_visa")])
 
 
 class AddEmployerTests(unittest.TestCase):

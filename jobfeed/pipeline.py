@@ -33,6 +33,8 @@ CONFIG = ROOT / "config"
 COUNTRIES = careers.TARGET_COUNTRIES | {"LI"}
 # Countries where the employer sponsors every foreign hire's work visa (Gulf residence and work visas).
 EMPLOYER_VISA_COUNTRIES = careers.GULF_STATES
+# Countries with an official register of sponsoring employers to check a silent advert against.
+REGISTER_COUNTRIES = set(sponsors.REGISTER_COUNTRY.values())
 LOCAL_COUNTRIES = careers.LOCAL_COUNTRIES
 # Shown first in the country filter, even before they have jobs.
 FEATURED_COUNTRIES = ["GB", "GB-SCT", "IE", "US", "IN", "NL", "LU", "SE", "FI", "PL", "ES", "AE", "AE-DXB"]
@@ -195,6 +197,10 @@ def enrich(jobs: Iterable[Job], index: sponsors.SponsorIndex, tiers: TierRules,
             job.sponsorship = "licensed_sponsor"
         elif job.country in EMPLOYER_VISA_COUNTRIES:
             job.sponsorship = "employer_visa"
+        elif job.channel == "career_site" and job.country not in REGISTER_COUNTRIES:
+            # France, Germany, Spain…: no public sponsor register to check. The employer's own site, from an employer
+            # chosen because it hires abroad, so it is shown with that caveat rather than dropped.
+            job.sponsorship = "international_employer"
         else:
             continue
         # Quote the advert's own words when they decide the label, so candidates can check it.
