@@ -86,12 +86,18 @@ jobs:
           git checkout -qf "${GITHUB_REF_NAME}"
           git branch -D feed-publish -q
       - name: Commit daily copy to main
-        # main keeps one feed a day (the run that starts at 05 UTC) as a fallback, plus one after each merge.
+        # main keeps one feed a day as a fallback (the site uses it when a visitor's network can't reach
+        # raw.githubusercontent.com), plus one after each merge. GitHub often starts scheduled runs late, so
+        # the 05-06 UTC run alone can miss for days: any run also refreshes a copy that is 20+ hours old.
         env:
           START_HOUR: ${{ steps.build.outputs.start_hour }}
         run: |
-          if [ "${GITHUB_EVENT_NAME}" = "schedule" ] && [ "${START_HOUR}" != "05" ] && [ "${START_HOUR}" != "06" ]; then
-            echo "Not the daily run; main keeps its copy"; exit 0
+          COPY_AGE_H=$(git show HEAD:data/jobs.json 2>/dev/null | python3 -c 'import json, sys, datetime as d
+          try: print(int((d.datetime.now(d.timezone.utc) - d.datetime.fromisoformat(json.load(sys.stdin)["generated_at"])).total_seconds() // 3600))
+          except Exception: print(999)')
+          if [ "${GITHUB_EVENT_NAME}" = "schedule" ] && [ "${START_HOUR}" != "05" ] && [ "${START_HOUR}" != "06" ] \
+             && [ "${COPY_AGE_H}" -lt 20 ]; then
+            echo "Not the daily run; main's copy is ${COPY_AGE_H} h old"; exit 0
           fi
           cp "${RUNNER_TEMP}/jobs.json" data/jobs.json
           if git diff --quiet -- data/jobs.json; then
