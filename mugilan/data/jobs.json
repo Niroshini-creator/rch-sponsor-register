@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-13T14:54:20+00:00",
+ "generated_at": "2026-11-14T13:47:42+00:00",
  "window_days": 7,
  "profile": {
   "name": "Mugilan Ramalingam",
@@ -29,11 +29,11 @@
   },
   "Reed": {
    "status": "ok",
-   "count": 305
+   "count": 326
   },
   "Adzuna": {
    "status": "ok",
-   "count": 36
+   "count": 38
   },
   "Career sites": {
    "status": "ok",
@@ -41,12 +41,12 @@
   }
  },
  "counts": {
-  "fetched": 341,
-  "clearance_removed": 50,
+  "fetched": 364,
+  "clearance_removed": 59,
   "no_sponsorship_removed": 0,
-  "language_removed": 28,
-  "below_threshold": 263,
-  "full_advert_fetched": 73,
+  "language_removed": 29,
+  "below_threshold": 276,
+  "full_advert_fetched": 80,
   "published": 0
  },
  "jobs": [],
@@ -208,6 +208,60 @@
    ],
    "matched_keywords": [
     "google cloud",
+    "solution architecture"
+   ],
+   "currency": "£"
+  },
+  {
+   "source": "Reed",
+   "source_id": "57567011",
+   "title": "HR Technology Solution Architect",
+   "company": "Akkodis",
+   "location": "London",
+   "country": "GB",
+   "url": "https://www.reed.co.uk/jobs/hr-technology-solution-architect/57567011",
+   "posted_at": "2026-11-13T00:00:00+00:00",
+   "description": "HR Technology Solution Architect (Managing Consultant) London, Manchester or Glasgow | Hybrid Working | Excellent Package Are you passionate about transforming the future of HR through technology, AI and innovative workforce solutions? Our client, a leading global transformation and consulting organisation, is seeking an experienced HR Technology Solution Architect to play a key role in delivering large-scale HR transformation programmes for some of the world's most recognisable organisations. This is an opportunity to work at the intersection of HR strategy, enterprise technology, AI and…",
+   "salary": "75,000 – 96,000",
+   "contract": "",
+   "channel": "aggregator",
+   "sponsorship": "agency",
+   "sponsor_register": "",
+   "sponsorship_evidence": "",
+   "sponsor_routes": [],
+   "sector": "",
+   "domain": "",
+   "role": "",
+   "region": "",
+   "english": true,
+   "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
+   "salary_check": "",
+   "salary_annual": 0,
+   "salary_threshold": 0,
+   "tier": 3,
+   "size": "unknown",
+   "contacts": [],
+   "employer_site": "",
+   "agency": true,
+   "date_known": true,
+   "kw": [],
+   "signals": "",
+   "text_len": 0,
+   "exp_years": 0,
+   "id": "8301acbd0057",
+   "match": 32,
+   "reasons": [
+    "+20 Solution / technical architect title",
+    "+2 architecture practice / GCP",
+    "+5 senior / architect level",
+    "+5 pay reaches the 60,000 expectation"
+   ],
+   "flags": [
+    "Recruitment agency advert"
+   ],
+   "matched_keywords": [
     "solution architecture"
    ],
    "currency": "£"
@@ -593,6 +647,56 @@
    "currency": "£"
   },
   {
+   "source": "Adzuna",
+   "source_id": "5960525550",
+   "title": "Solutions Architect - NVIDIA AI Cloud Partners",
+   "company": "NVIDIA Corporation",
+   "location": "France",
+   "country": "FR",
+   "url": "https://www.adzuna.fr/details/5960525550?utm_medium=api&utm_source=2f99c3af",
+   "posted_at": "2026-11-10T17:49:59+00:00",
+   "description": "NVIDIA is widely considered to be one of the technology world’s most desirable employers. We have some of the most forward-thinking and hardworking people in the world working for us. If you’re creative, hard-working, and self-motivated, we want to hear from you! We are looking for a Network Solutions Architect to join the NVIDIA team focused on supporting NVIDIA AI Cloud Partners as they build the next-generation GPU infrastructure for their customers. As a part of the NVIDIA solutions archite…",
+   "salary": "90,000 – 150,000",
+   "contract": "full_time",
+   "channel": "aggregator",
+   "sponsorship": "permit_check",
+   "sponsor_register": "",
+   "sponsorship_evidence": "",
+   "sponsor_routes": [],
+   "sector": "",
+   "domain": "",
+   "role": "",
+   "region": "",
+   "english": true,
+   "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
+   "salary_check": "",
+   "salary_annual": 0,
+   "salary_threshold": 0,
+   "tier": 3,
+   "size": "unknown",
+   "contacts": [],
+   "employer_site": "",
+   "agency": false,
+   "date_known": true,
+   "kw": [],
+   "signals": "",
+   "text_len": 0,
+   "exp_years": 0,
+   "id": "4cfaecc491d6",
+   "match": 25,
+   "reasons": [
+    "+20 Solution / technical architect title",
+    "+5 senior / architect level",
+    "+5 pay reaches the 70,000 expectation",
+    "-5 sponsorship / work permit not confirmed"
+   ],
+   "flags": [],
+   "matched_keywords": [],
+   "currency": "€"
+  },
+  {
    "source": "Reed",
    "source_id": "57547266",
    "title": "Technical Architect - Agentic Production",
@@ -690,62 +794,6 @@
    ],
    "flags": [],
    "matched_keywords": [],
-   "currency": "£"
-  },
-  {
-   "source": "Reed",
-   "source_id": "57541706",
-   "title": "Enterprise Architect",
-   "company": "TXP Technology x People",
-   "location": "London",
-   "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/enterprise-architect/57541706",
-   "posted_at": "2026-11-07T00:00:00+00:00",
-   "description": "Enterprise Architect ££750 per day | Inside IR35 Contract: Until the end of the financial year, with potential extension TBC Location: London, Bristol or Manchester Working Pattern: Predominantly Remote Clearance: BPSS Interview: One-stage Microsoft Teams interview We are looking for an experienced Enterprise Architect to join a Central Government client on an exciting programme focused on strengthening and connecting architecture information across government organisations. This is a hands-on role suited to an experienced architect who can operate independently, work at pace and quickly…",
-   "salary": "750 – 751",
-   "contract": "",
-   "channel": "aggregator",
-   "sponsorship": "unverified",
-   "sponsor_register": "",
-   "sponsorship_evidence": "",
-   "sponsor_routes": [],
-   "sector": "",
-   "domain": "",
-   "role": "",
-   "region": "",
-   "english": true,
-   "early_career": "",
-   "aviation": "",
-   "low_sponsorship": false,
-   "salary_check": "",
-   "salary_annual": 0,
-   "salary_threshold": 0,
-   "tier": 3,
-   "size": "unknown",
-   "contacts": [],
-   "employer_site": "",
-   "agency": false,
-   "date_known": true,
-   "kw": [],
-   "signals": "",
-   "text_len": 0,
-   "exp_years": 0,
-   "id": "8f67efac8c38",
-   "match": 25,
-   "reasons": [
-    "+20 Solution / technical architect title",
-    "+3 telecom OSS/BSS keywords",
-    "+2 architecture practice / GCP",
-    "+5 senior / architect level",
-    "-5 sponsorship / work permit not confirmed"
-   ],
-   "flags": [
-    "Salary not stated"
-   ],
-   "matched_keywords": [
-    "architecture review",
-    "enterprise architecture"
-   ],
    "currency": "£"
   },
   {
