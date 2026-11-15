@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-14T13:47:42+00:00",
+ "generated_at": "2026-11-15T14:17:32+00:00",
  "window_days": 7,
  "profile": {
   "name": "Mugilan Ramalingam",
@@ -29,11 +29,11 @@
   },
   "Reed": {
    "status": "ok",
-   "count": 326
+   "count": 330
   },
   "Adzuna": {
    "status": "ok",
-   "count": 38
+   "count": 35
   },
   "Career sites": {
    "status": "ok",
@@ -41,11 +41,11 @@
   }
  },
  "counts": {
-  "fetched": 364,
-  "clearance_removed": 59,
+  "fetched": 365,
+  "clearance_removed": 62,
   "no_sponsorship_removed": 0,
-  "language_removed": 29,
-  "below_threshold": 276,
+  "language_removed": 26,
+  "below_threshold": 277,
   "full_advert_fetched": 80,
   "published": 0
  },
@@ -735,56 +735,6 @@
    "text_len": 0,
    "exp_years": 0,
    "id": "8680e83a4746",
-   "match": 25,
-   "reasons": [
-    "+20 Solution / technical architect title",
-    "+5 senior / architect level",
-    "+5 pay reaches the 60,000 expectation",
-    "-5 sponsorship / work permit not confirmed"
-   ],
-   "flags": [],
-   "matched_keywords": [],
-   "currency": "£"
-  },
-  {
-   "source": "Reed",
-   "source_id": "57542672",
-   "title": "Technical Architect (LAMP)",
-   "company": "Metaskil Limited",
-   "location": "Hatfield",
-   "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/technical-architect-lamp/57542672",
-   "posted_at": "2026-11-08T00:00:00+00:00",
-   "description": "Great opportunity for an experienced Technical Architect to join a well established and expanding company in their brand new LAMP team, you will have the opportunity to play a key role in shaping their in-house Architect to deliver the best possible solutions. You will have demonstrable experience in: The LAMP stack (Linux, Apache, MySQL, PHP) Proficiency with Node.js and related Javascript/Typescript ecosystems. · Supporting or developing large, highly transactional, web-based platforms for both B2B and B2C purposes. · Exposure to a broad set of modern technologies such as Redis,…",
-   "salary": "65,000",
-   "contract": "",
-   "channel": "aggregator",
-   "sponsorship": "unverified",
-   "sponsor_register": "",
-   "sponsorship_evidence": "",
-   "sponsor_routes": [],
-   "sector": "",
-   "domain": "",
-   "role": "",
-   "region": "",
-   "english": true,
-   "early_career": "",
-   "aviation": "",
-   "low_sponsorship": false,
-   "salary_check": "",
-   "salary_annual": 0,
-   "salary_threshold": 0,
-   "tier": 3,
-   "size": "unknown",
-   "contacts": [],
-   "employer_site": "",
-   "agency": false,
-   "date_known": true,
-   "kw": [],
-   "signals": "",
-   "text_len": 0,
-   "exp_years": 0,
-   "id": "93adad583693",
    "match": 25,
    "reasons": [
     "+20 Solution / technical architect title",
