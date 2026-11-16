@@ -2,7 +2,7 @@ name: Refresh sponsored jobs
 
 on:
   schedule:
-    - cron: "17 1-23/2 * * *"  # every 2 hours (01:17, 03:17 ... 23:17 UTC); sources stop at a 75-minute budget, so a run ends well before the next
+    - cron: "17 * * * *"  # every hour at :17 UTC; sources stop at a 50-minute budget, so a run ends before the next one starts
   workflow_dispatch:
     inputs:
       days:
@@ -41,36 +41,41 @@ jobs:
       - name: Restore saved Adzuna results
         uses: actions/cache/restore@v4
         with:
-          path: .cache/adzuna.json
-          key: adzuna-${{ github.run_id }}
-          restore-keys: adzuna-
+          path: .cache/adzuna
+          key: adzuna-v2-${{ github.run_id }}
+          restore-keys: adzuna-v2-
       - name: Build feed
         id: build
         env:
           ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
           ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
-          ADZUNA_CACHE: .cache/adzuna.json
+          ADZUNA_CACHE: .cache/adzuna/adzuna.json
           REED_API_KEY: ${{ secrets.REED_API_KEY }}
+          # Hourly refreshes: each source stops after 50 minutes, and 16 careers sites are read at once.
+          FEED_BUDGET_MINUTES: "50"
+          CAREER_WORKERS: "16"
         run: |
-          # Adzuna's free plan covers about three full searches a day: search it live at 05, 13 and 21 UTC
-          # (and on merges / manual runs); the other two-hourly refreshes reuse those results. GitHub can start a
-          # scheduled run late, so the following hour counts too.
+          # Adzuna's free plan covers about three full searches a day: a scheduled run searches it live only when
+          # the saved results are 7.5 hours old or more (merges and manual runs always do); the hourly refreshes
+          # in between reuse them. The age is kept in a file beside the results, so late or skipped runs don't matter.
           HOUR=$(date -u +%H)
           echo "start_hour=${HOUR}" >> "$GITHUB_OUTPUT"
-          if [ "${GITHUB_EVENT_NAME}" = "schedule" ] && [ -f .cache/adzuna.json ] && ! echo " 05 06 13 14 21 22 " | grep -q " ${HOUR} "; then
+          SAVED=$(cat .cache/adzuna/saved_at 2>/dev/null || echo 0)
+          if [ "${GITHUB_EVENT_NAME}" = "schedule" ] && [ -f .cache/adzuna/adzuna.json ] && [ $(( $(date +%s) - SAVED )) -lt 27000 ]; then
             export ADZUNA_FROM_CACHE=1
             echo "adzuna_live=false" >> "$GITHUB_OUTPUT"
           else
             echo "adzuna_live=true" >> "$GITHUB_OUTPUT"
           fi
           python -m jobfeed --days "${{ github.event.inputs.days || '7' }}"
+          if [ -z "${ADZUNA_FROM_CACHE}" ] && [ -f .cache/adzuna/adzuna.json ]; then date +%s > .cache/adzuna/saved_at; fi
           cp data/jobs.json "${RUNNER_TEMP}/jobs.json"
       - name: Save Adzuna results
-        if: steps.build.outputs.adzuna_live == 'true' && hashFiles('.cache/adzuna.json') != ''
+        if: steps.build.outputs.adzuna_live == 'true' && hashFiles('.cache/adzuna/adzuna.json') != ''
         uses: actions/cache/save@v4
         with:
-          path: .cache/adzuna.json
-          key: adzuna-${{ github.run_id }}
+          path: .cache/adzuna
+          key: adzuna-v2-${{ github.run_id }}
       - name: Publish feed
         # The site reads the latest feed from the "feed" branch, which holds a single commit that every
         # refresh replaces, so frequent refreshes don't grow the repository.
@@ -86,18 +91,16 @@ jobs:
           git checkout -qf "${GITHUB_REF_NAME}"
           git branch -D feed-publish -q
       - name: Commit daily copy to main
-        # main keeps one feed a day as a fallback (the site uses it when a visitor's network can't reach
-        # raw.githubusercontent.com), plus one after each merge. GitHub often starts scheduled runs late, so
-        # the 05-06 UTC run alone can miss for days: any run also refreshes a copy that is 20+ hours old.
+        # main keeps about one feed a day as a fallback (the site uses it when a visitor's network can't reach
+        # raw.githubusercontent.com), plus one after each merge: a scheduled run refreshes a copy 20+ hours old.
         env:
           START_HOUR: ${{ steps.build.outputs.start_hour }}
         run: |
           COPY_AGE_H=$(git show HEAD:data/jobs.json 2>/dev/null | python3 -c 'import json, sys, datetime as d
           try: print(int((d.datetime.now(d.timezone.utc) - d.datetime.fromisoformat(json.load(sys.stdin)["generated_at"])).total_seconds() // 3600))
           except Exception: print(999)')
-          if [ "${GITHUB_EVENT_NAME}" = "schedule" ] && [ "${START_HOUR}" != "05" ] && [ "${START_HOUR}" != "06" ] \
-             && [ "${COPY_AGE_H}" -lt 20 ]; then
-            echo "Not the daily run; main's copy is ${COPY_AGE_H} h old"; exit 0
+          if [ "${GITHUB_EVENT_NAME}" = "schedule" ] && [ "${COPY_AGE_H}" -lt 20 ]; then
+            echo "main's copy is ${COPY_AGE_H} h old; keeping it"; exit 0
           fi
           cp "${RUNNER_TEMP}/jobs.json" data/jobs.json
           if git diff --quiet -- data/jobs.json; then
