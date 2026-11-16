@@ -59,9 +59,9 @@ jobs:
           ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
           ADZUNA_CACHE: .cache/adzuna/adzuna.json
           REED_API_KEY: ${{ secrets.REED_API_KEY }}
-          # Hourly refreshes: each source stops after 50 minutes, and 16 careers sites are read at once.
-          FEED_BUDGET_MINUTES: "50"
-          CAREER_WORKERS: "16"
+          # Hourly refreshes: each source stops after 55 minutes, and 24 careers sites are read at once.
+          FEED_BUDGET_MINUTES: "55"
+          CAREER_WORKERS: "24"
         run: |
           # Adzuna's free plan covers about three full searches a day: a scheduled run searches it live only when
           # the saved results are 7.5 hours old or more (merges and manual runs always do); the hourly refreshes
