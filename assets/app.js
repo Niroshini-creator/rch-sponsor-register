@@ -1,5 +1,5 @@
 const DATA_URL = "data/jobs.json";
-// The latest feed lives on the repository's "feed" branch, which every two-hourly refresh replaces;
+// The latest feed lives on the repository's "feed" branch, which every hourly refresh replaces;
 // main keeps a daily copy (DATA_URL) as the fallback, e.g. when the site is served locally.
 const FEED_URL = (() => {
   const owner = location.hostname.endsWith(".github.io") ? location.hostname.split(".")[0] : "";
@@ -411,7 +411,7 @@ function render() {
     } else {
       const where = readFilters().country;
       showNotice(where
-        ? "No jobs in this location in the current feed yet. The feed refreshes every 2 hours; try another country or a longer time window."
+        ? "No jobs in this location in the current feed yet. The feed refreshes every hour; try another country or a longer time window."
         : "No roles match these filters. Try widening them or pressing Reset.");
     }
   } else {
