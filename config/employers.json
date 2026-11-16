@@ -149,7 +149,7 @@
     { "name": "Vestas", "ats": "successfactors", "host": "careers.vestas.com", "country": "DK" },
     { "name": "Alstom", "ats": "successfactors", "host": "jobsearch.alstom.com", "country": "FR" },
     { "name": "Accenture", "country": "GB", "register_name": "Accenture (UK) Limited", "ats": "workday", "host": "accenture.wd103.myworkdayjobs.com", "site": "AccentureCareers", "max_jobs": 1500, "verify": true },
-    { "name": "Comcast", "country": "US", "ats": "workday", "host": "comcast.wd5.myworkdayjobs.com", "site": "Comcast_Careers", "max_jobs": 1000, "verify": true },
+    { "name": "Comcast", "country": "US", "ats": "workday", "host": "comcast.wd115.myworkdayjobs.com", "site": "Comcast_Careers", "max_jobs": 1000, "verify": true },
     { "name": "Clifford Chance", "ats": "smartrecruiters", "id": "CliffordChance", "country": "GB", "register_name": "Clifford Chance LLP" },
     { "name": "Wise", "ats": "smartrecruiters", "id": "wise", "country": "GB", "register_name": "Wise Payments Limited" },
     { "name": "Turner & Townsend", "ats": "smartrecruiters", "id": "turnertownsend", "country": "GB" },
