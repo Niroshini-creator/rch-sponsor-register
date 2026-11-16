@@ -2,18 +2,22 @@ name: Refresh sponsored jobs
 
 on:
   schedule:
-    - cron: "17 * * * *"  # every hour at :17 UTC; sources stop at a 50-minute budget, so a run ends before the next one starts
+    - cron: "17 * * * *"  # hourly backup: GitHub often delays or drops scheduled runs, so each refresh also starts the next one
   workflow_dispatch:
     inputs:
       days:
         description: "Maximum job age in days"
         default: "7"
+      chained:
+        description: "Started by the previous refresh (keeps the hourly cycle going)"
+        default: "false"
   push:
     branches: [main]
     paths: ["jobfeed/**", "config/**", ".github/workflows/refresh-jobs.yml"]
 
 permissions:
   contents: write
+  actions: write   # each refresh starts the next one (see "Start the next refresh")
 
 concurrency:
   group: refresh-jobs
@@ -32,6 +36,10 @@ jobs:
   refresh:
     needs: test
     runs-on: ubuntu-latest
+    env:
+      # Routine refreshes (the schedule, or the previous refresh starting this one) reuse Adzuna results and
+      # main's daily copy; merges and manual runs search Adzuna live and update main's copy.
+      ROUTINE: ${{ github.event_name == 'schedule' || github.event.inputs.chained == 'true' }}
     timeout-minutes: 210
     steps:
       - uses: actions/checkout@v4
@@ -59,9 +67,10 @@ jobs:
           # the saved results are 7.5 hours old or more (merges and manual runs always do); the hourly refreshes
           # in between reuse them. The age is kept in a file beside the results, so late or skipped runs don't matter.
           HOUR=$(date -u +%H)
+          echo "started=$(date +%s)" >> "$GITHUB_OUTPUT"
           echo "start_hour=${HOUR}" >> "$GITHUB_OUTPUT"
           SAVED=$(cat .cache/adzuna/saved_at 2>/dev/null || echo 0)
-          if [ "${GITHUB_EVENT_NAME}" = "schedule" ] && [ -f .cache/adzuna/adzuna.json ] && [ $(( $(date +%s) - SAVED )) -lt 27000 ]; then
+          if [ "${ROUTINE}" = "true" ] && [ -f .cache/adzuna/adzuna.json ] && [ $(( $(date +%s) - SAVED )) -lt 27000 ]; then
             export ADZUNA_FROM_CACHE=1
             echo "adzuna_live=false" >> "$GITHUB_OUTPUT"
           else
@@ -90,6 +99,18 @@ jobs:
           git push -f origin HEAD:refs/heads/feed
           git checkout -qf "${GITHUB_REF_NAME}"
           git branch -D feed-publish -q
+      - name: Start the next refresh
+        # GitHub runs scheduled workflows late or not at all when busy, so a published refresh starts the next
+        # one itself, at least 55 minutes after this one started. The concurrency group keeps a single cycle:
+        # a newer waiting run replaces an older one. If a refresh fails, the hourly schedule restarts the cycle.
+        if: github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          STARTED: ${{ steps.build.outputs.started }}
+        run: |
+          WAIT=$(( STARTED + 55 * 60 - $(date +%s) ))
+          if [ "${WAIT}" -gt 0 ]; then echo "Waiting ${WAIT} s"; sleep "${WAIT}"; fi
+          gh workflow run refresh-jobs.yml --ref main -f chained=true
       - name: Commit daily copy to main
         # main keeps about one feed a day as a fallback (the site uses it when a visitor's network can't reach
         # raw.githubusercontent.com), plus one after each merge: a scheduled run refreshes a copy 20+ hours old.
@@ -99,7 +120,7 @@ jobs:
           COPY_AGE_H=$(git show HEAD:data/jobs.json 2>/dev/null | python3 -c 'import json, sys, datetime as d
           try: print(int((d.datetime.now(d.timezone.utc) - d.datetime.fromisoformat(json.load(sys.stdin)["generated_at"])).total_seconds() // 3600))
           except Exception: print(999)')
-          if [ "${GITHUB_EVENT_NAME}" = "schedule" ] && [ "${COPY_AGE_H}" -lt 20 ]; then
+          if [ "${ROUTINE}" = "true" ] && [ "${COPY_AGE_H}" -lt 20 ]; then
             echo "main's copy is ${COPY_AGE_H} h old; keeping it"; exit 0
           fi
           cp "${RUNNER_TEMP}/jobs.json" data/jobs.json
