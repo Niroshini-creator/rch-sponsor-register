@@ -20,7 +20,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Callable, Iterator
 
-from . import http
+from . import http, public_ie_eu
 from .models import UNDATED, Job
 from .text import normalise_company, parse_date, strip_html
 
@@ -904,4 +904,8 @@ SOURCES: dict[str, Callable[..., Iterator[Job]]] = {
     "jobs_ac_uk": lambda days: jobs_ac_uk(days, JOBS_AC_UK_QUERIES + PUBLIC_SECTOR_ROLE_QUERIES),
     "the_unijobs": the_unijobs,
     "euraxess": euraxess,
+    "publicjobs_ie": public_ie_eu.publicjobs_ie,
+    "local_government_ie": public_ie_eu.local_government_ie,
+    "education_posts_ie": public_ie_eu.education_posts_ie,
+    "eu_careers": public_ie_eu.eu_careers,
 }

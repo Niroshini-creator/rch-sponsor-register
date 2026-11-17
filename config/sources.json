@@ -12,6 +12,10 @@
   "jobs_ac_uk": { "enabled": true, "_note": "jobs.ac.uk search (UK and overseas universities). Its RSS feeds were withdrawn; adverts are read from their schema.org JobPosting data." },
   "the_unijobs": { "enabled": true, "_note": "Times Higher Education unijobs RSS (universities worldwide); each listing page is read for the full advert." },
   "euraxess": { "enabled": true, "_note": "EURAXESS (European Commission) research job search." },
+  "publicjobs_ie": { "enabled": true, "_note": "publicjobs.ie job board (publicjobs.tal.net): Irish civil service, local authorities, state boards and other public bodies. Labelled ie_public_sector (EEA/UK/Swiss citizens or Stamp 4/5)." },
+  "local_government_ie": { "enabled": true, "_note": "localgovernmentjobs.ie: the newest Irish council vacancies, with salary scales." },
+  "education_posts_ie": { "enabled": true, "_note": "educationposts.ie: Irish school, college and further-education posts (second level, primary, third level, other). No posting date in the listing." },
+  "eu_careers": { "enabled": true, "_note": "eu-careers.europa.eu: vacancies at EU institutions and agencies, with the agency's application link. Labelled eu_institution (EU citizenship normally required)." },
   "rss": {
     "enabled": true,
     "_note": "Add any RSS/Atom job feed here, e.g. a council or university vacancy feed, as {\"name\": \"Hull City Council\", \"url\": \"<feed url>\", \"employer\": \"Hull City Council\", \"location\": \"Hull\"}. Many councils publish one on their jobs page (look for an RSS or Atom link); there is no national feed. The jobs.ac.uk and EURAXESS RSS addresses used before were withdrawn (404) and are now read by their own connectors.",
