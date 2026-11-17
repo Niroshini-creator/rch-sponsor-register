@@ -350,6 +350,27 @@ def _advert_text(url: str) -> str:
 
 
 NHS_KEYWORDS = ("sponsorship", "skilled worker", "visa")
+NHS_PAGE_CACHE = os.environ.get("NHS_PAGE_CACHE", "")   # file of advert texts kept between refreshes (Actions cache)
+
+
+def _load_page_cache(path: str) -> dict[str, str]:
+    if not path or not os.path.exists(path):
+        return {}
+    try:
+        with open(path, encoding="utf-8") as fh:
+            return json.load(fh)
+    except (OSError, ValueError) as err:
+        log.warning("page cache %s unreadable: %s", path, err)
+        return {}
+
+
+def _save_page_cache(path: str, pages: dict[str, str]) -> None:
+    """Keep only the adverts still in the search results, so the file doesn't grow."""
+    if not path:
+        return
+    os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
+    with open(path, "w", encoding="utf-8") as fh:
+        json.dump(pages, fh)
 
 
 def nhs_jobs(days: int, keywords: tuple[str, ...] = NHS_KEYWORDS) -> Iterator[Job]:
@@ -360,10 +381,21 @@ def nhs_jobs(days: int, keywords: tuple[str, ...] = NHS_KEYWORDS) -> Iterator[Jo
     """
     cutoff = _cutoff(days)
     found: dict[str, tuple[dict, list[str], datetime]] = {}
+    throttled = False
     for keyword in keywords:
+        if throttled:
+            break
         for page in range(1, 41):
-            raw = http.get("https://www.jobs.nhs.uk/api/v1/search_xml",
-                           params={"keyword": keyword, "page": page, "sort": "publicationDateDesc"})
+            try:
+                raw = http.get("https://www.jobs.nhs.uk/api/v1/search_xml",
+                               params={"keyword": keyword, "page": page, "sort": "publicationDateDesc"})
+            except urllib.error.HTTPError as err:
+                # Rate limited (429) or failing: keep the adverts already found rather than losing them all.
+                log.warning("NHS Jobs search stopped at %r page %d: %s", keyword, page, err)
+                throttled = err.code == 429
+                if not found:
+                    raise
+                break
             root = ET.fromstring(raw)
             # The feed calls each job <vacancyDetails> (older versions: <vacancy>).
             vacancies = [el for el in root.iter() if _local(el.tag) in ("vacancyDetails", "vacancy")]
@@ -384,8 +416,15 @@ def nhs_jobs(days: int, keywords: tuple[str, ...] = NHS_KEYWORDS) -> Iterator[Jo
     urls = {key: f.get("url", "").replace("://beta.jobs.nhs.uk/", "://www.jobs.nhs.uk/")
             for key, (f, _, _) in found.items()}
     wanted = [u for u in urls.values() if u][:NHS_MAX_ADVERTS]
+    # Advert pages don't change, and the feed refreshes hourly: pages read by earlier refreshes are reused, so each run
+    # only asks NHS Jobs for new adverts (reading every page every hour was getting the site rate limited).
+    cache = _load_page_cache(NHS_PAGE_CACHE)
+    pages = {u: cache[u] for u in wanted if cache.get(u)}
+    todo = [u for u in wanted if u not in pages]
     with ThreadPoolExecutor(max_workers=NHS_WORKERS) as pool:
-        pages = dict(zip(wanted, pool.map(_advert_text, wanted)))
+        pages.update(zip(todo, pool.map(_advert_text, todo)))
+    _save_page_cache(NHS_PAGE_CACHE, {u: t for u, t in pages.items() if t})
+    log.info("NHS Jobs: %d advert pages reused, %d read", len(wanted) - len(todo), len(todo))
     for key, (f, locations, posted) in found.items():
         url = urls[key]
         description = pages.get(url) or strip_html(f.get("description"))  # the snippet if the page failed
