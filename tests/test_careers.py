@@ -290,3 +290,17 @@ class ParallelBoardsTests(unittest.TestCase):
         self.assertEqual(report["ok"], 8)
         self.assertEqual(len(report["failed"]), 1)
         self.assertIn("Half", report["failed"][0])
+
+    def test_largest_boards_start_first(self):
+        from jobfeed import careers
+        order = []
+
+        def record(emp, cutoff):
+            order.append(emp["name"])
+            return iter(())
+
+        employers = [{"name": "Small", "ats": "rec"}, {"name": "Big", "ats": "rec", "max_jobs": 1000},
+                     {"name": "Mid", "ats": "rec", "max_jobs": 300}, {"name": "Small2", "ats": "rec"}]
+        with mock.patch.dict(careers.ATS, {"rec": record}), mock.patch.object(careers, "CAREER_WORKERS", 1):
+            list(careers.career_sites(7, employers, {}))
+        self.assertEqual(order, ["Big", "Mid", "Small", "Small2"])

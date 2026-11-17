@@ -355,6 +355,9 @@ def career_sites(days: int, employers: list[dict], report: dict) -> Iterator[Job
             report["failed"].append(f"{emp.get('name')}: unknown ATS '{emp.get('ats')}'")
             continue
         todo.append((emp, feed))
+    # Largest boards first (those given a max_jobs, often with a detail call per advert), so a time-budget stop
+    # cuts short the quick boards' wait rather than a big board that started last.
+    todo.sort(key=lambda item: -int(item[0].get("max_jobs") or 0))
 
     def board(item):
         emp, feed = item
