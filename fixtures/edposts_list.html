@@ -1,0 +1,1870 @@
+<!-- https://www.educationposts.ie/posts/second_level -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Search for Posts - Education Posts</title>
+    <link rel="icon" type="images/ico" href="/images/favicon.ico">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/font/edposts/edposts.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Karla:wght@400;700&display=swap">
+    <script>window.failedScripts = []; function onScriptError(event, el) { window.failedScripts.push(el.src); }</script>
+    <link rel="stylesheet" type="text/css" href="/css/common.min.css?23" />
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" />
+<link rel="stylesheet" type="text/css" href="/css/select2-bootstrap-theme/select2-bs4.min.css" />
+<link rel="stylesheet" type="text/css" href="/css/consent.min.css" />
+    <style type="text/css">#levelName {
+	margin-top: 17px;
+	margin-bottom: 17px;
+}
+
+#tblAdverts th{
+	font-family: Karla;
+	font-weight: bold;
+	font-size: 14px;
+	color: rgba(51, 51, 51, 0.3);
+	border: unset;
+	line-height: 16px;
+	padding-right: 10px;
+}
+
+#tblAdverts th.sortable {
+	cursor: pointer;
+	position:relative;
+}
+
+#tblAdverts th.sortable:hover {
+	background-color: #eef;
+}
+
+/** where does the content come from? see http://astronautweb.co/snippet/font-awesome/ */
+#tblAdverts th.sortable.desc:after {
+	content: "\f0dd";
+    font-family: FontAwesome;
+    right: 2px;
+    position:absolute;
+    bottom: 5px;
+    color: #888;
+}
+#tblAdverts th.sortable.asc:after {
+	content: "\f0de";
+    font-family: FontAwesome;
+    right: 2px;
+    position:absolute;
+    top: 5px;
+    color: #888;
+}
+
+#tblAdverts th.sortable.asc, #tblAdverts th.sortable.desc {
+	padding-right: 12px;
+	/*background-color: #fef;*/
+	color: #652c88;
+}
+
+#tblAdverts tbody td > a {
+	color: #333333;
+	text-decoration: none;
+}
+
+/*#tblAdverts tbody tr a:hover {*/
+	/*text-decoration: underline;*/
+/*}*/
+
+/*#tblAdverts tbody a:visited {*/
+	/*color: #888;*/
+/*}*/
+
+#tblAdverts td{
+	padding-top: 23px;
+	padding-bottom: 18px;
+	padding-right: 10px;
+}
+
+
+
+#frmSearch{
+	padding-top: 25px;
+}
+
+#resultCount{
+	margin-top: 19px;
+	border-top: solid 1px rgba(185, 189, 196, 0.75);
+	padding-top: 16px;
+	padding-bottom: 16px;
+	font-size:15px;
+	font-weight: bold;
+	color: #040e28;
+
+}
+
+/* DB: this fixes resizing of the select2 multiple when the screen gets small.  It's needed, don't remove it. */
+/* cf: https://github.com/select2/select2/issues/3462#issuecomment-342755967 */
+.select2-selection--multiple .select2-search--inline:first-child {
+    width: 100%;
+}
+.select2-selection--multiple .select2-search__field, .select2-search--inline:first-child .select2-search__field {
+    width: 100% !important;
+}
+
+.mobileTable{
+	background-color: #f5f3f7;
+}
+
+.mobileResult{
+	background-color: #ffffff;
+	margin:5px;
+}
+
+.mobileRow{
+	display: flex;
+	border-bottom: solid 1px rgba(198, 203, 212, 0.3);
+}
+
+
+.mobileHeaderId{
+	background-color: #f5f3f7;
+	border-radius: 8px;
+	display: flex;
+	margin-right: 5px;
+
+}
+
+.mobileHeaderDeadline{
+	background-color: #f5f3f7;
+	border-radius: 8px;
+	display: flex;
+}
+
+.headerLabel{
+	background-color: #f5f3f7;
+	opacity: 0.5;
+	font-family: Karla;
+	font-size: 10px;
+	font-weight: bold;
+	color: #652c88;
+	padding-top: 2px;
+}
+
+
+.headerData{
+	display: flex;
+	color: #652c88;
+	/*font-family: Helvetica, Arial, sans-serif;*/
+	font-size: 12px;
+	font-weight: bold;
+	color: #000000;
+}
+
+
+
+.mobileData{
+	font-size: 12px;
+	color: #333333;
+	font-weight: bold;
+	flex : 1;
+}
+
+.mobileLabel{
+	opacity: 0.5;
+	font-family: Karla;
+	font-size: 12px;
+	font-weight: bold;
+	font-style: normal;
+	font-stretch: normal;
+	line-height: 2;
+	letter-spacing: normal;
+	text-align: left;
+	color: #652c88;
+	flex : 1;
+}
+
+/* these two rules take the padding off the td and add it to the dropdown trigger instead (increases hitbox size) */
+.advertmenuholder {
+	padding: 0 !important;
+}
+.advertmenuholder .ddhitbox {
+	display: inline-block;
+	padding-top: 23px;
+	padding-bottom: 18px;
+	padding-right: 10px;
+}</style>
+</head><body class="">
+<header class="container">
+    <div class="d-none d-lg-flex flex-row flex-nowrap align-items-center" id="topHeader">
+        <div class="logo-container position-relative">
+            <a id="topLogo" href="/"></a>
+
+            <div id="lang-menu">
+    <a href="?lang=en" class="lang-menu-item selected" title="Change site language to English">English</a>
+    <a href="?lang=ga" class="lang-menu-item " title="Athraigh teanga an tsuímh go Gaeilge">Gaeilge</a>
+</div>        </div>
+
+        <div id="topBanner" class="ml-auto">
+            <div id='mobileBannerContainer' class="text-center">
+                <a target="_blank" href="https://podfollow.com/ippn/episode/e3b630a8135efebe468014784f4cb295e8b1112c/view" rel="noopener"><img id="banner457" bannerId="457" data-bannerId="457" src="/image/d/c/dc3cdb0e8da3bfb8ca08c13cca421b66.png" class="non-mobile banner img-responsive top" /></a>            </div>
+        </div>
+    </div>
+
+    <div id="topMenu" class="row">
+        <div class="col-sm-12">
+                <div class="navbar navbar-expand-lg navbar-dark" role="navigation">
+    <a class="navbar-brand d-lg-none" href="/">
+        <img src="/images/edposts_logo.svg" width="150" height="37" alt="">
+    </a>
+	<div>
+	<button class="navbar-toggler" type="button" data-toggle="collapse"
+        data-target="#navbar-collapse-1" aria-controls="navbar-collapse-1"
+        aria-expanded="false" aria-label="Toggle navigation">
+        <img src="/images/icon-burger.png">
+    </button>
+	</div><div class="collapse navbar-collapse navbar-gradient" id="navbar-collapse-1"><ul class="navbar-nav mr-auto"><li class="nav-item "><a class="nav-link" href ="/" >HOME</a><li class="nav-item dropdown "><a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true">SEARCH</a><div class="dropdown-menu" aria-labelledby="navbarDropdown"><a href="/posts/pre_school" class="dropdown-item " >Pre-School</a><a href="/posts/primary_level" class="dropdown-item " >Primary Level</a><a href="/posts/second_level" class="dropdown-item " >Post Primary Level</a><a href="/posts/third_level" class="dropdown-item " >Higher & Further Education</a><a href="/posts/other_posts" class="dropdown-item " >Other Education</a><a href="/posts/international" class="dropdown-item " >International</a></div></li><li class="nav-item dropdown "><a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true">NOTICEBOARDS</a><div class="dropdown-menu" aria-labelledby="navbarDropdown"><a href="/notice/snasub" class="dropdown-item " >SNA Substitute Noticeboard</a><a href="/notice/hometuition" class="dropdown-item " >Home Tuition Noticeboard for Parents</a><div class="dropdown-divider "></div><a href="/notice/sen" class="dropdown-item " >SET Clustering Notice Board</a><a href="/notice/jobshare" class="dropdown-item " >Job Share Notice Board</a><a href="/notice/exchange" class="dropdown-item " >Temporary Re-assignment Notice Board</a></div></li><li class="nav-item "><a class="nav-link" href ="/page/subseeker" >SUB SEEKER</a><li class="nav-item "><a class="nav-link" href ="/page/about_ippn" >ABOUT US</a><li class="nav-item dropdown "><a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true">HELP</a><div class="dropdown-menu" aria-labelledby="navbarDropdown"><a href="/help" class="dropdown-item " >Help Centre</a><div class="dropdown-divider "></div><a href="/page/resources/standardapplicationforms" class="dropdown-item " >Application Forms</a><div class="dropdown-divider "></div><a href="/feedback" class="dropdown-item " >Contact Us</a><a href="/page/advert_queries" class="dropdown-item " >Advertising Queries</a></div></li></ul><ul class="navbar-nav navbar-right"><li class="nav-item "><a class="nav-link" href ="/account/signupas" >Register</a><li class="nav-item "><a class="nav-link" href ="/auth/login" >Login</a></ul></div></div>        </div>
+    </div>
+
+    <div id="midBanner" class="d-lg-none text-center">
+        <div class="text-center">
+            <a target="_blank" href="https://podfollow.com/ippn/episode/e3b630a8135efebe468014784f4cb295e8b1112c/view" rel="noopener"><img id="mobileBanner457" bannerId="457" data-bannerId="457" src="/image/c/9/c97de5c633657be05b7f7a2134e22f1e.png" class="banner img-responsive top mobile" /></a>        </div>
+    </div>
+
+
+</header>
+<div class="container">
+    <div class="row" id="mainContent">
+        <div id="leftContent" class="col-lg-9">
+            <h3 id="levelName" class = "karla bold purple-text">Search for Post Primary post</h3>
+<div class = "card outerCard">
+    <div class="bold" style="font-size: 18px">Filter By</div>
+<form id="frmSearch" class="form-inline d-flex flex-wrap" action="/posts/second_level">
+	<input type="hidden" name="sb" id="sortBy" value="application_closing_date" />
+	<input type="hidden" name="sd" id="sortDir" value="0" />
+    <input type="hidden" name="p" id="currentPage" value="1" />
+    		<div class="form-group mr-2 mb-3 flex-grow-1">
+		<label class="sr-only" for="cy">County</label>
+		<select id="cy" name="cy" class="form-control select2" data-width="100%">
+	<option value="">All Counties</option>
+	<option value="30">Antrim</option>
+	<option value="32">Armagh</option>
+	<option value="1">Carlow</option>
+	<option value="2">Cavan</option>
+	<option value="3">Clare</option>
+	<option value="4">Cork</option>
+	<option value="29">Derry</option>
+	<option value="5">Donegal</option>
+	<option value="31">Down</option>
+	<option value="27">Dublin</option>
+	<option value="6">Fermanagh</option>
+	<option value="7">Galway</option>
+	<option value="8">Kerry</option>
+	<option value="9">Kildare</option>
+	<option value="10">Kilkenny</option>
+	<option value="11">Laois</option>
+	<option value="12">Leitrim</option>
+	<option value="13">Limerick</option>
+	<option value="14">Longford</option>
+	<option value="15">Louth</option>
+	<option value="16">Mayo</option>
+	<option value="17">Meath</option>
+	<option value="18">Monaghan</option>
+	<option value="19">Offaly</option>
+	<option value="20">Roscommon</option>
+	<option value="21">Sligo</option>
+	<option value="22">Tipperary</option>
+	<option value="28">Tyrone</option>
+	<option value="23">Waterford</option>
+	<option value="24">Westmeath</option>
+	<option value="25">Wexford</option>
+	<option value="26">Wicklow</option>
+</select>	</div>
+		<div class="form-group mr-2 mb-3 flex-grow-1" style="display: none">
+		<label class="sr-only" for="pd">Postal District</label>
+		<select id="pd" name="pd" class="form-control" data-width="100%">
+	<option value="">All Dublin</option>
+	<option value="1">Dublin 1</option>
+	<option value="2">Dublin 2</option>
+	<option value="3">Dublin 3</option>
+	<option value="4">Dublin 4</option>
+	<option value="5">Dublin 5</option>
+	<option value="6">Dublin 6</option>
+	<option value="7">Dublin 6W</option>
+	<option value="8">Dublin 7</option>
+	<option value="9">Dublin 8</option>
+	<option value="10">Dublin 9</option>
+	<option value="11">Dublin 10</option>
+	<option value="12">Dublin 11</option>
+	<option value="13">Dublin 12</option>
+	<option value="14">Dublin 13</option>
+	<option value="15">Dublin 14</option>
+	<option value="16">Dublin 15</option>
+	<option value="17">Dublin 16</option>
+	<option value="18">Dublin 17</option>
+	<option value="19">Dublin 18</option>
+	<option value="20">Dublin 20</option>
+	<option value="21">Dublin 22</option>
+	<option value="22">Dublin 24</option>
+	<option value="23">County Dublin</option>
+</select>	</div>
+	    		<div class="form-group mr-2 mb-3 flex-grow-1">
+		<label class="sr-only" for="vc">Category</label>
+		<select id="vc" name="vc" class="form-control select2" data-width="100%" data-pt-filter-url="/srch/postTypesForCategory">
+	<option value="">All Categories</option>
+	<option value="47">Caretaker/Janitor</option>
+	<option value="39">Chaplain</option>
+	<option value="37">Deputy Principal</option>
+	<option value="66">Foreign Language Assistant</option>
+	<option value="40">Guidance Counsellor</option>
+	<option value="67">Home Tuition</option>
+	<option value="51">Panel of Substitute Teachers</option>
+	<option value="36">Principal</option>
+	<option value="72">School Librarian</option>
+	<option value="69">School Transport Bus Escort</option>
+	<option value="46">Secretary / Administrator</option>
+	<option value="68">Special Education Teacher</option>
+	<option value="42">Special Needs Assistant</option>
+	<option value="75">Special School Student Teacher Placement</option>
+	<option value="35">Teacher</option>
+	<option value="45">Tutor</option>
+</select>	</div>
+			<div class="form-group mr-2 mb-3 flex-grow-1">
+		<label class="sr-only" for="pt">Status of Post</label>
+		<select id="ptl" name="ptl" class="custom-select w-100" data-width="100%">
+	<option value="">Any Status</option>
+	<option value="2">Acting</option>
+	<option value="9">Fixed Purpose</option>
+	<option value="10">Fixed-term</option>
+	<option value="38">Fixed Term - Job Share</option>
+	<option value="37">Fixed Term - Secondment</option>
+	<option value="36">Fixed Term - Career Break</option>
+	<option value="13">Part-Time</option>
+	<option value="14">Permanent</option>
+	<option value="17">Pro-Rata</option>
+	<option value="19">RPT Contract</option>
+	<option value="40">Specific Purpose - Carer's Leave</option>
+	<option value="33">Specific Purpose - Parental Leave</option>
+	<option value="32">Specific Purpose - Maternity Leave</option>
+	<option value="34">Specific Purpose - Paternity Leave</option>
+	<option value="35">Specific Purpose - Sick Leave</option>
+	<option value="41">Specific Purpose - Other</option>
+	<option value="21">Substitute</option>
+	<option value="26">Maternity Leave - Fixed Term</option>
+</select>	</div>
+	            <div class="form-group mr-2 mb-3 flex-grow-1">
+            <label class="sr-only" for="ga">Irish Language medium</label>
+            <select id="ga" name="ga" class="custom-select w-100" useEmpty="" data-width="100%" title="All schools, or Gaelscoileanna/Gaelcholáistaí only." data-tooltips="[&quot;All schools&quot;,&quot;Gaelscoileanna\/Gaelchol\u00e1ista\u00ed only&quot;]">
+	<option value="0">All Schools: English & Irish Medium</option>
+	<option value="1">Irish-Language Schools Only</option>
+</select>        </div>
+    		<div class="form-group mr-2 mb-3 flex-grow-1">
+		<label class="sr-only" for="s[]">Subjects</label>
+		<select name="s[]" class="form-control select2" useEmpty="" multiple="1" data-placeholder="Subject(s)" data-allow-clear="true" data-maximum-selection-length="3" data-width="100%">
+	<option value="1">Accounting</option>
+	<option value="2">Agricultural Economics</option>
+	<option value="3">Agricultural Science</option>
+	<option value="64">Ancient Greek</option>
+	<option value="4">Applied Mathematics</option>
+	<option value="99">Applied Technology</option>
+	<option value="63">Arabic</option>
+	<option value="62">Art</option>
+	<option value="65">Art, Craft & Design</option>
+	<option value="79">Artistic Performance</option>
+	<option value="8">Biology</option>
+	<option value="9">Business</option>
+	<option value="10">Business Studies</option>
+	<option value="78">Caring for Animals</option>
+	<option value="11">Chemistry</option>
+	<option value="96">Childcare/Community Care</option>
+	<option value="12">Civic Social and Political Education</option>
+	<option value="13">Classical Studies</option>
+	<option value="98">Climate Action and Sustainable Development</option>
+	<option value="73">Coding</option>
+	<option value="80">Computer Science</option>
+	<option value="15">Construction Studies</option>
+	<option value="75">CSI: Exploring Forensic Science</option>
+	<option value="16">Danish</option>
+	<option value="23">Design and Communication Graphics</option>
+	<option value="74">Digital Media Literacy</option>
+	<option value="97">Drama, Film and Theatre Studies</option>
+	<option value="102">Dutch</option>
+	<option value="20">Economics</option>
+	<option value="21">Engineering</option>
+	<option value="22">English</option>
+	<option value="85">English as an Additional Language</option>
+	<option value="24">Environmental Social Studies</option>
+	<option value="25">French</option>
+	<option value="34">Gaeilge</option>
+	<option value="26">Geography</option>
+	<option value="27">German</option>
+	<option value="52">Graphics</option>
+	<option value="28">Greek</option>
+	<option value="67">Guidance Counselling</option>
+	<option value="107">Hairdressing</option>
+	<option value="29">Hebrew Studies</option>
+	<option value="30">History</option>
+	<option value="32">Home Economics</option>
+	<option value="100">Information and Communication Technology</option>
+	<option value="35">Italian</option>
+	<option value="45">Japanese</option>
+	<option value="70">Jewish Studies</option>
+	<option value="82">Korean</option>
+	<option value="37">Latin</option>
+	<option value="36">LCVP</option>
+	<option value="106">Learning Support</option>
+	<option value="101">Leaving Certificate Applied (LCA)</option>
+	<option value="81">Lithuanian</option>
+	<option value="76">Mandarin Chinese</option>
+	<option value="38">Materials Technology (Wood)</option>
+	<option value="39">Mathematics</option>
+	<option value="40">Metalwork</option>
+	<option value="71">Modern Foreign Languages</option>
+	<option value="41">Music</option>
+	<option value="105">NA</option>
+	<option value="77">Philosophy</option>
+	<option value="42">Physical Education</option>
+	<option value="43">Physics</option>
+	<option value="44">Physics and Chemistry</option>
+	<option value="83">Polish</option>
+	<option value="69">Politics and Society</option>
+	<option value="84">Portuguese</option>
+	<option value="46">Religious Education</option>
+	<option value="104">Resource</option>
+	<option value="103">Romanian</option>
+	<option value="60">Russian</option>
+	<option value="47">Science</option>
+	<option value="87">SEN Qualification</option>
+	<option value="66">Social, Personal and Health Education</option>
+	<option value="49">Spanish</option>
+	<option value="50">Swedish</option>
+	<option value="53">Technology</option>
+	<option value="54">Typewriting</option>
+	<option value="86">Ukrainian</option>
+	<option value="72">Visual Art</option>
+</select>	</div>
+		<button class="btn btn-primary mb-3 flex-grow-0 align-self-start ml-auto"
+            type="submit" id="btnPlaceboSearch" title="Search">
+		<i class="fa fa-search fa-fw" aria-hidden="true"></i>
+		<span class="sr-only">Search</span>
+	</button>
+</form>
+
+
+<div id="searchResults">
+<input type="hidden" id="renderedPage" value="1" />    <div id="resultCount">Showing 1 to 50 (of 135)</div>
+            <!-- Table for desktops - Cards for Mobile Devices -->
+
+        <table class="table eduardo table-striped table-hover table-sm d-none d-lg-table" id="tblAdverts">
+            <thead>
+            <tr>
+                <th class="d-none d-md-table-cell sortable"
+                          data-fld="id">ID</th><th class=" sortable"
+                          data-fld="sn">School Name</th><th class=" sortable"
+                          data-fld="cn">Vacancy Type</th><th class="d-none d-md-table-cell"
+                          data-fld="">Subjects</th><th class="d-none d-md-table-cell sortable"
+                          data-fld="ptl">Status of Post</th><th class=" sortable"
+                          data-fld="cy">County</th><th class="text-center sortable desc"
+                          data-fld="cd">Application Deadline</th>                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr data-href="/post/view/264072" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/264072"
+                                                                         title="View Advert Detail" >264072</a></td><td class=""><a href="/post/view/264072"
+                                                                         title="View Advert Detail" >WhiteCrow Research- On behalf of a prestigious UAE school</a></td><td class=""><a href="/post/view/264072"
+                                                                         title="View Advert Detail" >Teacher</a></td><td class="d-none d-md-table-cell"><a href="/post/view/264072" title="View Advert Detail" >English<br />Information and Communication Technology (+2 more)<br /></a></td><td class="d-none d-md-table-cell"><a href="/post/view/264072"
+                                                                         title="View Advert Detail" >Fixed-term</a></td><td class=""><a href="/post/view/264072"
+                                                                             title="View Advert Detail" >Dublin 1</a></td><td class="text-center"><a href="/post/view/264072"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">23/12/2026</span><span class="d-inline d-md-none">23-Dec</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/264030" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/264030"
+                                                                         title="View Advert Detail" >264030</a></td><td class=""><a href="/post/view/264030"
+                                                                         title="View Advert Detail" >St Mary&#039;s C.B.S.</a></td><td class=""><a href="/post/view/264030"
+                                                                         title="View Advert Detail" >Teacher</a></td><td class="d-none d-md-table-cell"><a href="/post/view/264030" title="View Advert Detail" >Mathematics<br /></a></td><td class="d-none d-md-table-cell"><a href="/post/view/264030"
+                                                                         title="View Advert Detail" >Specific Purpose - Maternity Leave</a></td><td class=""><a href="/post/view/264030"
+                                                                             title="View Advert Detail" >Wexford</a></td><td class="text-center"><a href="/post/view/264030"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">14/12/2026</span><span class="d-inline d-md-none">14-Dec</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/264180" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/264180"
+                                                                         title="View Advert Detail" >264180</a></td><td class=""><a href="/post/view/264180"
+                                                                         title="View Advert Detail" >High Cross College</a></td><td class=""><a href="/post/view/264180"
+                                                                         title="View Advert Detail" >Teacher</a></td><td class="d-none d-md-table-cell"><a href="/post/view/264180" title="View Advert Detail" >English<br /><small>Resource</small><br /></a></td><td class="d-none d-md-table-cell"><a href="/post/view/264180"
+                                                                         title="View Advert Detail" >Part-Time</a></td><td class=""><a href="/post/view/264180"
+                                                                             title="View Advert Detail" >Galway</a></td><td class="text-center"><a href="/post/view/264180"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">04/12/2026</span><span class="d-inline d-md-none">04-Dec</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/264089" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/264089"
+                                                                         title="View Advert Detail" >264089</a></td><td class=""><a href="/post/view/264089"
+                                                                         title="View Advert Detail" >Presentation Secondary School</a></td><td class=""><a href="/post/view/264089"
+                                                                         title="View Advert Detail" >Special Needs Assistant</a></td><td class="d-none d-md-table-cell"><a href="/post/view/264089" title="View Advert Detail" ></a></td><td class="d-none d-md-table-cell"><a href="/post/view/264089"
+                                                                         title="View Advert Detail" >Permanent</a></td><td class=""><a href="/post/view/264089"
+                                                                             title="View Advert Detail" >Cork</a></td><td class="text-center"><a href="/post/view/264089"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">03/12/2026</span><span class="d-inline d-md-none">03-Dec</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/263604" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/263604"
+                                                                         title="View Advert Detail" >263604</a></td><td class=""><a href="/post/view/263604"
+                                                                         title="View Advert Detail" >Bruce College Cork</a></td><td class=""><a href="/post/view/263604"
+                                                                         title="View Advert Detail" >Teacher</a></td><td class="d-none d-md-table-cell"><a href="/post/view/263604" title="View Advert Detail" >Physical Education<br /></a></td><td class="d-none d-md-table-cell"><a href="/post/view/263604"
+                                                                         title="View Advert Detail" >Permanent</a></td><td class=""><a href="/post/view/263604"
+                                                                             title="View Advert Detail" >Cork</a></td><td class="text-center"><a href="/post/view/263604"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">01/12/2026</span><span class="d-inline d-md-none">01-Dec</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/264194" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/264194"
+                                                                         title="View Advert Detail" >264194</a></td><td class=""><a href="/post/view/264194"
+                                                                         title="View Advert Detail" >St Pauls School</a></td><td class=""><a href="/post/view/264194"
+                                                                         title="View Advert Detail" >Special Education Teacher</a></td><td class="d-none d-md-table-cell"><a href="/post/view/264194" title="View Advert Detail" ></a></td><td class="d-none d-md-table-cell"><a href="/post/view/264194"
+                                                                         title="View Advert Detail" >Fixed-term</a></td><td class=""><a href="/post/view/264194"
+                                                                             title="View Advert Detail" >Dublin 11</a></td><td class="text-center"><a href="/post/view/264194"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">30/11/2026</span><span class="d-inline d-md-none">30-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/263646" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/263646"
+                                                                         title="View Advert Detail" >263646</a></td><td class=""><a href="/post/view/263646"
+                                                                         title="View Advert Detail" >JumpAgrade CLG</a></td><td class=""><a href="/post/view/263646"
+                                                                         title="View Advert Detail" >Teacher</a></td><td class="d-none d-md-table-cell"><a href="/post/view/263646" title="View Advert Detail" >Mathematics<br /><small>Biology</small><br /><small>Chemistry</small><br /></a></td><td class="d-none d-md-table-cell"><a href="/post/view/263646"
+                                                                         title="View Advert Detail" >Part-Time</a></td><td class=""><a href="/post/view/263646"
+                                                                             title="View Advert Detail" >Limerick</a></td><td class="text-center"><a href="/post/view/263646"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">30/11/2026</span><span class="d-inline d-md-none">30-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/263674" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/263674"
+                                                                         title="View Advert Detail" >263674</a></td><td class=""><a href="/post/view/263674"
+                                                                         title="View Advert Detail" >The Institute of Education</a></td><td class=""><a href="/post/view/263674"
+                                                                         title="View Advert Detail" >Teacher</a></td><td class="d-none d-md-table-cell"><a href="/post/view/263674" title="View Advert Detail" >Physics<br /></a></td><td class="d-none d-md-table-cell"><a href="/post/view/263674"
+                                                                         title="View Advert Detail" >Part-Time</a></td><td class=""><a href="/post/view/263674"
+                                                                             title="View Advert Detail" >Dublin 2</a></td><td class="text-center"><a href="/post/view/263674"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">30/11/2026</span><span class="d-inline d-md-none">30-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/263678" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/263678"
+                                                                         title="View Advert Detail" >263678</a></td><td class=""><a href="/post/view/263678"
+                                                                         title="View Advert Detail" >The Institute of Education</a></td><td class=""><a href="/post/view/263678"
+                                                                         title="View Advert Detail" >Teacher</a></td><td class="d-none d-md-table-cell"><a href="/post/view/263678" title="View Advert Detail" >French<br /></a></td><td class="d-none d-md-table-cell"><a href="/post/view/263678"
+                                                                         title="View Advert Detail" >Part-Time</a></td><td class=""><a href="/post/view/263678"
+                                                                             title="View Advert Detail" >Dublin 2</a></td><td class="text-center"><a href="/post/view/263678"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">30/11/2026</span><span class="d-inline d-md-none">30-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/263679" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/263679"
+                                                                         title="View Advert Detail" >263679</a></td><td class=""><a href="/post/view/263679"
+                                                                         title="View Advert Detail" >The Institute of Education</a></td><td class=""><a href="/post/view/263679"
+                                                                         title="View Advert Detail" >Teacher</a></td><td class="d-none d-md-table-cell"><a href="/post/view/263679" title="View Advert Detail" >Gaeilge<br /></a></td><td class="d-none d-md-table-cell"><a href="/post/view/263679"
+                                                                         title="View Advert Detail" >Part-Time</a></td><td class=""><a href="/post/view/263679"
+                                                                             title="View Advert Detail" >Dublin 2</a></td><td class="text-center"><a href="/post/view/263679"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">30/11/2026</span><span class="d-inline d-md-none">30-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/263682" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/263682"
+                                                                         title="View Advert Detail" >263682</a></td><td class=""><a href="/post/view/263682"
+                                                                         title="View Advert Detail" >The Institute of Education</a></td><td class=""><a href="/post/view/263682"
+                                                                         title="View Advert Detail" >Teacher</a></td><td class="d-none d-md-table-cell"><a href="/post/view/263682" title="View Advert Detail" >Applied Mathematics<br /></a></td><td class="d-none d-md-table-cell"><a href="/post/view/263682"
+                                                                         title="View Advert Detail" >Part-Time</a></td><td class=""><a href="/post/view/263682"
+                                                                             title="View Advert Detail" >Dublin 2</a></td><td class="text-center"><a href="/post/view/263682"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">30/11/2026</span><span class="d-inline d-md-none">30-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/264153" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/264153"
+                                                                         title="View Advert Detail" >264153</a></td><td class=""><a href="/post/view/264153"
+                                                                         title="View Advert Detail" >Meánscoil San Nioclás An Rinn</a></td><td class=""><a href="/post/view/264153"
+                                                                         title="View Advert Detail" >Teacher</a></td><td class="d-none d-md-table-cell"><a href="/post/view/264153" title="View Advert Detail" >Gaeilge<br /></a></td><td class="d-none d-md-table-cell"><a href="/post/view/264153"
+                                                                         title="View Advert Detail" >Specific Purpose - Other</a></td><td class=""><a href="/post/view/264153"
+                                                                             title="View Advert Detail" >Waterford</a></td><td class="text-center"><a href="/post/view/264153"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">30/11/2026</span><span class="d-inline d-md-none">30-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/264178" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/264178"
+                                                                         title="View Advert Detail" >264178</a></td><td class=""><a href="/post/view/264178"
+                                                                         title="View Advert Detail" >St Finians College</a></td><td class=""><a href="/post/view/264178"
+                                                                         title="View Advert Detail" >Teacher</a></td><td class="d-none d-md-table-cell"><a href="/post/view/264178" title="View Advert Detail" >Chemistry<br /><small>Mathematics</small><br /></a></td><td class="d-none d-md-table-cell"><a href="/post/view/264178"
+                                                                         title="View Advert Detail" >Specific Purpose - Maternity Leave</a></td><td class=""><a href="/post/view/264178"
+                                                                             title="View Advert Detail" >Westmeath</a></td><td class="text-center"><a href="/post/view/264178"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">30/11/2026</span><span class="d-inline d-md-none">30-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/264121" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/264121"
+                                                                         title="View Advert Detail" >264121</a></td><td class=""><a href="/post/view/264121"
+                                                                         title="View Advert Detail" >St. Declan&#039;s Community College</a></td><td class=""><a href="/post/view/264121"
+                                                                         title="View Advert Detail" >Teacher</a></td><td class="d-none d-md-table-cell"><a href="/post/view/264121" title="View Advert Detail" >Physical Education<br /></a></td><td class="d-none d-md-table-cell"><a href="/post/view/264121"
+                                                                         title="View Advert Detail" >Fixed-term</a></td><td class=""><a href="/post/view/264121"
+                                                                             title="View Advert Detail" >Waterford</a></td><td class="text-center"><a href="/post/view/264121"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">27/11/2026</span><span class="d-inline d-md-none">27-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/264203" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/264203"
+                                                                         title="View Advert Detail" >264203</a></td><td class=""><a href="/post/view/264203"
+                                                                         title="View Advert Detail" >High Cross College</a></td><td class=""><a href="/post/view/264203"
+                                                                         title="View Advert Detail" >Teacher</a></td><td class="d-none d-md-table-cell"><a href="/post/view/264203" title="View Advert Detail" >Geography<br /><small>Physical Education</small><br /></a></td><td class="d-none d-md-table-cell"><a href="/post/view/264203"
+                                                                         title="View Advert Detail" >Specific Purpose - Maternity Leave</a></td><td class=""><a href="/post/view/264203"
+                                                                             title="View Advert Detail" >Galway</a></td><td class="text-center"><a href="/post/view/264203"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">27/11/2026</span><span class="d-inline d-md-none">27-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/263534" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/263534"
+                                                                         title="View Advert Detail" >263534</a></td><td class=""><a href="/post/view/263534"
+                                                                         title="View Advert Detail" >Ballinamore Community School</a></td><td class=""><a href="/post/view/263534"
+                                                                         title="View Advert Detail" >Teacher</a></td><td class="d-none d-md-table-cell"><a href="/post/view/263534" title="View Advert Detail" >Physical Education<br /></a></td><td class="d-none d-md-table-cell"><a href="/post/view/263534"
+                                                                         title="View Advert Detail" >Specific Purpose - Maternity Leave</a></td><td class=""><a href="/post/view/263534"
+                                                                             title="View Advert Detail" >Leitrim</a></td><td class="text-center"><a href="/post/view/263534"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">27/11/2026</span><span class="d-inline d-md-none">27-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/263557" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/263557"
+                                                                         title="View Advert Detail" >263557</a></td><td class=""><a href="/post/view/263557"
+                                                                         title="View Advert Detail" >Old Bawn Community School</a></td><td class=""><a href="/post/view/263557"
+                                                                         title="View Advert Detail" >Teacher</a></td><td class="d-none d-md-table-cell"><a href="/post/view/263557" title="View Advert Detail" >Gaeilge<br /></a></td><td class="d-none d-md-table-cell"><a href="/post/view/263557"
+                                                                         title="View Advert Detail" >Specific Purpose - Maternity Leave</a></td><td class=""><a href="/post/view/263557"
+                                                                             title="View Advert Detail" >Dublin 24</a></td><td class="text-center"><a href="/post/view/263557"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">27/11/2026</span><span class="d-inline d-md-none">27-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/263825" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/263825"
+                                                                         title="View Advert Detail" >263825</a></td><td class=""><a href="/post/view/263825"
+                                                                         title="View Advert Detail" >Loreto College</a></td><td class=""><a href="/post/view/263825"
+                                                                         title="View Advert Detail" >Secretary / Administrator</a></td><td class="d-none d-md-table-cell"><a href="/post/view/263825" title="View Advert Detail" ></a></td><td class="d-none d-md-table-cell"><a href="/post/view/263825"
+                                                                         title="View Advert Detail" >Fixed Purpose</a></td><td class=""><a href="/post/view/263825"
+                                                                             title="View Advert Detail" >Dublin 2</a></td><td class="text-center"><a href="/post/view/263825"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">27/11/2026</span><span class="d-inline d-md-none">27-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/263689" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/263689"
+                                                                         title="View Advert Detail" >263689</a></td><td class=""><a href="/post/view/263689"
+                                                                         title="View Advert Detail" >St. Joseph&#039;s Patrician College</a></td><td class=""><a href="/post/view/263689"
+                                                                         title="View Advert Detail" >Teacher</a></td><td class="d-none d-md-table-cell"><a href="/post/view/263689" title="View Advert Detail" >Home Economics<br /><small>Social, Personal and Health Education</small><br /></a></td><td class="d-none d-md-table-cell"><a href="/post/view/263689"
+                                                                         title="View Advert Detail" >Specific Purpose - Maternity Leave</a></td><td class=""><a href="/post/view/263689"
+                                                                             title="View Advert Detail" >Galway</a></td><td class="text-center"><a href="/post/view/263689"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">27/11/2026</span><span class="d-inline d-md-none">27-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/264173" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/264173"
+                                                                         title="View Advert Detail" >264173</a></td><td class=""><a href="/post/view/264173"
+                                                                         title="View Advert Detail" >Kildare Town Community School</a></td><td class=""><a href="/post/view/264173"
+                                                                         title="View Advert Detail" >Guidance Counsellor</a></td><td class="d-none d-md-table-cell"><a href="/post/view/264173" title="View Advert Detail" ></a></td><td class="d-none d-md-table-cell"><a href="/post/view/264173"
+                                                                         title="View Advert Detail" >Part-Time</a></td><td class=""><a href="/post/view/264173"
+                                                                             title="View Advert Detail" >Kildare</a></td><td class="text-center"><a href="/post/view/264173"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">27/11/2026</span><span class="d-inline d-md-none">27-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/264172" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/264172"
+                                                                         title="View Advert Detail" >264172</a></td><td class=""><a href="/post/view/264172"
+                                                                         title="View Advert Detail" >Kildare Town Community School</a></td><td class=""><a href="/post/view/264172"
+                                                                         title="View Advert Detail" >Teacher</a></td><td class="d-none d-md-table-cell"><a href="/post/view/264172" title="View Advert Detail" >English<br /><small>Resource</small><br /></a></td><td class="d-none d-md-table-cell"><a href="/post/view/264172"
+                                                                         title="View Advert Detail" >Specific Purpose - Other</a></td><td class=""><a href="/post/view/264172"
+                                                                             title="View Advert Detail" >Kildare</a></td><td class="text-center"><a href="/post/view/264172"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">27/11/2026</span><span class="d-inline d-md-none">27-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/264171" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/264171"
+                                                                         title="View Advert Detail" >264171</a></td><td class=""><a href="/post/view/264171"
+                                                                         title="View Advert Detail" >Kildare Town Community School</a></td><td class=""><a href="/post/view/264171"
+                                                                         title="View Advert Detail" >Teacher</a></td><td class="d-none d-md-table-cell"><a href="/post/view/264171" title="View Advert Detail" >Mathematics<br /><small>Resource</small><br /></a></td><td class="d-none d-md-table-cell"><a href="/post/view/264171"
+                                                                         title="View Advert Detail" >Specific Purpose - Other</a></td><td class=""><a href="/post/view/264171"
+                                                                             title="View Advert Detail" >Kildare</a></td><td class="text-center"><a href="/post/view/264171"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">27/11/2026</span><span class="d-inline d-md-none">27-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/264170" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/264170"
+                                                                         title="View Advert Detail" >264170</a></td><td class=""><a href="/post/view/264170"
+                                                                         title="View Advert Detail" >Kildare Town Community School</a></td><td class=""><a href="/post/view/264170"
+                                                                         title="View Advert Detail" >Teacher</a></td><td class="d-none d-md-table-cell"><a href="/post/view/264170" title="View Advert Detail" >French<br /></a></td><td class="d-none d-md-table-cell"><a href="/post/view/264170"
+                                                                         title="View Advert Detail" >Specific Purpose - Other</a></td><td class=""><a href="/post/view/264170"
+                                                                             title="View Advert Detail" >Kildare</a></td><td class="text-center"><a href="/post/view/264170"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">27/11/2026</span><span class="d-inline d-md-none">27-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/264168" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/264168"
+                                                                         title="View Advert Detail" >264168</a></td><td class=""><a href="/post/view/264168"
+                                                                         title="View Advert Detail" >Presentation Community College</a></td><td class=""><a href="/post/view/264168"
+                                                                         title="View Advert Detail" >Teacher</a></td><td class="d-none d-md-table-cell"><a href="/post/view/264168" title="View Advert Detail" >Biology<br />Science<br /></a></td><td class="d-none d-md-table-cell"><a href="/post/view/264168"
+                                                                         title="View Advert Detail" >Specific Purpose - Maternity Leave</a></td><td class=""><a href="/post/view/264168"
+                                                                             title="View Advert Detail" >Dublin 6W</a></td><td class="text-center"><a href="/post/view/264168"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">27/11/2026</span><span class="d-inline d-md-none">27-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/264157" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/264157"
+                                                                         title="View Advert Detail" >264157</a></td><td class=""><a href="/post/view/264157"
+                                                                         title="View Advert Detail" >Ashbourne Community School</a></td><td class=""><a href="/post/view/264157"
+                                                                         title="View Advert Detail" >Teacher</a></td><td class="d-none d-md-table-cell"><a href="/post/view/264157" title="View Advert Detail" >English<br /><small>History</small><br /></a></td><td class="d-none d-md-table-cell"><a href="/post/view/264157"
+                                                                         title="View Advert Detail" >Specific Purpose - Maternity Leave</a></td><td class=""><a href="/post/view/264157"
+                                                                             title="View Advert Detail" >Meath</a></td><td class="text-center"><a href="/post/view/264157"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">27/11/2026</span><span class="d-inline d-md-none">27-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/264217" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/264217"
+                                                                         title="View Advert Detail" >264217</a></td><td class=""><a href="/post/view/264217"
+                                                                         title="View Advert Detail" >Galway Educate Together Secondary School</a></td><td class=""><a href="/post/view/264217"
+                                                                         title="View Advert Detail" >Special Needs Assistant</a></td><td class="d-none d-md-table-cell"><a href="/post/view/264217" title="View Advert Detail" ></a></td><td class="d-none d-md-table-cell"><a href="/post/view/264217"
+                                                                         title="View Advert Detail" >Fixed Purpose</a></td><td class=""><a href="/post/view/264217"
+                                                                             title="View Advert Detail" >Galway</a></td><td class="text-center"><a href="/post/view/264217"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">26/11/2026</span><span class="d-inline d-md-none">26-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/263892" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/263892"
+                                                                         title="View Advert Detail" >263892</a></td><td class=""><a href="/post/view/263892"
+                                                                         title="View Advert Detail" >Gort Community School</a></td><td class=""><a href="/post/view/263892"
+                                                                         title="View Advert Detail" >Special Needs Assistant</a></td><td class="d-none d-md-table-cell"><a href="/post/view/263892" title="View Advert Detail" ></a></td><td class="d-none d-md-table-cell"><a href="/post/view/263892"
+                                                                         title="View Advert Detail" >Permanent</a></td><td class=""><a href="/post/view/263892"
+                                                                             title="View Advert Detail" >Galway</a></td><td class="text-center"><a href="/post/view/263892"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">26/11/2026</span><span class="d-inline d-md-none">26-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/264105" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/264105"
+                                                                         title="View Advert Detail" >264105</a></td><td class=""><a href="/post/view/264105"
+                                                                         title="View Advert Detail" >St Joseph&#039;s Secondary School</a></td><td class=""><a href="/post/view/264105"
+                                                                         title="View Advert Detail" >Special Needs Assistant</a></td><td class="d-none d-md-table-cell"><a href="/post/view/264105" title="View Advert Detail" ></a></td><td class="d-none d-md-table-cell"><a href="/post/view/264105"
+                                                                         title="View Advert Detail" >Permanent</a></td><td class=""><a href="/post/view/264105"
+                                                                             title="View Advert Detail" >Westmeath</a></td><td class="text-center"><a href="/post/view/264105"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">26/11/2026</span><span class="d-inline d-md-none">26-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/264112" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/264112"
+                                                                         title="View Advert Detail" >264112</a></td><td class=""><a href="/post/view/264112"
+                                                                         title="View Advert Detail" >Creagh College, Gorey</a></td><td class=""><a href="/post/view/264112"
+                                                                         title="View Advert Detail" >Teacher</a></td><td class="d-none d-md-table-cell"><a href="/post/view/264112" title="View Advert Detail" >Gaeilge<br /></a></td><td class="d-none d-md-table-cell"><a href="/post/view/264112"
+                                                                         title="View Advert Detail" >Specific Purpose - Maternity Leave</a></td><td class=""><a href="/post/view/264112"
+                                                                             title="View Advert Detail" >Wexford</a></td><td class="text-center"><a href="/post/view/264112"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">26/11/2026</span><span class="d-inline d-md-none">26-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/264129" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/264129"
+                                                                         title="View Advert Detail" >264129</a></td><td class=""><a href="/post/view/264129"
+                                                                         title="View Advert Detail" >Beneavin De La Salle College</a></td><td class=""><a href="/post/view/264129"
+                                                                         title="View Advert Detail" >Special Needs Assistant</a></td><td class="d-none d-md-table-cell"><a href="/post/view/264129" title="View Advert Detail" ></a></td><td class="d-none d-md-table-cell"><a href="/post/view/264129"
+                                                                         title="View Advert Detail" >Maternity Leave - Fixed Term</a></td><td class=""><a href="/post/view/264129"
+                                                                             title="View Advert Detail" >Dublin 11</a></td><td class="text-center"><a href="/post/view/264129"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">26/11/2026</span><span class="d-inline d-md-none">26-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/264140" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/264140"
+                                                                         title="View Advert Detail" >264140</a></td><td class=""><a href="/post/view/264140"
+                                                                         title="View Advert Detail" >Gaelcholáiste Cheatharlach</a></td><td class=""><a href="/post/view/264140"
+                                                                         title="View Advert Detail" >Teacher</a></td><td class="d-none d-md-table-cell"><a href="/post/view/264140" title="View Advert Detail" >Science<br /></a></td><td class="d-none d-md-table-cell"><a href="/post/view/264140"
+                                                                         title="View Advert Detail" >Specific Purpose - Maternity Leave</a></td><td class=""><a href="/post/view/264140"
+                                                                             title="View Advert Detail" >Carlow</a></td><td class="text-center"><a href="/post/view/264140"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">25/11/2026</span><span class="d-inline d-md-none">25-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/264050" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/264050"
+                                                                         title="View Advert Detail" >264050</a></td><td class=""><a href="/post/view/264050"
+                                                                         title="View Advert Detail" >Gorey Hill School</a></td><td class=""><a href="/post/view/264050"
+                                                                         title="View Advert Detail" >School Transport Bus Escort</a></td><td class="d-none d-md-table-cell"><a href="/post/view/264050" title="View Advert Detail" ></a></td><td class="d-none d-md-table-cell"><a href="/post/view/264050"
+                                                                         title="View Advert Detail" >Fixed-term</a></td><td class=""><a href="/post/view/264050"
+                                                                             title="View Advert Detail" >Wexford</a></td><td class="text-center"><a href="/post/view/264050"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">25/11/2026</span><span class="d-inline d-md-none">25-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/264051" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/264051"
+                                                                         title="View Advert Detail" >264051</a></td><td class=""><a href="/post/view/264051"
+                                                                         title="View Advert Detail" >Coláiste Clavin, Longwood, Co. Meath</a></td><td class=""><a href="/post/view/264051"
+                                                                         title="View Advert Detail" >School Transport Bus Escort</a></td><td class="d-none d-md-table-cell"><a href="/post/view/264051" title="View Advert Detail" ></a></td><td class="d-none d-md-table-cell"><a href="/post/view/264051"
+                                                                         title="View Advert Detail" >Fixed-term</a></td><td class=""><a href="/post/view/264051"
+                                                                             title="View Advert Detail" >Meath</a></td><td class="text-center"><a href="/post/view/264051"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">25/11/2026</span><span class="d-inline d-md-none">25-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/264052" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/264052"
+                                                                         title="View Advert Detail" >264052</a></td><td class=""><a href="/post/view/264052"
+                                                                         title="View Advert Detail" >Coláiste Abbáin</a></td><td class=""><a href="/post/view/264052"
+                                                                         title="View Advert Detail" >School Transport Bus Escort</a></td><td class="d-none d-md-table-cell"><a href="/post/view/264052" title="View Advert Detail" ></a></td><td class="d-none d-md-table-cell"><a href="/post/view/264052"
+                                                                         title="View Advert Detail" >Fixed-term</a></td><td class=""><a href="/post/view/264052"
+                                                                             title="View Advert Detail" >Wexford</a></td><td class="text-center"><a href="/post/view/264052"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">25/11/2026</span><span class="d-inline d-md-none">25-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/264055" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/264055"
+                                                                         title="View Advert Detail" >264055</a></td><td class=""><a href="/post/view/264055"
+                                                                         title="View Advert Detail" >Coláiste Clavin, Longwood, Co. Meath</a></td><td class=""><a href="/post/view/264055"
+                                                                         title="View Advert Detail" >Teacher</a></td><td class="d-none d-md-table-cell"><a href="/post/view/264055" title="View Advert Detail" >Gaeilge<br /></a></td><td class="d-none d-md-table-cell"><a href="/post/view/264055"
+                                                                         title="View Advert Detail" >Specific Purpose - Other</a></td><td class=""><a href="/post/view/264055"
+                                                                             title="View Advert Detail" >Meath</a></td><td class="text-center"><a href="/post/view/264055"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">25/11/2026</span><span class="d-inline d-md-none">25-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/264069" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/264069"
+                                                                         title="View Advert Detail" >264069</a></td><td class=""><a href="/post/view/264069"
+                                                                         title="View Advert Detail" >St Mel&#039;s College</a></td><td class=""><a href="/post/view/264069"
+                                                                         title="View Advert Detail" >Special Needs Assistant</a></td><td class="d-none d-md-table-cell"><a href="/post/view/264069" title="View Advert Detail" ></a></td><td class="d-none d-md-table-cell"><a href="/post/view/264069"
+                                                                         title="View Advert Detail" >Maternity Leave - Fixed Term</a></td><td class=""><a href="/post/view/264069"
+                                                                             title="View Advert Detail" >Longford</a></td><td class="text-center"><a href="/post/view/264069"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">25/11/2026</span><span class="d-inline d-md-none">25-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/264071" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/264071"
+                                                                         title="View Advert Detail" >264071</a></td><td class=""><a href="/post/view/264071"
+                                                                         title="View Advert Detail" >Chanel College</a></td><td class=""><a href="/post/view/264071"
+                                                                         title="View Advert Detail" >Special Needs Assistant</a></td><td class="d-none d-md-table-cell"><a href="/post/view/264071" title="View Advert Detail" ></a></td><td class="d-none d-md-table-cell"><a href="/post/view/264071"
+                                                                         title="View Advert Detail" >Fixed-term</a></td><td class=""><a href="/post/view/264071"
+                                                                             title="View Advert Detail" >Dublin 5</a></td><td class="text-center"><a href="/post/view/264071"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">25/11/2026</span><span class="d-inline d-md-none">25-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/263158" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/263158"
+                                                                         title="View Advert Detail" >263158</a></td><td class=""><a href="/post/view/263158"
+                                                                         title="View Advert Detail" >St Mary&#039;s CBS</a></td><td class=""><a href="/post/view/263158"
+                                                                         title="View Advert Detail" >Teacher</a></td><td class="d-none d-md-table-cell"><a href="/post/view/263158" title="View Advert Detail" >Mathematics<br /></a></td><td class="d-none d-md-table-cell"><a href="/post/view/263158"
+                                                                         title="View Advert Detail" >Specific Purpose - Maternity Leave</a></td><td class=""><a href="/post/view/263158"
+                                                                             title="View Advert Detail" >Laois</a></td><td class="text-center"><a href="/post/view/263158"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">25/11/2026</span><span class="d-inline d-md-none">25-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/264076" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/264076"
+                                                                         title="View Advert Detail" >264076</a></td><td class=""><a href="/post/view/264076"
+                                                                         title="View Advert Detail" >Carrigallen Vocational School</a></td><td class=""><a href="/post/view/264076"
+                                                                         title="View Advert Detail" >Special Needs Assistant</a></td><td class="d-none d-md-table-cell"><a href="/post/view/264076" title="View Advert Detail" ></a></td><td class="d-none d-md-table-cell"><a href="/post/view/264076"
+                                                                         title="View Advert Detail" >Maternity Leave - Fixed Term</a></td><td class=""><a href="/post/view/264076"
+                                                                             title="View Advert Detail" >Leitrim</a></td><td class="text-center"><a href="/post/view/264076"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">25/11/2026</span><span class="d-inline d-md-none">25-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/264077" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/264077"
+                                                                         title="View Advert Detail" >264077</a></td><td class=""><a href="/post/view/264077"
+                                                                         title="View Advert Detail" >Lough Allen College, Drumkeerin</a></td><td class=""><a href="/post/view/264077"
+                                                                         title="View Advert Detail" >Special Needs Assistant</a></td><td class="d-none d-md-table-cell"><a href="/post/view/264077" title="View Advert Detail" ></a></td><td class="d-none d-md-table-cell"><a href="/post/view/264077"
+                                                                         title="View Advert Detail" >Fixed Purpose</a></td><td class=""><a href="/post/view/264077"
+                                                                             title="View Advert Detail" >Leitrim</a></td><td class="text-center"><a href="/post/view/264077"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">25/11/2026</span><span class="d-inline d-md-none">25-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/264078" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/264078"
+                                                                         title="View Advert Detail" >264078</a></td><td class=""><a href="/post/view/264078"
+                                                                         title="View Advert Detail" >Mount Mercy College</a></td><td class=""><a href="/post/view/264078"
+                                                                         title="View Advert Detail" >Secretary / Administrator</a></td><td class="d-none d-md-table-cell"><a href="/post/view/264078" title="View Advert Detail" ></a></td><td class="d-none d-md-table-cell"><a href="/post/view/264078"
+                                                                         title="View Advert Detail" >Permanent</a></td><td class=""><a href="/post/view/264078"
+                                                                             title="View Advert Detail" >Cork</a></td><td class="text-center"><a href="/post/view/264078"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">25/11/2026</span><span class="d-inline d-md-none">25-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/264080" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/264080"
+                                                                         title="View Advert Detail" >264080</a></td><td class=""><a href="/post/view/264080"
+                                                                         title="View Advert Detail" >St Ciarán&#039;s Community School</a></td><td class=""><a href="/post/view/264080"
+                                                                         title="View Advert Detail" >Teacher</a></td><td class="d-none d-md-table-cell"><a href="/post/view/264080" title="View Advert Detail" >English<br />Geography<br /></a></td><td class="d-none d-md-table-cell"><a href="/post/view/264080"
+                                                                         title="View Advert Detail" >Specific Purpose - Maternity Leave</a></td><td class=""><a href="/post/view/264080"
+                                                                             title="View Advert Detail" >Meath</a></td><td class="text-center"><a href="/post/view/264080"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">25/11/2026</span><span class="d-inline d-md-none">25-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/264208" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/264208"
+                                                                         title="View Advert Detail" >264208</a></td><td class=""><a href="/post/view/264208"
+                                                                         title="View Advert Detail" >Stepaside Educate Together Secondary School</a></td><td class=""><a href="/post/view/264208"
+                                                                         title="View Advert Detail" >Secretary / Administrator</a></td><td class="d-none d-md-table-cell"><a href="/post/view/264208" title="View Advert Detail" ></a></td><td class="d-none d-md-table-cell"><a href="/post/view/264208"
+                                                                         title="View Advert Detail" >Part-Time</a></td><td class=""><a href="/post/view/264208"
+                                                                             title="View Advert Detail" >Dublin 18</a></td><td class="text-center"><a href="/post/view/264208"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">25/11/2026</span><span class="d-inline d-md-none">25-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/264182" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/264182"
+                                                                         title="View Advert Detail" >264182</a></td><td class=""><a href="/post/view/264182"
+                                                                         title="View Advert Detail" >Mungret Community College</a></td><td class=""><a href="/post/view/264182"
+                                                                         title="View Advert Detail" >Teacher</a></td><td class="d-none d-md-table-cell"><a href="/post/view/264182" title="View Advert Detail" >Geography<br /></a></td><td class="d-none d-md-table-cell"><a href="/post/view/264182"
+                                                                         title="View Advert Detail" >Specific Purpose - Maternity Leave</a></td><td class=""><a href="/post/view/264182"
+                                                                             title="View Advert Detail" >Limerick</a></td><td class="text-center"><a href="/post/view/264182"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">25/11/2026</span><span class="d-inline d-md-none">25-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/264130" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/264130"
+                                                                         title="View Advert Detail" >264130</a></td><td class=""><a href="/post/view/264130"
+                                                                         title="View Advert Detail" >Beneavin De La Salle College</a></td><td class=""><a href="/post/view/264130"
+                                                                         title="View Advert Detail" >Teacher</a></td><td class="d-none d-md-table-cell"><a href="/post/view/264130" title="View Advert Detail" >Chemistry<br /><small>Mathematics</small><br /></a></td><td class="d-none d-md-table-cell"><a href="/post/view/264130"
+                                                                         title="View Advert Detail" >Specific Purpose - Sick Leave</a></td><td class=""><a href="/post/view/264130"
+                                                                             title="View Advert Detail" >Dublin 11</a></td><td class="text-center"><a href="/post/view/264130"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">24/11/2026</span><span class="d-inline d-md-none">24-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/264037" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/264037"
+                                                                         title="View Advert Detail" >264037</a></td><td class=""><a href="/post/view/264037"
+                                                                         title="View Advert Detail" >Belmayne Community Special School</a></td><td class=""><a href="/post/view/264037"
+                                                                         title="View Advert Detail" >Teacher</a></td><td class="d-none d-md-table-cell"><a href="/post/view/264037" title="View Advert Detail" >Physical Education<br /></a></td><td class="d-none d-md-table-cell"><a href="/post/view/264037"
+                                                                         title="View Advert Detail" >Part-Time</a></td><td class=""><a href="/post/view/264037"
+                                                                             title="View Advert Detail" >Dublin 13</a></td><td class="text-center"><a href="/post/view/264037"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">24/11/2026</span><span class="d-inline d-md-none">24-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/263747" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/263747"
+                                                                         title="View Advert Detail" >263747</a></td><td class=""><a href="/post/view/263747"
+                                                                         title="View Advert Detail" >Presentation Secondary School</a></td><td class=""><a href="/post/view/263747"
+                                                                         title="View Advert Detail" >Teacher</a></td><td class="d-none d-md-table-cell"><a href="/post/view/263747" title="View Advert Detail" >Geography<br /><small>SEN Qualification</small><br /></a></td><td class="d-none d-md-table-cell"><a href="/post/view/263747"
+                                                                         title="View Advert Detail" >Specific Purpose - Maternity Leave</a></td><td class=""><a href="/post/view/263747"
+                                                                             title="View Advert Detail" >Tipperary</a></td><td class="text-center"><a href="/post/view/263747"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">24/11/2026</span><span class="d-inline d-md-none">24-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/264212" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/264212"
+                                                                         title="View Advert Detail" >264212</a></td><td class=""><a href="/post/view/264212"
+                                                                         title="View Advert Detail" >Our Lady of Lourdes Secondary School</a></td><td class=""><a href="/post/view/264212"
+                                                                         title="View Advert Detail" >Secretary / Administrator</a></td><td class="d-none d-md-table-cell"><a href="/post/view/264212" title="View Advert Detail" ></a></td><td class="d-none d-md-table-cell"><a href="/post/view/264212"
+                                                                         title="View Advert Detail" >Permanent</a></td><td class=""><a href="/post/view/264212"
+                                                                             title="View Advert Detail" >Wexford</a></td><td class="text-center"><a href="/post/view/264212"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">24/11/2026</span><span class="d-inline d-md-none">24-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/263988" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/263988"
+                                                                         title="View Advert Detail" >263988</a></td><td class=""><a href="/post/view/263988"
+                                                                         title="View Advert Detail" >Templeogue College C.S.Sp</a></td><td class=""><a href="/post/view/263988"
+                                                                         title="View Advert Detail" >Teacher</a></td><td class="d-none d-md-table-cell"><a href="/post/view/263988" title="View Advert Detail" >Mathematics<br /></a></td><td class="d-none d-md-table-cell"><a href="/post/view/263988"
+                                                                         title="View Advert Detail" >Fixed-term</a></td><td class=""><a href="/post/view/263988"
+                                                                             title="View Advert Detail" >Dublin 6W</a></td><td class="text-center"><a href="/post/view/263988"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">23/11/2026</span><span class="d-inline d-md-none">23-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr><tr data-href="/post/view/264011" style="cursor: pointer;"><td class="d-none d-md-table-cell"><a href="/post/view/264011"
+                                                                         title="View Advert Detail" >264011</a></td><td class=""><a href="/post/view/264011"
+                                                                         title="View Advert Detail" >St Marys College Naas</a></td><td class=""><a href="/post/view/264011"
+                                                                         title="View Advert Detail" >Teacher</a></td><td class="d-none d-md-table-cell"><a href="/post/view/264011" title="View Advert Detail" >Biology<br />Physical Education (+1 more)<br /></a></td><td class="d-none d-md-table-cell"><a href="/post/view/264011"
+                                                                         title="View Advert Detail" >Specific Purpose - Maternity Leave</a></td><td class=""><a href="/post/view/264011"
+                                                                             title="View Advert Detail" >Kildare</a></td><td class="text-center"><a href="/post/view/264011"
+                                                                         title="View Advert Detail"><span class="d-none d-md-inline">23/11/2026</span><span class="d-inline d-md-none">23-Nov</span></a></td>                <td class="advertmenuholder">
+                                </td>
+                </tr>            </tbody>
+        </table>
+
+        <table class="table mobileTable d-lg-none " id="tblAdverts">
+            <tbody>
+                        <tr data-href="/post/view/264072" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 264072</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-12-23</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">WhiteCrow Research- On behalf of a prestigious UAE school</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Teacher</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData">English<br />Information and Communication Technology (+2 more)<br /></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Fixed-term</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Dublin 1</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/264030" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 264030</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-12-14</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">St Mary&#039;s C.B.S.</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Teacher</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData">Mathematics<br /></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Specific Purpose - Maternity Leave</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Wexford</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/264180" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 264180</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-12-04</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">High Cross College</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Teacher</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData">English<br /><small>Resource</small><br /></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Part-Time</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Galway</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/264089" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 264089</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-12-03</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">Presentation Secondary School</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Special Needs Assistant</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData"></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Permanent</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Cork</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/263604" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 263604</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-12-01</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">Bruce College Cork</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Teacher</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData">Physical Education<br /></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Permanent</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Cork</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/264194" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 264194</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-30</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">St Pauls School</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Special Education Teacher</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData"></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Fixed-term</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Dublin 11</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/263646" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 263646</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-30</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">JumpAgrade CLG</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Teacher</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData">Mathematics<br /><small>Biology</small><br /><small>Chemistry</small><br /></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Part-Time</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Limerick</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/263674" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 263674</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-30</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">The Institute of Education</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Teacher</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData">Physics<br /></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Part-Time</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Dublin 2</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/263678" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 263678</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-30</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">The Institute of Education</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Teacher</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData">French<br /></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Part-Time</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Dublin 2</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/263679" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 263679</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-30</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">The Institute of Education</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Teacher</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData">Gaeilge<br /></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Part-Time</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Dublin 2</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/263682" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 263682</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-30</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">The Institute of Education</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Teacher</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData">Applied Mathematics<br /></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Part-Time</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Dublin 2</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/264153" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 264153</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-30</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">Meánscoil San Nioclás An Rinn</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Teacher</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData">Gaeilge<br /></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Specific Purpose - Other</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Waterford</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/264178" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 264178</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-30</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">St Finians College</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Teacher</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData">Chemistry<br /><small>Mathematics</small><br /></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Specific Purpose - Maternity Leave</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Westmeath</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/264121" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 264121</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-27</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">St. Declan&#039;s Community College</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Teacher</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData">Physical Education<br /></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Fixed-term</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Waterford</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/264203" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 264203</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-27</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">High Cross College</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Teacher</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData">Geography<br /><small>Physical Education</small><br /></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Specific Purpose - Maternity Leave</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Galway</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/263534" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 263534</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-27</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">Ballinamore Community School</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Teacher</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData">Physical Education<br /></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Specific Purpose - Maternity Leave</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Leitrim</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/263557" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 263557</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-27</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">Old Bawn Community School</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Teacher</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData">Gaeilge<br /></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Specific Purpose - Maternity Leave</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Dublin 24</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/263825" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 263825</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-27</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">Loreto College</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Secretary / Administrator</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData"></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Fixed Purpose</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Dublin 2</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/263689" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 263689</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-27</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">St. Joseph&#039;s Patrician College</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Teacher</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData">Home Economics<br /><small>Social, Personal and Health Education</small><br /></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Specific Purpose - Maternity Leave</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Galway</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/264173" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 264173</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-27</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">Kildare Town Community School</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Guidance Counsellor</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData"></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Part-Time</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Kildare</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/264172" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 264172</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-27</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">Kildare Town Community School</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Teacher</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData">English<br /><small>Resource</small><br /></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Specific Purpose - Other</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Kildare</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/264171" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 264171</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-27</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">Kildare Town Community School</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Teacher</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData">Mathematics<br /><small>Resource</small><br /></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Specific Purpose - Other</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Kildare</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/264170" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 264170</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-27</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">Kildare Town Community School</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Teacher</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData">French<br /></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Specific Purpose - Other</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Kildare</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/264168" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 264168</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-27</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">Presentation Community College</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Teacher</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData">Biology<br />Science<br /></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Specific Purpose - Maternity Leave</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Dublin 6W</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/264157" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 264157</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-27</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">Ashbourne Community School</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Teacher</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData">English<br /><small>History</small><br /></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Specific Purpose - Maternity Leave</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Meath</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/264217" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 264217</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-26</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">Galway Educate Together Secondary School</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Special Needs Assistant</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData"></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Fixed Purpose</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Galway</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/263892" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 263892</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-26</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">Gort Community School</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Special Needs Assistant</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData"></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Permanent</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Galway</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/264105" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 264105</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-26</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">St Joseph&#039;s Secondary School</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Special Needs Assistant</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData"></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Permanent</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Westmeath</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/264112" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 264112</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-26</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">Creagh College, Gorey</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Teacher</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData">Gaeilge<br /></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Specific Purpose - Maternity Leave</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Wexford</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/264129" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 264129</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-26</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">Beneavin De La Salle College</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Special Needs Assistant</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData"></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Maternity Leave - Fixed Term</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Dublin 11</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/264140" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 264140</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-25</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">Gaelcholáiste Cheatharlach</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Teacher</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData">Science<br /></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Specific Purpose - Maternity Leave</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Carlow</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/264050" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 264050</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-25</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">Gorey Hill School</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">School Transport Bus Escort</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData"></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Fixed-term</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Wexford</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/264051" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 264051</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-25</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">Coláiste Clavin, Longwood, Co. Meath</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">School Transport Bus Escort</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData"></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Fixed-term</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Meath</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/264052" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 264052</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-25</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">Coláiste Abbáin</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">School Transport Bus Escort</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData"></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Fixed-term</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Wexford</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/264055" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 264055</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-25</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">Coláiste Clavin, Longwood, Co. Meath</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Teacher</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData">Gaeilge<br /></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Specific Purpose - Other</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Meath</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/264069" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 264069</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-25</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">St Mel&#039;s College</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Special Needs Assistant</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData"></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Maternity Leave - Fixed Term</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Longford</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/264071" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 264071</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-25</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">Chanel College</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Special Needs Assistant</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData"></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Fixed-term</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Dublin 5</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/263158" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 263158</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-25</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">St Mary&#039;s CBS</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Teacher</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData">Mathematics<br /></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Specific Purpose - Maternity Leave</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Laois</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/264076" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 264076</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-25</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">Carrigallen Vocational School</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Special Needs Assistant</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData"></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Maternity Leave - Fixed Term</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Leitrim</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/264077" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 264077</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-25</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">Lough Allen College, Drumkeerin</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Special Needs Assistant</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData"></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Fixed Purpose</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Leitrim</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/264078" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 264078</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-25</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">Mount Mercy College</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Secretary / Administrator</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData"></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Permanent</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Cork</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/264080" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 264080</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-25</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">St Ciarán&#039;s Community School</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Teacher</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData">English<br />Geography<br /></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Specific Purpose - Maternity Leave</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Meath</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/264208" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 264208</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-25</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">Stepaside Educate Together Secondary School</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Secretary / Administrator</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData"></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Part-Time</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Dublin 18</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/264182" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 264182</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-25</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">Mungret Community College</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Teacher</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData">Geography<br /></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Specific Purpose - Maternity Leave</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Limerick</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/264130" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 264130</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-24</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">Beneavin De La Salle College</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Teacher</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData">Chemistry<br /><small>Mathematics</small><br /></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Specific Purpose - Sick Leave</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Dublin 11</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/264037" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 264037</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-24</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">Belmayne Community Special School</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Teacher</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData">Physical Education<br /></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Part-Time</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Dublin 13</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/263747" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 263747</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-24</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">Presentation Secondary School</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Teacher</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData">Geography<br /><small>SEN Qualification</small><br /></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Specific Purpose - Maternity Leave</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Tipperary</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/264212" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 264212</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-24</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">Our Lady of Lourdes Secondary School</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Secretary / Administrator</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData"></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Permanent</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Wexford</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/263988" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 263988</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-23</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">Templeogue College C.S.Sp</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Teacher</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData">Mathematics<br /></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Fixed-term</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Dublin 6W</div></div><div class="mobileRow"></div></td></tr>            <tr data-href="/post/view/264011" style="cursor: pointer;">
+                <td class="mobileResult card">
+                    <div class="mobileRow">
+                        <div class="mobileHeaderId" style="flex:1">
+                            <div class="headerLabel" style="flex:1">ID </div>
+                            <div class="headerData" style="flex:2"> 264011</div>
+                        </div>
+                        <div class="mobileHeaderDeadline" style="flex:2">
+                            <div class="headerLabel" style="flex:3">Application Deadline </div>
+                            <div class="headerData" style="flex:2"> 2026-11-23</div>
+                        </div>
+                    </div>
+                    <div class="mobileRow"></div><div class="mobileRow"><div class="mobileLabel">School Name :</div>
+                                <div class="mobileData">St Marys College Naas</div></div><div class="mobileRow"><div class="mobileLabel">Vacancy Type :</div>
+                                <div class="mobileData">Teacher</div></div><div class="mobileRow"><div class="mobileLabel">Subjects :</div>
+                                <div class="mobileData">Biology<br />Physical Education (+1 more)<br /></div></div><div class="mobileRow"><div class="mobileLabel">Status of Post :</div>
+                                <div class="mobileData">Specific Purpose - Maternity Leave</div></div><div class="mobileRow"><div class="mobileLabel">County :</div>
+                                    <div class="mobileData">Kildare</div></div><div class="mobileRow"></div></td></tr>            </tbody>
+        </table>
+
+                    <div class="pager-container d-flex pb-3">
+                <ul class="pagination pagination-sm ml-auto" style=""><li class="page-item disabled "><a class="page-link" data-page="0" >&laquo;</a></li><li class="page-item active "><a class="page-link" data-page="1"  href="/posts/second_level?p=1">1</a></li><li class="page-item "><a class="page-link" data-page="2"  href="/posts/second_level?p=2">2</a></li><li class="page-item "><a class="page-link" data-page="3"  href="/posts/second_level?p=3">3</a></li><li class="page-item "><a class="page-link" data-page="2"  href="/posts/second_level?p=2">&raquo;</a></li></ul>            </div>
+        
+    
+</div>
+
+</div>        </div>
+        <div id="rightContent" class="col-lg-3 d-none d-lg-flex flex-column" style="gap: 12px">
+            <a target="_blank" href="https://icepe.eu/university/master-of-science-psychology/" rel="noopener"><img id="banner459" bannerId="459" data-bannerId="459" src="/image/6/b/6b8b830169adf44420357138508d5e43.png" class="banner img-responsive right posn1" /></a>            <a target="_blank" href="https://hiberniacollege.com/course/ma-in-special-education/?Campaign=Sep26&amp;Lead=Advert&amp;Provider=ICEPE" rel="noopener"><img id="banner460" bannerId="460" data-bannerId="460" src="/image/7/0/70b1f1bdc45eb574b2d3bbce8746e4f0.png" class="banner img-responsive right posn2" /></a>        </div>
+    </div>
+</div>
+
+<footer class="footer d-none d-lg-block">
+    <div id="footer-line"></div>
+    <br>
+    <div class="container">
+        <div class="row">
+            <br/>
+            <div class="col-md-2 text-nowrap">
+                <p class = "purple-text bold">SEARCH VACANCIES</p>
+                <p><a class="purple-text" href="/posts/pre_school">Pre-School</a></p>
+                <p><a class="purple-text" href="/posts/primary_level">Primary Level</a></p>
+                <p><a class="purple-text" href="/posts/second_level">Post Primary Level</a></p>
+                <p><a class="purple-text" href="/posts/third_level">Higher &amp; Further Education</a></p>
+                <p><a class="purple-text" href="/posts/other_posts">Other Education</a></p>
+                <p><a class="purple-text" href="/posts/international">International</a></p>
+            </div>
+
+            <div class="col-md-2 text-nowrap">
+                <p class="orange-text bold">ADVERTISE A POST</p>
+                <p><a class="orange-text" href="/adv/post/new?level=pre_school">Pre-School</a></p>
+                <p><a class="orange-text" href="/adv/post/new?level=primary_level">Primary Level</a></p>
+                <p><a class="orange-text" href="/adv/post/new?level=second_level">Post Primary Level</a></p>
+                <p><a class="orange-text" href="/adv/post/new?level=third_level">Higher &amp; Further Education</a></p>
+                <p><a class="orange-text" href="/adv/post/new?level=other_posts">Other Education</a></p>
+                <p><a class="orange-text" href="/adv/post/new?level=international">International</a></p>
+            </div>
+
+            <div class="col-md-2">
+                <p class="bold">RESOURCES</p>
+                <p><a href="/page/resources/standardapplicationforms">Application Forms</a></p>
+                <p><a href="/page/resources/textaparent">TextAParent</a></p>
+            </div>
+
+            <div class="col-md-2">
+                <p class="bold">OTHER</p>
+                <p><a href="/page/tutorials">&#039;How To&#039; Tutorials</a></p>
+                <p><a href="/page/advert_queries">Advertising Queries</a></p>
+                <p><a href="/page/about/teaching_council">Teaching Council</a></p>
+                            </div>
+
+            <div id="footRightBlk" class="col-md-4 text-right d-flex flex-column justify-content-between">
+                <p>
+                    <a class="social-foot" href="https://www.facebook.com/EducationPosts.ie" target="_blank"><img src="/images/social/facebook_30x30.png" alt="Facebook" style="width: 30px; height: 30px;"></a>
+                    <a class="social-foot" href="https://www.instagram.com/educationposts.ie/?hl=en" target="_blank"><img src="/images/social/instagram_30x30.png" alt="Instagram" style="width: 30px; height: 30px;"></a>
+                    <a class="social-foot" href="https://www.linkedin.com/company/educationposts" target="_blank"><img src="/images/social/linkedin_30x30.png" alt="LinkedIn" style="width: 30px; height: 30px;"></a>
+                </p>
+                <p>
+                    <a id="footerLogo" href="/"><img src="/images/edposts_logo.svg"></a>
+                </p>
+                <p id="forEnquiries">
+                    For any enquiries visit the <a href="/contactus">Contact Us</a> section or email us at <a href="mailto:info@educationposts.ie">info@educationposts.ie</a>.                </p>
+            </div>
+        </div>
+    </div>
+    <div id="footFoot" class="">
+        <div class="container">
+            <div class="d-flex justify-content-between">
+                <div class="mt-3">Copyright &copy; 2012-2026                    IPPN Irish Primary Principals&#039; Network, the professional body for Irish primary school leaders.                    All Rights Reserved.</div>
+                <div class="mt-3"><a href="javascript:manageCookies()">Manage Cookies</a> | <a href="/page/terms-and-conditions">Terms &amp; Conditions</a> | <a href="/page/privacy-policy">Privacy Policy</a></div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<footer class="footer d-block d-lg-none text-center">
+    <div id="footer-line"></div>
+    <br>
+    <div class="container">
+        <div class="row flex-column">
+
+            <div id="lang-menu-footer" class="mb-5">
+    <a href="?lang=en" class="lang-menu-item selected" title="Change site language to English">English</a>
+   
+    <a href="?lang=ga" class="lang-menu-item " title="Athraigh teanga an tsuímh go Gaeilge">Gaeilge</a>
+</div>
+            <ul id="foot_links">
+                <li style="display: flex; justify-content: center; gap: 15px;">
+                    <a href="https://www.facebook.com/EducationPosts.ie" target="_blank"><img src="/images/social/facebook.png" alt="Facebook" style="width: 40px; height: 40px;"></a>
+                    <a href="https://www.instagram.com/educationposts.ie/?hl=en" target="_blank"><img src="/images/social/instagram.png" alt="Instagram" style="width: 40px; height: 40px;"></a>
+                    <a href="https://www.linkedin.com/company/educationposts" target="_blank"><img src="/images/social/linkedin.png" alt="LinkedIn" style="width: 40px; height: 40px;"></a>
+                </li>
+            </ul>
+            <p style="margin-top: 10px;">
+                <a id="footerLogo" href="/"><img src="/images/edposts_logo.svg" style="height: 60px"></a>
+            </p>
+            <p id="forEnquiries">
+                For any enquiries visit the <a href="/contactus">Contact Us</a> section or email us at <a href="mailto:info@educationposts.ie">info@educationposts.ie</a>.            </p>
+
+        </div>
+        <div class="mt-3"><a href="javascript:manageCookies()">Manage Cookies</a> | <a href="/page/terms-and-conditions">Terms &amp; Conditions</a> | <a href="/page/privacy-policy">Privacy Policy</a></div>
+        <div class="mt-3">Copyright &copy; 2012-2026 IPPN. All Rights Reserved.</div>
+    </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+
+<script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.2/moment.min.js" crossorigin="anonymous"></script>
+<script type="application/javascript" src="/auto/js/common.min.js?23" onerror="onScriptError(event,this);"></script>
+<script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.full.min.js" crossorigin="anonymous"></script>
+<script type="application/javascript" src="/js/gettext.js" onerror="onScriptError(event,this);"></script>
+<script type="application/javascript" src="/js/messages/en/main.js" onerror="onScriptError(event,this);"></script>
+<script type="application/javascript" src="/auto/js/home/search/index.min.js" onerror="onScriptError(event,this);"></script>
+<script type="application/javascript" src="/js/consent2.js" defer="defer" onerror="onScriptError(event,this);"></script>
+<script type="application/javascript">
+  var _paq = window._paq = window._paq || [];
+  _paq.push(['disableCookies']);
+  _paq.push(['setCustomDimension', 1, 'en']);
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u='https://analytics.educationposts.ie/';
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '5']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+// Check that service workers are supported
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+        navigator.serviceWorker
+            .register('/sw.js')
+            // .then(function(reg) {
+            //     console.log('EdPosts - Service Worker Registered', reg);
+            // })
+            .catch(function(err) {
+                console.log('EdPosts - Service Worker NOT Registered', err);
+            });
+    });
+}</script>
+<!-- Server: PENTSRV065 -->
+</body>
+</html>
