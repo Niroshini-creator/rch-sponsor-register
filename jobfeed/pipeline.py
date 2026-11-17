@@ -100,7 +100,9 @@ def fetch_all(days: int, source_cfg: dict, status: dict, employers: list[dict] |
                 status[name].update(status="partial", error=f"stopped after the {FEED_BUDGET_MINUTES:g}-minute time budget; kept {len(found)} adverts")
             if name == "career_sites":
                 failed = career_report.get("failed", [])
-                status[name].update(employers_ok=career_report.get("ok", 0), employers_failed=failed)
+                status[name].update(employers_ok=career_report.get("ok", 0), employers_failed=failed,
+                                    slowest_boards=career_report.get("slowest", []),
+                                    boards_time_limited=career_report.get("time_limited", []))
                 if failed:
                     status[name]["status"] = "partial" if career_report.get("ok") else "error"
                     status[name]["error"] = f"{len(failed)} career site(s) failed: " + "; ".join(failed)[:600]

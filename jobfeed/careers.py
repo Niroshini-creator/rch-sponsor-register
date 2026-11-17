@@ -24,6 +24,7 @@ from __future__ import annotations
 import logging
 import os
 import re
+import time
 import xml.etree.ElementTree as ET
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta, timezone
@@ -337,6 +338,9 @@ def careers_page(emp: dict) -> str:
 
 
 CAREER_WORKERS = int(os.environ.get("CAREER_WORKERS", "8"))
+# One board may take at most this long; it then keeps the adverts it has read. A board still being read when the feed's
+# overall budget ends gives nothing, so a very slow board must not hold up the rest.
+CAREER_BOARD_MINUTES = float(os.environ.get("CAREER_BOARD_MINUTES", "25"))
 
 
 def career_sites(days: int, employers: list[dict], report: dict) -> Iterator[Job]:
@@ -345,7 +349,8 @@ def career_sites(days: int, employers: list[dict], report: dict) -> Iterator[Job
     Boards are read CAREER_WORKERS at a time (each employer's board is its own site, so they don't share a rate limit);
     jobs are yielded as each board finishes, so the feed's time budget still stops the reading cleanly."""
     cutoff = datetime.now(timezone.utc) - timedelta(days=days)
-    report.update(ok=0, failed=[])
+    report.update(ok=0, failed=[], time_limited=[], slowest=[])
+    timings: list[tuple[float, str, int]] = []
     todo = []
     for emp in employers:
         if emp.get("enabled", True) is False:
@@ -362,12 +367,20 @@ def career_sites(days: int, employers: list[dict], report: dict) -> Iterator[Job
     def board(item):
         emp, feed = item
         found: list[Job] = []
+        started = time.monotonic()
         try:
             for job in feed(emp, cutoff):
                 found.append(job)
+                if time.monotonic() - started > CAREER_BOARD_MINUTES * 60:
+                    report["time_limited"].append(emp.get("name"))
+                    break
             return emp, found, None
         except Exception as err:  # noqa: BLE001 - keep what the board gave before it failed
             return emp, found, err
+        finally:
+            timings.append((time.monotonic() - started, emp.get("name", ""), len(found)))
+            # The slowest boards, so a budget stop can be traced to them.
+            report["slowest"] = [f"{n} {m / 60:.1f} min ({c} adverts)" for m, n, c in sorted(timings, reverse=True)[:8]]
 
     pool = ThreadPoolExecutor(max_workers=max(1, CAREER_WORKERS))
     try:
