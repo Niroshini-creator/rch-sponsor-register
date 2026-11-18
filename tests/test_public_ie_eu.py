@@ -135,6 +135,17 @@ class LabelTests(unittest.TestCase):
         self.assertEqual(out["pj"].salary_check, "")   # no permit salary minimum applies to either label
         self.assertEqual((out["pj"].sector, out["eu"].sector), ("Public Sector & Government", "Public Sector & Government"))
 
+    def test_school_posts_get_their_own_label_unless_they_rule_out_stamp_1g(self):
+        out = {j.source_id: j for j in self.enrich([
+            self.job("school", source="EducationPosts.ie", company="St Mary's C.B.S.", title="Teacher (Mathematics)"),
+            self.job("school-eu-only", source="EducationPosts.ie", company="Gaelscoil", title="Teacher (Irish)",
+                     description="EU citizens only."),
+            self.job("other-ie", source="Reed", company="Acme Ireland", title="Analyst"),
+        ])}
+        self.assertEqual(set(out), {"school", "other-ie"})
+        self.assertEqual((out["school"].sponsorship, out["school"].sector), ("ie_school", "School & College"))
+        self.assertEqual(out["other-ie"].sponsorship, "stamp_1g")      # other Irish adverts keep the Stamp 1G label
+
     def test_sponsorship_stated_in_an_irish_public_advert_still_wins(self):
         out = self.enrich([self.job("hse", source="publicjobs.ie", company="HSE",
                                     description="Visa sponsorship is available for this role.")])
