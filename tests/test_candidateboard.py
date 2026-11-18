@@ -308,3 +308,26 @@ class PipelineTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class EngineeringFamiliesTests(unittest.TestCase):
+    """Stress / structures, design, aerospace and engineering project roles are recognised (an aerospace CV used to get no roles)."""
+
+    def test_titles_map_to_the_engineering_families(self):
+        from candidateboard import taxonomy
+        tax = taxonomy.load()
+        for title, family in (("Stress Engineer", "stress_structures"), ("Structural Analysis Engineer", "stress_structures"), ("FEA Engineer", "stress_structures"),
+                              ("CAE Engineer", "stress_structures"), ("Mechanical Design Engineer", "design_cad"), ("Aerospace Engineer", "aerospace_engineering"),
+                              ("Airworthiness Engineer", "aerospace_engineering"), ("Project Engineer", "engineering_project")):
+            self.assertEqual(tax.family_for_title(title), family, title)
+
+    def test_a_stress_engineers_cv_gets_tier_one_engineering_roles(self):
+        import tempfile
+        from tests_fixtures import STRESS_CV
+        with tempfile.TemporaryDirectory() as d:
+            path = Path(d) / "cv.txt"
+            path.write_text(STRESS_CV, encoding="utf-8")
+            profile = intake.build_profile({"Stress CV": path}, "", name="Alex", slug="alex", location="Coventry")
+        tier1 = {r["title"] for r in profile["roles"] if r["tier"] == 1}
+        self.assertIn("Stress Engineer", tier1)
+        self.assertIn("Structural Analysis Engineer", tier1)

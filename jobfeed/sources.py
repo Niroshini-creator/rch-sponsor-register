@@ -71,13 +71,15 @@ AVIATION_QUERIES = [
 # Mechanical engineering, experienced and entry level (Reed and Adzuna UK; Adzuna Europe/US by title).
 MECHANICAL_QUERIES = ["mechanical engineer", "graduate mechanical engineer", "mechanical design engineer", "hvac engineer",
                       "maintenance engineer", "manufacturing engineer", "building services engineer"]
+# Stress, structures and simulation (FEA / CAE) engineering, mostly aerospace, defence and automotive (Adzuna UK; Reed gets them through the role families).
+STRESS_QUERIES = ["stress engineer", "structural analysis engineer", "fea engineer", "cae engineer", "stress analyst", "aerospace structures engineer", "airframe stress"]
 # Airport operations and aeronautical searches across Europe (Adzuna country sites).
 EUROPE_AVIATION_QUERIES = ["airport operations", "aerospace engineer", "aeronautical engineer", "avionics"]
 # Early-career searches for UK Graduate visa (PSW) and US OPT holders.
 EARLY_CAREER_QUERIES = {"gb": ["graduate visa", "graduate scheme sponsorship"],
                         "us": ["opt", "h1b sponsorship", "new grad visa sponsorship"]}
 CIVIL_SERVICE_PAGES = int(os.environ.get("ADZUNA_CIVIL_SERVICE_PAGES", "10"))
-ADZUNA_MAX_CALLS = int(os.environ.get("ADZUNA_MAX_CALLS", "320"))  # Civil Service (<= 10) + India role searches (<= 16) + 260 + SAP / GRC searches (<= 16) + Australia role searches (<= 16) + 2
+ADZUNA_MAX_CALLS = int(os.environ.get("ADZUNA_MAX_CALLS", "328"))  # stress / structures searches (<= 7) + Civil Service (<= 10) + India role searches (<= 16) + 260 + SAP / GRC searches (<= 16) + Australia role searches (<= 16) + 2
 ADZUNA_PAUSE = float(os.environ.get("ADZUNA_PAUSE", "2.5"))  # free tier allows ~25 calls a minute
 
 
@@ -146,7 +148,7 @@ def _adzuna_searches() -> Iterator[tuple[str, dict, int] | tuple[str, dict, int,
     for code in ("de", "nl", "fr", "be", "at", "ch", "it", "es", "pl"):
         for words in EUROPE_AVIATION_QUERIES:
             yield code, {"what_and": words}, 1
-    for words in MECHANICAL_QUERIES:
+    for words in MECHANICAL_QUERIES + STRESS_QUERIES:
         yield "gb", {"what_and": words}, 1
     for code in ("us", "nl", "de", "pl", "es"):
         yield code, {"what_and": "mechanical engineer"}, 1

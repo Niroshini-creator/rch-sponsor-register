@@ -31,3 +31,16 @@ Marketing / Digital
    ●​   Marketing Executive / Coordinator
    ●​   Social Media & Content Coordinator (if he can point to specific platform work)
 """
+
+
+# A fictional stress / structures CV (no real person's details).
+STRESS_CV = """ALEX EXAMPLE
+Stress & Structural Analysis Engineer | FEA | ANSYS | Aerospace
+Coventry, UK | +44 7000 000000 | someone@example.com
+Stress Engineer | Example Aerospace Ltd                                  Jan 2023 - Present
+ - Linear static and buckling analysis of airframe components in ANSYS Workbench and MSC Nastran, meshing in HyperMesh.
+ - Hand calculations, stress concentrations, fatigue and damage tolerance reports, CATIA V5 models and GD&T drawings.
+Design Engineer | Example Dies Ltd                                       Jan 2021 - Dec 2022
+ - SolidWorks and AutoCAD design, FEA of mechanical components, failure mode analysis.
+MSc Aerospace Engineering
+"""

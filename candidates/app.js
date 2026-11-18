@@ -63,22 +63,20 @@ async function listView() {
 }
 
 // ------------------------------------------------------------------------------------------ one candidate
-const TABS = [["1", "Tier 1 · Core"], ["2", "Tier 2 · Close"], ["3", "Tier 3 · Stretch"], ["4", "Other roles"], ["agency", "Recruiter adverts"], ["older", "Older · 8–10 days"], ["undated", "Date not mentioned"], ["employers", "Employers"], ["cv", "CV scan"]];
+const TABS = [["1", "Tier 1 · Core"], ["2", "Tier 2 · Close"], ["3", "Tier 3 · Stretch"], ["4", "Other roles"], ["older", "Older · 8–10 days"], ["undated", "Date not mentioned"], ["employers", "Employers"], ["cv", "CV scan"]];
 // Where an advert sits in time: "fresh" (posted up to "7 days ago"), "older" (8 to 10 days old, read from employer career sites only) or
 // "undated" (the advert gives no posting date). The tier tabs list fresh roles; the two other lists have their own tabs.
 const DAY_MS = 864e5, bucketOf = j => (j.date_known === false ? "undated" : (Date.now() - new Date(j.posted_at)) / DAY_MS >= 8 ? "older" : "fresh");
 // Recruitment agencies' adverts (Robert Walters, Hays, Reed Specialist...) have their own tab: the end employer is often unnamed, so the
 // tier tabs list employers' own adverts only.
-const inTabOf = (j, tab) => (tab === "agency" ? Boolean(j.agency) : j.agency ? false : tab === "older" || tab === "undated" ? bucketOf(j) === tab : bucketOf(j) === "fresh" && j.tier === Number(tab));
+const inTabOf = (j, tab) => (j.agency ? false : tab === "older" || tab === "undated" ? bucketOf(j) === tab : bucketOf(j) === "fresh" && j.tier === Number(tab));
 const state = { tab: "1", q: "", spons: "offered", min: 0, days: 7, sort: "match", showBlocked: false, sector: "", etier: "", source: "direct", country: "" };
-// By default only genuine employers are shown: employer career sites and the official boards (NHS Jobs, councils and Civil
-// Service departments, universities, schools). Job boards (Reed, Adzuna, Arbeitnow) are one click away.
-// Candidates who upload a CV see job-board adverts too: the feed has already removed agencies and keeps only employers that are
-// licensed sponsors or say they sponsor, and half of the roles that fit a profile are only found there. Set to "direct" to show
-// only employer career sites, NHS, public sector, universities and schools until "Where advertised" is changed.
-const SELF_SERVE_SOURCE = "all";
-const SOURCE_FILTERS = [["direct", "Employer career sites, NHS, public sector, universities & schools"], ["noadzuna", "Also job boards, except Adzuna"], ["all", "Everything, including Adzuna"]];
-const sourceOk = (j, mode = state.source) => mode === "all" || (mode === "direct" ? j.channel !== "aggregator" : j.source !== "Adzuna");
+// Only employers' own career sites and government / public-sector sites are shown: employer career systems, NHS Jobs, councils and Civil
+// Service departments (including their adverts that reach us through a job board), universities and schools. Recruitment agencies' and
+// job boards' own adverts are not shown or linked.
+const SELF_SERVE_SOURCE = "direct";
+const SOURCE_FILTERS = [["direct", "Employer career sites and government / public-sector sites"]];
+const sourceOk = (j, mode = state.source) => mode === "all" || (!j.agency && (j.channel !== "aggregator" || j.sponsorship === "civil_service"));
 let data = null;
 const live = { status: "pending", feedTime: "", added: 0, error: "", baseJobs: [] };
 const LIVE_RECHECK_MS = 30 * 60 * 1000;
@@ -130,7 +128,7 @@ async function runLive(force) {
 function liveBanner() {
   if (live.mode === "self") {
     const text = { pending: "Matching your CV against this week's vacancies…",
-      ok: `${data.jobs.length} vacancies matched from the live feed (updated ${ago(live.feedTime)}). Press Apply to go to the employer's advert. By default only genuine employers are shown (career sites, NHS, public sector, universities, schools) and only roles with sponsorship or a sponsor licence; change “Where advertised” or “Sponsorship” below to see more.`,
+      ok: `${data.jobs.length} vacancies matched from the live feed (updated ${ago(live.feedTime)}). Press Apply to go to the employer's advert. Only employers' own career sites and government / public-sector sites are shown, and by default only roles with sponsorship or a sponsor licence; change “Sponsorship” below to see more.`,
       error: `Could not load the vacancies (${live.error}). Check your connection and press Refresh.` }[live.status];
     return h("div", { class: "panel small bar", style: "margin:10px 0 0;align-items:center" },
       h("span", { class: `badge ${live.status === "ok" ? "ok" : live.status === "error" ? "warn" : ""}` }, live.status === "ok" ? "Live" : live.status === "error" ? "Offline" : "…"), text,
@@ -210,18 +208,15 @@ function visible(j, tab = state.tab) {
   if (state.q && !`${j.title} ${j.company} ${j.location} ${j.role} ${j.sector}`.toLowerCase().includes(state.q.toLowerCase())) return false;
   if (state.sector && j.sector !== state.sector) return false;
   if (state.etier && String(j.employer_tier) !== state.etier) return false;
-  const recruiter = tab === "agency";     // recruiter adverts ignore the source and sponsorship filters: the client decides on sponsorship
-  if (!recruiter && !sourceOk(j)) return false;
+  if (!sourceOk(j)) return false;
   if (state.country && j.country !== state.country) return false;
-  if (!recruiter && state.spons === "offered" && !j.sponsorship_offered) return false;
-  if (!recruiter && state.spons === "not" && j.sponsorship_offered) return false;
+  if (state.spons === "offered" && !j.sponsorship_offered) return false;
+  if (state.spons === "not" && j.sponsorship_offered) return false;
   const blockers = j.hidden_by_default.filter(r => r !== "no_sponsorship");
   if (!state.showBlocked && blockers.length) return false;
   return true;
 }
 
-// Would this job show if only the source filter were lifted? (Used to say how many roles Adzuna-only filtering hides.)
-function withSource(j, mode) { const keep = state.source; state.source = mode; const ok = visible(j); state.source = keep; return ok; }
 
 // Why roles that fit the CV are not on the list, with one click to bring them back.
 const HIDDEN_LABELS = { too_senior: "more senior than your experience", experience_gap: "ask for more years of experience than your CV shows", role_not_sponsorable: "role type rarely sponsored (below Skilled Worker level)", clearance: "need security clearance", pay_below_visa: "pay below the visa minimum", pay_below_minimum: "pay below your minimum", licence: "need a driving licence",
@@ -231,7 +226,7 @@ function hiddenCount() {
   let n = 0;
   for (const j of data.jobs) {
     if (!inTabOf(j, state.tab)) continue;
-    Object.assign(state, { source: "all", spons: "all", showBlocked: true });
+    Object.assign(state, { spons: "all", showBlocked: true });
     const wanted = visible(j);
     Object.assign(state, keep);
     if (wanted && !visible(j)) n++;
@@ -243,18 +238,17 @@ function hiddenSummary() {
   const tally = (key, label) => { counts[label] = (counts[label] || 0) + 1; };
   for (const j of data.jobs) {
     if (!inTabOf(j, state.tab)) continue;
-    Object.assign(state, { source: "all", spons: "all", showBlocked: true });
+    Object.assign(state, { spons: "all", showBlocked: true });
     const wanted = visible(j);
     Object.assign(state, keep);
     if (!wanted || visible(j)) continue;
-    if (!sourceOk(j)) tally("src", "only on job boards");
     if (state.spons === "offered" && !j.sponsorship_offered) tally("spons", "no sponsorship offered");
     if (!state.showBlocked) for (const b of j.hidden_by_default.filter(r => r !== "no_sponsorship")) tally(b, HIDDEN_LABELS[b] || b.replaceAll("_", " "));
   }
   const parts = Object.entries(counts).sort((a, b) => b[1] - a[1]);
   if (!parts.length) return null;
   return h("p", { class: "small muted" }, `Not shown at this tab: ${parts.map(([l, n]) => `${n} ${l}`).join(" · ")}. `,
-    h("button", { type: "button", class: "btn", onclick: () => { Object.assign(state, { source: "all", spons: "all", showBlocked: true }); render(); } }, "Show them all"));
+    h("button", { type: "button", class: "btn", onclick: () => { Object.assign(state, { spons: "all", showBlocked: true }); render(); } }, "Show them all"));
 }
 
 function sortJobs(list) {
@@ -267,7 +261,7 @@ function sortJobs(list) {
 
 function render() {
   const jobs = data.jobs;
-  const counts = Object.fromEntries(["1", "2", "3", "4", "agency", "older", "undated"].map(t => [t, jobs.filter(j => inTabOf(j, t) && (t === "agency" || (j.sponsorship_offered && sourceOk(j))) && !j.hidden_by_default.filter(r => t !== "agency" || r !== "no_sponsorship").length).length]));
+  const counts = Object.fromEntries(["1", "2", "3", "4", "older", "undated"].map(t => [t, jobs.filter(j => inTabOf(j, t) && j.sponsorship_offered && sourceOk(j) && !j.hidden_by_default.length).length]));
   const sponsorOffered = jobs.filter(j => j.sponsorship === "confirmed" || j.sponsorship === "possible").length;
   const employers = new Set(jobs.filter(j => j.sponsorship_offered && sourceOk(j)).map(j => j.company)).size;
   const tabs = h("div", { class: "tabs", role: "tablist" }, TABS.map(([key, label]) =>
@@ -279,7 +273,7 @@ function render() {
       h("div", { class: "stat" }, h("b", {}, sponsorOffered), "advert offers sponsorship"),
       h("div", { class: "stat" }, h("b", {}, employers), "sponsor-licensed employers"),
       h("div", { class: "stat" }, h("b", {}, jobs.filter(j => j.hidden_by_default.includes("clearance")).length), "need clearance (hidden)")),
-    liveBanner(), live.mode === "self" ? rolesPanel() : null, live.mode === "self" ? jobSiteSearch() : null, live.mode === "self" ? publicSectorSearch() : null, live.mode === "self" ? indiaGovernmentSearch() : null, sourceStatus(), tabs];
+    liveBanner(), live.mode === "self" ? rolesPanel() : null, live.mode === "self" ? publicSectorSearch() : null, live.mode === "self" ? indiaGovernmentSearch() : null, sourceStatus(), tabs];
   if (state.tab === "employers") parts.push(employersView());
   else if (state.tab === "cv") parts.push(cvView());
   else parts.push(...jobsView());
@@ -343,24 +337,6 @@ function indiaGovernmentSearch() {
       link(web(t, "nic.in"), "NIC sites (nic.in)", "Web search limited to nic.in sites"))));
 }
 
-// LinkedIn and Indeed adverts cannot be read here (no public feed; LinkedIn forbids scraping), so these open their own searches for the
-// candidate's best roles, limited to the last 7 days or 24 hours, in the countries the candidate ticked.
-function jobSiteSearch() {
-  const titles = [...new Set(data.candidate.roles.filter(r => r.tier <= 2).map(r => r.title.replace(/\s*[—–(].*$/, "").trim()))].filter(Boolean).slice(0, 6);
-  if (!titles.length) return null;
-  const places = { GB: ["United Kingdom", "co.uk"], IE: ["Ireland", "ie"], US: ["United States", "com"], AU: ["Australia", "com.au"], IN: ["India", "co.in"] };
-  const codes = (data.candidate.countries || []).filter(c => places[c]).slice(0, 3);
-  if (!codes.length) return null;
-  const q = encodeURIComponent, link = (href, text, title) => h("a", { class: "btn", href, target: "_blank", rel: "noopener noreferrer", title }, text);
-  return h("details", { class: "panel small" }, h("summary", {}, "Search LinkedIn and Indeed for your roles"),
-    h("p", { class: "muted", style: "margin:6px 0" }, "Recruiters such as Robert Walters advertise on LinkedIn without Easy Apply. Those adverts are not in the matched list, so these open LinkedIn and Indeed with the role, country and date already filled in."),
-    ...titles.map(t => h("div", { class: "apply-row", style: "margin:4px 0" }, h("b", { style: "min-width:220px" }, t),
-      ...codes.flatMap(c => [
-        link(`https://www.linkedin.com/jobs/search/?keywords=${q(t)}&location=${q(places[c][0])}&f_TPR=r604800`, `LinkedIn ${c}, 7 days`, `LinkedIn jobs in ${places[c][0]} posted in the last 7 days`),
-        link(`https://www.linkedin.com/jobs/search/?keywords=${q(t)}&location=${q(places[c][0])}&f_TPR=r86400`, `LinkedIn ${c}, 24 hours`, `LinkedIn jobs in ${places[c][0]} posted in the last 24 hours`),
-        link(`https://${c === "US" ? "www" : c === "GB" ? "uk" : c === "IE" ? "ie" : c === "AU" ? "au" : "in"}.indeed.com/jobs?q=${q(t)}&fromage=7`, `Indeed ${c}, 7 days`, `Indeed jobs in ${places[c][0]} posted in the last 7 days`)]))));
-}
-
 function rolesPanel() {
   const mine = data.candidate.roles.filter(r => ["added by candidate", "attached document", "document keywords"].includes(r.source));
   const input = h("input", { list: "role-suggestions-results", placeholder: "Add a role, e.g. Data Analyst", style: "min-width:260px;flex:1" });
@@ -422,13 +398,11 @@ function jobsView() {
     h("label", {}, "Sector", sel("sector", [["", "All"], ...sectors.map(s => [s, s])], state.sector, v => state.sector = v)),
     h("label", {}, "Employer tier", sel("etier", [["", "All"], ["1", "Tier 1"], ["2", "Tier 2"], ["3", "Tier 3"]], state.etier, v => state.etier = v)),
     showCountry ? h("label", {}, "Country", sel("country", [["", "All countries"], ...countries.map(([c, n]) => [c, `${countryName(c)} (${n})`])], state.country, v => state.country = v)) : null,
-    h("label", {}, "Where advertised", sel("source", SOURCE_FILTERS, state.source, v => state.source = v)),
     h("label", {}, "Sort", sel("sort", [["match", "Best match"], ["sponsor", "Sponsorship first"], ["newest", "Newest"], ["pay", "Highest pay"]], state.sort, v => state.sort = v)),
     h("label", { class: "check" }, h("input", { type: "checkbox", ...(state.showBlocked ? { checked: true } : {}), onchange: e => { state.showBlocked = e.target.checked; render(); } }), "Show roles needing clearance, more senior than your experience, rarely sponsored role types, below visa pay or your India minimum, in another language, reserved for nationals, or without a Skilled Worker licence"),
     h("button", { class: "btn", onclick: () => exportCsv(sortJobs(data.jobs.filter(j => visible(j)))) }, "Export CSV"));
   const list = sortJobs(data.jobs.filter(j => visible(j)));
-  const note = state.tab === "agency" ? h("p", { class: "small muted" }, "Adverts placed by recruitment agencies and job boards (for example Robert Walters, Hays). The employer is often not named, so ask the recruiter whether the client can sponsor before applying.")
-    : state.tab === "older" ? h("p", { class: "small muted" }, "Adverts posted 8 to 10 days ago, read from employer career sites only. They may be close to closing: check the advert.")
+  const note = state.tab === "older" ? h("p", { class: "small muted" }, "Adverts posted 8 to 10 days ago, read from employer career sites only. They may be close to closing: check the advert.")
     : state.tab === "undated" ? h("p", { class: "small muted" }, "Adverts that do not say when they were posted. They could be new or old: check the advert before applying.")
     : state.tab === "4" ? h("p", { class: "small muted" }, "Other roles at employers that can sponsor, using the same skills on a different route. Many of these (admin, IT support) are below the Skilled Worker skill level, so ask the employer first.") : null;
   return [bar, note, h("p", { class: "small muted" }, `${plural(list.length, "role")} shown`), hiddenSummary(),
@@ -439,20 +413,17 @@ function jobsView() {
 // employer's own careers site leads and the Adzuna link is the fallback. Elsewhere the advert link leads.
 function applyRow(j) {
   const site = j.employer_site || careerSite(j.company);
-  const viaAdzuna = j.channel === "aggregator" || j.source === "Adzuna";       // a job board's page, not the employer's own
-  const board = j.source || "the job board";
   const link = (href, text, primary, title) => h("a", { class: `btn${primary ? " primary" : ""}`, href, target: "_blank", rel: "noopener noreferrer", title }, text);
   const detail = h("p", { class: "small" }, h("b", {}, j.cv_to_use ? `Send: ${j.track} CV` : "Send: best-fitting CV"), ` · target role: ${j.role}${j.family_label ? ` (${j.family_label})` : ""}`);
-  if (viaAdzuna && site) {
-    return h("div", {}, h("div", { class: "apply-row" }, link(site, "Employer careers site →", true, "The employer's own careers site"),
-      link(j.url, `Advert on ${board}`, false, `${board}'s page for this advert; it may not open everywhere`), detail),
-      h("p", { class: "small muted", style: "margin:4px 0 0" }, `On the careers site, search for “${j.title}”${j.location ? ` in ${j.location}` : ""}.`));
+  // A government advert that reached us through a job board: lead with the government's own job site and keep the advert's link as the fallback.
+  if (j.channel === "aggregator") {
+    const gov = `https://www.google.com/search?q=${encodeURIComponent(`site:civilservicejobs.service.gov.uk OR site:gov.uk "${j.title}" "${j.company}"`)}`;
+    return h("div", {}, h("div", { class: "apply-row" }, link(gov, "Find on the government jobs site →", true, "Searches Civil Service Jobs and .gov.uk sites for this vacancy"),
+      link(j.url, "Advert link", false, "The advert as the feed found it; it may not open everywhere"), detail),
+      h("p", { class: "small muted", style: "margin:4px 0 0" }, `On the government site, search for “${j.title}”${j.location ? ` in ${j.location}` : ""}.`));
   }
-  // A job-board advert whose employer's careers page is not on file: a web search finds it.
-  const search = viaAdzuna && !site && j.company ? `https://www.google.com/search?q=${encodeURIComponent(`${j.company} careers ${j.title}`)}` : "";
-  return h("div", { class: "apply-row" }, link(j.url, viaAdzuna ? `Apply on ${board} →` : "Apply →", true),
-    site && site !== j.url ? link(site, "Employer careers page", false, "The employer's own careers site, if the Apply link does not open") : null,
-    search ? link(search, "Find on company careers site", false, "Searches the web for this employer's own careers page") : null, detail);
+  return h("div", { class: "apply-row" }, link(j.url, "Apply →", true),
+    site && site !== j.url ? link(site, "Employer careers page", false, "The employer's own careers site, if the Apply link does not open") : null, detail);
 }
 
 function card(j) {
