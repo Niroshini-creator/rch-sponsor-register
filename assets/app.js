@@ -120,12 +120,21 @@ function matchesCountry(job, country) {
   return region ? region.test(job) : job.country === country;
 }
 
+// Adverts with a closing date (public sector, EU) count as current while applications are open.
+function stillOpen(job) {
+  return Boolean(job.closes_at) && new Date(`${job.closes_at}T23:59:59`) >= new Date();
+}
+
+function inWindow(job, days) {
+  return stillOpen(job) || Date.now() - job._posted <= days * DAY_MS;
+}
+
 function matches(job, f, view = state.view) {
   // An employer picked in the directory: all of its jobs, whatever the other filters say.
   if (state.employer) {
     return job.country === state.employer.country && job._company === state.employer.key && VIEWS[view].test(job);
   }
-  if (Date.now() - job._posted > f.days * DAY_MS) return false;
+  if (!inWindow(job, f.days)) return false;
   if (!matchesCountry(job, f.country)) return false;
   if (!VIEWS[view].test(job)) return false;
   if (f.english && !job.english) return false;
@@ -187,10 +196,10 @@ function renderStats() {
 
   // Per-option counts within the current window, so empty options are obvious.
   const f = readFilters();
-  const inWindow = state.jobs.filter((j) => Date.now() - j._posted <= f.days * DAY_MS);
+  const windowed = state.jobs.filter((j) => inWindow(j, f.days));
   for (const el of document.querySelectorAll("[data-count]")) {
     const [key, value] = el.dataset.count.split(":");
-    el.textContent = inWindow.filter((j) => String(j[key]) === value).length;
+    el.textContent = windowed.filter((j) => String(j[key]) === value).length;
   }
 }
 
@@ -273,6 +282,8 @@ function jobHtml(j) {
     confirmed: `<span class="tag ok" title="The advert itself states that visa sponsorship is available">Sponsorship offered</span>`,
     possible: `<span class="tag warn" title="The advert says sponsorship may be possible (for example 'may be eligible' or 'will be considered'): ask the employer before applying">May be sponsored</span>`,
     civil_service: `<span class="tag direct" title="UK Civil Service: no visa sponsorship as a rule, but Commonwealth nationals and others with UK right to work (e.g. Graduate visa) can apply to most posts">Civil Service: right to work needed</span>`,
+    ie_public_sector: `<span class="tag warn" title="Irish public service (civil service, councils, state bodies): posts are normally open to EEA, UK and Swiss citizens and to non-EEA nationals with Stamp 4 or Stamp 5 permission. They do not sponsor employment permits. Check the eligibility section of the advert or candidate booklet">Irish public service · EEA/UK or Stamp 4/5</span>`,
+    eu_institution: `<span class="tag warn" title="EU institution or agency: staff are normally citizens of an EU member state, and no visa is sponsored. Check the vacancy notice's eligibility criteria before applying">EU institution · EU citizens usually</span>`,
     local: `<span class="tag direct" title="A job in India: no visa or sponsorship needed for Indian candidates">Local role (no visa needed)</span>`,
     not_sponsored: `<span class="tag no" title="The advert says sponsorship is not available for this role">Not sponsored</span>`,
     licensed_sponsor: `<span class="tag warn" title="Employer is on the official sponsor register but the advert does not mention sponsorship — ask before applying">${{ "US H-1B": "H-1B sponsor", "IE employment permits": "Permit employer" }[j.sponsor_register] || "Licensed sponsor"}</span>`,
@@ -304,7 +315,7 @@ function jobHtml(j) {
   return `<li class="job">
     <div class="job-head">
       <h2><a href="${esc(safeUrl(j.url))}" target="_blank" rel="noopener">${esc(j.title)}</a></h2>
-      <span class="posted" title="${esc(j._posted.toLocaleString())}">${ago(j._posted)}</span>
+      <span class="posted" title="${esc(j._posted.toLocaleString())}">${ago(j._posted)}${j.closes_at ? `<br><span class="closes">Closes ${esc(new Date(`${j.closes_at}T12:00:00`).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" }))}</span>` : ""}</span>
     </div>
     <p class="employer"><strong>${esc(j.company || "Employer not stated")}</strong>
       <span class="tier t${j.tier}">Tier ${j.tier}</span>
@@ -531,7 +542,8 @@ function restoreUrl() {
 }
 
 // Feeds written before jobs carried a channel: infer it from the source name.
-const OFFICIAL_SOURCES = new Set(["NHS Jobs", "Teaching Vacancies", "jobs.ac.uk", "EURAXESS", "Platsbanken", "Times Higher Education"]);
+const OFFICIAL_SOURCES = new Set(["NHS Jobs", "Teaching Vacancies", "jobs.ac.uk", "EURAXESS", "Platsbanken", "Times Higher Education",
+  "publicjobs.ie", "Local Government Jobs", "EducationPosts.ie", "EU Careers"]);
 function legacyChannel(source = "") {
   if (source.endsWith(" careers")) return "career_site";
   return OFFICIAL_SOURCES.has(source) ? "official" : "aggregator";
