@@ -65,6 +65,7 @@ MAX_UNDATED_PER_SOURCE = int(os.environ.get("MAX_UNDATED_PER_SOURCE", "300"))
 OPEN_ADVERT_MAX_DAYS = int(os.environ.get("OPEN_ADVERT_MAX_DAYS", "60"))
 # Irish public-service recruiters: their posts are open to EEA/UK/Swiss citizens and Stamp 4/5 holders, not permit holders.
 IE_PUBLIC_SOURCES = {"publicjobs.ie", "Local Government Jobs"}
+IE_SCHOOL_SOURCES = {"EducationPosts.ie"}
 _IE_PUBLIC_ELIGIBILITY_RE = re.compile(
     r"citizen of the European Economic Area|\bEEA\b[^.;]{0,200}\bstamp ?4\b[^.;]{0,40}\bstamp ?5\b", re.I)
 FEED_BUDGET_MINUTES = float(os.environ.get("FEED_BUDGET_MINUTES", "75"))
@@ -179,6 +180,13 @@ def enrich(jobs: Iterable[Job], index: sponsors.SponsorIndex, tiers: TierRules,
                 job.source in IE_PUBLIC_SOURCES or _IE_PUBLIC_ELIGIBILITY_RE.search(job.description)):
             # Irish public service: open to EEA, UK and Swiss citizens and to Stamp 4 / Stamp 5 holders.
             job.sponsorship = "ie_public_sector"
+        elif job.country == "IE" and job.source in IE_SCHOOL_SOURCES and signal != "positive":
+            # Irish schools and colleges: no employment permits, but open to anyone with the right to work in Ireland
+            # (Stamp 1G graduates, Stamp 4, EEA/UK citizens). Shown by default, unlike other Irish adverts without
+            # sponsorship evidence; an advert that rules Stamp 1G out is dropped like any other.
+            if stamp1g_status(job) == "excluded":
+                continue
+            job.sponsorship = "ie_school"
         elif job.country == "IE":
             # Ireland: Stamp 1G graduates can take any job without a permit; keep every role the advert
             # doesn't close to them ("Stamp 4 required", "EU citizens only").
@@ -237,7 +245,7 @@ def enrich(jobs: Iterable[Job], index: sponsors.SponsorIndex, tiers: TierRules,
         job.aviation = classify_aviation(job)
         job.low_sponsorship = is_low_sponsorship(job)
         if job.sponsorship not in ("graduate_route", "stamp_1g", "not_sponsored", "local", "civil_service",
-                                   "ie_public_sector", "eu_institution"):
+                                   "ie_public_sector", "eu_institution", "ie_school"):
             # Graduate visa / Stamp 1G holders need no sponsorship, so no salary minimum applies to them.
             job.salary_check, job.salary_annual, job.salary_threshold = salary_check(job)
         job.region = classify_region(job)
