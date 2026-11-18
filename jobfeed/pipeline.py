@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import logging
 import os
+import re
 import time
 import traceback
 from concurrent.futures import ThreadPoolExecutor
@@ -60,6 +61,12 @@ def load_sponsor_index(status: dict) -> sponsors.SponsorIndex:
 # Employer career sites are read this many days further back (7 + 3 = 10) for the candidate page's "older" list; every other source stays at 7.
 CAREER_EXTRA_DAYS = int(os.environ.get("CAREER_EXTRA_DAYS", "3"))
 MAX_UNDATED_PER_SOURCE = int(os.environ.get("MAX_UNDATED_PER_SOURCE", "300"))
+# Adverts with a closing date (public sector, EU) are kept while still open, if posted within this many days.
+OPEN_ADVERT_MAX_DAYS = int(os.environ.get("OPEN_ADVERT_MAX_DAYS", "60"))
+# Irish public-service recruiters: their posts are open to EEA/UK/Swiss citizens and Stamp 4/5 holders, not permit holders.
+IE_PUBLIC_SOURCES = {"publicjobs.ie", "Local Government Jobs"}
+_IE_PUBLIC_ELIGIBILITY_RE = re.compile(
+    r"citizen of the European Economic Area|\bEEA\b[^.;]{0,200}\bstamp ?4\b[^.;]{0,40}\bstamp ?5\b", re.I)
 FEED_BUDGET_MINUTES = float(os.environ.get("FEED_BUDGET_MINUTES", "75"))
 
 
@@ -93,7 +100,9 @@ def fetch_all(days: int, source_cfg: dict, status: dict, employers: list[dict] |
                 status[name].update(status="partial", error=f"stopped after the {FEED_BUDGET_MINUTES:g}-minute time budget; kept {len(found)} adverts")
             if name == "career_sites":
                 failed = career_report.get("failed", [])
-                status[name].update(employers_ok=career_report.get("ok", 0), employers_failed=failed)
+                status[name].update(employers_ok=career_report.get("ok", 0), employers_failed=failed,
+                                    slowest_boards=career_report.get("slowest", []),
+                                    boards_time_limited=career_report.get("time_limited", []))
                 if failed:
                     status[name]["status"] = "partial" if career_report.get("ok") else "error"
                     status[name]["error"] = f"{len(failed)} career site(s) failed: " + "; ".join(failed)[:600]
@@ -139,6 +148,9 @@ def enrich(jobs: Iterable[Job], index: sponsors.SponsorIndex, tiers: TierRules,
             if undated[job.source] > MAX_UNDATED_PER_SOURCE:
                 continue
             job.posted_at, job.date_known = now, False
+        elif job.closes_at:
+            if job.closes_at < now.date().isoformat() or job.posted_at < now - timedelta(days=OPEN_ADVERT_MAX_DAYS):
+                continue  # closed, or open for an implausibly long time
         elif job.posted_at < (cutoff - timedelta(days=CAREER_EXTRA_DAYS) if job.channel == "career_site" else cutoff):
             continue
         if job.country not in COUNTRIES:
@@ -160,6 +172,13 @@ def enrich(jobs: Iterable[Job], index: sponsors.SponsorIndex, tiers: TierRules,
         if job.country in LOCAL_COUNTRIES:
             # India: the role is in the candidate's home country, so sponsorship is not a question.
             job.sponsorship = "local"
+        elif job.source == "EU Careers":
+            # EU institutions and agencies: staff are normally citizens of an EU member state, and no visa is sponsored.
+            job.sponsorship = "eu_institution"
+        elif job.country == "IE" and signal != "positive" and (
+                job.source in IE_PUBLIC_SOURCES or _IE_PUBLIC_ELIGIBILITY_RE.search(job.description)):
+            # Irish public service: open to EEA, UK and Swiss citizens and to Stamp 4 / Stamp 5 holders.
+            job.sponsorship = "ie_public_sector"
         elif job.country == "IE":
             # Ireland: Stamp 1G graduates can take any job without a permit; keep every role the advert
             # doesn't close to them ("Stamp 4 required", "EU citizens only").
@@ -217,7 +236,8 @@ def enrich(jobs: Iterable[Job], index: sponsors.SponsorIndex, tiers: TierRules,
         job.role = classify_role(job)
         job.aviation = classify_aviation(job)
         job.low_sponsorship = is_low_sponsorship(job)
-        if job.sponsorship not in ("graduate_route", "stamp_1g", "not_sponsored", "local", "civil_service"):
+        if job.sponsorship not in ("graduate_route", "stamp_1g", "not_sponsored", "local", "civil_service",
+                                   "ie_public_sector", "eu_institution"):
             # Graduate visa / Stamp 1G holders need no sponsorship, so no salary minimum applies to them.
             job.salary_check, job.salary_annual, job.salary_threshold = salary_check(job)
         job.region = classify_region(job)

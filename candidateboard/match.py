@@ -45,6 +45,8 @@ SPONSORSHIP = {
     "licensed_sponsor": ("Licensed sponsor (advert silent)", 2, True),
     "employer_visa": ("Employer provides visa", 2, True),
     "international_employer": ("Hires internationally, sponsorship not stated", 3, False),
+    "ie_public_sector": ("Irish public service: EEA/UK citizens or Stamp 4/5", 5, False),
+    "eu_institution": ("EU institution: EU citizens usually", 5, False),
     "graduate_route": ("Not sponsoring, open to Graduate visa holders", 4, False),
     "local": ("India role: no visa needed", 2, True),
     "civil_service": ("Civil Service: right to work needed", 4, False),

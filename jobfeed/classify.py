@@ -153,8 +153,10 @@ def classify_sector(job: Job) -> str:
             return sector
     if job.source == "NHS Jobs":
         return "NHS & Healthcare"
-    if job.source == "Teaching Vacancies":
+    if job.source in ("Teaching Vacancies", "EducationPosts.ie"):
         return "School & College"
+    if job.source in ("publicjobs.ie", "Local Government Jobs", "EU Careers"):
+        return "Public Sector & Government"
     return "Private Sector"
 
 

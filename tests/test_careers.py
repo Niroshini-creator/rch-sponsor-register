@@ -290,3 +290,42 @@ class ParallelBoardsTests(unittest.TestCase):
         self.assertEqual(report["ok"], 8)
         self.assertEqual(len(report["failed"]), 1)
         self.assertIn("Half", report["failed"][0])
+
+    def test_a_slow_board_stops_at_its_time_limit_and_keeps_its_adverts(self):
+        from datetime import datetime, timezone
+        from jobfeed import careers
+        from jobfeed.models import Job
+
+        def endless(emp, cutoff):
+            n = 0
+            while True:
+                n += 1
+                yield Job(source="Slow careers", source_id=str(n), title="Analyst", company="Slow", location="London",
+                          country="GB", url=f"https://x/{n}", posted_at=datetime.now(timezone.utc), channel="career_site")
+
+        def quick(emp, cutoff):
+            yield Job(source="Quick careers", source_id="1", title="Analyst", company="Quick", location="London",
+                      country="GB", url="https://q/1", posted_at=datetime.now(timezone.utc), channel="career_site")
+
+        report = {}
+        with mock.patch.dict(careers.ATS, {"endless": endless, "quick": quick}), \
+             mock.patch.object(careers, "CAREER_BOARD_MINUTES", 0.001):
+            jobs = list(careers.career_sites(7, [{"name": "Slow", "ats": "endless"}, {"name": "Quick", "ats": "quick"}], report))
+        self.assertEqual(report["time_limited"], ["Slow"])
+        self.assertEqual(report["ok"], 2)
+        self.assertTrue(any(j.company == "Quick" for j in jobs) and any(j.company == "Slow" for j in jobs))
+        self.assertTrue(report["slowest"][0].startswith("Slow "))
+
+    def test_largest_boards_start_first(self):
+        from jobfeed import careers
+        order = []
+
+        def record(emp, cutoff):
+            order.append(emp["name"])
+            return iter(())
+
+        employers = [{"name": "Small", "ats": "rec"}, {"name": "Big", "ats": "rec", "max_jobs": 1000},
+                     {"name": "Mid", "ats": "rec", "max_jobs": 300}, {"name": "Small2", "ats": "rec"}]
+        with mock.patch.dict(careers.ATS, {"rec": record}), mock.patch.object(careers, "CAREER_WORKERS", 1):
+            list(careers.career_sites(7, employers, {}))
+        self.assertEqual(order, ["Big", "Mid", "Small", "Small2"])

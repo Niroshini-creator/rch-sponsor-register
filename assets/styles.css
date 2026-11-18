@@ -159,3 +159,4 @@ dialog dd { margin: 2px 0 0; color: var(--muted); }
 @media (max-width: 640px) { .apply { align-items: stretch; text-align: left; } }
 
 .gov-links a { display: block; margin: 3px 0; font-size: .9rem; }
+.posted .closes { color: var(--warn-text); font-size: .8rem; }

@@ -241,6 +241,29 @@ class SourceParserTests(unittest.TestCase):
         self.assertNotIn("menu", jobs[0].description)
         page.assert_called_once_with("https://www.jobs.nhs.uk/candidate/jobadvert/C9-1", retries=1)
 
+    def test_nhs_rate_limit_keeps_what_was_found_and_pages_are_reused(self):
+        import tempfile
+        import urllib.error
+        xml = f"""<nhsJobs><vacancyDetails><id>C9-2</id><title>Pharmacist</title><employer>Leeds NHS Trust</employer>
+            <postDate>{NOW.date().isoformat()}</postDate><url>https://www.jobs.nhs.uk/candidate/jobadvert/C9-2</url>
+            </vacancyDetails></nhsJobs>""".encode()
+        limited = urllib.error.HTTPError("https://www.jobs.nhs.uk/api/v1/search_xml", 429, "Too Many Requests", {}, None)
+        advert = "<main><p>Skilled worker sponsorship is available.</p></main>"
+        with tempfile.TemporaryDirectory() as d, mock.patch.object(sources, "NHS_PAGE_CACHE", f"{d}/nhs.json"):
+            with mock.patch.object(sources.http, "get", side_effect=[xml, limited]), \
+                 mock.patch.object(sources.http, "get_text", return_value=advert) as page:
+                jobs = list(sources.nhs_jobs(7))
+            self.assertEqual([j.source_id for j in jobs], ["C9-2"])   # the 429 on page 2 doesn't lose page 1
+            self.assertEqual(page.call_count, 1)
+            with mock.patch.object(sources.http, "get", side_effect=[xml, b"<nhsJobs/>"] * 3), \
+                 mock.patch.object(sources.http, "get_text", return_value="") as page:
+                again = list(sources.nhs_jobs(7))
+            page.assert_not_called()                                    # the next refresh reuses the saved page
+            self.assertIn("Skilled worker sponsorship", again[0].description)
+            with mock.patch.object(sources.http, "get", side_effect=[limited]):
+                with self.assertRaises(urllib.error.HTTPError):          # nothing found at all: the source reports the error
+                    list(sources.nhs_jobs(7))
+
     def test_rss_failure_is_isolated(self):
         rss = f"""<rss><channel><item><title>Lecturer in Physics - University of Bath</title>
             <link>https://j/1</link><pubDate>{NOW.strftime('%a, %d %b %Y %H:%M:%S GMT')}</pubDate>

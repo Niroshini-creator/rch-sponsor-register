@@ -28,6 +28,9 @@ class Job:
     # "official" (NHS Jobs, Teaching Vacancies, jobs.ac.uk, government boards) or
     # "aggregator" (job boards that repost adverts).
     channel: str = "aggregator"
+    # The date applications close (YYYY-MM-DD), when the source gives one. Public-sector adverts stay open for weeks,
+    # so they are kept while open rather than only for the usual posting window.
+    closes_at: str = ""
     # Set by the source when the feed itself flags sponsorship (e.g. a filter or field).
     source_says_sponsorship: bool = False
     # Legal name on the sponsor register when it differs from the trading name (career sites).

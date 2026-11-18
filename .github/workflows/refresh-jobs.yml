@@ -52,16 +52,24 @@ jobs:
           path: .cache/adzuna
           key: adzuna-v2-${{ github.run_id }}
           restore-keys: adzuna-v2-
+      - name: Restore saved NHS advert pages
+        uses: actions/cache/restore@v4
+        with:
+          path: .cache/nhs
+          key: nhs-pages-${{ github.run_id }}
+          restore-keys: nhs-pages-
       - name: Build feed
         id: build
         env:
           ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
           ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
           ADZUNA_CACHE: .cache/adzuna/adzuna.json
+          # NHS Jobs advert pages read by earlier refreshes are reused, so hourly runs only fetch new adverts.
+          NHS_PAGE_CACHE: .cache/nhs/pages.json
           REED_API_KEY: ${{ secrets.REED_API_KEY }}
-          # Hourly refreshes: each source stops after 50 minutes, and 16 careers sites are read at once.
-          FEED_BUDGET_MINUTES: "50"
-          CAREER_WORKERS: "16"
+          # Hourly refreshes: each source stops after 55 minutes, and 24 careers sites are read at once.
+          FEED_BUDGET_MINUTES: "55"
+          CAREER_WORKERS: "24"
         run: |
           # Adzuna's free plan covers about three full searches a day: a scheduled run searches it live only when
           # the saved results are 7.5 hours old or more (merges and manual runs always do); the hourly refreshes
@@ -85,6 +93,12 @@ jobs:
         with:
           path: .cache/adzuna
           key: adzuna-v2-${{ github.run_id }}
+      - name: Save NHS advert pages
+        if: hashFiles('.cache/nhs/pages.json') != ''
+        uses: actions/cache/save@v4
+        with:
+          path: .cache/nhs
+          key: nhs-pages-${{ github.run_id }}
       - name: Publish feed
         # The site reads the latest feed from the "feed" branch, which holds a single commit that every
         # refresh replaces, so frequent refreshes don't grow the repository.
