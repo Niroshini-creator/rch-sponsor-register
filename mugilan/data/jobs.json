@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-20T15:45:11+00:00",
+ "generated_at": "2026-11-21T14:55:47+00:00",
  "window_days": 7,
  "profile": {
   "name": "Mugilan Ramalingam",
@@ -29,11 +29,11 @@
   },
   "Reed": {
    "status": "ok",
-   "count": 807
+   "count": 845
   },
   "Adzuna": {
    "status": "ok",
-   "count": 19
+   "count": 16
   },
   "Career sites": {
    "status": "ok",
@@ -41,11 +41,11 @@
   }
  },
  "counts": {
-  "fetched": 826,
+  "fetched": 861,
   "clearance_removed": 114,
   "no_sponsorship_removed": 4,
-  "language_removed": 15,
-  "below_threshold": 675,
+  "language_removed": 13,
+  "below_threshold": 712,
   "full_advert_fetched": 80,
   "published": 4
  },
@@ -1198,57 +1198,6 @@
   },
   {
    "source": "Reed",
-   "source_id": "57573525",
-   "title": "SAP Solution Architect",
-   "company": "Capgemini",
-   "location": "Birmingham",
-   "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/sap-solution-architect/57573525",
-   "posted_at": "2026-11-16T00:00:00+00:00",
-   "description": "SAP Solution Architect Capgemini is strengthening its SAP architecture capability to support major transformation programmes across the UK Public Sector. In this role, you will play a pivotal part in shaping and delivering enterprise-scale SAP solutions that underpin critical government services and national programmes. We are looking for SAP Solution Architects with deep SAP platform expertise and strong delivery leadership experience. You will...",
-   "salary": "",
-   "contract": "",
-   "channel": "aggregator",
-   "closes_at": "",
-   "sponsorship": "licensed_sponsor",
-   "sponsor_register": "",
-   "sponsorship_evidence": "",
-   "sponsor_routes": [],
-   "sector": "",
-   "domain": "",
-   "role": "",
-   "region": "",
-   "english": true,
-   "early_career": "",
-   "aviation": "",
-   "low_sponsorship": false,
-   "salary_check": "",
-   "salary_annual": 0,
-   "salary_threshold": 0,
-   "tier": 3,
-   "size": "unknown",
-   "contacts": [],
-   "employer_site": "",
-   "agency": false,
-   "date_known": true,
-   "kw": [],
-   "signals": "",
-   "text_len": 0,
-   "exp_years": 0,
-   "id": "f99bc5d041b7",
-   "match": 25,
-   "reasons": [
-    "+20 Solution / technical architect title",
-    "+5 senior / architect level"
-   ],
-   "flags": [
-    "Salary not stated"
-   ],
-   "matched_keywords": [],
-   "currency": "£"
-  },
-  {
-   "source": "Reed",
    "source_id": "57573329",
    "title": "SAP Solution Architect",
    "company": "Capgemini",
@@ -1287,6 +1236,57 @@
    "text_len": 0,
    "exp_years": 0,
    "id": "76593a065ab5",
+   "match": 25,
+   "reasons": [
+    "+20 Solution / technical architect title",
+    "+5 senior / architect level"
+   ],
+   "flags": [
+    "Salary not stated"
+   ],
+   "matched_keywords": [],
+   "currency": "£"
+  },
+  {
+   "source": "Reed",
+   "source_id": "57573525",
+   "title": "SAP Solution Architect",
+   "company": "Capgemini",
+   "location": "Birmingham",
+   "country": "GB",
+   "url": "https://www.reed.co.uk/jobs/sap-solution-architect/57573525",
+   "posted_at": "2026-11-16T00:00:00+00:00",
+   "description": "SAP Solution Architect Capgemini is strengthening its SAP architecture capability to support major transformation programmes across the UK Public Sector. In this role, you will play a pivotal part in shaping and delivering enterprise-scale SAP solutions that underpin critical government services and national programmes. We are looking for SAP Solution Architects with deep SAP platform expertise and strong delivery leadership experience. You will...",
+   "salary": "",
+   "contract": "",
+   "channel": "aggregator",
+   "closes_at": "",
+   "sponsorship": "licensed_sponsor",
+   "sponsor_register": "",
+   "sponsorship_evidence": "",
+   "sponsor_routes": [],
+   "sector": "",
+   "domain": "",
+   "role": "",
+   "region": "",
+   "english": true,
+   "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
+   "salary_check": "",
+   "salary_annual": 0,
+   "salary_threshold": 0,
+   "tier": 3,
+   "size": "unknown",
+   "contacts": [],
+   "employer_site": "",
+   "agency": false,
+   "date_known": true,
+   "kw": [],
+   "signals": "",
+   "text_len": 0,
+   "exp_years": 0,
+   "id": "f99bc5d041b7",
    "match": 25,
    "reasons": [
     "+20 Solution / technical architect title",
@@ -1351,12 +1351,12 @@
   },
   {
    "source": "Reed",
-   "source_id": "57573464",
+   "source_id": "57573693",
    "title": "AWS Data Solution Architect",
    "company": "Capgemini",
    "location": "Birmingham",
    "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/aws-data-solution-architect/57573464",
+   "url": "https://www.reed.co.uk/jobs/aws-data-solution-architect/57573693",
    "posted_at": "2026-11-16T00:00:00+00:00",
    "description": "AWS Data Solution Architect As an AWS Data Solution Architect at Capgemini, you will design and lead the delivery of modern data platforms that enable analytics, AI, GenAI, and data driven decision making at scale. You will translate business strategy into robust, governed, and AI ready architectures, taking end to end ownership from vision through to delivery and value realisation. You will be part of the Data Platforms team that is part of the...",
    "salary": "",
@@ -1388,7 +1388,7 @@
    "signals": "",
    "text_len": 0,
    "exp_years": 0,
-   "id": "099c24e170c3",
+   "id": "a0045f365822",
    "match": 25,
    "reasons": [
     "+20 Solution / technical architect title",
