@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-23T18:44:34+00:00",
+ "generated_at": "2026-11-24T18:18:23+00:00",
  "window_days": 7,
  "profile": {
   "name": "Mugilan Ramalingam",
@@ -25,15 +25,15 @@
  "sources": {
   "UK sponsor register": {
    "status": "ok",
-   "count": 132516
+   "count": 132502
   },
   "Reed": {
    "status": "ok",
-   "count": 395
+   "count": 365
   },
   "Adzuna": {
    "status": "ok",
-   "count": 16
+   "count": 19
   },
   "Career sites": {
    "status": "ok",
@@ -41,16 +41,73 @@
   }
  },
  "counts": {
-  "fetched": 411,
-  "clearance_removed": 83,
-  "no_sponsorship_removed": 1,
-  "language_removed": 13,
-  "below_threshold": 314,
+  "fetched": 384,
+  "clearance_removed": 77,
+  "no_sponsorship_removed": 0,
+  "language_removed": 16,
+  "below_threshold": 291,
   "full_advert_fetched": 80,
   "published": 0
  },
  "jobs": [],
  "near_misses": [
+  {
+   "source": "Reed",
+   "source_id": "57607629",
+   "title": "Cloud Network Architect",
+   "company": "Oscar Technology",
+   "location": "London",
+   "country": "GB",
+   "url": "https://www.reed.co.uk/jobs/cloud-network-architect/57607629",
+   "posted_at": "2026-11-24T00:00:00+00:00",
+   "description": "Cloud Network Architect | £650-£700p/day (Outside IR35) | 6 months initially | Start date: Mid-December | Predominantly remote (UK-based). Must be able to attend the London office We're looking for an experienced Cloud Network Architect to design and validate a multi-account, cross-organisation AWS network built around AWS Cloud WAN. The work is expected to underpin a later FedRAMP build. You will work directly with the client's core group, challenge their low-level design where needed, and present findings at the Phase 1 gate. Key Responsibilities: Design AWS Cloud WAN architecture: core…",
+   "salary": "650 – 700",
+   "contract": "",
+   "channel": "aggregator",
+   "closes_at": "",
+   "sponsorship": "agency",
+   "sponsor_register": "",
+   "sponsorship_evidence": "",
+   "sponsor_routes": [],
+   "sector": "",
+   "domain": "",
+   "role": "",
+   "region": "",
+   "english": true,
+   "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
+   "salary_check": "",
+   "salary_annual": 0,
+   "salary_threshold": 0,
+   "tier": 3,
+   "size": "unknown",
+   "contacts": [],
+   "employer_site": "",
+   "agency": true,
+   "date_known": true,
+   "kw": [],
+   "signals": "",
+   "text_len": 0,
+   "exp_years": 0,
+   "id": "fd3cc2b29939",
+   "match": 42,
+   "reasons": [
+    "+32 Network architect title",
+    "+2 network technology (GPON/DOCSIS/MPLS/SDH/DWDM…)",
+    "+3 architecture practice / GCP",
+    "+5 senior / architect level"
+   ],
+   "flags": [
+    "Salary not stated",
+    "Recruitment agency advert"
+   ],
+   "matched_keywords": [
+    "core network",
+    "gcp"
+   ],
+   "currency": "£"
+  },
   {
    "source": "Adzuna",
    "source_id": "5976127060",
@@ -491,58 +548,6 @@
   },
   {
    "source": "Reed",
-   "source_id": "57581635",
-   "title": "Solution Architect - Retail/Hospitality Sector",
-   "company": "Morgan Philips Specialist Recruitment",
-   "location": "Watford",
-   "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/solution-architect-retail-hospitality-sector/57581635",
-   "posted_at": "2026-11-17T00:00:00+00:00",
-   "description": "We are currently recruiting for a Solution Architect in an established IT team - based onsite in Watford. The salary range for the position is £70,000 - £80,000 base salary plus bonus/benefits. (Location - Hertfordshire - onsite three to four times per week) - some homeworking is possible but mainly office. Essential experience below: Hospitality/retail systems experience and ( specifically Electronic Point of Sale, stock management, distribution, and procurement.) You will need productivity experience and enterprise business systems. Data architecture will be important. Private and public…",
-   "salary": "70,000 – 80,000",
-   "contract": "",
-   "channel": "aggregator",
-   "closes_at": "",
-   "sponsorship": "agency",
-   "sponsor_register": "",
-   "sponsorship_evidence": "",
-   "sponsor_routes": [],
-   "sector": "",
-   "domain": "",
-   "role": "",
-   "region": "",
-   "english": true,
-   "early_career": "",
-   "aviation": "",
-   "low_sponsorship": false,
-   "salary_check": "",
-   "salary_annual": 0,
-   "salary_threshold": 0,
-   "tier": 3,
-   "size": "unknown",
-   "contacts": [],
-   "employer_site": "",
-   "agency": true,
-   "date_known": true,
-   "kw": [],
-   "signals": "",
-   "text_len": 0,
-   "exp_years": 0,
-   "id": "200c1b374f5e",
-   "match": 30,
-   "reasons": [
-    "+20 Solution / technical architect title",
-    "+5 senior / architect level",
-    "+5 pay reaches the 60,000 expectation"
-   ],
-   "flags": [
-    "Recruitment agency advert"
-   ],
-   "matched_keywords": [],
-   "currency": "£"
-  },
-  {
-   "source": "Reed",
    "source_id": "57593398",
    "title": "Security Solution Architect – Cryptography",
    "company": "Vbeyond",
@@ -923,61 +928,6 @@
     "Recruitment agency advert"
    ],
    "matched_keywords": [],
-   "currency": "£"
-  },
-  {
-   "source": "Reed",
-   "source_id": "57600294",
-   "title": "Solutions Architect - Juniper",
-   "company": "Appcast Enterprise",
-   "location": "Bracknell",
-   "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/solutions-architect-juniper/57600294",
-   "posted_at": "2026-11-23T00:00:00+00:00",
-   "description": "Design complex solutions. Influence strategy. Deliver technology that transforms businesses. At TD SYNNEX, we're looking for a Juniper Solutions Architect to help shape and deliver complex technology solutions for our partners and customers. This is a senior technical role for an experienced Juniper presales architect with expertise around enterprise networking and security, and a passion for solving complex business challenges. Working with partners, vendors, end users, and internal stakeholders, you'll design innovative multi-technology solutions, guide technical strategy, and lead projects…",
-   "salary": "",
-   "contract": "",
-   "channel": "aggregator",
-   "closes_at": "",
-   "sponsorship": "unverified",
-   "sponsor_register": "",
-   "sponsorship_evidence": "",
-   "sponsor_routes": [],
-   "sector": "",
-   "domain": "",
-   "role": "",
-   "region": "",
-   "english": true,
-   "early_career": "",
-   "aviation": "",
-   "low_sponsorship": false,
-   "salary_check": "",
-   "salary_annual": 0,
-   "salary_threshold": 0,
-   "tier": 3,
-   "size": "unknown",
-   "contacts": [],
-   "employer_site": "",
-   "agency": false,
-   "date_known": true,
-   "kw": [],
-   "signals": "",
-   "text_len": 0,
-   "exp_years": 0,
-   "id": "b2730bb6b586",
-   "match": 22,
-   "reasons": [
-    "+20 Solution / technical architect title",
-    "+2 architecture practice / GCP",
-    "+5 senior / architect level",
-    "-5 sponsorship / work permit not confirmed"
-   ],
-   "flags": [
-    "Salary not stated"
-   ],
-   "matched_keywords": [
-    "solution architecture"
-   ],
    "currency": "£"
   },
   {
