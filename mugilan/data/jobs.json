@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-26T17:18:38+00:00",
+ "generated_at": "2026-11-27T16:58:27+00:00",
  "window_days": 7,
  "profile": {
   "name": "Mugilan Ramalingam",
@@ -25,15 +25,15 @@
  "sources": {
   "UK sponsor register": {
    "status": "ok",
-   "count": 132494
+   "count": 132265
   },
   "Reed": {
    "status": "ok",
-   "count": 296
+   "count": 323
   },
   "Adzuna": {
    "status": "ok",
-   "count": 30
+   "count": 36
   },
   "Career sites": {
    "status": "ok",
@@ -41,12 +41,12 @@
   }
  },
  "counts": {
-  "fetched": 326,
-  "clearance_removed": 57,
+  "fetched": 359,
+  "clearance_removed": 73,
   "no_sponsorship_removed": 2,
-  "language_removed": 20,
-  "below_threshold": 247,
-  "full_advert_fetched": 61,
+  "language_removed": 26,
+  "below_threshold": 258,
+  "full_advert_fetched": 72,
   "published": 0
  },
  "jobs": [],
@@ -374,15 +374,15 @@
   },
   {
    "source": "Reed",
-   "source_id": "57597200",
-   "title": "Salesforce Technical Architect (Not-for-profit company)",
-   "company": "Salt Search",
-   "location": "Epsom",
+   "source_id": "57620641",
+   "title": "Lead Solution Architect, Investment Management - NatWest Group",
+   "company": "eFinancialCareers",
+   "location": "London",
    "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/salesforce-technical-architect-not-for-profit-company/57597200",
-   "posted_at": "2026-11-20T00:00:00+00:00",
-   "description": "Salesforce Technical Architect - Platform Architect - Customer & CRM (Salesforce) - Not-for-profit/ Charity An exciting opportunity for an experienced Platform Architect (Salesforce) to shape and evolve a large-scale Salesforce CRM and customer technology platform within a complex charity/ not-for-profit organisation. The position involves leading Salesforce architecture, setting the technology roadmap, overseeing integrations, providing technical leadership and driving digital transformation. Key Responsibilities Own the Salesforce CRM architecture and technology roadmap. Design secure,…",
-   "salary": "70,000 – 80,000",
+   "url": "https://www.reed.co.uk/jobs/lead-solution-architect-investment-management-natwest-group/57620641",
+   "posted_at": "2026-11-27T00:00:00+00:00",
+   "description": "Join us as a Lead Solution Architect, Investment Management We'll look to you to lead the solution architecture definition for the bank's investment management change programme, in addition to delivering business outcomes for both customers and colleagues You'll be driving technology innovation by identifying and evaluating emerging technologies and their potential impact on the bank If you're ready for a new challenge and want to make a far-reaching impact through your work, this could be the opportunity you're looking for You'll work from home some of the time, but you'll also spend at…",
+   "salary": "",
    "contract": "",
    "channel": "aggregator",
    "closes_at": "",
@@ -411,30 +411,35 @@
    "signals": "",
    "text_len": 0,
    "exp_years": 0,
-   "id": "b99b559894f4",
-   "match": 30,
+   "id": "32201f449fbe",
+   "match": 32,
    "reasons": [
     "+20 Solution / technical architect title",
-    "+5 senior / architect level",
-    "+5 pay reaches the 60,000 expectation"
+    "+5 telecom OSS/BSS keywords",
+    "+2 architecture practice / GCP",
+    "+5 senior / architect level"
    ],
    "flags": [
+    "Salary not stated",
     "Recruitment agency advert"
    ],
-   "matched_keywords": [],
+   "matched_keywords": [
+    "order management",
+    "solution architecture"
+   ],
    "currency": "£"
   },
   {
    "source": "Reed",
-   "source_id": "57597170",
-   "title": "Salesforce Technical Architect (Not-for-profit company)",
-   "company": "Salt Search",
+   "source_id": "57620646",
+   "title": "Lead Avaloq Solution Architect - NatWest Group",
+   "company": "eFinancialCareers",
    "location": "London",
    "country": "GB",
-   "url": "https://www.reed.co.uk/jobs/salesforce-technical-architect-not-for-profit-company/57597170",
-   "posted_at": "2026-11-20T00:00:00+00:00",
-   "description": "Salesforce Technical Architect - Platform Architect - Customer & CRM (Salesforce) - Not-for-profit/ Charity An exciting opportunity for an experienced Platform Architect (Salesforce) to shape and evolve a large-scale Salesforce CRM and customer technology platform within a complex charity/ not-for-profit organisation. The position involves leading Salesforce architecture, setting the technology roadmap, overseeing integrations, providing technical leadership and driving digital transformation. Key Responsibilities Own the Salesforce CRM architecture and technology roadmap. Design secure,…",
-   "salary": "70,000 – 80,000",
+   "url": "https://www.reed.co.uk/jobs/lead-avaloq-solution-architect-natwest-group/57620646",
+   "posted_at": "2026-11-27T00:00:00+00:00",
+   "description": "Join us as a Lead Avaloq Solution Architect We'll look to you to lead the solution architecture definition for the bank's Private Banking & Wealth Management (PBWM) change programme, in addition to delivering business outcomes for both customers and colleagues You'll be driving technology innovation by identifying and evaluating emerging technologies and their potential impact on the bank If you're ready for a new challenge and want to make a far-reaching impact through your work, this could be the opportunity you're looking for You'll work from home some of the time, but you'll also spend at…",
+   "salary": "",
    "contract": "",
    "channel": "aggregator",
    "closes_at": "",
@@ -463,17 +468,77 @@
    "signals": "",
    "text_len": 0,
    "exp_years": 0,
-   "id": "3e13cfcd6146",
-   "match": 30,
+   "id": "aa9d87878baf",
+   "match": 32,
    "reasons": [
     "+20 Solution / technical architect title",
-    "+5 senior / architect level",
-    "+5 pay reaches the 60,000 expectation"
+    "+5 telecom OSS/BSS keywords",
+    "+2 architecture practice / GCP",
+    "+5 senior / architect level"
    ],
    "flags": [
+    "Salary not stated",
     "Recruitment agency advert"
    ],
-   "matched_keywords": [],
+   "matched_keywords": [
+    "order management",
+    "solution architecture"
+   ],
+   "currency": "£"
+  },
+  {
+   "source": "Reed",
+   "source_id": "57620645",
+   "title": "Solution Architect, Financial Planning - NatWest Group",
+   "company": "eFinancialCareers",
+   "location": "London",
+   "country": "GB",
+   "url": "https://www.reed.co.uk/jobs/solution-architect-financial-planning-natwest-group/57620645",
+   "posted_at": "2026-11-27T00:00:00+00:00",
+   "description": "Join us as a Solution Architect, Financial Planning This is an opportunity for an experienced Solution Architect to help us define the high level technical architecture and design for your assigned scope that provides solutions to deliver great business outcomes and meets our longer term strategy You'll define and communicate a shared technical and architectural vision of end-to-end designs that may span multiple platforms and domains Take on this exciting new challenge and hone your technical capabilities while advancing your career and building your network across the bank You'll work from…",
+   "salary": "",
+   "contract": "",
+   "channel": "aggregator",
+   "closes_at": "",
+   "sponsorship": "licensed_sponsor",
+   "sponsor_register": "",
+   "sponsorship_evidence": "",
+   "sponsor_routes": [],
+   "sector": "",
+   "domain": "",
+   "role": "",
+   "region": "",
+   "english": true,
+   "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
+   "salary_check": "",
+   "salary_annual": 0,
+   "salary_threshold": 0,
+   "tier": 3,
+   "size": "unknown",
+   "contacts": [],
+   "employer_site": "",
+   "agency": true,
+   "date_known": true,
+   "kw": [],
+   "signals": "",
+   "text_len": 0,
+   "exp_years": 0,
+   "id": "2f0e9174e05a",
+   "match": 27,
+   "reasons": [
+    "+20 Solution / technical architect title",
+    "+2 architecture practice / GCP",
+    "+5 senior / architect level"
+   ],
+   "flags": [
+    "Salary not stated",
+    "Recruitment agency advert"
+   ],
+   "matched_keywords": [
+    "solution architecture"
+   ],
    "currency": "£"
   },
   {
@@ -640,6 +705,63 @@
    ],
    "matched_keywords": [
     "non-functional"
+   ],
+   "currency": "£"
+  },
+  {
+   "source": "Reed",
+   "source_id": "57617663",
+   "title": "Staff Software Engineer / Architect",
+   "company": "Harnham - Data & Analytics Recruitment",
+   "location": "London",
+   "country": "GB",
+   "url": "https://www.reed.co.uk/jobs/staff-software-engineer-architect/57617663",
+   "posted_at": "2026-11-26T00:00:00+00:00",
+   "description": "Staff Software Engineer / Architect Up to £100,000 London (1-2 days a week) An exciting opportunity for a Staff Engineer / Technical Architect to take ownership of the architecture and technical direction of a rapidly scaling AI product platform. This role combines system design, hands-on software engineering, and technical leadership, offering the chance to influence products used by major global organisations while solving complex platform and scalability challenges. THE COMPANY They are a high-growth AI technology business building enterprise software used to manage, create, search and…",
+   "salary": "80,000 – 100,000",
+   "contract": "",
+   "channel": "aggregator",
+   "closes_at": "",
+   "sponsorship": "agency",
+   "sponsor_register": "",
+   "sponsorship_evidence": "",
+   "sponsor_routes": [],
+   "sector": "",
+   "domain": "",
+   "role": "",
+   "region": "",
+   "english": true,
+   "early_career": "",
+   "aviation": "",
+   "low_sponsorship": false,
+   "salary_check": "",
+   "salary_annual": 0,
+   "salary_threshold": 0,
+   "tier": 3,
+   "size": "unknown",
+   "contacts": [],
+   "employer_site": "",
+   "agency": true,
+   "date_known": true,
+   "kw": [],
+   "signals": "",
+   "text_len": 0,
+   "exp_years": 0,
+   "id": "6b7b6c060c59",
+   "match": 26,
+   "reasons": [
+    "+10 Architect title",
+    "+3 telecom OSS/BSS keywords",
+    "+3 architecture practice / GCP",
+    "+5 senior / architect level",
+    "+5 pay reaches the 60,000 expectation"
+   ],
+   "flags": [
+    "Recruitment agency advert"
+   ],
+   "matched_keywords": [
+    "design authority",
+    "google cloud"
    ],
    "currency": "£"
   },
