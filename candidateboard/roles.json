@@ -1030,6 +1030,180 @@
         "admin_office"
       ],
       "sponsor": "check"
+    },
+    "stress_structures": {
+      "label": "Stress & Structural Analysis (FEA)",
+      "titles": [
+        "\\b(stress|structural|structures?|airframe|durability|fatigue)\\b.{0,25}\\b(engineer|analyst|analysis)\\b",
+        "\\b(fea|fem|cae|finite element)\\b.{0,25}\\b(engineer|analyst|specialist)\\b",
+        "\\b(simulation|analysis) engineer\\b",
+        "\\bdamage tolerance\\b",
+        "\\baerostructures?\\b"
+      ],
+      "keywords": [
+        "fea",
+        "fem",
+        "finite element",
+        "ansys",
+        "ansys workbench",
+        "ansys mechanical",
+        "abaqus",
+        "nastran",
+        "hypermesh",
+        "hyperworks",
+        "patran",
+        "stress analysis",
+        "structural analysis",
+        "structural integrity",
+        "von mises",
+        "meshing",
+        "boundary conditions",
+        "load cases",
+        "hand calculations",
+        "fatigue",
+        "damage tolerance",
+        "buckling",
+        "stress concentrations?",
+        "failure[- ]mode",
+        "composites?",
+        "airframe",
+        "catia"
+      ],
+      "searches": [
+        "Stress Engineer",
+        "Structural Analysis Engineer",
+        "FEA Engineer",
+        "CAE Engineer",
+        "Aerospace Stress Engineer",
+        "Structures Engineer",
+        "Stress Analyst"
+      ],
+      "adjacent": [
+        "design_cad",
+        "aerospace_engineering",
+        "engineering_project"
+      ],
+      "sponsor": "usual"
+    },
+    "design_cad": {
+      "label": "Mechanical / Design Engineering (CAD)",
+      "titles": [
+        "\\b(mechanical|design|cad|product|mechanical design|structural design)\\b.{0,15}\\bengineer\\b",
+        "\\bcad (technician|designer|draughts(man|person))\\b",
+        "\\b(junior|graduate|trainee) (mechanical )?engineer\\b"
+      ],
+      "keywords": [
+        "catia",
+        "solidworks",
+        "autocad",
+        "creo",
+        "siemens nx",
+        "cad",
+        "3d (cad )?modell?ing",
+        "engineering drawings?",
+        "gd&t",
+        "tolerance stack",
+        "design for manufactur\\w*",
+        "dfm",
+        "prototyp\\w*",
+        "bill of materials",
+        "bom",
+        "plm",
+        "tolerancing",
+        "mechanical design"
+      ],
+      "searches": [
+        "Design Engineer",
+        "Mechanical Engineer",
+        "Mechanical Design Engineer",
+        "CAD Engineer",
+        "Graduate Mechanical Engineer"
+      ],
+      "adjacent": [
+        "stress_structures",
+        "aerospace_engineering",
+        "engineering_project"
+      ],
+      "sponsor": "usual"
+    },
+    "aerospace_engineering": {
+      "label": "Aerospace / Aeronautical Engineering",
+      "titles": [
+        "\\b(aerospace|aeronautical|aircraft|airworthiness|avionics|propulsion|aerodynamics?|flight test|flight sciences?)\\b.{0,20}\\b(engineer|analyst|specialist)\\b",
+        "\\buav\\b.{0,15}\\bengineer\\b"
+      ],
+      "keywords": [
+        "aerospace",
+        "aeronautical",
+        "aircraft",
+        "airworthiness",
+        "easa",
+        "faa",
+        "caa",
+        "cs-25",
+        "do-178\\w*",
+        "arp ?4754",
+        "aerodynamics?",
+        "cfd",
+        "ansys fluent",
+        "uav",
+        "flight test",
+        "propulsion",
+        "certification",
+        "defen[cs]e"
+      ],
+      "searches": [
+        "Aerospace Engineer",
+        "Aeronautical Engineer",
+        "Airworthiness Engineer",
+        "Aerodynamics Engineer",
+        "Flight Test Engineer"
+      ],
+      "adjacent": [
+        "stress_structures",
+        "design_cad",
+        "engineering_project"
+      ],
+      "sponsor": "usual"
+    },
+    "engineering_project": {
+      "label": "Engineering Project / Reporting",
+      "titles": [
+        "\\bproject engineer\\b",
+        "\\bengineering (project )?(coordinator|analyst|planner|controls|reporting)\\b",
+        "\\bproject controls (analyst|engineer|coordinator)\\b",
+        "\\btechnical (project )?coordinator\\b",
+        "\\bplanning engineer\\b"
+      ],
+      "keywords": [
+        "planned[- ]versus[- ]actual",
+        "milestone tracking",
+        "raid logs?",
+        "work packages?",
+        "project controls",
+        "earned value",
+        "ms project",
+        "primavera",
+        "power bi",
+        "monday\\.com",
+        "agile",
+        "scrum",
+        "risk register",
+        "deliverable tracking",
+        "progress reporting"
+      ],
+      "searches": [
+        "Project Engineer",
+        "Engineering Project Coordinator",
+        "Project Controls Analyst",
+        "Engineering Planner"
+      ],
+      "adjacent": [
+        "project_coordination",
+        "stress_structures",
+        "aerospace_engineering"
+      ],
+      "sponsor": "check"
     }
   },
   "sponsor_notes": {
