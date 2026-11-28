@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-27T16:58:27+00:00",
+ "generated_at": "2026-11-28T15:49:09+00:00",
  "window_days": 7,
  "profile": {
   "name": "Mugilan Ramalingam",
@@ -29,11 +29,11 @@
   },
   "Reed": {
    "status": "ok",
-   "count": 323
+   "count": 328
   },
   "Adzuna": {
    "status": "ok",
-   "count": 36
+   "count": 31
   },
   "Career sites": {
    "status": "ok",
@@ -42,10 +42,10 @@
  },
  "counts": {
   "fetched": 359,
-  "clearance_removed": 73,
+  "clearance_removed": 74,
   "no_sponsorship_removed": 2,
-  "language_removed": 26,
-  "below_threshold": 258,
+  "language_removed": 20,
+  "below_threshold": 263,
   "full_advert_fetched": 72,
   "published": 0
  },
